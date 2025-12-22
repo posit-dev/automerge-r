@@ -17,3 +17,4 @@ The object (invisibly)
 \description{
 Print Automerge object (fallback for unknown types)
 }
+\keyword{internal}

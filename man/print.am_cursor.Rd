@@ -17,3 +17,4 @@ The cursor (invisibly)
 \description{
 Print Automerge cursor
 }
+\keyword{internal}

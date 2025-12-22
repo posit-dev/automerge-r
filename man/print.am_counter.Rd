@@ -17,3 +17,4 @@ The counter (invisibly)
 \description{
 Print Automerge counter
 }
+\keyword{internal}

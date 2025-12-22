@@ -17,3 +17,4 @@ The document (invisibly)
 \description{
 Print method for Automerge documents showing basic info and root contents.
 }
+\keyword{internal}

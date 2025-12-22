@@ -17,3 +17,4 @@ The object (invisibly)
 \description{
 Print Automerge map object
 }
+\keyword{internal}

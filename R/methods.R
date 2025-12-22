@@ -99,6 +99,7 @@ names.am_doc <- function(x) {
 #' @param x An Automerge document
 #' @param ... Additional arguments (unused)
 #' @return The document (invisibly)
+#' @keywords internal
 #' @export
 print.am_doc <- function(x, ...) {
   cat("<Automerge Document>\n")
@@ -243,6 +244,7 @@ names.am_map <- function(x) {
 #' @param x An Automerge counter
 #' @param ... Additional arguments (unused)
 #' @return The counter (invisibly)
+#' @keywords internal
 #' @export
 print.am_counter <- function(x, ...) {
   cat("<Automerge Counter:", as.integer(x), ">\n")
@@ -254,6 +256,7 @@ print.am_counter <- function(x, ...) {
 #' @param x An Automerge uint64
 #' @param ... Additional arguments (unused)
 #' @return The uint64 (invisibly)
+#' @keywords internal
 #' @export
 print.am_uint64 <- function(x, ...) {
   cat("<Automerge uint64:", format(x, scientific = FALSE), ">\n")
@@ -265,6 +268,7 @@ print.am_uint64 <- function(x, ...) {
 #' @param x An Automerge object
 #' @param ... Additional arguments (unused)
 #' @return The object (invisibly)
+#' @keywords internal
 #' @export
 print.am_object <- function(x, ...) {
   cat("<Automerge Object>\n")
@@ -276,6 +280,7 @@ print.am_object <- function(x, ...) {
 #' @param x An Automerge map object
 #' @param ... Additional arguments (unused)
 #' @return The object (invisibly)
+#' @keywords internal
 #' @export
 print.am_map <- function(x, ...) {
   doc <- .Call(C_get_doc_from_objid, x)
@@ -300,6 +305,7 @@ print.am_map <- function(x, ...) {
 #' @param x An Automerge list object
 #' @param ... Additional arguments (unused)
 #' @return The object (invisibly)
+#' @keywords internal
 #' @export
 print.am_list <- function(x, ...) {
   doc <- .Call(C_get_doc_from_objid, x)
@@ -315,6 +321,7 @@ print.am_list <- function(x, ...) {
 #' @param x An Automerge text object
 #' @param ... Additional arguments (unused)
 #' @return The object (invisibly)
+#' @keywords internal
 #' @export
 print.am_text <- function(x, ...) {
   text_content <- am_text_get(x)
@@ -420,6 +427,7 @@ as.character.am_text <- function(x, ...) {
 #' @param x An Automerge cursor
 #' @param ... Additional arguments (unused)
 #' @return The cursor (invisibly)
+#' @keywords internal
 #' @export
 print.am_cursor <- function(x, ...) {
   cat("<Automerge Cursor>\n")
@@ -431,6 +439,7 @@ print.am_cursor <- function(x, ...) {
 #' @param x An Automerge sync state
 #' @param ... Additional arguments (unused)
 #' @return The sync state (invisibly)
+#' @keywords internal
 #' @export
 print.am_syncstate <- function(x, ...) {
   cat("<Automerge Sync State>\n")
