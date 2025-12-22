@@ -1205,3 +1205,38 @@ test_that("print.am_uint64 displays value correctly", {
     print(am_uint64(2^50))
   })
 })
+
+test_that("am_put with invalid am_uint64 errors", {
+  doc <- am_create()
+
+  # Non-scalar am_uint64
+  bad_uint <- structure(c(1, 2), class = "am_uint64")
+  expect_snapshot(error = TRUE, {
+    am_put(doc, AM_ROOT, "bad", bad_uint)
+  })
+
+  # Non-numeric am_uint64
+  bad_uint2 <- structure(1L, class = "am_uint64")
+  expect_snapshot(error = TRUE, {
+    am_put(doc, AM_ROOT, "bad", bad_uint2)
+  })
+})
+
+test_that("am_get warns for uint64 exceeding 2^53", {
+  doc <- am_create()
+  # Store large value (R warns on creation, C warns on retrieval)
+  suppressWarnings(am_put(doc, AM_ROOT, "big", am_uint64(2^54)))
+
+  expect_snapshot({
+    am_get(doc, AM_ROOT, "big")
+  })
+})
+
+test_that("am_values warns for uint64 exceeding 2^53", {
+  doc <- am_create()
+  suppressWarnings(am_put(doc, AM_ROOT, "big", am_uint64(2^54)))
+
+  expect_snapshot({
+    am_values(doc, AM_ROOT)
+  })
+})

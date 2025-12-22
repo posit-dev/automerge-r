@@ -521,6 +521,14 @@
 ---
 
     Code
+      am_put(doc, items, 1, as.POSIXct(c("2024-01-01", "2024-01-02")))
+    Condition
+      Error in `am_put()`:
+      ! Timestamp must be scalar
+
+---
+
+    Code
       am_put(doc, AM_ROOT, "counter", counter)
     Condition
       Error in `am_put()`:
