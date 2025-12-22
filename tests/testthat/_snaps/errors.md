@@ -182,6 +182,14 @@
       Error in `am_text()`:
       ! initial must be a single character string
 
+---
+
+    Code
+      am_uint64(-1)
+    Condition
+      Error in `am_uint64()`:
+      ! am_uint64 requires a non-negative value
+
 # Corrupted document state handling
 
     Code

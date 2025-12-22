@@ -225,6 +225,11 @@ test_that("Type constructor validation", {
   expect_snapshot(error = TRUE, {
     am_text(NULL)
   })
+
+  # am_uint64 with negative value
+  expect_snapshot(error = TRUE, {
+    am_uint64(-1)
+  })
 })
 
 test_that("Corrupted document state handling", {

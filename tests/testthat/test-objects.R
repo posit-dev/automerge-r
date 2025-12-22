@@ -1183,3 +1183,25 @@ test_that("am_uint64 with large value (within precision) works", {
   expect_s3_class(val, "am_uint64")
   expect_equal(as.numeric(val), large_val)
 })
+
+# am_uint64 Snapshot Tests -----------------------------------------------------
+
+test_that("am_uint64() warns for precision loss", {
+  expect_snapshot({
+    am_uint64(2^54)
+  })
+})
+
+test_that("print.am_uint64 displays value correctly", {
+  expect_snapshot({
+    print(am_uint64(12345))
+  })
+
+  expect_snapshot({
+    print(am_uint64(0))
+  })
+
+  expect_snapshot({
+    print(am_uint64(2^50))
+  })
+})
