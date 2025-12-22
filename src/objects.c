@@ -56,7 +56,7 @@ static AMresult *am_put_value(AMdoc *doc, const AMobjId *obj_id,
         if (Rf_xlength(value) != 1) {
             Rf_error("Timestamp must be scalar");
         }
-        double seconds = Rf_asReal(value);
+        double seconds = REAL(value)[0];
         int64_t milliseconds = (int64_t) (seconds * 1000.0);
         return is_map ? AMmapPutTimestamp(doc, obj_id, key, milliseconds) :
                        AMlistPutTimestamp(doc, obj_id, pos, insert, milliseconds);
@@ -67,6 +67,13 @@ static AMresult *am_put_value(AMdoc *doc, const AMobjId *obj_id,
         int64_t val = (int64_t) INTEGER(value)[0];
         return is_map ? AMmapPutCounter(doc, obj_id, key, val) :
                        AMlistPutCounter(doc, obj_id, pos, insert, val);
+    } else if (Rf_inherits(value, "am_uint64")) {
+        if (TYPEOF(value) != REALSXP || XLENGTH(value) != 1) {
+            Rf_error("am_uint64 must be a scalar numeric");
+        }
+        uint64_t val = (uint64_t) REAL(value)[0];
+        return is_map ? AMmapPutUint(doc, obj_id, key, val) :
+                       AMlistPutUint(doc, obj_id, pos, insert, val);
     } else if (Rf_inherits(value, "am_text_type")) {
         if (TYPEOF(value) != STRSXP || XLENGTH(value) != 1) {
             Rf_error("am_text must be a single character string");
@@ -249,7 +256,12 @@ static SEXP am_item_to_r(AMitem *item, SEXP parent_doc_sexp, SEXP parent_result_
         case AM_VAL_TYPE_UINT: {
             uint64_t val;
             AMitemToUint(item, &val);
-            result = Rf_ScalarReal((double) val);
+            if (val > (1ULL << 53)) {
+                Rf_warning("uint64 value exceeds 2^53; precision may be lost");
+            }
+            result = PROTECT(Rf_ScalarReal((double) val));
+            Rf_classgets(result, Rf_mkString("am_uint64"));
+            UNPROTECT(1);
             break;
         }
 
@@ -294,10 +306,11 @@ static SEXP am_item_to_r(AMitem *item, SEXP parent_doc_sexp, SEXP parent_result_
         case AM_VAL_TYPE_COUNTER: {
             int64_t val;
             AMitemToCounter(item, &val);
-            result = val > INT_MAX || val < INT_MIN ?
+            result = PROTECT(val > INT_MAX || val < INT_MIN ?
                 Rf_ScalarReal((double) val):
-                Rf_ScalarInteger((int) val);
+                Rf_ScalarInteger((int) val));
             Rf_classgets(result, Rf_mkString("am_counter"));
+            UNPROTECT(1);
             break;
         }
 

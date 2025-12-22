@@ -242,7 +242,7 @@ static AMresult* r_value_to_amitem(SEXP value) {
         if (Rf_xlength(value) != 1) {
             Rf_error("Mark value must be scalar");
         }
-        double seconds = Rf_asReal(value);
+        double seconds = REAL(value)[0];
         int64_t milliseconds = (int64_t) (seconds * 1000.0);
         return AMitemFromTimestamp(milliseconds);
     } else if (Rf_inherits(value, "am_counter")) {
@@ -251,6 +251,12 @@ static AMresult* r_value_to_amitem(SEXP value) {
         }
         int64_t val = (int64_t) INTEGER(value)[0];
         return AMitemFromCounter(val);
+    } else if (Rf_inherits(value, "am_uint64")) {
+        if (TYPEOF(value) != REALSXP || Rf_xlength(value) != 1) {
+            Rf_error("am_uint64 must be a scalar numeric");
+        }
+        uint64_t val = (uint64_t) REAL(value)[0];
+        return AMitemFromUint(val);
     } else if (TYPEOF(value) == LGLSXP && Rf_xlength(value) == 1) {
         bool val = (bool) LOGICAL(value)[0];
         return AMitemFromBool(val);
@@ -297,11 +303,13 @@ static SEXP amitem_to_r_value(AMitem *item) {
         case AM_VAL_TYPE_UINT: {
             uint64_t val;
             AMitemToUint(item, &val);
-            if (val > INT_MAX) {
-                Rf_warning("Mark value unsigned integer out of R integer range, converting to double");
-                return Rf_ScalarReal((double) val);
+            if (val > (1ULL << 53)) {
+                Rf_warning("uint64 value exceeds 2^53; precision may be lost");
             }
-            return Rf_ScalarInteger((int) val);
+            SEXP result = PROTECT(Rf_ScalarReal((double) val));
+            Rf_classgets(result, Rf_mkString("am_uint64"));
+            UNPROTECT(1);
+            return result;
         }
         case AM_VAL_TYPE_F64: {
             double val;

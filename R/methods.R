@@ -249,6 +249,17 @@ print.am_counter <- function(x, ...) {
   invisible(x)
 }
 
+#' Print Automerge unsigned 64-bit integer
+#'
+#' @param x An Automerge uint64
+#' @param ... Additional arguments (unused)
+#' @return The uint64 (invisibly)
+#' @export
+print.am_uint64 <- function(x, ...) {
+  cat("<Automerge uint64:", format(x, scientific = FALSE), ">\n")
+  invisible(x)
+}
+
 #' Print Automerge object (fallback for unknown types)
 #'
 #' @param x An Automerge object

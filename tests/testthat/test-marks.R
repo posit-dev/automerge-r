@@ -388,3 +388,16 @@ test_that("mark expand mode 'both' expands in both directions", {
   expect_equal(marks[[1]]$start, 0)
   expect_equal(marks[[1]]$end, 7)
 })
+
+test_that("am_uint64 mark values round-trip correctly", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  am_mark_create(text_obj, 0, 5, "revision", am_uint64(12345))
+
+  marks <- am_marks(text_obj)
+  expect_length(marks, 1)
+  expect_s3_class(marks[[1]]$value, "am_uint64")
+  expect_equal(as.numeric(marks[[1]]$value), 12345)
+})

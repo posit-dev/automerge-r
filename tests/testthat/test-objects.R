@@ -1097,3 +1097,89 @@ test_that("am_delete() returns doc invisibly", {
   expect_identical(result$value, doc)
   expect_false(result$visible)
 })
+
+# Unsigned Integer Type Preservation -------------------------------------------
+
+test_that("am_uint64() creates unsigned integer type", {
+  x <- am_uint64(12345)
+  expect_s3_class(x, "am_uint64")
+  expect_equal(as.numeric(x), 12345)
+})
+
+test_that("am_uint64() rejects negative values", {
+  expect_error(am_uint64(-1), "non-negative")
+})
+
+test_that("am_uint64() warns for values exceeding 2^53", {
+  # Use 2^54 since 2^53 + 1 == 2^53 in floating point
+  expect_warning(am_uint64(2^54), "precision")
+})
+
+test_that("am_uint64 round-trips through document", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "id", am_uint64(12345))
+
+  val <- am_get(doc, AM_ROOT, "id")
+  expect_s3_class(val, "am_uint64")
+  expect_equal(as.numeric(val), 12345)
+})
+
+test_that("am_uint64 in list round-trips correctly", {
+  doc <- am_create()
+  doc$items <- list(am_uint64(1), am_uint64(2), am_uint64(3))
+
+  items <- as.list(doc$items)
+  expect_s3_class(items[[1]], "am_uint64")
+  expect_s3_class(items[[2]], "am_uint64")
+  expect_s3_class(items[[3]], "am_uint64")
+})
+
+test_that("am_uint64 preserves type through as.list() round-trip", {
+  doc <- am_create()
+  doc$val <- am_uint64(42)
+
+  # Simulate the problematic workflow: read, modify other things, write back
+  lst <- as.list(doc)
+  expect_s3_class(lst$val, "am_uint64")
+
+  # Create new doc and populate from list
+  doc2 <- am_create()
+  for (key in names(lst)) {
+    am_put(doc2, AM_ROOT, key, lst[[key]])
+  }
+
+  val2 <- am_get(doc2, AM_ROOT, "val")
+  expect_s3_class(val2, "am_uint64")
+})
+
+test_that("am_uint64 persists through save/load", {
+  doc1 <- am_create()
+  am_put(doc1, AM_ROOT, "id", am_uint64(999))
+  am_commit(doc1, "Add uint64")
+
+  bytes <- am_save(doc1)
+  doc2 <- am_load(bytes)
+
+  val <- am_get(doc2, AM_ROOT, "id")
+  expect_s3_class(val, "am_uint64")
+  expect_equal(as.numeric(val), 999)
+})
+
+test_that("am_uint64 with value 0 works correctly", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "zero", am_uint64(0))
+
+  val <- am_get(doc, AM_ROOT, "zero")
+  expect_s3_class(val, "am_uint64")
+  expect_equal(as.numeric(val), 0)
+})
+
+test_that("am_uint64 with large value (within precision) works", {
+  doc <- am_create()
+  large_val <- 2^50  # Safe within 2^53
+  am_put(doc, AM_ROOT, "large", am_uint64(large_val))
+
+  val <- am_get(doc, AM_ROOT, "large")
+  expect_s3_class(val, "am_uint64")
+  expect_equal(as.numeric(val), large_val)
+})

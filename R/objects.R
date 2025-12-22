@@ -174,6 +174,29 @@ am_counter <- function(value = 0L) {
   structure(as.integer(value), class = "am_counter")
 }
 
+#' Create an unsigned 64-bit integer value
+#'
+#' Creates an `am_uint64` object for storing unsigned 64-bit integers in Automerge
+#' documents. This preserves type fidelity when syncing with other language
+#' bindings (JavaScript BigInt, Python int, etc.).
+#'
+#' @param value Numeric value (default 0). Values beyond 2^53 may lose precision.
+#' @return An `am_uint64` object
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "id", am_uint64(12345))
+am_uint64 <- function(value = 0) {
+  value <- as.numeric(value)
+  if (value < 0) {
+    stop("am_uint64 requires a non-negative value")
+  }
+  if (value > 2^53) {
+    warning("Value exceeds 2^53; precision may be lost")
+  }
+  structure(value, class = "am_uint64")
+}
+
 #' Create an Automerge list
 #'
 #' Creates an R list with explicit Automerge list type. Use this when you
