@@ -225,6 +225,11 @@ test_that("Type constructor validation", {
   expect_snapshot(error = TRUE, {
     am_text(NULL)
   })
+
+  # am_uint64 with negative value
+  expect_snapshot(error = TRUE, {
+    am_uint64(-1)
+  })
 })
 
 test_that("Corrupted document state handling", {
@@ -498,9 +503,16 @@ test_that("am_put with invalid positions for lists", {
 test_that("am_put with invalid value types", {
   doc <- am_create()
 
-  # Non-scalar POSIXct
+  # Non-scalar POSIXct in map
   expect_snapshot(error = TRUE, {
     am_put(doc, AM_ROOT, "time", as.POSIXct(c("2024-01-01", "2024-01-02")))
+  })
+
+  # Non-scalar POSIXct in list
+  doc$items <- am_list(1, 2, 3)
+  items <- am_get(doc, AM_ROOT, "items")
+  expect_snapshot(error = TRUE, {
+    am_put(doc, items, 1, as.POSIXct(c("2024-01-01", "2024-01-02")))
   })
 
   # Non-scalar counter

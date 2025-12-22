@@ -1,4 +1,4 @@
-url: http://shikokuchuo.net/automerge-r/
+url: https://shikokuchuo.net/automerge-r/
 template:
   package: tidytemplate
   bootstrap: 5
@@ -89,6 +89,7 @@ reference:
     contents:
       - am_list
       - am_map
+      - am_uint64
 
   - title: "Path-Based Access"
     desc: >
@@ -131,15 +132,7 @@ reference:
       - length.am_object
       - names.am_doc
       - names.am_map
-      - print.am_doc
       - as.list.am_doc
-      - print.am_object
-      - print.am_list
-      - print.am_map
-      - print.am_text
-      - print.am_counter
-      - print.am_cursor
-      - print.am_syncstate
 
 articles:
   - title: "Getting Started"

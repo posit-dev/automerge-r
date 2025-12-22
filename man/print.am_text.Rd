@@ -17,3 +17,4 @@ The object (invisibly)
 \description{
 Print Automerge text object
 }
+\keyword{internal}

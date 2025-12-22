@@ -388,3 +388,60 @@ test_that("mark expand mode 'both' expands in both directions", {
   expect_equal(marks[[1]]$start, 0)
   expect_equal(marks[[1]]$end, 7)
 })
+
+test_that("am_uint64 mark values round-trip correctly", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  am_mark_create(text_obj, 0, 5, "revision", am_uint64(12345))
+
+  marks <- am_marks(text_obj)
+  expect_length(marks, 1)
+  expect_s3_class(marks[[1]]$value, "am_uint64")
+  expect_equal(as.numeric(marks[[1]]$value), 12345)
+})
+
+# am_uint64 Snapshot Tests -----------------------------------------------------
+
+test_that("am_mark_create with invalid am_uint64 errors", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  # Non-scalar am_uint64
+  bad_uint <- structure(c(1, 2), class = "am_uint64")
+  expect_snapshot(error = TRUE, {
+    am_mark_create(text_obj, 0, 5, "bad", bad_uint)
+  })
+
+  # Non-numeric am_uint64
+  bad_uint2 <- structure(1L, class = "am_uint64")
+  expect_snapshot(error = TRUE, {
+    am_mark_create(text_obj, 0, 5, "bad", bad_uint2)
+  })
+})
+
+test_that("am_marks warns for uint64 exceeding 2^53", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  suppressWarnings(am_mark_create(text_obj, 0, 5, "big", am_uint64(2^54)))
+
+  expect_snapshot({
+    am_marks(text_obj)
+  })
+})
+
+test_that("am_marks_at warns for uint64 exceeding 2^53", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  suppressWarnings(am_mark_create(text_obj, 0, 5, "big", am_uint64(2^54)))
+
+  expect_snapshot({
+    am_marks_at(text_obj, 2)
+  })
+})

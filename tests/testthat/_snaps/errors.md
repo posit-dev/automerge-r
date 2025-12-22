@@ -182,6 +182,14 @@
       Error in `am_text()`:
       ! initial must be a single character string
 
+---
+
+    Code
+      am_uint64(-1)
+    Condition
+      Error in `am_uint64()`:
+      ! am_uint64 requires a non-negative value
+
 # Corrupted document state handling
 
     Code
@@ -506,6 +514,14 @@
 
     Code
       am_put(doc, AM_ROOT, "time", as.POSIXct(c("2024-01-01", "2024-01-02")))
+    Condition
+      Error in `am_put()`:
+      ! Timestamp must be scalar
+
+---
+
+    Code
+      am_put(doc, items, 1, as.POSIXct(c("2024-01-01", "2024-01-02")))
     Condition
       Error in `am_put()`:
       ! Timestamp must be scalar

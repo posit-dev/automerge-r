@@ -17,3 +17,4 @@ The sync state (invisibly)
 \description{
 Print Automerge sync state
 }
+\keyword{internal}
