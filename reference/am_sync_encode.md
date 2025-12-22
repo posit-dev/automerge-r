@@ -19,7 +19,7 @@ am_sync_encode(doc, sync_state)
 - sync_state:
 
   A sync state object (created with
-  [`am_sync_state_new()`](http://shikokuchuo.net/automerge-r/reference/am_sync_state_new.md))
+  [`am_sync_state_new()`](https://shikokuchuo.net/automerge-r/reference/am_sync_state_new.md))
 
 ## Value
 

@@ -75,7 +75,7 @@ am_merge(target, source)
 
 # Target now has source's changes
 target[["version"]]
-#> [1] "1.0"
+#> [1] "2.0"
 
 # Source is unchanged
 names(source)
@@ -137,15 +137,15 @@ repeat {
 round
 #> [1] 3
 peer3[["source"]]
-#> [1] "peer4"
+#> [1] "peer3"
 peer4[["source"]]
-#> [1] "peer4"
+#> [1] "peer3"
 ```
 
 ### Protocol Components
 
 **Sync State**
-([`am_sync_state_new()`](http://shikokuchuo.net/automerge-r/reference/am_sync_state_new.md)):
+([`am_sync_state_new()`](https://shikokuchuo.net/automerge-r/reference/am_sync_state_new.md)):
 
 - Tracks what each peer knows
 - Document-independent (can be reused)
@@ -639,10 +639,10 @@ result_full$size
 ## Next Steps
 
 - Learn about [CRDT
-  Concepts](http://shikokuchuo.net/automerge-r/articles/crdt-concepts.md)
+  Concepts](https://shikokuchuo.net/automerge-r/articles/crdt-concepts.md)
   to understand merge behavior
 - Check the [Quick
-  Reference](http://shikokuchuo.net/automerge-r/articles/quick-reference.md)
+  Reference](https://shikokuchuo.net/automerge-r/articles/quick-reference.md)
   for all sync functions
 
 ## Further Reading

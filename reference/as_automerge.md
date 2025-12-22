@@ -2,7 +2,7 @@
 
 Converts an R list to an Automerge document. This leverages the
 recursive conversion built into
-[`am_put()`](http://shikokuchuo.net/automerge-r/reference/am_put.md)
+[`am_put()`](https://shikokuchuo.net/automerge-r/reference/am_put.md)
 from Phase 3, allowing nested structures to be created in a single call.
 
 ## Usage

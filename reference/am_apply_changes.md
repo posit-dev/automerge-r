@@ -1,7 +1,7 @@
 # Apply changes to a document
 
 Applies a list of changes (obtained from
-[`am_get_changes()`](http://shikokuchuo.net/automerge-r/reference/am_get_changes.md))
+[`am_get_changes()`](https://shikokuchuo.net/automerge-r/reference/am_get_changes.md))
 to a document. This is useful for manually syncing changes or for
 applying changes received over a custom network protocol.
 
@@ -20,7 +20,7 @@ am_apply_changes(doc, changes)
 - changes:
 
   A list of raw vectors (serialized changes) from
-  [`am_get_changes()`](http://shikokuchuo.net/automerge-r/reference/am_get_changes.md)
+  [`am_get_changes()`](https://shikokuchuo.net/automerge-r/reference/am_get_changes.md)
 
 ## Value
 

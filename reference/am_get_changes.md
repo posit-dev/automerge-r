@@ -19,7 +19,7 @@ am_get_changes(doc, heads = NULL)
 - heads:
 
   A list of raw vectors (change hashes) returned by
-  [`am_get_heads()`](http://shikokuchuo.net/automerge-r/reference/am_get_heads.md),
+  [`am_get_heads()`](https://shikokuchuo.net/automerge-r/reference/am_get_heads.md),
   or `NULL` to get all changes.
 
 ## Value
@@ -30,7 +30,7 @@ A list of raw vectors, each containing a serialized change.
 
 Changes are returned as serialized raw vectors that can be transmitted
 over the network and applied to other documents using
-[`am_apply_changes()`](http://shikokuchuo.net/automerge-r/reference/am_apply_changes.md).
+[`am_apply_changes()`](https://shikokuchuo.net/automerge-r/reference/am_apply_changes.md).
 
 ## Examples
 

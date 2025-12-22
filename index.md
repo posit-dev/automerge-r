@@ -55,7 +55,7 @@ bob
 - **Collaborative text editing**: Cursors and marks for rich text
   applications
 - **Bidirectional sync**: High-level
-  [`am_sync()`](http://shikokuchuo.net/automerge-r/reference/am_sync.md)
+  [`am_sync()`](https://shikokuchuo.net/automerge-r/reference/am_sync.md)
   or low-level protocol access
 - **Offline-first**: Make changes offline, merge when connected
 - **Cross-platform**: Interoperates with JavaScript and other Automerge
@@ -109,7 +109,7 @@ functionality may change at any time
 
 ## License
 
-MIT License. See [LICENSE](http://shikokuchuo.net/automerge-r/LICENSE)
+MIT License. See [LICENSE](https://shikokuchuo.net/automerge-r/LICENSE)
 for details. This package includes the
 [automerge-c](https://github.com/automerge/automerge) library (also MIT
 licensed)

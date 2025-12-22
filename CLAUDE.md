@@ -157,25 +157,25 @@ R CMD check automerge_*.tar.gz
   **1-based indexing (element indices):**
 
   - List operations:
-    [`am_get()`](http://shikokuchuo.net/automerge-r/reference/am_get.md),
-    [`am_put()`](http://shikokuchuo.net/automerge-r/reference/am_put.md),
-    [`am_delete()`](http://shikokuchuo.net/automerge-r/reference/am_delete.md),
-    [`am_insert()`](http://shikokuchuo.net/automerge-r/reference/am_insert.md)
+    [`am_get()`](https://shikokuchuo.net/automerge-r/reference/am_get.md),
+    [`am_put()`](https://shikokuchuo.net/automerge-r/reference/am_put.md),
+    [`am_delete()`](https://shikokuchuo.net/automerge-r/reference/am_delete.md),
+    [`am_insert()`](https://shikokuchuo.net/automerge-r/reference/am_insert.md)
   - List indices work like R vectors: first element is at index 1
   - Counter operations in lists:
-    [`am_counter_increment()`](http://shikokuchuo.net/automerge-r/reference/am_counter_increment.md)
+    [`am_counter_increment()`](https://shikokuchuo.net/automerge-r/reference/am_counter_increment.md)
     with list objects
 
   **0-based indexing (inter-character positions):**
 
   - Text operations:
-    [`am_text_splice()`](http://shikokuchuo.net/automerge-r/reference/am_text_splice.md)
+    [`am_text_splice()`](https://shikokuchuo.net/automerge-r/reference/am_text_splice.md)
   - Cursor operations:
-    [`am_cursor()`](http://shikokuchuo.net/automerge-r/reference/am_cursor.md),
-    [`am_cursor_position()`](http://shikokuchuo.net/automerge-r/reference/am_cursor_position.md)
+    [`am_cursor()`](https://shikokuchuo.net/automerge-r/reference/am_cursor.md),
+    [`am_cursor_position()`](https://shikokuchuo.net/automerge-r/reference/am_cursor_position.md)
   - Mark operations:
-    [`am_mark_create()`](http://shikokuchuo.net/automerge-r/reference/am_mark_create.md),
-    [`am_marks()`](http://shikokuchuo.net/automerge-r/reference/am_marks.md)
+    [`am_mark_create()`](https://shikokuchuo.net/automerge-r/reference/am_mark_create.md),
+    [`am_marks()`](https://shikokuchuo.net/automerge-r/reference/am_marks.md)
   - Positions specify locations **between** characters, not the
     characters themselves
   - Position 0 = before first character, position 1 = between 1st and

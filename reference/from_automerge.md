@@ -2,7 +2,7 @@
 
 Converts an Automerge document to a standard R list. This is equivalent
 to
-[`as.list.am_doc()`](http://shikokuchuo.net/automerge-r/reference/as.list.am_doc.md).
+[`as.list.am_doc()`](https://shikokuchuo.net/automerge-r/reference/as.list.am_doc.md).
 
 ## Usage
 

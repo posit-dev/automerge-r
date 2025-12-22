@@ -24,7 +24,7 @@ am_cursor(obj, position)
 ## Value
 
 An `am_cursor` object (external pointer) that can be used with
-[`am_cursor_position()`](http://shikokuchuo.net/automerge-r/reference/am_cursor_position.md)
+[`am_cursor_position()`](https://shikokuchuo.net/automerge-r/reference/am_cursor_position.md)
 to retrieve the current position
 
 ## Indexing Convention
@@ -45,7 +45,7 @@ For the text "Hello":
      0 1 2 3 4 5  <- positions (0-based, between characters)
 
 This matches
-[`am_text_splice()`](http://shikokuchuo.net/automerge-r/reference/am_text_splice.md)
+[`am_text_splice()`](https://shikokuchuo.net/automerge-r/reference/am_text_splice.md)
 behavior. Positions count Unicode code points (characters), not bytes.
 
 ## Examples

@@ -2,7 +2,7 @@
 
 Returns the actor ID of an Automerge document as a hex-encoded string.
 This is more efficient than converting the raw bytes returned by
-[`am_get_actor()`](http://shikokuchuo.net/automerge-r/reference/am_get_actor.md)
+[`am_get_actor()`](https://shikokuchuo.net/automerge-r/reference/am_get_actor.md)
 using R-level string operations.
 
 ## Usage
@@ -27,5 +27,5 @@ A character string containing the hex-encoded actor ID
 doc <- am_create()
 actor_hex <- am_get_actor_hex(doc)
 cat("Actor ID:", actor_hex, "\n")
-#> Actor ID: a187ecf81e4c73dc90a772a22f4530a9 
+#> Actor ID: 3d420fbacf30aaf2a47a5d030e5d8575 
 ```

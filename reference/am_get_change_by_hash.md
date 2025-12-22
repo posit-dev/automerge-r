@@ -2,9 +2,9 @@
 
 Retrieves a change from the document's history by its unique hash
 identifier. The hash is typically obtained from
-[`am_get_heads()`](http://shikokuchuo.net/automerge-r/reference/am_get_heads.md)
+[`am_get_heads()`](https://shikokuchuo.net/automerge-r/reference/am_get_heads.md)
 or
-[`am_get_changes()`](http://shikokuchuo.net/automerge-r/reference/am_get_changes.md).
+[`am_get_changes()`](https://shikokuchuo.net/automerge-r/reference/am_get_changes.md).
 
 ## Usage
 

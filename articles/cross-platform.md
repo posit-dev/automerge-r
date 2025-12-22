@@ -512,19 +512,20 @@ console.log('Text content:', updatedTextDoc.notes.toString())
 
 ## Type Compatibility Matrix
 
-| Automerge      | JavaScript                                       | R                     | Notes                               |
-|----------------|--------------------------------------------------|-----------------------|-------------------------------------|
-| Map            | Object [`{}`](https://rdrr.io/r/base/Paren.html) | Named list            | Root is always a map                |
-| List           | Array `[]`                                       | Unnamed list          | R uses 1-based indexing             |
-| Text           | `Automerge.Text`                                 | Text object (am_text) | Character-level CRDT                |
-| String         | `string`                                         | `character(1)`        | UTF-8 encoding                      |
-| Number (int)   | `number`                                         | `integer` / `double`  | 32-bit int if in range, else double |
-| Number (float) | `number`                                         | `double`              | Double precision (64-bit)           |
-| Boolean        | `boolean`                                        | `logical`             | TRUE/FALSE                          |
-| Null           | `null`                                           | `NULL`                | Absence of value                    |
-| Bytes          | `Uint8Array`                                     | `raw`                 | Binary data                         |
-| Timestamp      | `Date` / `number`                                | `POSIXct`             | Milliseconds since epoch            |
-| Counter        | CRDT counter                                     | `am_counter`          | Conflict-free counter               |
+| Automerge       | JavaScript                                       | R                     | Notes                               |
+|-----------------|--------------------------------------------------|-----------------------|-------------------------------------|
+| Map             | Object [`{}`](https://rdrr.io/r/base/Paren.html) | Named list            | Root is always a map                |
+| List            | Array `[]`                                       | Unnamed list          | R uses 1-based indexing             |
+| Text            | `Automerge.Text`                                 | Text object (am_text) | Character-level CRDT                |
+| String          | `string`                                         | `character(1)`        | UTF-8 encoding                      |
+| Number (int)    | `number`                                         | `integer` / `double`  | 32-bit int if in range, else double |
+| Number (uint64) | `BigInt`                                         | `am_uint64`           | Unsigned 64-bit integer             |
+| Number (float)  | `number`                                         | `double`              | Double precision (64-bit)           |
+| Boolean         | `boolean`                                        | `logical`             | TRUE/FALSE                          |
+| Null            | `null`                                           | `NULL`                | Absence of value                    |
+| Bytes           | `Uint8Array`                                     | `raw`                 | Binary data                         |
+| Timestamp       | `Date` / `number`                                | `POSIXct`             | Milliseconds since epoch            |
+| Counter         | CRDT counter                                     | `am_counter`          | Conflict-free counter               |
 
 **Important Notes:**
 
@@ -668,10 +669,10 @@ system.file("js", package = "automerge")
   Specification](https://automerge.org/automerge-binary-format-spec/)
 - [CRDT Research Papers](https://crdt.tech)
 - [Sync Protocol
-  Vignette](http://shikokuchuo.net/automerge-r/articles/sync-protocol.md) -
+  Vignette](https://shikokuchuo.net/automerge-r/articles/sync-protocol.md) -
   Details on the sync protocol
 - [CRDT Concepts
-  Vignette](http://shikokuchuo.net/automerge-r/articles/crdt-concepts.md) -
+  Vignette](https://shikokuchuo.net/automerge-r/articles/crdt-concepts.md) -
   Understanding CRDTs
 - JavaScript Interoperability Scripts - See
   `system.file("js", package = "automerge")` for executable examples

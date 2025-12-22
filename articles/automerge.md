@@ -43,7 +43,7 @@ library(automerge)
 doc <- am_create()
 print(doc)
 #> <Automerge Document>
-#> Actor: 09f29ce639925b6501535aadabb98ba5 
+#> Actor: 01762afb241d622e562bef886627be3f 
 #> Root keys: 0
 ```
 
@@ -163,7 +163,7 @@ am_get_path(doc4, c("config", "database", "host"))
 ### Converting R Data Structures
 
 Use
-[`as_automerge()`](http://shikokuchuo.net/automerge-r/reference/as_automerge.md)
+[`as_automerge()`](https://shikokuchuo.net/automerge-r/reference/as_automerge.md)
 to convert entire R structures at once:
 
 ``` r
@@ -278,7 +278,7 @@ am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
-#> [1] "2025-12-03 22:13:11 UTC"
+#> [1] "2025-12-22 13:37:19 UTC"
 ```
 
 ## Saving and Loading Documents
@@ -397,13 +397,13 @@ peer2[["data2"]]
 ## Next Steps
 
 - Learn about [CRDT
-  Concepts](http://shikokuchuo.net/automerge-r/articles/crdt-concepts.md)
+  Concepts](https://shikokuchuo.net/automerge-r/articles/crdt-concepts.md)
   to understand the theory behind Automerge
 - Explore [Synchronization
-  Patterns](http://shikokuchuo.net/automerge-r/articles/sync-protocol.md)
+  Patterns](https://shikokuchuo.net/automerge-r/articles/sync-protocol.md)
   for collaborative workflows
 - Check the [Quick
-  Reference](http://shikokuchuo.net/automerge-r/articles/quick-reference.md)
+  Reference](https://shikokuchuo.net/automerge-r/articles/quick-reference.md)
   for a one-page guide to all functions
 
 ## Getting Help

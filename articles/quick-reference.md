@@ -163,6 +163,9 @@ am_put(doc, AM_ROOT, "score", am_counter(0))
 am_counter_increment(doc, AM_ROOT, "score", 10)
 value <- am_get(doc, AM_ROOT, "score")
 
+# Unsigned 64-bit integer (for cross-platform interop)
+am_put(doc, AM_ROOT, "id", am_uint64(12345))
+
 # Explicit type constructors
 am_put(doc, AM_ROOT, "items", am_list()) # Empty list
 am_put(doc, AM_ROOT, "config", am_map()) # Empty map

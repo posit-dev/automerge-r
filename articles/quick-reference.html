@@ -237,6 +237,9 @@ documentation with <code>?function_name</code>.</p>
 <span><span class="fu"><a href="../reference/am_counter_increment.html">am_counter_increment</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"score"</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="va">value</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get.html">am_get</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"score"</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Unsigned 64-bit integer (for cross-platform interop)</span></span>
+<span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"id"</span>, <span class="fu"><a href="../reference/am_uint64.html">am_uint64</a></span><span class="op">(</span><span class="fl">12345</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># Explicit type constructors</span></span>
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"items"</span>, <span class="fu"><a href="../reference/am_list.html">am_list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="co"># Empty list</span></span>
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"config"</span>, <span class="fu"><a href="../reference/am_map.html">am_map</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="co"># Empty map</span></span>
@@ -381,7 +384,7 @@ to skip build</li>
 <h3 id="resources">Resources<a class="anchor" aria-label="anchor" href="#resources"></a>
 </h3>
 <ul>
-<li>Package site: <a href="https://shikokuchuo.net/automerge-r/" class="external-link uri">https://shikokuchuo.net/automerge-r/</a>
+<li>Package site: <a href="https://shikokuchuo.net/automerge-r/" class="uri">https://shikokuchuo.net/automerge-r/</a>
 </li>
 <li>Automerge docs: <a href="https://automerge.org/" class="external-link uri">https://automerge.org/</a>
 </li>

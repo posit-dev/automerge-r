@@ -55,11 +55,11 @@ am_mark_create(obj, start, end, name, value, expand = AM_MARK_EXPAND_NONE)
   :   Mark expands in both directions
 
   Use the constants
-  [AM_MARK_EXPAND_NONE](http://shikokuchuo.net/automerge-r/reference/automerge-constants.md),
-  [AM_MARK_EXPAND_BEFORE](http://shikokuchuo.net/automerge-r/reference/automerge-constants.md),
-  [AM_MARK_EXPAND_AFTER](http://shikokuchuo.net/automerge-r/reference/automerge-constants.md),
+  [AM_MARK_EXPAND_NONE](https://shikokuchuo.net/automerge-r/reference/automerge-constants.md),
+  [AM_MARK_EXPAND_BEFORE](https://shikokuchuo.net/automerge-r/reference/automerge-constants.md),
+  [AM_MARK_EXPAND_AFTER](https://shikokuchuo.net/automerge-r/reference/automerge-constants.md),
   or
-  [AM_MARK_EXPAND_BOTH](http://shikokuchuo.net/automerge-r/reference/automerge-constants.md).
+  [AM_MARK_EXPAND_BOTH](https://shikokuchuo.net/automerge-r/reference/automerge-constants.md).
 
 ## Value
 
