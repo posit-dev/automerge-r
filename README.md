@@ -5,6 +5,8 @@
 
 <!-- badges: start -->
 
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-universe
 version](https://shikokuchuo.r-universe.dev/automerge/badges/version)](https://shikokuchuo.r-universe.dev/automerge)
 [![R-CMD-check](https://github.com/shikokuchuo/automerge-r/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/shikokuchuo/automerge-r/actions/workflows/R-CMD-check.yaml)
@@ -49,12 +51,12 @@ am_commit(bob, "Bob's data")
 am_sync(alice, bob)
 alice
 #> <Automerge Document>
-#> Actor: c23764d2a11f6f0cef5d28a1eb2c4c75 
+#> Actor: b33235a3c0b6cdb20be5136b18fa4dee 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 bob
 #> <Automerge Document>
-#> Actor: 4bbc9fe0f47d3a0bce040be08a414851 
+#> Actor: 332a4e52283d6cbd86a7c42841efc2ad 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 ```
@@ -107,7 +109,7 @@ Rtools43+ on Windows).
 ## Status
 
 **Under Active Development**: This package is in initial development and
-functionality may change at any time
+functionality may change at any time.
 
 ## External Resources
 
