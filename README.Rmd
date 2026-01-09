@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # automerge
 
 <!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-universe version](https://shikokuchuo.r-universe.dev/automerge/badges/version)](https://shikokuchuo.r-universe.dev/automerge)
 [![R-CMD-check](https://github.com/shikokuchuo/automerge-r/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/shikokuchuo/automerge-r/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/shikokuchuo/automerge-r/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/automerge-r)
@@ -80,7 +81,7 @@ Building from source requires Rust >= 1.89.0 ([rustup.rs](https://rustup.rs/)) a
 
 ## Status
 
-**Under Active Development**: This package is in initial development and functionality may change at any time
+**Under Active Development**: This package is in initial development and functionality may change at any time.
 
 ## External Resources
 
