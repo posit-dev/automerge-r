@@ -6,8 +6,8 @@
 ^\.github$
 ^\.claude$
 ^CLAUDE.md$
-^automerge-build$
-^automerge-install$
+^build$
+^install$
 ^README\.Rmd$
 ^[.]?air[.]toml$
 ^\.vscode$
