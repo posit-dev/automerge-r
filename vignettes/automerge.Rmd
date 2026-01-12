@@ -32,10 +32,10 @@ Automerge is a library that enables automatic merging of concurrent changes with
 ```{r}
 #| eval: false
 # From R-universe
-install.packages("automerge", repos = "https://shikokuchuo.r-universe.dev")
+install.packages("automerge", repos = "https://posit-dev.r-universe.dev")
 
 # From GitHub
-pak::pak("shikokuchuo/automerge-r")
+pak::pak("posit-dev/automerge-r")
 ```
 
 ## Basic Usage
