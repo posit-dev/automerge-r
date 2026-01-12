@@ -23,10 +23,10 @@ safely replicated across multiple devices and automatically merged.
 
 ``` r
 # From R-universe
-install.packages("automerge", repos = "https://shikokuchuo.r-universe.dev")
+install.packages("automerge", repos = "https://posit-dev.r-universe.dev")
 
 # From GitHub
-pak::pak("shikokuchuo/automerge-r")
+pak::pak("posit-dev/automerge-r")
 ```
 
 ## Basic Usage
@@ -43,7 +43,7 @@ library(automerge)
 doc <- am_create()
 print(doc)
 #> <Automerge Document>
-#> Actor: 7d1d0f27855b797f0fa28d198489bb71 
+#> Actor: c47b6a953a63f22f8e818b2b557e186c 
 #> Root keys: 0
 ```
 
@@ -163,7 +163,7 @@ am_get_path(doc4, c("config", "database", "host"))
 ### Converting R Data Structures
 
 Use
-[`as_automerge()`](https://shikokuchuo.net/automerge-r/reference/as_automerge.md)
+[`as_automerge()`](https://posit-dev.github.io/automerge-r/reference/as_automerge.md)
 to convert entire R structures at once:
 
 ``` r
@@ -278,7 +278,7 @@ am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
-#> [1] "2026-01-12 14:04:15 UTC"
+#> [1] "2026-01-12 17:58:30 UTC"
 ```
 
 ## Saving and Loading Documents
@@ -397,13 +397,13 @@ peer2[["data2"]]
 ## Next Steps
 
 - Learn about [CRDT
-  Concepts](https://shikokuchuo.net/automerge-r/articles/crdt-concepts.md)
+  Concepts](https://posit-dev.github.io/automerge-r/articles/crdt-concepts.md)
   to understand the theory behind Automerge
 - Explore [Synchronization
-  Patterns](https://shikokuchuo.net/automerge-r/articles/sync-protocol.md)
+  Patterns](https://posit-dev.github.io/automerge-r/articles/sync-protocol.md)
   for collaborative workflows
 - Check the [Quick
-  Reference](https://shikokuchuo.net/automerge-r/articles/quick-reference.md)
+  Reference](https://posit-dev.github.io/automerge-r/articles/quick-reference.md)
   for a one-page guide to all functions
 
 ## Getting Help

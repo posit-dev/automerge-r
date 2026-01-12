@@ -29,7 +29,7 @@ Both documents are modified in place to include each other's changes.
 
 The function exchanges sync messages back and forth between the two
 documents until both sides report no more messages to send
-([`am_sync_encode()`](https://shikokuchuo.net/automerge-r/reference/am_sync_encode.md)
+([`am_sync_encode()`](https://posit-dev.github.io/automerge-r/reference/am_sync_encode.md)
 returns `NULL`). The Automerge sync protocol is mathematically
 guaranteed to converge.
 

@@ -13,11 +13,11 @@ Automerge implementations.
 
 Useful links:
 
-- <https://github.com/shikokuchuo/automerge-r>
+- <https://github.com/posit-dev/automerge-r>
 
-- <https://shikokuchuo.net/automerge-r/>
+- <https://posit-dev.github.io/automerge-r/>
 
-- Report bugs at <https://github.com/shikokuchuo/automerge-r/issues>
+- Report bugs at <https://github.com/posit-dev/automerge-r/issues>
 
 ## Author
 

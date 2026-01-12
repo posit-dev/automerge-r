@@ -36,7 +36,7 @@ A list of marks, where each mark is a list with fields:
   Integer end position (0-based inter-character position, exclusive)
 
 Returns an empty list if no marks are present. See
-[`am_mark_create()`](https://shikokuchuo.net/automerge-r/reference/am_mark_create.md)
+[`am_mark_create()`](https://posit-dev.github.io/automerge-r/reference/am_mark_create.md)
 for indexing details.
 
 ## Examples

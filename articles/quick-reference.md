@@ -9,10 +9,10 @@ with `?function_name`.
 
 ``` r
 # From R-universe
-install.packages("automerge", repos = "https://shikokuchuo.r-universe.dev")
+install.packages("automerge", repos = "https://posit-dev.r-universe.dev")
 
 # From GitHub
-pak::pak("shikokuchuo/automerge-r")
+pak::pak("posit-dev/automerge-r")
 ```
 
 ### Document Lifecycle
@@ -303,7 +303,7 @@ vignette(package = "automerge") # List all
 
 ### Resources
 
-- Package site: <https://shikokuchuo.net/automerge-r/>
+- Package site: <https://posit-dev.github.io/automerge-r/>
 - Automerge docs: <https://automerge.org/>
 - Binary format: <https://automerge.org/automerge-binary-format-spec/>
 - CRDT research: <https://crdt.tech/>

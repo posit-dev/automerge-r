@@ -52,7 +52,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/shikokuchuo/automerge-r/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/posit-dev/automerge-r/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -65,9 +65,8 @@
 </h1></div>
 <!-- badges: start -->
 
-<blockquote>
 <p>Conflict-free data synchronization for R</p>
-</blockquote>
+<p><a href="https://deepwiki.com/posit-dev/automerge-r" class="external-link"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a></p>
 <p><code>automerge</code> brings <a href="https://automerge.org/" class="external-link">Automerge</a> CRDTs (Conflict-free Replicated Data Types) to R, enabling automatic merging of concurrent changes across distributed systems without conflicts. Work offline, collaborate in real-time, or sync across platforms—changes merge automatically.</p>
 <div class="section level2">
 <h2 id="why-automerge">Why Automerge?<a class="anchor" aria-label="anchor" href="#why-automerge"></a>
@@ -78,7 +77,7 @@
 <h2 id="quick-example">Quick Example<a class="anchor" aria-label="anchor" href="#quick-example"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shikokuchuo/automerge-r" class="external-link">automerge</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/posit-dev/automerge-r" class="external-link">automerge</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Two researchers working independently</span></span>
 <span><span class="va">alice</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -95,12 +94,12 @@
 <span><span class="fu"><a href="reference/am_sync.html">am_sync</a></span><span class="op">(</span><span class="va">alice</span>, <span class="va">bob</span><span class="op">)</span></span>
 <span><span class="va">alice</span></span>
 <span><span class="co">#&gt; &lt;Automerge Document&gt;</span></span>
-<span><span class="co">#&gt; Actor: b33235a3c0b6cdb20be5136b18fa4dee </span></span>
+<span><span class="co">#&gt; Actor: 3abf0c3bca0ff8f3504eb65079c1e58e </span></span>
 <span><span class="co">#&gt; Root keys: 3 </span></span>
 <span><span class="co">#&gt; Keys: experiment, humidity, temperature</span></span>
 <span><span class="va">bob</span></span>
 <span><span class="co">#&gt; &lt;Automerge Document&gt;</span></span>
-<span><span class="co">#&gt; Actor: 332a4e52283d6cbd86a7c42841efc2ad </span></span>
+<span><span class="co">#&gt; Actor: fbd6261d13ca8e23a8b7b446ef435dbd </span></span>
 <span><span class="co">#&gt; Root keys: 3 </span></span>
 <span><span class="co">#&gt; Keys: experiment, humidity, temperature</span></span></code></pre></div>
 </div>
@@ -128,7 +127,7 @@
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"automerge"</span>, repos <span class="op">=</span> <span class="st">"https://shikokuchuo.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"automerge"</span>, repos <span class="op">=</span> <span class="st">"https://posit-dev.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
 <p>Building from source requires Rust &gt;= 1.89.0 (<a href="https://rustup.rs/" class="external-link">rustup.rs</a>) and CMake &gt;= 3.25 (included in Rtools43+ on Windows).</p>
 </div>
 <div class="section level2">
@@ -136,17 +135,17 @@
 </h2>
 <ul>
 <li>
-<a href="https://shikokuchuo.net/automerge-r/articles/automerge.html">Getting Started</a>: Introduction and basic usage</li>
+<a href="https://posit-dev.github.io/automerge-r/articles/automerge.html">Getting Started</a>: Introduction and basic usage</li>
 <li>
-<a href="https://shikokuchuo.net/automerge-r/articles/quick-reference.html">Quick Reference</a>: Function reference organized by task</li>
+<a href="https://posit-dev.github.io/automerge-r/articles/quick-reference.html">Quick Reference</a>: Function reference organized by task</li>
 <li>
-<a href="https://shikokuchuo.net/automerge-r/articles/crdt-concepts.html">CRDT Concepts</a>: Understanding conflict-free data types</li>
+<a href="https://posit-dev.github.io/automerge-r/articles/crdt-concepts.html">CRDT Concepts</a>: Understanding conflict-free data types</li>
 <li>
-<a href="https://shikokuchuo.net/automerge-r/articles/sync-protocol.html">Sync Protocol</a>: Low-level synchronization details</li>
+<a href="https://posit-dev.github.io/automerge-r/articles/sync-protocol.html">Sync Protocol</a>: Low-level synchronization details</li>
 <li>
-<a href="https://shikokuchuo.net/automerge-r/articles/cross-platform.html">Cross-Platform Synchronization</a>: Interoperability with JavaScript and other platforms</li>
+<a href="https://posit-dev.github.io/automerge-r/articles/cross-platform.html">Cross-Platform Synchronization</a>: Interoperability with JavaScript and other platforms</li>
 <li>
-<a href="https://shikokuchuo.net/automerge-r/reference/index.html">Function Reference</a>: Complete API documentation</li>
+<a href="https://posit-dev.github.io/automerge-r/reference/index.html">Function Reference</a>: Complete API documentation</li>
 </ul>
 </div>
 <div class="section level2">
@@ -175,8 +174,8 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/shikokuchuo/automerge-r/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/shikokuchuo/automerge-r/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/posit-dev/automerge-r/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/posit-dev/automerge-r/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -210,9 +209,9 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
-<li><a href="https://shikokuchuo.r-universe.dev/automerge" class="external-link"><img src="https://shikokuchuo.r-universe.dev/automerge/badges/version" alt="R-universe version"></a></li>
-<li><a href="https://github.com/shikokuchuo/automerge-r/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/shikokuchuo/automerge-r/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://app.codecov.io/gh/shikokuchuo/automerge-r" class="external-link"><img src="https://codecov.io/gh/shikokuchuo/automerge-r/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://posit-dev.r-universe.dev/automerge" class="external-link"><img src="https://posit-dev.r-universe.dev/automerge/badges/version" alt="R-universe version"></a></li>
+<li><a href="https://github.com/posit-dev/automerge-r/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/posit-dev/automerge-r/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/posit-dev/automerge-r" class="external-link"><img src="https://codecov.io/gh/posit-dev/automerge-r/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 

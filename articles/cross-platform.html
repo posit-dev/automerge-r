@@ -50,7 +50,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/shikokuchuo/automerge-r/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/posit-dev/automerge-r/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -67,7 +67,7 @@
       <h1>Cross-Platform Synchronization: JavaScript ↔ R</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/automerge-r/blob/main/vignettes/cross-platform.Rmd" class="external-link"><code>vignettes/cross-platform.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/vignettes/cross-platform.Rmd" class="external-link"><code>vignettes/cross-platform.Rmd</code></a></small>
       <div class="d-none name"><code>cross-platform.Rmd</code></div>
     </div>
 
@@ -121,7 +121,7 @@ run them:</p>
 <h3 id="option-3-interactive-verification">Option 3: Interactive Verification<a class="anchor" aria-label="anchor" href="#option-3-interactive-verification"></a>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shikokuchuo/automerge-r" class="external-link">automerge</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/posit-dev/automerge-r" class="external-link">automerge</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Check if Node.js is available</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system2.html" class="external-link">system2</a></span><span class="op">(</span><span class="st">"node"</span>, <span class="st">"--version"</span>, stdout <span class="op">=</span> <span class="cn">FALSE</span>, stderr <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
@@ -216,7 +216,7 @@ JavaScript side.</p>
 <h3 id="r-side">R Side<a class="anchor" aria-label="anchor" href="#r-side"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shikokuchuo/automerge-r" class="external-link">automerge</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/posit-dev/automerge-r" class="external-link">automerge</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Load the document created in JavaScript</span></span>
 <span><span class="va">doc_bytes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readBin.html" class="external-link">readBin</a></span><span class="op">(</span><span class="st">"shared_doc.automerge"</span>, <span class="st">"raw"</span>, <span class="fl">1e7</span><span class="op">)</span></span>

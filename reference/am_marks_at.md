@@ -19,7 +19,7 @@ am_marks_at(obj, position)
 - position:
 
   Integer position (0-based inter-character position) to query. See
-  [`am_mark_create()`](https://shikokuchuo.net/automerge-r/reference/am_mark_create.md)
+  [`am_mark_create()`](https://posit-dev.github.io/automerge-r/reference/am_mark_create.md)
   for indexing details.
 
 ## Value

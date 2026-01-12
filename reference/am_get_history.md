@@ -2,7 +2,7 @@
 
 Returns the full change history of the document as a list of change
 metadata. This provides a simpler interface than
-[`am_get_changes()`](https://shikokuchuo.net/automerge-r/reference/am_get_changes.md)
+[`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md)
 for examining document history without needing to work with serialized
 changes directly.
 

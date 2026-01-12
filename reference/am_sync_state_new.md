@@ -19,9 +19,9 @@ An external pointer to the sync state with class `"am_syncstate"`.
 **IMPORTANT**: Sync state is document-independent. The same sync state
 is used across multiple sync message exchanges with a specific peer. The
 document is passed separately to
-[`am_sync_encode()`](https://shikokuchuo.net/automerge-r/reference/am_sync_encode.md)
+[`am_sync_encode()`](https://posit-dev.github.io/automerge-r/reference/am_sync_encode.md)
 and
-[`am_sync_decode()`](https://shikokuchuo.net/automerge-r/reference/am_sync_decode.md).
+[`am_sync_decode()`](https://posit-dev.github.io/automerge-r/reference/am_sync_decode.md).
 
 ## Examples
 

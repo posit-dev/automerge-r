@@ -16,13 +16,13 @@ am_cursor_position(cursor)
 - cursor:
 
   An `am_cursor` object created by
-  [`am_cursor()`](https://shikokuchuo.net/automerge-r/reference/am_cursor.md)
+  [`am_cursor()`](https://posit-dev.github.io/automerge-r/reference/am_cursor.md)
 
 ## Value
 
 Integer position (0-based inter-character position) where the cursor
 currently points. See
-[`am_cursor()`](https://shikokuchuo.net/automerge-r/reference/am_cursor.md)
+[`am_cursor()`](https://posit-dev.github.io/automerge-r/reference/am_cursor.md)
 for indexing details.
 
 ## Examples

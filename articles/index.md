@@ -3,15 +3,15 @@
 ### Getting Started
 
 - [Getting Started with
-  automerge](https://shikokuchuo.net/automerge-r/articles/automerge.md):
+  automerge](https://posit-dev.github.io/automerge-r/articles/automerge.md):
 - [Quick
-  Reference](https://shikokuchuo.net/automerge-r/articles/quick-reference.md):
+  Reference](https://posit-dev.github.io/automerge-r/articles/quick-reference.md):
 
 ### Guides
 
 - [Understanding CRDTs in
-  Automerge](https://shikokuchuo.net/automerge-r/articles/crdt-concepts.md):
+  Automerge](https://posit-dev.github.io/automerge-r/articles/crdt-concepts.md):
 - [Synchronization
-  Protocol](https://shikokuchuo.net/automerge-r/articles/sync-protocol.md):
+  Protocol](https://posit-dev.github.io/automerge-r/articles/sync-protocol.md):
 - [Cross-Platform Synchronization: JavaScript ↔
-  R](https://shikokuchuo.net/automerge-r/articles/cross-platform.md):
+  R](https://posit-dev.github.io/automerge-r/articles/cross-platform.md):

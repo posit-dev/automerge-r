@@ -23,7 +23,7 @@ A raw vector containing the actor ID bytes
 ## Details
 
 For a hex string representation, use
-[`am_get_actor_hex()`](https://shikokuchuo.net/automerge-r/reference/am_get_actor_hex.md).
+[`am_get_actor_hex()`](https://posit-dev.github.io/automerge-r/reference/am_get_actor_hex.md).
 
 ## Examples
 
@@ -34,5 +34,5 @@ actor <- am_get_actor(doc)
 # Use am_get_actor_hex() for display
 actor_hex <- am_get_actor_hex(doc)
 cat("Actor ID:", actor_hex, "\n")
-#> Actor ID: 209344af3bd9f77c2511e718c5e971a9 
+#> Actor ID: 922babb0ec79257aebcad0a82416ffcb 
 ```

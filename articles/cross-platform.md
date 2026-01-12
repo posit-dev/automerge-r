@@ -669,10 +669,10 @@ system.file("js", package = "automerge")
   Specification](https://automerge.org/automerge-binary-format-spec/)
 - [CRDT Research Papers](https://crdt.tech)
 - [Sync Protocol
-  Vignette](https://shikokuchuo.net/automerge-r/articles/sync-protocol.md) -
+  Vignette](https://posit-dev.github.io/automerge-r/articles/sync-protocol.md) -
   Details on the sync protocol
 - [CRDT Concepts
-  Vignette](https://shikokuchuo.net/automerge-r/articles/crdt-concepts.md) -
+  Vignette](https://posit-dev.github.io/automerge-r/articles/crdt-concepts.md) -
   Understanding CRDTs
 - JavaScript Interoperability Scripts - See
   `system.file("js", package = "automerge")` for executable examples

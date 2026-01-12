@@ -137,15 +137,15 @@ repeat {
 round
 #> [1] 3
 peer3[["source"]]
-#> [1] "peer4"
+#> [1] "peer3"
 peer4[["source"]]
-#> [1] "peer4"
+#> [1] "peer3"
 ```
 
 ### Protocol Components
 
 **Sync State**
-([`am_sync_state_new()`](https://shikokuchuo.net/automerge-r/reference/am_sync_state_new.md)):
+([`am_sync_state_new()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state_new.md)):
 
 - Tracks what each peer knows
 - Document-independent (can be reused)
@@ -414,7 +414,7 @@ editor1[["counter"]]
 
 # Status: Deterministic conflict resolution (one value wins)
 editor1[["status"]]
-#> [1] "review"
+#> [1] "published"
 ```
 
 ## Sync Performance
@@ -639,10 +639,10 @@ result_full$size
 ## Next Steps
 
 - Learn about [CRDT
-  Concepts](https://shikokuchuo.net/automerge-r/articles/crdt-concepts.md)
+  Concepts](https://posit-dev.github.io/automerge-r/articles/crdt-concepts.md)
   to understand merge behavior
 - Check the [Quick
-  Reference](https://shikokuchuo.net/automerge-r/articles/quick-reference.md)
+  Reference](https://posit-dev.github.io/automerge-r/articles/quick-reference.md)
   for all sync functions
 
 ## Further Reading

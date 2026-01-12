@@ -1,9 +1,9 @@
 # Insert a value into an Automerge list
 
 This is an alias for
-[`am_put()`](https://shikokuchuo.net/automerge-r/reference/am_put.md)
+[`am_put()`](https://posit-dev.github.io/automerge-r/reference/am_put.md)
 with insert semantics for lists. For lists,
-[`am_put()`](https://shikokuchuo.net/automerge-r/reference/am_put.md)
+[`am_put()`](https://posit-dev.github.io/automerge-r/reference/am_put.md)
 with a numeric index replaces the element at that index, while
 `am_insert()` shifts elements to make room.
 

@@ -50,7 +50,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/shikokuchuo/automerge-r/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/posit-dev/automerge-r/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -67,14 +67,14 @@
       <h1>Understanding CRDTs in Automerge</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/shikokuchuo/automerge-r/blob/main/vignettes/crdt-concepts.Rmd" class="external-link"><code>vignettes/crdt-concepts.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/vignettes/crdt-concepts.Rmd" class="external-link"><code>vignettes/crdt-concepts.Rmd</code></a></small>
       <div class="d-none name"><code>crdt-concepts.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shikokuchuo/automerge-r" class="external-link">automerge</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/posit-dev/automerge-r" class="external-link">automerge</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="what-are-crdts">What are CRDTs?<a class="anchor" aria-label="anchor" href="#what-are-crdts"></a>
 </h2>
@@ -165,7 +165,7 @@ IDs) to ensure all replicas converge to the same value.</p>
 <span></span>
 <span><span class="co"># One value wins (deterministic, all replicas agree)</span></span>
 <span><span class="va">doc1</span><span class="op">[[</span><span class="st">"name"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "Alice Smith"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Alice Johnson"</span></span></code></pre></div>
 <p><strong>When to use</strong>: Simple values where automatic conflict
 resolution is acceptable (metadata, settings, labels).</p>
 <p><strong>Trade-off</strong>: One concurrent change is lost, but
@@ -293,7 +293,7 @@ provide character-level CRDT merging.</p>
 <span><span class="va">doc10</span><span class="op">[[</span><span class="st">"title"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Our Document"</span></span>
 <span><span class="fu"><a href="../reference/am_merge.html">am_merge</a></span><span class="op">(</span><span class="va">doc9</span>, <span class="va">doc10</span><span class="op">)</span></span>
 <span><span class="va">doc9</span><span class="op">[[</span><span class="st">"title"</span><span class="op">]</span><span class="op">]</span> <span class="co"># One value wins deterministically</span></span>
-<span><span class="co">#&gt; [1] "My Document"</span></span>
+<span><span class="co">#&gt; [1] "Our Document"</span></span>
 <span></span>
 <span><span class="co"># Text object (CRDT)</span></span>
 <span><span class="va">doc11</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -308,7 +308,7 @@ provide character-level CRDT merging.</p>
 <span><span class="fu"><a href="../reference/am_merge.html">am_merge</a></span><span class="op">(</span><span class="va">doc11</span>, <span class="va">doc12</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_text_get.html">am_text_get</a></span><span class="op">(</span><span class="va">text11</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Hello World Everyone"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Hello Everyone World"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="counters">Counters<a class="anchor" aria-label="anchor" href="#counters"></a>
@@ -358,9 +358,9 @@ conflict resolution semantics (one value wins).</p>
 <span><span class="fu"><a href="../reference/am_merge.html">am_merge</a></span><span class="op">(</span><span class="va">doc15</span>, <span class="va">doc16</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc15</span><span class="op">[[</span><span class="st">"created_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-01-12 14:04:18 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-01-12 17:58:33 UTC"</span></span>
 <span><span class="va">doc15</span><span class="op">[[</span><span class="st">"updated_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-01-12 14:04:18 UTC"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "2026-01-12 17:58:34 UTC"</span></span></code></pre></div>
 <p><strong>When to use</strong>: Audit trails, modification times,
 temporal metadata.</p>
 </div>
@@ -617,7 +617,7 @@ well:</p>
 <span></span>
 <span><span class="co"># One will win - application should handle both states sensibly</span></span>
 <span><span class="va">doc26</span><span class="op">[[</span><span class="st">"status"</span><span class="op">]</span><span class="op">]</span> <span class="co"># Should be prepared for either 'published' or 'archived'</span></span>
-<span><span class="co">#&gt; [1] "published"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "archived"</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
