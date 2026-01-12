@@ -10,8 +10,17 @@ CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 export CC CFLAGS LDFLAGS
 
-echo "Configuring automerge R package (Windows)"
+# Helper function: detect cmake
+detect_cmake() {
+  if command -v cmake >/dev/null 2>&1; then
+    return 0
+  fi
+  echo "ERROR: CMake not found"
+  echo "CMake is included in Rtools43+"
+  exit 1
+}
 
+# Helper function: check for UTF-32 indexing in system library
 check_utf32_indexing() {
     echo "#include <automerge-c/config.h>
     #ifndef AUTOMERGE_C_UTF32
@@ -56,76 +65,52 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
         exit 1
     fi
 
-    if ! command -v cmake >/dev/null 2>&1; then
-        echo "ERROR: CMake not found"
-        echo "Install CMake from: https://cmake.org/"
-        echo "CMake is included in Rtools43+"
-        exit 1
-    fi
+    detect_cmake
 
     echo "Building automerge-c..."
-    # Report the version of Rustc for CRAN
     echo "using Rust package manager: '$(cargo --version)'"
     echo "using Rust compiler: '$(rustc --version)'"
 
-    # Clean up any previous build artifacts
-    rm -rf automerge-build
-    rm -rf automerge-install
+    rm -rf build install
 
     # Set TMPDIR to avoid rustix test file warning in R CMD check
-    export TMPDIR="${PWD}/automerge-build/tmp"
+    export TMPDIR="${PWD}/build/tmp"
     mkdir -p "$TMPDIR"
 
     # Force GNU target to match MinGW toolchain from Rtools
     export RUSTUP_TOOLCHAIN="stable-x86_64-pc-windows-gnu"
 
-    # UTF-32 code point indexing for natural R character semantics
-    # This makes text positions match R's substr(), nchar() behaviour
-    echo "Configuring with CMake..."
     export CARGO_TERM_QUIET=true
     cmake -G "MinGW Makefiles" \
-        -S src/automerge/rust/automerge-c -B automerge-build \
+        -S src/automerge/rust/automerge-c -B build \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-        -DCMAKE_INSTALL_PREFIX="${PWD}/automerge-install" \
+        -DCMAKE_INSTALL_PREFIX="${PWD}/install" \
         -DCMAKE_INSTALL_LIBDIR=lib \
         -DBUILD_TESTING=OFF \
         -DCMAKE_COLOR_MAKEFILE=OFF \
-        -DUTF32_INDEXING=ON
-
-    if [ $? -ne 0 ]; then
-        echo "ERROR: CMake configuration failed"
-        exit 1
-    fi
+        -DCMAKE_INSTALL_MESSAGE=NEVER \
+        -DUTF32_INDEXING=ON \
+        || { echo "ERROR: CMake configuration failed"; exit 1; }
 
     echo "Building (this may take several minutes)..."
-    cmake --build automerge-build --config Release
+    cmake --build build --config Release \
+        || { echo "ERROR: Build failed"; exit 1; }
 
-    if [ $? -ne 0 ]; then
-        echo "ERROR: Build failed"
-        exit 1
-    fi
+    cmake --build build --target install \
+        || { echo "ERROR: Install failed"; exit 1; }
 
-    echo "Installing to local directory..."
-    cmake --build automerge-build --target install
+    rm -rf build
 
-    if [ $? -ne 0 ]; then
-        echo "ERROR: Install failed"
-        exit 1
-    fi
-
-    # Clean up build directory
-    rm -rf automerge-build
-
-    if [ ! -d "automerge-install/lib" ]; then
+    if [ ! -d "install/lib" ]; then
         echo "ERROR: Installation did not create expected lib directory"
         exit 1
     fi
 
     echo "Successfully built automerge-c from source"
 
-    PKG_CFLAGS="-I../automerge-install/include"
-    PKG_LIBS="../automerge-install/lib/libautomerge.a"
+    PKG_CFLAGS="-I../install/include"
+    PKG_LIBS="../install/lib/libautomerge.a"
 fi
 
 PKG_LIBS="${PKG_LIBS} -lws2_32 -luserenv -lbcrypt -lntdll"
@@ -137,4 +122,6 @@ echo "  PKG_LIBS: ${PKG_LIBS}"
 sed -e "s|@PKG_CFLAGS@|${PKG_CFLAGS}|" \
     -e "s|@PKG_LIBS@|${PKG_LIBS}|" \
     src/Makevars.win.in > src/Makevars.win
+
+exit 0
 
