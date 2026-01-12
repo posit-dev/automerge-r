@@ -17,9 +17,9 @@ Description: Provides R bindings to the Automerge Conflict-free Replicated
     synchronization protocols for seamless interoperability with
     JavaScript and other Automerge implementations.
 License: MIT + file LICENSE
-URL: https://github.com/shikokuchuo/automerge-r,
-    https://shikokuchuo.net/automerge-r/
-BugReports: https://github.com/shikokuchuo/automerge-r/issues
+URL: https://github.com/posit-dev/automerge-r,
+    https://posit-dev.github.io/automerge-r/
+BugReports: https://github.com/posit-dev/automerge-r/issues
 Depends:
     R (>= 4.2)
 Suggests:

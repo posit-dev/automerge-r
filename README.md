@@ -8,13 +8,16 @@
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-universe
-version](https://shikokuchuo.r-universe.dev/automerge/badges/version)](https://shikokuchuo.r-universe.dev/automerge)
-[![R-CMD-check](https://github.com/shikokuchuo/automerge-r/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/shikokuchuo/automerge-r/actions/workflows/R-CMD-check.yaml)
+version](https://posit-dev.r-universe.dev/automerge/badges/version)](https://posit-dev.r-universe.dev/automerge)
+[![R-CMD-check](https://github.com/posit-dev/automerge-r/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/posit-dev/automerge-r/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/shikokuchuo/automerge-r/graph/badge.svg)](https://app.codecov.io/gh/shikokuchuo/automerge-r)
+coverage](https://codecov.io/gh/posit-dev/automerge-r/graph/badge.svg)](https://app.codecov.io/gh/posit-dev/automerge-r)
 <!-- badges: end -->
 
-> Conflict-free data synchronization for R
+Conflict-free data synchronization for R
+
+[![Ask
+DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/posit-dev/automerge-r)
 
 `automerge` brings [Automerge](https://automerge.org/) CRDTs
 (Conflict-free Replicated Data Types) to R, enabling automatic merging
@@ -51,12 +54,12 @@ am_commit(bob, "Bob's data")
 am_sync(alice, bob)
 alice
 #> <Automerge Document>
-#> Actor: b33235a3c0b6cdb20be5136b18fa4dee 
+#> Actor: 3abf0c3bca0ff8f3504eb65079c1e58e 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 bob
 #> <Automerge Document>
-#> Actor: 332a4e52283d6cbd86a7c42841efc2ad 
+#> Actor: fbd6261d13ca8e23a8b7b446ef435dbd 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 ```
@@ -78,7 +81,7 @@ bob
 ## Installation
 
 ``` r
-install.packages("automerge", repos = "https://shikokuchuo.r-universe.dev")
+install.packages("automerge", repos = "https://posit-dev.r-universe.dev")
 ```
 
 Building from source requires Rust \>= 1.89.0
@@ -88,22 +91,22 @@ Rtools43+ on Windows).
 ## Documentation
 
 - [Getting
-  Started](https://shikokuchuo.net/automerge-r/articles/automerge.html):
+  Started](https://posit-dev.github.io/automerge-r/articles/automerge.html):
   Introduction and basic usage
 - [Quick
-  Reference](https://shikokuchuo.net/automerge-r/articles/quick-reference.html):
+  Reference](https://posit-dev.github.io/automerge-r/articles/quick-reference.html):
   Function reference organized by task
 - [CRDT
-  Concepts](https://shikokuchuo.net/automerge-r/articles/crdt-concepts.html):
+  Concepts](https://posit-dev.github.io/automerge-r/articles/crdt-concepts.html):
   Understanding conflict-free data types
 - [Sync
-  Protocol](https://shikokuchuo.net/automerge-r/articles/sync-protocol.html):
+  Protocol](https://posit-dev.github.io/automerge-r/articles/sync-protocol.html):
   Low-level synchronization details
 - [Cross-Platform
-  Synchronization](https://shikokuchuo.net/automerge-r/articles/cross-platform.html):
+  Synchronization](https://posit-dev.github.io/automerge-r/articles/cross-platform.html):
   Interoperability with JavaScript and other platforms
 - [Function
-  Reference](https://shikokuchuo.net/automerge-r/reference/index.html):
+  Reference](https://posit-dev.github.io/automerge-r/reference/index.html):
   Complete API documentation
 
 ## Status
