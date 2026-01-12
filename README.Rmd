@@ -22,7 +22,9 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/posit-dev/automerge-r/graph/badge.svg)](https://app.codecov.io/gh/posit-dev/automerge-r)
 <!-- badges: end -->
 
-> Conflict-free data synchronization for R
+Conflict-free data synchronization for R
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/posit-dev/automerge-r)
 
 `automerge` brings [Automerge](https://automerge.org/) CRDTs (Conflict-free Replicated Data Types) to R, enabling automatic merging of concurrent changes across distributed systems without conflicts. Work offline, collaborate in real-time, or sync across platforms—changes merge automatically.
 

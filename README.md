@@ -14,7 +14,10 @@ version](https://posit-dev.r-universe.dev/automerge/badges/version)](https://pos
 coverage](https://codecov.io/gh/posit-dev/automerge-r/graph/badge.svg)](https://app.codecov.io/gh/posit-dev/automerge-r)
 <!-- badges: end -->
 
-> Conflict-free data synchronization for R
+Conflict-free data synchronization for R
+
+[![Ask
+DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/posit-dev/automerge-r)
 
 `automerge` brings [Automerge](https://automerge.org/) CRDTs
 (Conflict-free Replicated Data Types) to R, enabling automatic merging
@@ -51,12 +54,12 @@ am_commit(bob, "Bob's data")
 am_sync(alice, bob)
 alice
 #> <Automerge Document>
-#> Actor: 7067fcee71005b3dde5ab8171fd88c51 
+#> Actor: 3abf0c3bca0ff8f3504eb65079c1e58e 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 bob
 #> <Automerge Document>
-#> Actor: fc883c5b93e210666e921b30f1750917 
+#> Actor: fbd6261d13ca8e23a8b7b446ef435dbd 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 ```
