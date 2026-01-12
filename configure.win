@@ -32,9 +32,9 @@ else
             echo "Found automerge in Rtools"
 
             # Check if it's built with UTF-32 indexing via compilation test
-            if check_utf32_indexing "${RTOOLS_ROOT}/usr/include/automerge-c"; then
+            if check_utf32_indexing "${RTOOLS_ROOT}/usr/include"; then
                 echo "Verified UTF-32 character indexing enabled"
-                PKG_CFLAGS="-I${RTOOLS_ROOT}/usr/include/automerge-c"
+                PKG_CFLAGS="-I${RTOOLS_ROOT}/usr/include"
                 PKG_LIBS="-L${RTOOLS_ROOT}/usr/lib -lautomerge"
                 AUTOMERGE_FOUND=1
             else

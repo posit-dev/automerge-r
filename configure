@@ -32,9 +32,9 @@ else
             echo "Found automerge in ${prefix}"
 
             # Check if it's built with UTF-32 indexing via compilation test
-            if check_utf32_indexing "${prefix}/include/automerge-c"; then
+            if check_utf32_indexing "${prefix}/include"; then
                 echo "Verified UTF-32 character indexing enabled"
-                PKG_CFLAGS="-I${prefix}/include/automerge-c"
+                PKG_CFLAGS="-I${prefix}/include"
                 PKG_LIBS="-L${prefix}/lib -lautomerge"
                 AUTOMERGE_FOUND=1
                 break
@@ -53,7 +53,7 @@ else
             # Try to get the prefix from pkg-config
             prefix=$(pkg-config --variable=prefix automerge-c 2>/dev/null)
             if [ -n "${prefix}" ]; then
-                if check_utf32_indexing "${prefix}/include/automerge-c"; then
+                if check_utf32_indexing "${prefix}/include"; then
                     echo "Verified UTF-32 character indexing enabled"
                     PKG_CFLAGS=$(pkg-config --cflags automerge-c)
                     PKG_LIBS=$(pkg-config --libs automerge-c)
@@ -150,7 +150,7 @@ case "$(uname -s)" in
         PKG_LIBS="${PKG_LIBS} -framework Security -framework Foundation"
         ;;
     Linux*)
-        PKG_LIBS="${PKG_LIBS} -pthread -ldl -lm -lrt"
+        PKG_LIBS="${PKG_LIBS} -ldl -lm -lrt"
         ;;
 esac
 
