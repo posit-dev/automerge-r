@@ -1,2 +1,17 @@
 PKG_CFLAGS = @PKG_CFLAGS@
 PKG_LIBS = @PKG_LIBS@
+
+SOURCES = cursors.c document.c errors.c init.c memory.c objects.c sync.c
+OBJECTS = $(SOURCES:.c=.o)
+
+.PHONY: all clean-archives clean
+
+all: clean-archives
+
+clean-archives: $(SHLIB)
+	@rm -f ../automerge-install/lib/*.a
+
+$(SHLIB): $(OBJECTS)
+
+clean:
+	rm -f $(OBJECTS) $(SHLIB)
