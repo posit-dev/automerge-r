@@ -421,13 +421,3 @@ install(EXPORT ${PROJECT_NAME}-config
         NAMESPACE "${PROJECT_NAME}::"
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${LIB}
 )
-
-if(BUILD_TESTING)
-    add_subdirectory(test EXCLUDE_FROM_ALL)
-
-    enable_testing()
-endif()
-
-add_subdirectory(docs)
-
-add_subdirectory(examples EXCLUDE_FROM_ALL)
