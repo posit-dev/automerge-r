@@ -8,12 +8,6 @@ use super::Cow;
 use std::fmt::Debug;
 use std::ops::Range;
 
-// this is just a hack - need a more generic validator
-#[derive(Debug, Default)]
-pub struct ScanMeta {
-    pub actors: usize,
-}
-
 pub trait HasMinMax {
     fn min(&self) -> Agg;
     fn max(&self) -> Agg;
@@ -277,6 +271,8 @@ pub trait ColumnCursor: Debug + Clone + Copy + PartialEq + Default {
 
     fn try_next<'a>(&mut self, data: &'a [u8]) -> Result<Option<Run<'a, Self::Item>>, PackError>;
 
+    fn try_again<'a>(&self, data: &'a [u8]) -> Result<Option<Run<'a, Self::Item>>, PackError>;
+
     fn export_splice<'a, I>(data: &mut Vec<Self::Export>, range: Range<usize>, values: I)
     where
         I: Iterator<Item = Option<Cow<'a, Self::Item>>>,
@@ -319,18 +315,23 @@ pub trait ColumnCursor: Debug + Clone + Copy + PartialEq + Default {
         panic!()
     }
 
-    fn debug_scan(data: &[u8], m: &ScanMeta) -> Result<Self, PackError> {
+    fn debug_scan<F>(data: &[u8], test: &F) -> Result<Self, PackError>
+    where
+        F: Fn(Option<&Self::Item>) -> Option<String>,
+    {
         let mut cursor = Self::empty();
         while let Some(val) = cursor.try_next(data)? {
-            Self::Item::validate(val.value.as_deref(), m)?;
+            Self::Item::validate(val.value.as_deref(), test)?;
         }
         Ok(cursor)
     }
 
-    fn load_with(data: &[u8], m: &ScanMeta) -> Result<ColumnData<Self>, PackError>;
+    fn load_with<F>(data: &[u8], test: &F) -> Result<ColumnData<Self>, PackError>
+    where
+        F: Fn(Option<&Self::Item>) -> Option<String>;
 
     fn load(data: &[u8]) -> Result<ColumnData<Self>, PackError> {
-        Self::load_with(data, &ScanMeta::default())
+        Self::load_with(data, &|_| None)
     }
 
     fn splice<'a, 'b, I, M>(
@@ -522,6 +523,13 @@ pub struct RunIter<'a, C: ColumnCursor> {
     pub(crate) acc_left: Acc,
 }
 
+#[derive(Debug, Clone, Default, Copy)]
+pub(crate) struct RunIterState<C: ColumnCursor> {
+    pub(crate) cursor: C,
+    pub(crate) pos_left: usize,
+    pub(crate) acc_left: Acc,
+}
+
 #[derive(Debug, Clone, Default)]
 pub(crate) struct RunIterContaining1<'a, C: ColumnCursor>
 where
@@ -584,6 +592,27 @@ impl<'a, C: ColumnCursor> RunIter<'a, C> {
             pos_left: 0,
             acc_left: Acc::new(),
         }
+    }
+
+    pub(crate) fn resume(slab: &'a [u8], state: RunIterState<C>) -> RunIter<'a, C> {
+        RunIter {
+            slab,
+            cursor: state.cursor,
+            pos_left: state.pos_left,
+            acc_left: state.acc_left,
+        }
+    }
+
+    pub(crate) fn suspend(&self) -> RunIterState<C> {
+        RunIterState {
+            cursor: self.cursor,
+            pos_left: self.pos_left,
+            acc_left: self.acc_left,
+        }
+    }
+
+    pub(crate) fn current(&self) -> Option<Run<'a, C::Item>> {
+        self.cursor.try_again(self.slab).unwrap()
     }
 
     pub(crate) fn pos_left(&self) -> usize {

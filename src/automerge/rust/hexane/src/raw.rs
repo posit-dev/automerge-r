@@ -1,6 +1,6 @@
 use super::aggregate::Acc;
 use super::columndata::ColumnData;
-use super::cursor::{ColumnCursor, HasPos, Run, ScanMeta};
+use super::cursor::{ColumnCursor, HasPos, Run};
 use super::encoder::{Encoder, SpliceEncoder};
 use super::pack::PackError;
 use super::slab::{self, Slab, SlabTree, SlabWeight, SlabWriter, SpanWeight};
@@ -115,6 +115,18 @@ impl<const B: usize> ColumnCursor for RawCursorInternal<B> {
         }))
     }
 
+    fn try_again<'a>(&self, slab: &'a [u8]) -> Result<Option<Run<'a, Self::Item>>, PackError> {
+        if self.offset == 0 {
+            Ok(None)
+        } else {
+            let data = &slab[(self.offset - 1)..self.offset];
+            Ok(Some(Run {
+                count: 1,
+                value: Some(Cow::Borrowed(data)),
+            }))
+        }
+    }
+
     fn index(&self) -> usize {
         self.offset
     }
@@ -123,7 +135,10 @@ impl<const B: usize> ColumnCursor for RawCursorInternal<B> {
         self.offset
     }
 
-    fn load_with(data: &[u8], _m: &ScanMeta) -> Result<ColumnData<Self>, PackError> {
+    fn load_with<F>(data: &[u8], _test: &F) -> Result<ColumnData<Self>, PackError>
+    where
+        F: Fn(Option<&Self::Item>) -> Option<String>,
+    {
         let len = data.len();
         let slab = Slab::new(data.to_vec(), len, Acc::default(), 0);
         Ok(ColumnData::init(len, SlabTree::load([slab])))
@@ -132,6 +147,7 @@ impl<const B: usize> ColumnCursor for RawCursorInternal<B> {
 
 #[derive(Debug, Clone, Default)]
 pub struct RawReader<'a, T: SpanWeight<Slab> + HasPos> {
+    pub(crate) pos: usize,
     pub(crate) slabs: slab::tree::SpanTreeIter<'a, Slab, T>,
     pub(crate) current: Option<(&'a Slab, usize)>,
 }
@@ -139,6 +155,7 @@ pub struct RawReader<'a, T: SpanWeight<Slab> + HasPos> {
 impl<'a, T: SpanWeight<Slab> + HasPos> RawReader<'a, T> {
     pub fn empty() -> RawReader<'static, T> {
         RawReader {
+            pos: 0,
             slabs: slab::SpanTreeIter::default(),
             current: None,
         }
@@ -173,6 +190,7 @@ impl<'a, T: SpanWeight<Slab> + HasPos> RawReader<'a, T> {
         } else {
             self.current = Some((slab, new_offset));
         }
+        self.pos += length;
         Ok(result)
     }
 
@@ -181,8 +199,17 @@ impl<'a, T: SpanWeight<Slab> + HasPos> RawReader<'a, T> {
             let cursor = slabs.get_where_or_last(|acc, next| advance < acc.pos() + next.pos());
             let current = Some((cursor.element, advance - cursor.weight.pos()));
             let slabs = slab::SpanTreeIter::new(slabs, cursor);
-            *self = RawReader { slabs, current }
+            let pos = advance;
+            *self = RawReader {
+                pos,
+                slabs,
+                current,
+            }
         }
+    }
+
+    pub fn suspend(&self) -> usize {
+        self.pos
     }
 }
 

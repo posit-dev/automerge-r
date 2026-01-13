@@ -1,6 +1,6 @@
 use super::aggregate::{Acc, Agg};
 use super::columndata::ColumnData;
-use super::cursor::{ColumnCursor, HasAcc, HasPos, Run, ScanMeta, SpliceDel};
+use super::cursor::{ColumnCursor, HasAcc, HasPos, Run, SpliceDel};
 use super::encoder::{Encoder, EncoderState, SpliceEncoder};
 use super::leb128::lebsize;
 use super::pack::{PackError, Packable};
@@ -54,6 +54,19 @@ impl<const B: usize, P: Packable + ?Sized, X: HasPos + HasAcc + SpanWeight<Slab>
     fn valid_lit(&self) -> Option<&LitRunCursor> {
         match &self.lit {
             Some(lit) if lit.index <= lit.len => Some(lit),
+            _ => None,
+        }
+    }
+
+    fn lit_offset_bytes(&self) -> Option<usize> {
+        match &self.lit {
+            Some(lit) if lit.index <= lit.len => {
+                if self.last_offset < lit.offset {
+                    Some(lit.offset - self.last_offset)
+                } else {
+                    Some(0)
+                }
+            }
             _ => None,
         }
     }
@@ -450,6 +463,46 @@ impl<const B: usize, P: Packable + ?Sized, X: HasPos + HasAcc + SpanWeight<Slab>
         }
     }
 
+    fn try_again<'a>(&self, slab: &'a [u8]) -> Result<Option<Run<'a, Self::Item>>, PackError> {
+        let data = &slab[self.last_offset..self.offset];
+        if data.is_empty() {
+            return Ok(None);
+        }
+        if let Some(count_bytes) = self.lit_offset_bytes() {
+            let data = &data[count_bytes..];
+            let (_value_bytes, value) = P::unpack(data)?;
+            Ok(Some(Run {
+                count: 1,
+                value: Some(value),
+            }))
+        } else {
+            let (count_bytes, count) = i64::unpack(data)?;
+            let data = &data[count_bytes..];
+            match count {
+                count if *count > 0 => {
+                    let count = *count as usize;
+                    let (_value_bytes, value) = P::unpack(data)?;
+                    Ok(Some(Run {
+                        count,
+                        value: Some(value),
+                    }))
+                }
+                count if *count < 0 => {
+                    let (_value_bytes, value) = P::unpack(data)?;
+                    Ok(Some(Run {
+                        count: 1,
+                        value: Some(value),
+                    }))
+                }
+                _ => {
+                    let (_null_bytes, count) = u64::unpack(data)?;
+                    let count = *count as usize;
+                    Ok(Some(Run { count, value: None }))
+                }
+            }
+        }
+    }
+
     fn index(&self) -> usize {
         self.index
     }
@@ -458,12 +511,15 @@ impl<const B: usize, P: Packable + ?Sized, X: HasPos + HasAcc + SpanWeight<Slab>
         self.offset
     }
 
-    fn load_with(data: &[u8], m: &ScanMeta) -> Result<ColumnData<Self>, PackError> {
+    fn load_with<F>(data: &[u8], test: &F) -> Result<ColumnData<Self>, PackError>
+    where
+        F: Fn(Option<&Self::Item>) -> Option<String>,
+    {
         let mut cursor = Self::empty();
         let mut writer = SlabWriter::<P>::new(B, true);
         let mut last_copy = Self::empty();
         while let Some(run) = cursor.try_next(data)? {
-            P::validate(run.value.as_deref(), m)?;
+            P::validate(run.value.as_deref(), test)?;
             if cursor.offset - last_copy.offset >= B {
                 Self::load_copy(data, &mut writer, &last_copy, &cursor);
                 writer.manual_slab_break();

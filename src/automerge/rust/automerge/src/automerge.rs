@@ -208,8 +208,6 @@ pub struct Automerge {
     pub(crate) ops: OpSet,
     /// The current actor.
     actor: Actor,
-    /// The maximum operation counter this document has seen.
-    max_op: u64,
 }
 
 impl Automerge {
@@ -221,7 +219,6 @@ impl Automerge {
             ops: OpSet::new(TextEncoding::platform_default()),
             deps: Default::default(),
             actor: Actor::Unused(ActorId::random()),
-            max_op: 0,
         }
     }
 
@@ -232,8 +229,20 @@ impl Automerge {
             ops: OpSet::new(encoding),
             deps: Default::default(),
             actor: Actor::Unused(ActorId::random()),
-            max_op: 0,
         }
+    }
+
+    pub(crate) fn from_parts(ops: OpSet, change_graph: ChangeGraph) -> Self {
+        let deps = change_graph.heads().collect();
+        let mut doc = Automerge {
+            queue: vec![],
+            change_graph,
+            ops,
+            deps,
+            actor: Actor::Unused(ActorId::random()),
+        };
+        doc.remove_unused_actors(false);
+        doc
     }
 
     pub(crate) fn ops_mut(&mut self) -> &mut OpSet {
@@ -376,7 +385,7 @@ impl Automerge {
         }
 
         // SAFETY: this unwrap is safe as we always add 1
-        let start_op = NonZeroU64::new(self.max_op + 1).unwrap();
+        let start_op = NonZeroU64::new(self.change_graph.max_op() + 1).unwrap();
         let checkpoint = self.ops.save_checkpoint();
         TransactionArgs {
             actor_index,
@@ -530,16 +539,16 @@ impl Automerge {
         }
         let mut f = Self::new();
         f.set_actor(ActorId::random());
-        let changes = self.get_changes_by_hashes(hashes.into_iter().rev().collect())?;
+        let changes = self.get_changes_by_hashes(hashes.into_iter().rev())?;
         f.apply_changes(changes)?;
         Ok(f)
     }
 
-    pub(crate) fn get_changes_by_hashes(
-        &self,
-        hashes: Vec<ChangeHash>,
-    ) -> Result<Vec<Change>, AutomergeError> {
-        ChangeCollector::for_hashes(&self.ops, &self.change_graph, hashes.clone())
+    pub(crate) fn get_changes_by_hashes<I>(&self, hashes: I) -> Result<Vec<Change>, AutomergeError>
+    where
+        I: IntoIterator<Item = ChangeHash>,
+    {
+        ChangeCollector::for_hashes(&self.ops, &self.change_graph, hashes)
     }
 
     pub(crate) fn exid_to_opid(&self, id: &ExId) -> Result<OpId, AutomergeError> {
@@ -704,7 +713,8 @@ impl Automerge {
             storage::Chunk::Document(d) => {
                 tracing::trace!("first chunk is document chunk, inflating");
                 first_chunk_was_doc = true;
-                reconstruct_document(&d, options.verification_mode, options.text_encoding)?
+                d.reconstruct(options.verification_mode, options.text_encoding)
+                    .map_err(|e| load::Error::InflateDocument(Box::new(e)))?
             }
             storage::Chunk::Change(stored_change) => {
                 tracing::trace!("first chunk is change chunk");
@@ -760,7 +770,7 @@ impl Automerge {
         }
         if let Some(patch_log) = options.patch_log {
             if patch_log.is_active() {
-                am.log_current_state(patch_log);
+                am.log_current_state(ObjMeta::root(), patch_log, true);
             }
         }
         Ok(am)
@@ -780,7 +790,7 @@ impl Automerge {
     /// [diff]: Self::diff()
     pub fn current_state(&self) -> Vec<Patch> {
         let mut patch_log = PatchLog::active();
-        self.log_current_state(&mut patch_log);
+        self.log_current_state(ObjMeta::root(), &mut patch_log, true);
         patch_log.make_patches(self)
     }
 
@@ -811,7 +821,7 @@ impl Automerge {
             )?;
             doc = doc.with_actor(self.actor_id().clone());
             if patch_log.is_active() {
-                doc.log_current_state(patch_log);
+                doc.log_current_state(ObjMeta::root(), patch_log, true);
             }
             *self = doc;
             return Ok(self.ops.len());
@@ -833,9 +843,14 @@ impl Automerge {
         Ok(delta)
     }
 
-    pub(crate) fn log_current_state(&self, patch_log: &mut PatchLog) {
+    pub(crate) fn log_current_state(
+        &self,
+        obj: ObjMeta,
+        patch_log: &mut PatchLog,
+        recursive: bool,
+    ) {
         let clock = ClockRange::default();
-        let path_map = DiffIter::log(self, ObjMeta::root(), clock, patch_log);
+        let path_map = DiffIter::log(self, obj, clock, patch_log, recursive);
         patch_log.path_hint(path_map);
     }
 
@@ -1034,9 +1049,7 @@ impl Automerge {
         self.change_graph.get_hash_for_actor_seq(actor, seq)
     }
 
-    pub(crate) fn update_history(&mut self, change: &Change, num_ops: usize) {
-        self.max_op = std::cmp::max(self.max_op, change.start_op().get() + num_ops as u64 - 1);
-
+    pub(crate) fn update_history(&mut self, change: &Change) {
         self.update_deps(change);
 
         let actor_index = self
@@ -1170,9 +1183,40 @@ impl Automerge {
     pub fn diff(&self, before_heads: &[ChangeHash], after_heads: &[ChangeHash]) -> Vec<Patch> {
         let clock = self.clock_range(before_heads, after_heads);
         let mut patch_log = PatchLog::active();
-        DiffIter::log(self, ObjMeta::root(), clock, &mut patch_log);
+        DiffIter::log(self, ObjMeta::root(), clock, &mut patch_log, true);
         patch_log.heads = Some(after_heads.to_vec());
         patch_log.make_patches(self)
+    }
+
+    /// Create patches representing the change in the current state of an object
+    /// in the document between the `before_heads` and `after_heads` heads. If
+    /// the arguments are reverse it will observe the same changes in the
+    /// opposite order.
+    ///
+    /// # Arguments
+    ///
+    /// * `obj` - The object to start the diff at.
+    /// * `before_heads` - heads from [`Self::get_heads()`] at beginning point
+    ///   in the documents history
+    /// * `after_heads` - heads from [`Self::get_heads()`] at ending point in
+    ///   the documents history.
+    /// * `recursive` - if false, do not also diff child objects
+    ///
+    /// Note: `before_heads` and `after_heads` do not have to be chronological.
+    /// Document state can move backward.
+    pub fn diff_obj(
+        &self,
+        obj: &ExId,
+        before_heads: &[ChangeHash],
+        after_heads: &[ChangeHash],
+        recursive: bool,
+    ) -> Result<Vec<Patch>, AutomergeError> {
+        let obj = self.exid_to_obj(obj.as_ref())?;
+        let clock = self.clock_range(before_heads, after_heads);
+        let mut patch_log = PatchLog::active();
+        DiffIter::log(self, obj, clock, &mut patch_log, recursive);
+        patch_log.heads = Some(after_heads.to_vec());
+        Ok(patch_log.make_patches(self))
     }
 
     /// Get the heads of this document.
@@ -1972,32 +2016,4 @@ pub(crate) struct Isolation {
     actor_index: usize,
     seq: u64,
     clock: Clock,
-}
-
-pub(crate) fn reconstruct_document<'a>(
-    doc: &'a storage::Document<'a>,
-    mode: VerificationMode,
-    text_encoding: TextEncoding,
-) -> Result<Automerge, AutomergeError> {
-    let storage::load::ReconOpSet {
-        op_set,
-        heads,
-        max_op,
-        change_graph,
-        ..
-    } = storage::load::reconstruct_opset(doc, mode, text_encoding)
-        .map_err(|e| load::Error::InflateDocument(Box::new(e)))?;
-
-    let mut doc = Automerge {
-        queue: vec![],
-        change_graph,
-        ops: op_set,
-        deps: heads.into_iter().collect(),
-        actor: Actor::Unused(ActorId::random()),
-        max_op,
-    };
-
-    doc.remove_unused_actors(false);
-
-    Ok(doc)
 }
