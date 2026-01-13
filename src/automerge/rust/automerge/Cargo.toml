@@ -1,6 +1,6 @@
 [package]
 name = "automerge"
-version = "0.7.2"
+version = "0.7.3"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/automerge/automerge"
@@ -15,7 +15,7 @@ utf8-indexing = []
 utf16-indexing = []
 
 [dependencies]
-hexane = { version = "0.1.6", path = "../hexane" }
+hexane = { version = "0.1.7", path = "../hexane" }
 hex = "^0.4.3"
 leb128 = "^0.2.5"
 sha2 = "0.11.0-pre.5"
@@ -50,7 +50,7 @@ serde_json = { version = "^1.0.73", features = [
     "float_roundtrip",
 ], default-features = true }
 maplit = { version = "^1.0" }
-criterion = "0.7"
+criterion = "0.8"
 test-log = { version = "0.2.10", features = [
     "trace",
 ], default-features = false }

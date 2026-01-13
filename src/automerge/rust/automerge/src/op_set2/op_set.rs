@@ -3,6 +3,7 @@ use crate::clock::{Clock, ClockRange};
 use crate::exid::ExId;
 use crate::iter::tools::{MergeIter, SkipIter, SkipWrap};
 use crate::marks::{MarkSet, RichTextQueryState};
+use crate::storage::columns::BadColumnLayout;
 use crate::storage::{columns::compression::Uncompressed, ColumnSpec, Document, RawColumns};
 use crate::types;
 use crate::types::{
@@ -11,12 +12,13 @@ use crate::types::{
 };
 use crate::AutomergeError;
 
-use super::hexane::{BooleanCursor, ColumnDataIter, PackError, Run, StrCursor, UIntCursor};
 use super::op::{Op, OpLike, SuccCursors, SuccInsert};
 
 use super::columns::Columns;
 
 use super::types::{Action, ActorCursor, ActorIdx, KeyRef, MarkData, OpType, ScalarValue};
+
+use hexane::{BooleanCursor, ColumnDataIter, PackError, Run, StrCursor, UIntCursor};
 
 use std::borrow::Cow;
 use std::cmp::Ordering;
@@ -50,7 +52,7 @@ pub(crate) use op_query::{OpQuery, OpQueryTerm};
 pub(crate) use top_op::TopOpIter;
 pub(crate) use visible::{VisIter, VisibleOpIter};
 
-pub(crate) type InsertAcc<'a> = super::hexane::ColAccIter<'a, BooleanCursor>;
+pub(crate) type InsertAcc<'a> = hexane::ColAccIter<'a, BooleanCursor>;
 
 #[derive(Debug, Clone)]
 pub(crate) struct OpSet {
@@ -149,6 +151,13 @@ impl OpSet {
 
     pub(crate) fn expose(&mut self, pos: usize) {
         self.cols.index.top.splice(pos, 1, [true]);
+    }
+
+    pub(crate) fn validate(
+        bytes: usize,
+        cols: &RawColumns<Uncompressed>,
+    ) -> Result<RawColumns<Uncompressed>, BadColumnLayout> {
+        Columns::validate(bytes, cols)
     }
 
     pub(crate) fn validate_op_order(&self) -> bool {
@@ -925,10 +934,7 @@ impl OpSet {
         }
     }
 
-    pub(crate) fn from_doc(
-        doc: &Document<'_>,
-        text_encoding: TextEncoding,
-    ) -> Result<Self, PackError> {
+    pub(crate) fn load(doc: &Document<'_>, text_encoding: TextEncoding) -> Result<Self, PackError> {
         // FIXME - shouldn't need to clone bytes here (eventually)
         let data = doc.op_raw_bytes();
         let actors = doc.actors().to_vec();
@@ -958,7 +964,7 @@ impl OpSet {
         actors: Vec<ActorId>,
         text_encoding: TextEncoding,
     ) -> Result<Self, PackError> {
-        let cols = Columns::load(cols.iter(), data, &actors)?;
+        let cols = Columns::load(cols.as_map(), data, &actors)?;
 
         let op_set = OpSet {
             actors,
@@ -1054,8 +1060,8 @@ impl OpSet {
             action: ActionIter::new(self.cols.action.iter_range(range.clone())),
             value,
             marks: self.mark_info_iter_range(range),
-            op_set: self,
             range: range.clone(),
+            op_set: self,
         }
     }
 
@@ -1083,8 +1089,8 @@ impl OpSet {
             action: ActionIter::new(self.cols.action.iter()),
             value: ValueIter::new(self.cols.value_meta.iter(), self.cols.value.raw_reader(0)),
             marks: MarkInfoIter::new(self.cols.mark_name.iter(), self.cols.expand.iter()),
-            op_set: self,
             range: 0..self.len(),
+            op_set: self,
         }
     }
 
@@ -1324,9 +1330,10 @@ impl Iterator for IterObjIds<'_> {
 mod tests {
     use super::*;
 
+    use hexane::{ColumnData, DeltaCursor, IntCursor};
+
     use crate::{
         op_set2::{
-            hexane::{ColumnData, DeltaCursor, IntCursor},
             op::SuccCursors,
             types::{Action, ActorCursor, ScalarValue},
             KeyRef,
@@ -1339,6 +1346,61 @@ mod tests {
 
     use super::OpSet;
 
+    use rand::distr::Alphanumeric;
+    use rand::Rng;
+
+    #[test]
+    fn suspend_resume_op_set_iter() {
+        // most likely place for errors would be
+        // in the values column (raw reader) and succ column
+        // make sure to have a mix of small and large values
+        // and a mix of succ column values with delets and counters
+
+        let mut doc = AutoCommit::new();
+        let rand_text: String = rand::rng()
+            .sample_iter(&Alphanumeric)
+            .take(1000)
+            .map(char::from)
+            .collect();
+
+        doc.put(crate::ROOT, "aaa_int", 123).unwrap();
+        doc.put(crate::ROOT, "mid_int", 123).unwrap();
+        doc.put(crate::ROOT, "zzz_int", 123).unwrap();
+        doc.put(crate::ROOT, "aaa_str", "abc").unwrap();
+        doc.put(crate::ROOT, "mid_str", "abc").unwrap();
+        doc.put(crate::ROOT, "zzz_str", "abc").unwrap();
+
+        let text = doc.put_object(crate::ROOT, "text", ObjType::Text).unwrap();
+        doc.splice_text(&text, 0, 0, &rand_text).unwrap();
+        let _ = doc.get_heads(); // force a new change
+        doc.splice_text(&text, 100, 100, "").unwrap();
+        let _ = doc.get_heads(); // force a new change
+
+        doc.put(crate::ROOT, "a_large", &rand_text).unwrap();
+        doc.put(crate::ROOT, "z_large", &rand_text).unwrap();
+
+        doc.put(crate::ROOT, "a_large", ScalarValue::Counter(100))
+            .unwrap();
+        doc.put(crate::ROOT, "z_large", ScalarValue::Counter(200))
+            .unwrap();
+        for _ in 0..1000 {
+            doc.increment(crate::ROOT, "a_large", 1).unwrap();
+            doc.increment(crate::ROOT, "z_large", 1).unwrap();
+        }
+
+        let _ = doc.get_heads(); // force a new change
+
+        let iter1 = doc.doc.ops().iter();
+        let mut iter2 = doc.doc.ops().iter();
+
+        for op1 in iter1 {
+            let op2 = iter2.next().unwrap();
+            assert_eq!(op1, op2);
+            let suspend = iter2.suspend();
+            iter2 = suspend.try_resume(doc.doc.ops()).unwrap();
+        }
+    }
+
     #[test]
     fn column_data_basic_iteration() {
         let mut doc = AutoCommit::new();
@@ -1349,7 +1411,7 @@ mod tests {
         doc.delete(crate::ROOT, "key2").unwrap();
         let saved = doc.save();
         let doc_chunk = load_document_chunk(&saved);
-        let opset = super::OpSet::from_doc(&doc_chunk, TextEncoding::platform_default()).unwrap();
+        let opset = super::OpSet::load(&doc_chunk, TextEncoding::platform_default()).unwrap();
         let ops = opset.iter().collect::<Vec<_>>();
         let actual_ops = doc.doc.ops().iter().collect::<Vec<_>>();
         if ops != actual_ops {

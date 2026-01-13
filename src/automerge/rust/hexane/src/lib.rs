@@ -44,8 +44,10 @@ pub mod test;
 
 pub use aggregate::{Acc, Agg};
 pub use boolean::BooleanCursor;
-pub use columndata::{ColAccIter, ColGroupItem, ColGroupIter, ColumnData, ColumnDataIter};
-pub use cursor::{ColumnCursor, CursorIter, HasAcc, HasPos, Run, ScanMeta, SpliceDel};
+pub use columndata::{
+    ColAccIter, ColGroupItem, ColGroupIter, ColumnData, ColumnDataIter, ColumnDataIterState,
+};
+pub use cursor::{ColumnCursor, CursorIter, HasAcc, HasPos, Run, SpliceDel};
 pub use delta::DeltaCursor;
 pub use encoder::{Encoder, EncoderState};
 pub use leb128::{lebsize, ulebsize};
