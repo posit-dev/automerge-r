@@ -137,9 +137,9 @@ repeat {
 round
 #> [1] 3
 peer3[["source"]]
-#> [1] "peer3"
+#> [1] "peer4"
 peer4[["source"]]
-#> [1] "peer3"
+#> [1] "peer4"
 ```
 
 ### Protocol Components
@@ -535,7 +535,7 @@ am_commit(doc_no_reuse)
 # Second sync (creates new sync state, may resend some data)
 rounds2 <- am_sync(doc_no_reuse, peer_no_reuse)
 rounds2
-#> [1] 4
+#> [1] 5
 
 # With reusing sync state (efficient)
 doc_reuse <- am_create()
