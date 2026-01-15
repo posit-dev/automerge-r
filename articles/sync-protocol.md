@@ -75,7 +75,7 @@ am_merge(target, source)
 
 # Target now has source's changes
 target[["version"]]
-#> [1] "2.0"
+#> [1] "1.0"
 
 # Source is unchanged
 names(source)
@@ -137,9 +137,9 @@ repeat {
 round
 #> [1] 3
 peer3[["source"]]
-#> [1] "peer4"
+#> [1] "peer3"
 peer4[["source"]]
-#> [1] "peer4"
+#> [1] "peer3"
 ```
 
 ### Protocol Components
@@ -535,7 +535,7 @@ am_commit(doc_no_reuse)
 # Second sync (creates new sync state, may resend some data)
 rounds2 <- am_sync(doc_no_reuse, peer_no_reuse)
 rounds2
-#> [1] 5
+#> [1] 4
 
 # With reusing sync state (efficient)
 doc_reuse <- am_create()
