@@ -91,6 +91,11 @@ Building from source requires Rust >= 1.89.0 ([rustup.rs](https://rustup.rs/)) a
 - [Automerge GitHub](https://github.com/automerge/automerge) - Automerge source code
 - [Local-first software](https://www.inkandswitch.com/local-first/) - The philosophy behind Automerge
 
+## Related Projects
+
+- [autosync](https://shikokuchuo.net/autosync) - automerge-repo compatible R sync server
+- [autoedit](https://shikokuchuo.net/autoedit) - Collaborative code editor widget for R and Shiny
+
 ## License
 
 MIT License. See [LICENSE](LICENSE) for details. This package includes the [automerge-c](https://github.com/automerge/automerge) library (also MIT licensed)
