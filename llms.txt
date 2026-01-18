@@ -40,12 +40,12 @@ am_commit(bob, "Bob's data")
 am_sync(alice, bob)
 alice
 #> <Automerge Document>
-#> Actor: 3abf0c3bca0ff8f3504eb65079c1e58e 
+#> Actor: cdb86bb2aa638a4925cf7a49527bc53a 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 bob
 #> <Automerge Document>
-#> Actor: fbd6261d13ca8e23a8b7b446ef435dbd 
+#> Actor: ac91266a96b6f27a3a095ba20b742803 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 ```
@@ -109,6 +109,13 @@ functionality may change at any time.
   source code
 - [Local-first software](https://www.inkandswitch.com/local-first/) -
   The philosophy behind Automerge
+
+## Related Projects
+
+- [autosync](https://shikokuchuo.net/autosync) - automerge-repo
+  compatible R sync server
+- [autoedit](https://shikokuchuo.net/autoedit) - Collaborative code
+  editor widget for R and Shiny
 
 ## License
 
