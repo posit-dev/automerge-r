@@ -103,6 +103,12 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
     mkdir -p "$TMPDIR"
 
     export CARGO_TERM_QUIET=true
+
+    # Apply MSRV reduction patch (1.89 -> 1.81)
+    if [ -f "tools/patch-rust-msrv.sh" ]; then
+        sh tools/patch-rust-msrv.sh src/automerge/rust
+    fi
+
     cmake -S src/automerge/rust/automerge-c -B build \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
