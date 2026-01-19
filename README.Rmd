@@ -70,7 +70,7 @@ bob
 install.packages("automerge", repos = "https://posit-dev.r-universe.dev")
 ```
 
-Building from source requires Rust >= 1.89.0 ([rustup.rs](https://rustup.rs/)) and CMake >= 3.25 (included in Rtools43+ on Windows).
+Building from source requires Rust >= 1.81 ([rustup.rs](https://rustup.rs/)) and CMake >= 3.25 (included in Rtools43+ on Windows).
 
 ## Documentation
 
