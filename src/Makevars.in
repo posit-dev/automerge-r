@@ -9,7 +9,7 @@ OBJECTS = $(SOURCES:.c=.o)
 all: clean-archives
 
 clean-archives: $(SHLIB)
-	@rm -f ../install/lib/*.a
+	@rm -rf automerge/rust/vendor ../install/lib/*.a
 
 $(SHLIB): $(OBJECTS)
 

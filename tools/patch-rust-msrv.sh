@@ -1,17 +1,34 @@
 #!/bin/sh
-# Patch to reduce Rust MSRV from 1.89 to 1.81
-# Applied at configure time before building bundled automerge-c
+# ============================================================================
+# MSRV Patch Script for Automerge Rust Dependencies
+# ============================================================================
 #
-# This patch downgrades dependencies to versions compatible with Rust 1.81:
+# This script reduces the Minimum Supported Rust Version (MSRV) from 1.89 to
+# 1.81 by downgrading dependencies and replacing unstable std library features.
+#
+# IMPORTANT: These patches have already been applied to the source files and
+# vendored dependencies in this package. This script is kept for reference
+# and for use when updating the bundled Automerge Rust source.
+#
+# When updating automerge (src/automerge/rust/):
+#   1. Update the Rust source from upstream
+#   2. Run this script: ./tools/patch-rust-msrv.sh src/automerge/rust
+#   3. Run vendor script: ./tools/vendor-deps.sh
+#
+# Dependency changes:
 #   smol_str:   0.3 -> 0.2   (MSRV 1.89 -> 1.56)
 #   sha2:       0.11-pre -> 0.10 (MSRV 1.85 -> 1.72)
 #   getrandom:  0.3 -> 0.2   (MSRV 1.85 -> 1.60)
 #   rand:       0.9 -> 0.8   (MSRV 1.85 -> 1.56)
 #   cbindgen:   0.29 -> 0.26 (transitive dep indexmap requires 1.82)
 #
-# Also replaces unstable std library features:
-# - iter::repeat_n -> iter::repeat().take()
-# - is_sorted() -> windows(2).all()
+# Source code changes (unstable std library features):
+#   - iter::repeat_n -> iter::repeat().take()
+#   - is_sorted() -> windows(2).all()
+#   - rand 0.9 API -> rand 0.8 API
+#   - getrandom 0.3 API -> getrandom 0.2 API
+#
+# ============================================================================
 
 set -e
 

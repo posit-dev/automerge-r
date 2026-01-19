@@ -280,7 +280,7 @@ where
             level: 1,
         };
         let len = 0;
-        let rng = rand::rng();
+        let rng = rand::thread_rng();
         SkipList {
             nodes,
             head,

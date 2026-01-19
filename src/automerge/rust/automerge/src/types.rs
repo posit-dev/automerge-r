@@ -3,7 +3,7 @@ use crate::error::AutomergeError;
 use crate::legacy as amp;
 use crate::op_set2::ActorIdx;
 use rand::{
-    distr::{Distribution, StandardUniform},
+    distributions::{Distribution, Standard},
     Rng,
 };
 use serde::{Deserialize, Serialize};
@@ -52,7 +52,7 @@ impl fmt::Debug for ActorId {
     }
 }
 
-impl Distribution<ActorId> for StandardUniform {
+impl Distribution<ActorId> for Standard {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> ActorId {
         let mut bytes = [0u8; 16];
         rng.fill(&mut bytes);
@@ -63,7 +63,7 @@ impl Distribution<ActorId> for StandardUniform {
 impl ActorId {
     pub fn random() -> ActorId {
         let mut buf = [0u8; 16];
-        getrandom::fill(&mut buf).expect("random number generator failed");
+        getrandom::getrandom(&mut buf).expect("random number generator failed");
         ActorId(TinyVec::from(buf))
     }
 
