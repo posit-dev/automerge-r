@@ -141,6 +141,76 @@ for checksum in "$VENDOR_DIR"/*/.cargo-checksum.json; do
     fi
 done
 
+# ----------------------------------------------------------------------------
+# Generate inst/AUTHORS from vendored crate metadata
+# ----------------------------------------------------------------------------
+echo "Generating inst/AUTHORS..."
+
+AUTHORS_FILE="inst/AUTHORS"
+mkdir -p inst
+
+{
+    echo "Authors of bundled Rust crates:"
+    echo ""
+
+    for cargo_toml in "$VENDOR_DIR"/*/Cargo.toml; do
+        if [ -f "$cargo_toml" ]; then
+            # Extract name
+            name=$(sed -n 's/^name *= *"\([^"]*\)".*/\1/p' "$cargo_toml" | head -1)
+            # Extract version
+            version=$(sed -n 's/^version *= *"\([^"]*\)".*/\1/p' "$cargo_toml" | head -1)
+
+            # Extract authors - handle both single-line and multi-line formats:
+            #   authors = ["Name <email>"]
+            #   authors = [
+            #       "Name <email>",
+            #   ]
+            authors=$(awk '
+                /^authors *= *\[/ {
+                    # Start collecting authors
+                    in_authors = 1
+                    line = $0
+                    # Check if single-line (contains closing bracket)
+                    if (match(line, /\]/)) {
+                        gsub(/.*\[/, "", line)
+                        gsub(/\].*/, "", line)
+                        print line
+                        in_authors = 0
+                        next
+                    }
+                    next
+                }
+                in_authors {
+                    if (/\]/) {
+                        in_authors = 0
+                        next
+                    }
+                    # Print author lines (strip leading whitespace)
+                    gsub(/^[[:space:]]+/, "")
+                    print
+                }
+            ' "$cargo_toml" | \
+                tr -d '\n' | \
+                sed 's/"[[:space:]]*,[[:space:]]*/", /g' | \
+                sed 's/"//g' | \
+                sed 's/[[:space:]]*<[^>]*>//g' | \
+                sed 's/^[[:space:]]*//' | \
+                sed 's/[[:space:]]*$//' | \
+                sed 's/,[[:space:]]*$//')
+
+            if [ -n "$name" ] && [ -n "$authors" ] && [ "$authors" != "," ]; then
+                echo " - $name $version: $authors"
+            fi
+        fi
+    done | sort
+
+    echo ""
+    echo "(Generated from Cargo.toml files on $(date +%Y-%m-%d))"
+} > "$AUTHORS_FILE"
+
+CRATE_COUNT=$(grep -c "^ - " "$AUTHORS_FILE" || echo "0")
+echo "  Written $AUTHORS_FILE with $CRATE_COUNT crate entries"
+
 # Create compressed archive
 echo "Creating archive..."
 tar -cJf "$ARCHIVE" -C "$RUST_DIR" vendor

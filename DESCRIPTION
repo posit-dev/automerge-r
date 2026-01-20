@@ -6,7 +6,9 @@ Authors@R: c(
     person("Charlie", "Gao", , "charlie.gao@posit.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-0750-061X")),
     person("Posit Software, PBC", role = c("cph", "fnd"),
-           comment = c(ROR = "03wc8by49"))
+           comment = c(ROR = "03wc8by49")),
+    person("Authors of the dependency Rust crates", role = "cph",
+           comment = "see inst/AUTHORS file")
   )
 Description: Provides R bindings to the Automerge Conflict-free Replicated
     Data Type (CRDT) library via its C FFI. Automerge enables automatic
