@@ -332,6 +332,37 @@ am_text_get <- function(text_obj) {
   .Call(C_am_text_get, text_obj)
 }
 
+#' Compute diff and splice text in one operation
+#'
+#' An optimized function for collaborative editing that computes the minimal
+#' diff between old and new text and applies it directly to the text object.
+#' This avoids intermediate R object allocation, making it more efficient than
+#' separate diff computation and splice operations.
+#'
+#' Positions use Unicode code points (matching R's `nchar()` behavior), not
+#' bytes. This means multibyte characters like emoji count as single characters.
+#'
+#' @param text_obj An Automerge text object ID
+#' @param old_text The previous text content (single string)
+#' @param new_text The new text content (single string)
+#' @return Invisible NULL (called for side effect)
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "content", am_text("Hello"))
+#' text_obj <- am_get(doc, AM_ROOT, "content")
+#'
+#' # Efficiently update text by computing and applying diff in one step
+#' am_text_splice_diff(text_obj, "Hello", "Hello World")
+#' am_text_get(text_obj)  # "Hello World"
+#'
+#' # Works with Unicode
+#' am_text_splice_diff(text_obj, "Hello World", "Hello World!")
+#' am_text_get(text_obj)  # "Hello World!"
+am_text_splice_diff <- function(text_obj, old_text, new_text) {
+  invisible(.Call(C_am_text_splice_diff, text_obj, old_text, new_text))
+}
+
 #' Get all values from a map or list
 #'
 #' Returns all values from an Automerge map or list as an R list.

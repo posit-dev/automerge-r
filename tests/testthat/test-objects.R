@@ -942,6 +942,225 @@ test_that("multiple text edits accumulate correctly", {
   expect_equal(result, "The quick brown fox")
 })
 
+# am_text_splice_diff() Tests ----------------------------------------------------
+
+test_that("am_text_splice_diff() inserts text at end", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "Hello", "Hello World")
+
+  expect_equal(am_text_get(text_obj), "Hello World")
+})
+
+test_that("am_text_splice_diff() inserts text at beginning", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("World"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "World", "Hello World")
+
+  expect_equal(am_text_get(text_obj), "Hello World")
+})
+
+test_that("am_text_splice_diff() inserts text in middle", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("HelloWorld"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "HelloWorld", "Hello World")
+
+  expect_equal(am_text_get(text_obj), "Hello World")
+})
+
+test_that("am_text_splice_diff() deletes text at end", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello World"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "Hello World", "Hello")
+
+  expect_equal(am_text_get(text_obj), "Hello")
+})
+
+test_that("am_text_splice_diff() deletes text at beginning", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello World"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "Hello World", "World")
+
+  expect_equal(am_text_get(text_obj), "World")
+})
+
+test_that("am_text_splice_diff() deletes text in middle", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello World"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "Hello World", "HelloWorld")
+
+  expect_equal(am_text_get(text_obj), "HelloWorld")
+})
+
+test_that("am_text_splice_diff() replaces text", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello World"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "Hello World", "Hello Claude")
+
+  expect_equal(am_text_get(text_obj), "Hello Claude")
+})
+
+test_that("am_text_splice_diff() handles identical strings (no-op)", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "Hello", "Hello")
+
+  expect_equal(am_text_get(text_obj), "Hello")
+})
+
+test_that("am_text_splice_diff() handles empty to non-empty", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text(""))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "", "Hello")
+
+  expect_equal(am_text_get(text_obj), "Hello")
+})
+
+test_that("am_text_splice_diff() handles non-empty to empty", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "Hello", "")
+
+  expect_equal(am_text_get(text_obj), "")
+})
+
+test_that("am_text_splice_diff() handles UTF-8 characters", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("你好"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "你好", "你好世界")
+
+  expect_equal(am_text_get(text_obj), "你好世界")
+})
+
+test_that("am_text_splice_diff() handles emoji", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "Hello", "Hello 🌍")
+
+  expect_equal(am_text_get(text_obj), "Hello 🌍")
+})
+
+test_that("am_text_splice_diff() handles emoji deletion", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello 🌍 World"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "Hello 🌍 World", "Hello World")
+
+  expect_equal(am_text_get(text_obj), "Hello World")
+})
+
+test_that("am_text_splice_diff() handles mixed Unicode", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello 世界"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "Hello 世界", "Hello 🌍 世界!")
+
+  expect_equal(am_text_get(text_obj), "Hello 🌍 世界!")
+})
+
+test_that("am_text_splice_diff() returns invisibly", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  result <- withVisible(am_text_splice_diff(text_obj, "Hello", "Hello World"))
+
+  expect_null(result$value)
+  expect_false(result$visible)
+})
+
+test_that("am_text_splice_diff() errors on non-string old_text", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  expect_error(am_text_splice_diff(text_obj, 123, "Hello"), "single string")
+})
+
+test_that("am_text_splice_diff() errors on non-string new_text", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  expect_error(am_text_splice_diff(text_obj, "Hello", 123), "single string")
+})
+
+test_that("am_text_splice_diff() errors on NA old_text", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  expect_error(am_text_splice_diff(text_obj, NA_character_, "Hello"), "NA")
+})
+
+test_that("am_text_splice_diff() errors on NA new_text", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  expect_error(am_text_splice_diff(text_obj, "Hello", NA_character_), "NA")
+})
+
+test_that("am_text_splice_diff() handles single character changes", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("cat"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "cat", "bat")
+
+  expect_equal(am_text_get(text_obj), "bat")
+})
+
+test_that("am_text_splice_diff() handles complete replacement", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("Hello"))
+  text_obj <- am_get(doc, AM_ROOT, "content")
+
+  am_text_splice_diff(text_obj, "Hello", "World")
+
+  expect_equal(am_text_get(text_obj), "World")
+})
+
+test_that("am_text_splice_diff() persists after save/load", {
+  doc1 <- am_create()
+  am_put(doc1, AM_ROOT, "content", am_text("Hello"))
+  text_obj <- am_get(doc1, AM_ROOT, "content")
+  am_text_splice_diff(text_obj, "Hello", "Hello World")
+  am_commit(doc1, "Edit text")
+
+  bytes <- am_save(doc1)
+  doc2 <- am_load(bytes)
+
+  text_obj2 <- am_get(doc2, AM_ROOT, "content")
+  expect_equal(am_text_get(text_obj2), "Hello World")
+})
+
 # am_values() Tests -----------------------------------------------------------
 
 test_that("am_values() returns all values from map", {

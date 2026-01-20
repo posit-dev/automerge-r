@@ -46,6 +46,7 @@ reference:
       - am_text
       - am_text_get
       - am_text_splice
+      - am_text_splice_diff
       - as.character.am_text
 
   - title: "Counters"

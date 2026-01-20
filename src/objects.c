@@ -700,6 +700,137 @@ SEXP C_am_values(SEXP doc_ptr, SEXP obj_ptr) {
     return values;
 }
 
+// UTF-8 Helpers for text_splice_diff -----------------------------------------
+
+// Get byte size of UTF-8 code point from its first byte
+static inline size_t utf8_char_bytes(unsigned char c) {
+    if ((c & 0x80) == 0x00) return 1;  // 0xxxxxxx - ASCII
+    if ((c & 0xE0) == 0xC0) return 2;  // 110xxxxx
+    if ((c & 0xF0) == 0xE0) return 3;  // 1110xxxx
+    if ((c & 0xF8) == 0xF0) return 4;  // 11110xxx
+    return 1;  // Invalid byte, advance by 1
+}
+
+// Retreat pointer by one code point, return bytes retreated
+static inline size_t utf8_prev(const char **p, const char *start) {
+    if (*p <= start) return 0;
+    const char *orig = *p;
+    (*p)--;
+    while (*p > start && (**p & 0xC0) == 0x80) (*p)--;
+    return orig - *p;
+}
+
+/**
+ * Compute diff and splice text in a single operation.
+ *
+ * This is an optimized function for collaborative editing that computes
+ * the minimal diff between old and new text and applies it directly,
+ * avoiding intermediate R object allocation.
+ *
+ * @param text_ptr External pointer to AMobjId (must be a text object)
+ * @param old_sexp The previous text content (single string)
+ * @param new_sexp The new text content (single string)
+ * @return R_NilValue (called for side effect)
+ */
+SEXP C_am_text_splice_diff(SEXP text_ptr, SEXP old_sexp, SEXP new_sexp) {
+    if (TYPEOF(old_sexp) != STRSXP || XLENGTH(old_sexp) != 1)
+        Rf_error("'old' must be a single string");
+    if (TYPEOF(new_sexp) != STRSXP || XLENGTH(new_sexp) != 1)
+        Rf_error("'new' must be a single string");
+
+    SEXP old_elt = STRING_ELT(old_sexp, 0);
+    SEXP new_elt = STRING_ELT(new_sexp, 0);
+    if (old_elt == NA_STRING || new_elt == NA_STRING)
+        Rf_error("NA strings not supported");
+
+    const char *old_str = CHAR(old_elt);
+    const char *new_str = CHAR(new_elt);
+    size_t old_bytes = strlen(old_str);
+    size_t new_bytes = strlen(new_str);
+
+    // Fast path: identical strings
+    if (old_bytes == new_bytes && memcmp(old_str, new_str, old_bytes) == 0) {
+        return R_NilValue;
+    }
+
+    SEXP doc_ptr = get_doc_from_objid(text_ptr);
+    AMdoc *doc = get_doc(doc_ptr);
+    const AMobjId *text_obj = get_objid(text_ptr);
+
+    const char *old_end = old_str + old_bytes;
+    const char *new_end = new_str + new_bytes;
+
+    // Find common prefix (count code points)
+    const char *old_p = old_str;
+    const char *new_p = new_str;
+    size_t prefix_cp = 0;
+
+    while (old_p < old_end && new_p < new_end) {
+        size_t old_n = utf8_char_bytes((unsigned char)*old_p);
+        size_t new_n = utf8_char_bytes((unsigned char)*new_p);
+
+        if (old_p + old_n > old_end) old_n = old_end - old_p;
+        if (new_p + new_n > new_end) new_n = new_end - new_p;
+
+        if (old_n != new_n || memcmp(old_p, new_p, old_n) != 0)
+            break;
+
+        old_p += old_n;
+        new_p += new_n;
+        prefix_cp++;
+    }
+
+    size_t old_prefix_bytes = old_p - old_str;
+    size_t new_prefix_bytes = new_p - new_str;
+
+    // Find common suffix (working backwards)
+    const char *old_suf = old_end;
+    const char *new_suf = new_end;
+
+    while (old_suf > old_str + old_prefix_bytes &&
+           new_suf > new_str + new_prefix_bytes) {
+        const char *old_prev = old_suf;
+        const char *new_prev = new_suf;
+
+        utf8_prev(&old_prev, old_str);
+        utf8_prev(&new_prev, new_str);
+
+        size_t old_n = old_suf - old_prev;
+        size_t new_n = new_suf - new_prev;
+
+        if (old_n != new_n || memcmp(old_prev, new_prev, old_n) != 0)
+            break;
+
+        old_suf = old_prev;
+        new_suf = new_prev;
+    }
+
+    // Count code points to delete (between prefix and suffix in old string)
+    size_t del_cp = 0;
+    const char *p = old_str + old_prefix_bytes;
+    while (p < old_suf) {
+        size_t n = utf8_char_bytes((unsigned char)*p);
+        if (p + n > old_suf) n = old_suf - p;
+        p += n;
+        del_cp++;
+    }
+
+    // Insertion: bytes between prefix and suffix in new string
+    size_t ins_start = new_prefix_bytes;
+    size_t ins_bytes = new_suf - (new_str + new_prefix_bytes);
+
+    AMbyteSpan ins_span = {
+        .src = (uint8_t const *)(new_str + ins_start),
+        .count = ins_bytes
+    };
+    AMresult *result = AMspliceText(doc, text_obj, prefix_cp, del_cp, ins_span);
+
+    CHECK_RESULT(result, AM_VAL_TYPE_VOID);
+    AMresultFree(result);
+
+    return R_NilValue;
+}
+
 /**
  * Increment a counter value
  *
