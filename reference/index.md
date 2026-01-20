@@ -59,6 +59,8 @@ Work with collaborative text objects
   : Get text from a text object
 - [`am_text_splice()`](https://posit-dev.github.io/automerge-r/reference/am_text_splice.md)
   : Splice text in a text object
+- [`am_text_splice_diff()`](https://posit-dev.github.io/automerge-r/reference/am_text_splice_diff.md)
+  : Compute diff and splice text in one operation
 - [`as.character(`*`<am_text>`*`)`](https://posit-dev.github.io/automerge-r/reference/as.character.am_text.md)
   : Convert text object to character string
 

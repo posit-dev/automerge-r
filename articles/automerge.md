@@ -43,7 +43,7 @@ library(automerge)
 doc <- am_create()
 print(doc)
 #> <Automerge Document>
-#> Actor: c4b989c9eb3a1f82fcf601611c1c7d52 
+#> Actor: 7190ddafcafda3895894ea44c4146375 
 #> Root keys: 0
 ```
 
@@ -246,6 +246,13 @@ text_obj <- am_get(doc7, AM_ROOT, "content")
 am_text_splice(text_obj, 8, 0, "amazing ") # Insert at position 8
 am_text_get(text_obj)
 #> [1] "Initial amazing content"
+
+# For collaborative editors, use am_text_splice_diff() which computes
+# and applies the minimal diff in one step:
+old_text <- am_text_get(text_obj)
+am_text_splice_diff(text_obj, old_text, "New content from user input")
+am_text_get(text_obj)
+#> [1] "New content from user input"
 ```
 
 ### Counters (for CRDT Counting)
@@ -278,7 +285,7 @@ am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
-#> [1] "2026-01-18 20:47:14 UTC"
+#> [1] "2026-01-20 14:18:32 UTC"
 ```
 
 ## Saving and Loading Documents

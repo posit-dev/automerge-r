@@ -54,6 +54,7 @@
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_text.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_text_get.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_text_splice.html</loc></url>
+<url><loc>https://posit-dev.github.io/automerge-r/reference/am_text_splice_diff.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_uint64.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_values.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/as.character.am_text.html</loc></url>
