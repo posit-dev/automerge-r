@@ -12,3 +12,6 @@ codegen-units = 1
 
 [profile.bench]
 debug = true
+
+[workspace.lints.rust]
+warnings = "allow"

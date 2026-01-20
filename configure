@@ -83,18 +83,74 @@ fi
 if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
     echo "System automerge not found, building from bundled source..."
 
-    if ! command -v cargo >/dev/null 2>&1; then
-        echo "ERROR: Rust toolchain not found"
-        echo "Install Rust from: https://rustup.rs/"
-        echo "Or install automerge-c system-wide"
+    # Minimum Rust version required (MSRV)
+    RUST_MSRV="1.81"
+
+    # Check for Rust toolchain (cargo and rustc)
+    # CRAN policy: check both system PATH and ~/.cargo/bin
+    CARGO_CMD=""
+    RUSTC_CMD=""
+
+    # First check PATH
+    if command -v cargo >/dev/null 2>&1; then
+        CARGO_CMD="cargo"
+    fi
+    if command -v rustc >/dev/null 2>&1; then
+        RUSTC_CMD="rustc"
+    fi
+
+    # Also check ~/.cargo/bin (rustup default location, often not on PATH)
+    if [ -z "$CARGO_CMD" ] && [ -x "$HOME/.cargo/bin/cargo" ]; then
+        CARGO_CMD="$HOME/.cargo/bin/cargo"
+        export PATH="$HOME/.cargo/bin:$PATH"
+    fi
+    if [ -z "$RUSTC_CMD" ] && [ -x "$HOME/.cargo/bin/rustc" ]; then
+        RUSTC_CMD="$HOME/.cargo/bin/rustc"
+    fi
+
+    # Verify both cargo and rustc are found
+    if [ -z "$CARGO_CMD" ] || [ -z "$RUSTC_CMD" ]; then
+        echo "-------------------- RUST TOOLCHAIN NOT FOUND --------------------"
+        echo "This package requires Rust >= $RUST_MSRV to build from source."
+        echo ""
+        echo "Install Rust via your system package manager:"
+        echo "  - Fedora/RHEL:   dnf install cargo"
+        echo "  - Debian/Ubuntu: apt-get install cargo rustc"
+        echo "  - macOS:         brew install rust"
+        echo ""
+        echo "Or install via rustup (recommended): https://rustup.rs/"
+        echo ""
+        echo "Alternatively, install automerge-c system-wide to skip Rust build."
+        echo "------------------------------------------------------------------"
+        exit 1
+    fi
+
+    # Check Rust version meets minimum requirement
+    RUST_VERSION=$($RUSTC_CMD --version | sed -n 's/rustc \([0-9]*\.[0-9]*\.[0-9]*\).*/\1/p')
+    RUST_MAJOR=$(echo $RUST_VERSION | cut -d. -f1)
+    RUST_MINOR=$(echo $RUST_VERSION | cut -d. -f2)
+    MSRV_MAJOR=$(echo $RUST_MSRV | cut -d. -f1)
+    MSRV_MINOR=$(echo $RUST_MSRV | cut -d. -f2)
+
+    if [ "$RUST_MAJOR" -lt "$MSRV_MAJOR" ] || \
+       { [ "$RUST_MAJOR" -eq "$MSRV_MAJOR" ] && [ "$RUST_MINOR" -lt "$MSRV_MINOR" ]; }; then
+        echo "-------------------- RUST VERSION TOO OLD --------------------"
+        echo "Found Rust $RUST_VERSION but this package requires Rust >= $RUST_MSRV"
+        echo ""
+        echo "Update Rust via your package manager or rustup:"
+        echo "  - Fedora/RHEL:   dnf update cargo"
+        echo "  - Debian/Ubuntu: apt-get update && apt-get upgrade cargo rustc"
+        echo "  - macOS:         brew upgrade rust"
+        echo "  - rustup:        rustup update stable"
+        echo "---------------------------------------------------------------"
         exit 1
     fi
 
     detect_cmake
 
     echo "Building automerge-c..."
-    echo "using Rust package manager: '$(cargo --version)'"
-    echo "using Rust compiler: '$(rustc --version)'"
+    echo "using Rust package manager: '$($CARGO_CMD --version)'"
+    echo "using Rust compiler: '$($RUSTC_CMD --version)'"
 
     rm -rf build install
 
@@ -102,7 +158,16 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
     export TMPDIR="${PWD}/build/tmp"
     mkdir -p "$TMPDIR"
 
-    export CARGO_TERM_QUIET=true
+    # Extract vendored Rust dependencies
+    if [ -f "src/automerge/rust/vendor.tar.xz" ] && [ ! -d "src/automerge/rust/vendor" ]; then
+        echo "Extracting vendored Rust dependencies..."
+        tar -xJf src/automerge/rust/vendor.tar.xz -C src/automerge/rust
+    fi
+
+    # Configure Cargo to use vendored sources
+    export CARGO_SOURCE_CRATES_IO_REPLACE_WITH=vendored-sources
+    export CARGO_SOURCE_VENDORED_SOURCES_DIRECTORY="${PWD}/src/automerge/rust/vendor"
+
     cmake -S src/automerge/rust/automerge-c -B build \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \

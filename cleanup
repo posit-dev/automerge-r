@@ -8,3 +8,4 @@ rm -rf src/automerge/rust/automerge-c/build
 rm -f src/automerge/rust/automerge-c/cmake_config.log
 rm -f src/automerge/rust/automerge-c/cmake_build.log
 rm -rf src/automerge/rust/target
+rm -rf src/automerge/rust/vendor
