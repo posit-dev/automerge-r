@@ -1,19 +1,14 @@
 ---
 title: "Getting Started with automerge"
-output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting Started with automerge}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: "#>"
 ---
-
-```{r}
-#| include: false
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
 
 ## What is Automerge?
 
@@ -31,11 +26,8 @@ Automerge is a library that enables automatic merging of concurrent changes with
 
 ```{r}
 #| eval: false
-# From R-universe
-install.packages("automerge", repos = "https://posit-dev.r-universe.dev")
-
-# From GitHub
-pak::pak("posit-dev/automerge-r")
+# From CRAN
+install.packages("automerge")
 ```
 
 ## Basic Usage

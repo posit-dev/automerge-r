@@ -1,20 +1,16 @@
 ---
 title: "Quick Reference"
-output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Quick Reference}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
+execute:
+  eval: false
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: "#>"
 ---
-
-```{r}
-#| include: false
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  eval = FALSE
-)
-```
 
 # Automerge R Package Quick Reference
 
@@ -23,11 +19,9 @@ One-page reference for the `automerge` package. See full documentation with `?fu
 ## Installation
 
 ```{r}
-# From R-universe
-install.packages("automerge", repos = "https://posit-dev.r-universe.dev")
-
-# From GitHub
-pak::pak("posit-dev/automerge-r")
+#| eval: false
+# From CRAN
+install.packages("automerge")
 ```
 
 ## Document Lifecycle
@@ -384,16 +378,15 @@ vignette(package = "automerge") # List all
 
 - R >= 4.2
 - For building from source:
-  - Rust >= 1.89.0 (https://rustup.rs/)
+  - Rust >= 1.89.0 (<https://rustup.rs/>)
   - CMake >= 3.25 (included in Rtools43+ on Windows)
 - Or: Install automerge-c (with UTF-32 character indexing) system-wide to skip build
 
 ## Resources
 
-- Package site: https://posit-dev.github.io/automerge-r/
-- Automerge docs: https://automerge.org/
-- Binary format: https://automerge.org/automerge-binary-format-spec/
-- CRDT research: https://crdt.tech/
+- [Automerge docs](https://automerge.org/)
+- [Automerge binary format](https://automerge.org/automerge-binary-format-spec/)
+- [CRDT research](https://crdt.tech/)
 
 ---
 
