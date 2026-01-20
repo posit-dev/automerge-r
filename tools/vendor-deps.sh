@@ -12,6 +12,11 @@
 #   - Rust toolchain installed (cargo)
 #   - Run tools/patch-rust-msrv.sh first if updating automerge source
 #
+# Size Optimization Strategy:
+#   1. Temporarily removes [dev-dependencies] sections before vendoring
+#   2. Removes unused WASM-related crates (web-sys, js-sys, wasm-bindgen)
+#   3. Prunes test/example/benchmark directories and documentation
+#
 # ============================================================================
 
 set -e
@@ -29,11 +34,58 @@ fi
 rm -rf "$VENDOR_DIR"
 rm -f "$ARCHIVE"
 
-# Vendor dependencies
+# ----------------------------------------------------------------------------
+# Step 1: Temporarily remove dev-dependencies to reduce vendor size
+# ----------------------------------------------------------------------------
+echo "Preparing Cargo.toml files (removing dev-dependencies)..."
+
+# Files with dev-dependencies that need modification
+CARGO_FILES="$RUST_DIR/automerge/Cargo.toml $RUST_DIR/hexane/Cargo.toml"
+
+# Backup and strip dev-dependencies
+for cargo_file in $CARGO_FILES; do
+    if [ -f "$cargo_file" ]; then
+        cp "$cargo_file" "${cargo_file}.bak"
+        # Remove [dev-dependencies] section and everything until next section or EOF
+        sed '/^\[dev-dependencies\]/,/^\[/{/^\[dev-dependencies\]/d;/^\[/!d;}' "$cargo_file" > "${cargo_file}.tmp"
+        mv "${cargo_file}.tmp" "$cargo_file"
+    fi
+done
+
+# Regenerate Cargo.lock without dev-dependencies
+echo "Regenerating Cargo.lock..."
+cd "$RUST_DIR"
+cargo generate-lockfile
+cd - > /dev/null
+
+# Vendor dependencies (now without dev-dependencies)
 echo "Vendoring Rust dependencies..."
 cd "$RUST_DIR"
 cargo vendor vendor
 cd - > /dev/null
+
+# Restore original Cargo.toml files
+echo "Restoring Cargo.toml files..."
+for cargo_file in $CARGO_FILES; do
+    if [ -f "${cargo_file}.bak" ]; then
+        mv "${cargo_file}.bak" "$cargo_file"
+    fi
+done
+
+# Restore original Cargo.lock
+echo "Restoring Cargo.lock..."
+cd "$RUST_DIR"
+cargo generate-lockfile
+cd - > /dev/null
+
+# ----------------------------------------------------------------------------
+# Step 2: Remove WASM-related crates (unused by C FFI)
+# ----------------------------------------------------------------------------
+echo "Removing WASM-related crates..."
+WASM_CRATES="web-sys js-sys wasm-bindgen wasm-bindgen-backend wasm-bindgen-macro wasm-bindgen-macro-support wasm-bindgen-shared"
+for crate in $WASM_CRATES; do
+    rm -rf "$VENDOR_DIR/$crate"
+done
 
 echo "Pruning unnecessary files..."
 
