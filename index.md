@@ -40,12 +40,12 @@ am_commit(bob, "Bob's data")
 am_sync(alice, bob)
 alice
 #> <Automerge Document>
-#> Actor: cdb86bb2aa638a4925cf7a49527bc53a 
+#> Actor: c369131a86cd82c31677aa24e3cadaca 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 bob
 #> <Automerge Document>
-#> Actor: ac91266a96b6f27a3a095ba20b742803 
+#> Actor: dc5ba83c10cbd570b666319bb0c25283 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 ```
@@ -71,7 +71,7 @@ bob
 install.packages("automerge", repos = "https://posit-dev.r-universe.dev")
 ```
 
-Building from source requires Rust \>= 1.89.0
+Building from source requires Rust \>= 1.81
 ([rustup.rs](https://rustup.rs/)) and CMake \>= 3.25 (included in
 Rtools43+ on Windows).
 

@@ -28,3 +28,6 @@ Other contributors:
 
 - Posit Software, PBC ([ROR](https://ror.org/03wc8by49)) \[copyright
   holder, funder\]
+
+- Authors of the dependency Rust crates (see inst/AUTHORS file)
+  \[copyright holder\]
