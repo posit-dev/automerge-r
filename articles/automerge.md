@@ -43,7 +43,7 @@ library(automerge)
 doc <- am_create()
 print(doc)
 #> <Automerge Document>
-#> Actor: ca219ff21fff5b4d4db5889841b80a18 
+#> Actor: e03a752db1a4bd65069131161afd2f5a 
 #> Root keys: 0
 ```
 
@@ -285,7 +285,7 @@ am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
-#> [1] "2026-01-21 17:48:46 UTC"
+#> [1] "2026-01-21 17:52:04 UTC"
 ```
 
 ## Saving and Loading Documents
@@ -366,7 +366,7 @@ doc12[["value1"]]
 doc12[["value2"]]
 #> [1] 200
 doc12[["source"]] # One value wins deterministically for conflicting keys
-#> [1] "doc13"
+#> [1] "doc12"
 ```
 
 ## Basic Synchronization
