@@ -387,7 +387,7 @@ SEXP C_am_get(SEXP doc_ptr, SEXP obj_ptr, SEXP key_or_pos) {
         if (r_pos < 1) {
             return R_NilValue;
         }
-        size_t pos = (size_t) (r_pos - 1);  // Convert to 0-based
+        size_t pos = (size_t) (r_pos - 1);
         result = AMlistGet(doc, obj_id, pos, NULL);
     } else {
         Rf_error("Key must be a character string (map) or numeric (list)");
@@ -448,7 +448,7 @@ SEXP C_am_delete(SEXP doc_ptr, SEXP obj_ptr, SEXP key_or_pos) {
         if (r_pos < 1) {
             Rf_error("List position must be positive");
         }
-        size_t pos = (size_t) (r_pos - 1);  // Convert to 0-based
+        size_t pos = (size_t) (r_pos - 1);
         result = AMlistDelete(doc, obj_id, pos);
     } else {
         Rf_error("Key must be a character string (map) or numeric (list)");
@@ -887,6 +887,5 @@ SEXP C_am_counter_increment(SEXP doc_ptr, SEXP obj_ptr, SEXP key_or_pos, SEXP de
     CHECK_RESULT(result, AM_VAL_TYPE_VOID);
     AMresultFree(result);
 
-    // Return document invisibly for chaining
     return doc_ptr;
 }

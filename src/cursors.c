@@ -27,7 +27,7 @@ SEXP C_am_cursor(SEXP obj_ptr, SEXP position) {
     if (r_pos < 0) {
         Rf_error("position must be non-negative (uses 0-based indexing)");
     }
-    size_t c_pos = (size_t) r_pos;  // Direct use, already 0-based
+    size_t c_pos = (size_t) r_pos;
 
     // heads parameter NULL for current state
     AMresult *result = AMgetCursor(doc, obj_id, c_pos, NULL);
@@ -90,7 +90,7 @@ SEXP C_am_cursor_position(SEXP cursor_ptr) {
         AMresultFree(result);
         Rf_error("Position too large to represent as R integer");
     }
-    int r_pos = (int) c_pos;  // Direct use, 0-based
+    int r_pos = (int) c_pos;
 
     AMresultFree(result);
 

@@ -451,7 +451,6 @@ SEXP C_am_get_last_local_change(SEXP doc_ptr) {
     size_t count = AMitemsSize(&items);
 
     if (count == 0) {
-        // No local changes
         AMresultFree(result);
         return R_NilValue;
     }
@@ -503,7 +502,7 @@ SEXP C_am_get_change_by_hash(SEXP doc_ptr, SEXP hash) {
     AMstatus status = AMresultStatus(result);
     if (status != AM_STATUS_OK) {
         AMresultFree(result);
-        return R_NilValue;  // Change not found
+        return R_NilValue;
     }
 
     AMitems items = AMresultItems(result);
@@ -520,11 +519,10 @@ SEXP C_am_get_change_by_hash(SEXP doc_ptr, SEXP hash) {
         return R_NilValue;
     }
 
-    // Check if it's actually a change
     AMchange *change = NULL;
     if (!AMitemToChange(item, &change) || !change) {
         AMresultFree(result);
-        return R_NilValue;  // Change not found
+        return R_NilValue;
     }
 
     AMbyteSpan bytes = AMchangeRawBytes(change);
