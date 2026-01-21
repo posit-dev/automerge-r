@@ -10,14 +10,14 @@ Authors@R: c(
     person("Authors of the dependency Rust crates", role = "cph",
            comment = "see inst/AUTHORS file")
   )
-Description: Provides R bindings to the Automerge Conflict-free Replicated
-    Data Type (CRDT) library via its C FFI. Automerge enables automatic
+Description: Provides R bindings to the 'Automerge' Conflict-free
+    Replicated Data Type ('CRDT') library. 'Automerge' enables automatic
     merging of concurrent changes without conflicts, making it ideal for
     distributed systems, collaborative applications, and offline-first
-    architectures. The package supports all Automerge data types (maps,
+    architectures.  The package supports all 'Automerge' data types (maps,
     lists, text, counters) and provides both low-level and high-level
     synchronization protocols for seamless interoperability with
-    JavaScript and other Automerge implementations.
+    JavaScript and other 'Automerge' implementations.
 License: MIT + file LICENSE
 URL: https://github.com/posit-dev/automerge-r,
     https://posit-dev.github.io/automerge-r/
