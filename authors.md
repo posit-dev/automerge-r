@@ -111,4 +111,4 @@ package version 0.1.0.9001, <https://github.com/posit-dev/automerge-r>.
      - zerocopy-derive 0.8.33: Joshua Liebow-Feeser, Jack Wrenn
      - zmij 1.0.16: David Tolnay
 
-    (Generated from Cargo.toml files on 2026-01-20)
+    (Generated from Cargo.toml files on 2026-01-21)
