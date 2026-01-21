@@ -140,7 +140,7 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
     # Extract vendored Rust dependencies
     if [ -f "src/automerge/rust/vendor.tar.xz" ] && [ ! -d "src/automerge/rust/vendor" ]; then
         echo "Extracting vendored Rust dependencies..."
-        tar -xJf src/automerge/rust/vendor.tar.xz -C src/automerge/rust
+        xz -dc src/automerge/rust/vendor.tar.xz | tar -xf - -C src/automerge/rust
     fi
 
     # Configure Cargo to use vendored sources
