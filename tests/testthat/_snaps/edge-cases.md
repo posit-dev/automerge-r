@@ -121,9 +121,9 @@
 # marks on non-text objects
 
     Code
-      am_mark_create(list_obj, 0, 2, "bold", TRUE)
+      am_mark(list_obj, 0, 2, "bold", TRUE)
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! Automerge error at cursors.c:LINE: invalid op for object of type `list`
 
 # am_put with very large list position
@@ -161,9 +161,9 @@
 # marks at boundary and beyond
 
     Code
-      am_mark_create(text_obj, 0, 1000, "invalid", "value")
+      am_mark(text_obj, 0, 1000, "invalid", "value")
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! Automerge error at cursors.c:LINE: index 1000 is out of bounds
 
 # counter increment on non-existent keys

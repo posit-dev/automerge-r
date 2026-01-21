@@ -52,7 +52,7 @@ text_obj <- am_get(doc, AM_ROOT, "doc")
 am_text_splice(text_obj, 5, 0, " World")
 
 # Get the full text
-am_text_get(text_obj)  # "Hello World"
+am_text_content(text_obj)  # "Hello World"
 
 # Works naturally with multibyte characters
 am_put(doc, AM_ROOT, "emoji", am_text(""))
@@ -60,5 +60,5 @@ text_obj2 <- am_get(doc, AM_ROOT, "emoji")
 am_text_splice(text_obj2, 0, 0, "Hello😀")
 # Position 5 is the emoji (character index, not bytes)
 am_text_splice(text_obj2, 6, 0, "World")
-am_text_get(text_obj2)  # "Hello😀World"
+am_text_content(text_obj2)  # "Hello😀World"
 }

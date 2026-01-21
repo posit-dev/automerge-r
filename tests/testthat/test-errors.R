@@ -117,7 +117,7 @@ test_that("Text operations with invalid inputs", {
 
   # These should work (baseline)
   am_text_splice(text_obj, 5, 0, " World")
-  result <- am_text_get(text_obj)
+  result <- am_text_content(text_obj)
   expect_equal(result, "Hello World")
 
   # Try text operations on non-text object
@@ -695,77 +695,77 @@ test_that("am_cursor_position validation errors", {
 
 # Mark validation errors ------------------------------------------------------
 
-test_that("am_mark_create validation errors", {
+test_that("am_mark validation errors", {
   doc <- am_create()
   doc$text <- am_text("Hello")
   text_obj <- am_get(doc, AM_ROOT, "text")
 
   # start must be numeric
   expect_snapshot(error = TRUE, {
-    am_mark_create(text_obj, "not numeric", 5, "bold", TRUE)
+    am_mark(text_obj, "not numeric", 5, "bold", TRUE)
   })
 
   # start must be scalar
   expect_snapshot(error = TRUE, {
-    am_mark_create(text_obj, c(0, 1), 5, "bold", TRUE)
+    am_mark(text_obj, c(0, 1), 5, "bold", TRUE)
   })
 
   # start must be non-negative
   expect_snapshot(error = TRUE, {
-    am_mark_create(text_obj, -1, 5, "bold", TRUE)
+    am_mark(text_obj, -1, 5, "bold", TRUE)
   })
 
   # end must be numeric
   expect_snapshot(error = TRUE, {
-    am_mark_create(text_obj, 0, "not numeric", "bold", TRUE)
+    am_mark(text_obj, 0, "not numeric", "bold", TRUE)
   })
 
   # end must be scalar
   expect_snapshot(error = TRUE, {
-    am_mark_create(text_obj, 0, c(3, 5), "bold", TRUE)
+    am_mark(text_obj, 0, c(3, 5), "bold", TRUE)
   })
 
   # end must be non-negative
   expect_snapshot(error = TRUE, {
-    am_mark_create(text_obj, 0, -1, "bold", TRUE)
+    am_mark(text_obj, 0, -1, "bold", TRUE)
   })
 
   # end must be greater than start
   expect_snapshot(error = TRUE, {
-    am_mark_create(text_obj, 5, 5, "bold", TRUE)
+    am_mark(text_obj, 5, 5, "bold", TRUE)
   })
 
   expect_snapshot(error = TRUE, {
-    am_mark_create(text_obj, 5, 3, "bold", TRUE)
+    am_mark(text_obj, 5, 3, "bold", TRUE)
   })
 
   # name must be single character string
   expect_snapshot(error = TRUE, {
-    am_mark_create(text_obj, 0, 5, 123, TRUE)
+    am_mark(text_obj, 0, 5, 123, TRUE)
   })
 
   expect_snapshot(error = TRUE, {
-    am_mark_create(text_obj, 0, 5, c("a", "b"), TRUE)
+    am_mark(text_obj, 0, 5, c("a", "b"), TRUE)
   })
 
   # expand must be valid string
   expect_snapshot(error = TRUE, {
-    am_mark_create(text_obj, 0, 5, "bold", TRUE, expand = "invalid")
+    am_mark(text_obj, 0, 5, "bold", TRUE, expand = "invalid")
   })
 
   expect_snapshot(error = TRUE, {
-    am_mark_create(text_obj, 0, 5, "bold", TRUE, expand = 123)
+    am_mark(text_obj, 0, 5, "bold", TRUE, expand = 123)
   })
 
   # Mark value must be scalar POSIXct
   expect_snapshot(error = TRUE, {
-    am_mark_create(text_obj, 0, 5, "time", as.POSIXct(c("2024-01-01", "2024-01-02")))
+    am_mark(text_obj, 0, 5, "time", as.POSIXct(c("2024-01-01", "2024-01-02")))
   })
 
   # Mark value must be scalar counter
   counter <- structure(c(1L, 2L), class = "am_counter")
   expect_snapshot(error = TRUE, {
-    am_mark_create(text_obj, 0, 5, "counter", counter)
+    am_mark(text_obj, 0, 5, "counter", counter)
   })
 })
 

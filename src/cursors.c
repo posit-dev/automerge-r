@@ -372,7 +372,7 @@ static SEXP amitem_to_r_value(AMitem *item) {
 /**
  * Create a mark on a text range.
  *
- * R signature: am_mark_create(obj, start, end, name, value, expand = "none")
+ * R signature: am_mark(obj, start, end, name, value, expand = "none")
  *
  * @param obj_ptr External pointer to AMobjId (must be text object)
  * @param start R integer (1-based start position, inclusive)
@@ -382,8 +382,8 @@ static SEXP amitem_to_r_value(AMitem *item) {
  * @param expand R character string (expand mode: "none", "before", "after", "both")
  * @return The text object (invisibly)
  */
-SEXP C_am_mark_create(SEXP obj_ptr, SEXP start, SEXP end,
-                      SEXP name, SEXP value, SEXP expand) {
+SEXP C_am_mark(SEXP obj_ptr, SEXP start, SEXP end,
+               SEXP name, SEXP value, SEXP expand) {
     SEXP doc_ptr = get_doc_from_objid(obj_ptr);
     AMdoc *doc = get_doc(doc_ptr);
 

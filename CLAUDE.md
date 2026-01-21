@@ -92,7 +92,7 @@ The package uses a two-phase build approach:
 **0-based indexing (inter-character positions):**
 - Text operations: `am_text_splice()`
 - Cursor operations: `am_cursor()`, `am_cursor_position()`
-- Mark operations: `am_mark_create()`, `am_marks()`
+- Mark operations: `am_mark()`, `am_marks()`
 - Positions specify locations **between** characters (0 = before first character)
 
 ### UTF-32 Character Indexing

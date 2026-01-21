@@ -1,17 +1,17 @@
-# am_mark_create with invalid am_uint64 errors
+# am_mark with invalid am_uint64 errors
 
     Code
-      am_mark_create(text_obj, 0, 5, "bad", bad_uint)
+      am_mark(text_obj, 0, 5, "bad", bad_uint)
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! am_uint64 must be a scalar numeric
 
 ---
 
     Code
-      am_mark_create(text_obj, 0, 5, "bad", bad_uint2)
+      am_mark(text_obj, 0, 5, "bad", bad_uint2)
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! am_uint64 must be a scalar numeric
 
 # am_marks warns for uint64 exceeding 2^53

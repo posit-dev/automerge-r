@@ -26,5 +26,5 @@ text_obj <- am_get(doc, AM_ROOT, "notes")
 text_string <- as.character(text_obj)
 text_string  # "Hello World"
 
-identical(as.character(text_obj), am_text_get(text_obj))  # TRUE
+identical(as.character(text_obj), am_text_content(text_obj))  # TRUE
 }

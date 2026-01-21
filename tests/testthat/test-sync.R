@@ -361,13 +361,13 @@ test_that("sync works with text objects", {
   # Both should have both text objects
   notes1 <- am_get(doc1, AM_ROOT, "notes")
   greet1 <- am_get(doc1, AM_ROOT, "greet")
-  expect_equal(am_text_get(notes1), "Hello from doc1")
-  expect_equal(am_text_get(greet1), "Hi from doc2")
+  expect_equal(am_text_content(notes1), "Hello from doc1")
+  expect_equal(am_text_content(greet1), "Hi from doc2")
 
   notes2 <- am_get(doc2, AM_ROOT, "notes")
   greet2 <- am_get(doc2, AM_ROOT, "greet")
-  expect_equal(am_text_get(notes2), "Hello from doc1")
-  expect_equal(am_text_get(greet2), "Hi from doc2")
+  expect_equal(am_text_content(notes2), "Hello from doc1")
+  expect_equal(am_text_content(greet2), "Hi from doc2")
 })
 
 test_that("am_get_changes with specific heads", {

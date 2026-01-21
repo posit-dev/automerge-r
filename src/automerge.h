@@ -58,8 +58,8 @@ SEXP C_am_keys(SEXP doc_ptr, SEXP obj_ptr);
 SEXP C_am_length(SEXP doc_ptr, SEXP obj_ptr);
 SEXP C_am_insert(SEXP doc_ptr, SEXP obj_ptr, SEXP pos, SEXP value);
 SEXP C_am_text_splice(SEXP text_ptr, SEXP pos, SEXP del_count, SEXP text);
-SEXP C_am_text_get(SEXP text_ptr);
-SEXP C_am_text_splice_diff(SEXP text_ptr, SEXP old_str, SEXP new_str);
+SEXP C_am_text_content(SEXP text_ptr);
+SEXP C_am_text_update(SEXP text_ptr, SEXP old_str, SEXP new_str);
 SEXP C_am_values(SEXP doc_ptr, SEXP obj_ptr);
 SEXP C_am_counter_increment(SEXP doc_ptr, SEXP obj_ptr, SEXP key_or_pos, SEXP delta);
 
@@ -74,7 +74,7 @@ SEXP C_am_apply_changes(SEXP doc_ptr, SEXP changes);
 // Cursor and mark operations (cursors.c)
 SEXP C_am_cursor(SEXP obj_ptr, SEXP position);
 SEXP C_am_cursor_position(SEXP cursor_ptr);
-SEXP C_am_mark_create(SEXP obj_ptr, SEXP start, SEXP end, SEXP name, SEXP value, SEXP expand);
+SEXP C_am_mark(SEXP obj_ptr, SEXP start, SEXP end, SEXP name, SEXP value, SEXP expand);
 SEXP C_am_marks(SEXP obj_ptr);
 SEXP C_am_marks_at(SEXP obj_ptr, SEXP position);
 

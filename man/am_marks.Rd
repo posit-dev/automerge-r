@@ -17,7 +17,7 @@ A list of marks, where each mark is a list with fields:
 \item{start}{Integer start position (0-based inter-character position, inclusive)}
 \item{end}{Integer end position (0-based inter-character position, exclusive)}
 }
-Returns an empty list if no marks are present. See \code{\link[=am_mark_create]{am_mark_create()}} for
+Returns an empty list if no marks are present. See \code{\link[=am_mark]{am_mark()}} for
 indexing details.
 }
 \description{
@@ -29,8 +29,8 @@ doc <- am_create()
 am_put(doc, AM_ROOT, "text", am_text("Hello World"))
 text_obj <- am_get(doc, AM_ROOT, "text")
 
-am_mark_create(text_obj, 0, 5, "bold", TRUE)
-am_mark_create(text_obj, 6, 11, "italic", TRUE)
+am_mark(text_obj, 0, 5, "bold", TRUE)
+am_mark(text_obj, 6, 11, "italic", TRUE)
 
 marks <- am_marks(text_obj)
 marks

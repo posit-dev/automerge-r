@@ -324,7 +324,7 @@ print.am_list <- function(x, ...) {
 #' @keywords internal
 #' @export
 print.am_text <- function(x, ...) {
-  text_content <- am_text_get(x)
+  text_content <- am_text_content(x)
   cat("<Automerge Text>\n")
   cat("Length:", nchar(text_content), "characters\n")
 
@@ -397,7 +397,7 @@ as.list.am_list <- function(x, doc = NULL, ...) {
 #' @return Character string
 #' @keywords internal
 as.list.am_text <- function(x, doc = NULL, ...) {
-  am_text_get(x)
+  am_text_content(x)
 }
 
 #' Convert text object to character string
@@ -417,9 +417,9 @@ as.list.am_text <- function(x, doc = NULL, ...) {
 #' text_string <- as.character(text_obj)
 #' text_string  # "Hello World"
 #'
-#' identical(as.character(text_obj), am_text_get(text_obj))  # TRUE
+#' identical(as.character(text_obj), am_text_content(text_obj))  # TRUE
 as.character.am_text <- function(x, ...) {
-  am_text_get(x)
+  am_text_content(x)
 }
 
 #' Print Automerge cursor

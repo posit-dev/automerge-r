@@ -20,8 +20,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"C_am_length", (DL_FUNC) &C_am_length, 2},
     {"C_am_insert", (DL_FUNC) &C_am_insert, 4},
     {"C_am_text_splice", (DL_FUNC) &C_am_text_splice, 4},
-    {"C_am_text_get", (DL_FUNC) &C_am_text_get, 1},
-    {"C_am_text_splice_diff", (DL_FUNC) &C_am_text_splice_diff, 3},
+    {"C_am_text_content", (DL_FUNC) &C_am_text_content, 1},
+    {"C_am_text_update", (DL_FUNC) &C_am_text_update, 3},
     {"C_am_values", (DL_FUNC) &C_am_values, 2},
     {"C_am_counter_increment", (DL_FUNC) &C_am_counter_increment, 4},
     // Synchronization operations
@@ -38,7 +38,7 @@ static const R_CallMethodDef CallEntries[] = {
     // Cursor and mark operations
     {"C_am_cursor", (DL_FUNC) &C_am_cursor, 2},
     {"C_am_cursor_position", (DL_FUNC) &C_am_cursor_position, 1},
-    {"C_am_mark_create", (DL_FUNC) &C_am_mark_create, 6},
+    {"C_am_mark", (DL_FUNC) &C_am_mark, 6},
     {"C_am_marks", (DL_FUNC) &C_am_marks, 1},
     {"C_am_marks_at", (DL_FUNC) &C_am_marks_at, 2},
     // Helper functions

@@ -599,7 +599,7 @@ SEXP C_am_text_splice(SEXP text_ptr, SEXP pos, SEXP del_count, SEXP text) {
  * @param text_ptr External pointer to AMobjId (must be a text object)
  * @return Character string with the full text content
  */
-SEXP C_am_text_get(SEXP text_ptr) {
+SEXP C_am_text_content(SEXP text_ptr) {
     SEXP doc_ptr = get_doc_from_objid(text_ptr);
     AMdoc *doc = get_doc(doc_ptr);
     const AMobjId *text_obj = get_objid(text_ptr);
@@ -732,7 +732,7 @@ static inline size_t utf8_prev(const char **p, const char *start) {
  * @param new_sexp The new text content (single string)
  * @return R_NilValue (called for side effect)
  */
-SEXP C_am_text_splice_diff(SEXP text_ptr, SEXP old_sexp, SEXP new_sexp) {
+SEXP C_am_text_update(SEXP text_ptr, SEXP old_sexp, SEXP new_sexp) {
     if (TYPEOF(old_sexp) != STRSXP || XLENGTH(old_sexp) != 1)
         Rf_error("'old' must be a single string");
     if (TYPEOF(new_sexp) != STRSXP || XLENGTH(new_sexp) != 1)

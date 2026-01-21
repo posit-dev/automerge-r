@@ -19,7 +19,7 @@ test_that("operations on empty objects of various types", {
   # Empty text
   am_put(doc, AM_ROOT, "text", AM_OBJ_TYPE_TEXT)
   empty_text <- am_get(doc, AM_ROOT, "text")
-  expect_equal(am_text_get(empty_text), "")
+  expect_equal(am_text_content(empty_text), "")
 })
 
 test_that("operations on objects with many elements", {
@@ -49,17 +49,17 @@ test_that("text operations with various Unicode characters", {
   # Emoji
   am_put(doc, AM_ROOT, "emoji", am_text("Hello 😀🎉"))
   text1 <- am_get(doc, AM_ROOT, "emoji")
-  expect_equal(am_text_get(text1), "Hello 😀🎉")
+  expect_equal(am_text_content(text1), "Hello 😀🎉")
 
   # Various Unicode blocks
   am_put(doc, AM_ROOT, "unicode", am_text("日本語 Ελληνικά العربية"))
   text2 <- am_get(doc, AM_ROOT, "unicode")
-  expect_equal(am_text_get(text2), "日本語 Ελληνικά العربية")
+  expect_equal(am_text_content(text2), "日本語 Ελληνικά العربية")
 
   # Text with control characters
   am_put(doc, AM_ROOT, "control", am_text("line1\nline2\ttab"))
   text3 <- am_get(doc, AM_ROOT, "control")
-  expect_equal(am_text_get(text3), "line1\nline2\ttab")
+  expect_equal(am_text_content(text3), "line1\nline2\ttab")
 })
 
 test_that("counter operations edge cases", {
@@ -143,16 +143,16 @@ test_that("text splice at various positions", {
 
   # Splice at beginning
   am_text_splice(text_obj, 0, 0, "Greetings: ")
-  expect_equal(am_text_get(text_obj), "Greetings: Hello World")
+  expect_equal(am_text_content(text_obj), "Greetings: Hello World")
 
   # Splice with deletion (deletes "Greetings: " which is 11 chars)
   am_text_splice(text_obj, 0, 11, "Hi ")
-  expect_equal(am_text_get(text_obj), "Hi Hello World")
+  expect_equal(am_text_content(text_obj), "Hi Hello World")
 
   # Splice at end
-  len <- nchar(am_text_get(text_obj))
+  len <- nchar(am_text_content(text_obj))
   am_text_splice(text_obj, len, 0, "!")
-  expect_equal(am_text_get(text_obj), "Hi Hello World!")
+  expect_equal(am_text_content(text_obj), "Hi Hello World!")
 })
 
 test_that("operations with special key names", {
@@ -496,8 +496,8 @@ test_that("operations on text objects that aren't text", {
   doc$list <- am_list(1, 2, 3)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
-  # am_text_get on a list returns special markers (library handles gracefully)
-  result <- am_text_get(list_obj)
+  # am_text_content on a list returns special markers (library handles gracefully)
+  result <- am_text_content(list_obj)
   # Result is non-empty string with special characters for list items
   expect_type(result, "character")
   expect_equal(length(result), 1)
@@ -521,7 +521,7 @@ test_that("marks on non-text objects", {
 
   # Try to create marks on a list (should error)
   expect_snapshot(error = TRUE, transform = strip_line_numbers, {
-    am_mark_create(list_obj, 0, 2, "bold", TRUE)
+    am_mark(list_obj, 0, 2, "bold", TRUE)
   })
 
   # Query marks on a list returns empty list (library handles gracefully)
@@ -558,11 +558,11 @@ test_that("text operations at boundary positions", {
 
   # Position 5 is valid (at end of "Hello")
   am_text_splice(text_obj, 5, 0, " World")
-  expect_equal(am_text_get(text_obj), "Hello World")
+  expect_equal(am_text_content(text_obj), "Hello World")
 
   # Delete beyond text length is handled gracefully - deletes to end
   am_text_splice(text_obj, 0, 1000, "New")
-  expect_equal(am_text_get(text_obj), "New")
+  expect_equal(am_text_content(text_obj), "New")
 })
 
 test_that("cursor at boundary and beyond", {
@@ -595,7 +595,7 @@ test_that("marks at boundary and beyond", {
   text_obj <- am_get(doc, AM_ROOT, "text")
 
   # Mark from 0 to 5 (entire text)
-  am_mark_create(text_obj, 0, 5, "style", "bold")
+  am_mark(text_obj, 0, 5, "style", "bold")
   marks <- am_marks_at(text_obj, 2)
   expect_true(length(marks) > 0)
 
@@ -605,7 +605,7 @@ test_that("marks at boundary and beyond", {
 
   # Marks beyond text length (should error)
   expect_snapshot(error = TRUE, transform = strip_line_numbers, {
-    am_mark_create(text_obj, 0, 1000, "invalid", "value")
+    am_mark(text_obj, 0, 1000, "invalid", "value")
   })
 })
 
@@ -1024,7 +1024,7 @@ test_that("text operations with empty text objects", {
 
   # Splice into empty text
   am_text_splice(text_obj, 0, 0, "Hello")
-  expect_equal(am_text_get(text_obj), "Hello")
+  expect_equal(am_text_content(text_obj), "Hello")
 
   # Now cursor works with non-empty text
   cursor <- am_cursor(text_obj, 0)
@@ -1058,7 +1058,7 @@ test_that("boundary conditions for marks", {
   text_obj <- am_get(doc, AM_ROOT, "text")
 
   # Mark at start
-  am_mark_create(text_obj, 0, 1, "first", TRUE)
+  am_mark(text_obj, 0, 1, "first", TRUE)
   marks_0 <- am_marks_at(text_obj, 0)
   expect_true(length(marks_0) > 0)
 
@@ -1067,8 +1067,8 @@ test_that("boundary conditions for marks", {
   expect_type(marks_11, "list")
 
   # Overlapping marks
-  am_mark_create(text_obj, 0, 5, "bold", TRUE)
-  am_mark_create(text_obj, 3, 8, "italic", TRUE)
+  am_mark(text_obj, 0, 5, "bold", TRUE)
+  am_mark(text_obj, 3, 8, "italic", TRUE)
   marks_4 <- am_marks_at(text_obj, 4)
   expect_true(length(marks_4) >= 2)  # Should have both marks
 })
@@ -1160,17 +1160,17 @@ test_that("large text operations", {
   text_obj <- am_get(doc, AM_ROOT, "text")
 
   # Verify length
-  result <- am_text_get(text_obj)
+  result <- am_text_content(text_obj)
   expect_equal(nchar(result), 10000)
 
   # Splice in middle
   am_text_splice(text_obj, 5000, 0, "INSERTED")
-  result2 <- am_text_get(text_obj)
+  result2 <- am_text_content(text_obj)
   expect_equal(nchar(result2), 10008)
 
   # Delete large chunk
   am_text_splice(text_obj, 1000, 8000, "")
-  result3 <- am_text_get(text_obj)
+  result3 <- am_text_content(text_obj)
   expect_equal(nchar(result3), 2008)
 })
 

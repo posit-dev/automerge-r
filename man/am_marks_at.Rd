@@ -10,7 +10,7 @@ am_marks_at(obj, position)
 \item{obj}{An Automerge object ID (must be a text object)}
 
 \item{position}{Integer position (0-based inter-character position) to query.
-See \code{\link[=am_mark_create]{am_mark_create()}} for indexing details.}
+See \code{\link[=am_mark]{am_mark()}} for indexing details.}
 }
 \value{
 A list of marks that include the specified position. Returns an empty
@@ -26,8 +26,8 @@ doc <- am_create()
 am_put(doc, AM_ROOT, "text", am_text("Hello World"))
 text_obj <- am_get(doc, AM_ROOT, "text")
 
-am_mark_create(text_obj, 0, 5, "bold", TRUE)
-am_mark_create(text_obj, 2, 7, "underline", TRUE)
+am_mark(text_obj, 0, 5, "bold", TRUE)
+am_mark(text_obj, 2, 7, "underline", TRUE)
 
 # Get marks at position 3 (inside "Hello")
 marks_at_3 <- am_marks_at(text_obj, 3)

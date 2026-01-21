@@ -301,7 +301,7 @@ am_text <- function(initial = "") {
 #' am_text_splice(text_obj, 5, 0, " World")
 #'
 #' # Get the full text
-#' am_text_get(text_obj)  # "Hello World"
+#' am_text_content(text_obj)  # "Hello World"
 #'
 #' # Works naturally with multibyte characters
 #' am_put(doc, AM_ROOT, "emoji", am_text(""))
@@ -309,12 +309,12 @@ am_text <- function(initial = "") {
 #' am_text_splice(text_obj2, 0, 0, "Hello😀")
 #' # Position 5 is the emoji (character index, not bytes)
 #' am_text_splice(text_obj2, 6, 0, "World")
-#' am_text_get(text_obj2)  # "Hello😀World"
+#' am_text_content(text_obj2)  # "Hello😀World"
 am_text_splice <- function(text_obj, pos, del_count, text) {
   invisible(.Call(C_am_text_splice, text_obj, pos, del_count, text))
 }
 
-#' Get text from a text object
+#' Get text content from a text object
 #'
 #' Retrieve the full text content from a text object as a string.
 #'
@@ -326,13 +326,13 @@ am_text_splice <- function(text_obj, pos, del_count, text) {
 #' am_put(doc, AM_ROOT, "doc", am_text("Hello"))
 #' text_obj <- am_get(doc, AM_ROOT, "doc")
 #'
-#' text <- am_text_get(text_obj)
+#' text <- am_text_content(text_obj)
 #' text  # "Hello"
-am_text_get <- function(text_obj) {
-  .Call(C_am_text_get, text_obj)
+am_text_content <- function(text_obj) {
+  .Call(C_am_text_content, text_obj)
 }
 
-#' Compute diff and splice text in one operation
+#' Update text content
 #'
 #' An optimized function for collaborative editing that computes the minimal
 #' diff between old and new text and applies it directly to the text object.
@@ -353,14 +353,14 @@ am_text_get <- function(text_obj) {
 #' text_obj <- am_get(doc, AM_ROOT, "content")
 #'
 #' # Efficiently update text by computing and applying diff in one step
-#' am_text_splice_diff(text_obj, "Hello", "Hello World")
-#' am_text_get(text_obj)  # "Hello World"
+#' am_text_update(text_obj, "Hello", "Hello World")
+#' am_text_content(text_obj)  # "Hello World"
 #'
 #' # Works with Unicode
-#' am_text_splice_diff(text_obj, "Hello World", "Hello World!")
-#' am_text_get(text_obj)  # "Hello World!"
-am_text_splice_diff <- function(text_obj, old_text, new_text) {
-  invisible(.Call(C_am_text_splice_diff, text_obj, old_text, new_text))
+#' am_text_update(text_obj, "Hello World", "Hello World!")
+#' am_text_content(text_obj)  # "Hello World!"
+am_text_update <- function(text_obj, old_text, new_text) {
+  invisible(.Call(C_am_text_update, text_obj, old_text, new_text))
 }
 
 #' Get all values from a map or list

@@ -491,7 +491,7 @@ am_text_splice(notes, current_length, 0, " and R!")
 am_commit(text_doc, "R appended text")
 
 # Get full text
-full_text <- am_text_get(notes)
+full_text <- am_text_content(notes)
 cat("Text after R edit:", full_text, "\n")
 # Output: "Hello from JavaScript and R!"
 

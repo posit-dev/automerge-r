@@ -665,14 +665,14 @@ test_that("as.character.am_text converts text object to string", {
   expect_equal(result, "Hello World")
 })
 
-test_that("as.character.am_text equivalent to am_text_get()", {
+test_that("as.character.am_text equivalent to am_text_content()", {
   doc <- am_create()
   am_put(doc, AM_ROOT, "content", am_text("Test content"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
   # Both should return identical results
   char_result <- as.character(text_obj)
-  get_result <- am_text_get(text_obj)
+  get_result <- am_text_content(text_obj)
 
   expect_identical(char_result, get_result)
 })

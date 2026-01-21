@@ -135,16 +135,16 @@ am_cursor_position <- function(cursor) {
 #' text_obj <- am_get(doc, AM_ROOT, "text")
 #'
 #' # Mark "Hello" as bold (positions 0-4, characters 0-4)
-#' am_mark_create(text_obj, 0, 5, "bold", TRUE)
+#' am_mark(text_obj, 0, 5, "bold", TRUE)
 #'
 #' # Mark "World" as italic with expansion
-#' am_mark_create(text_obj, 6, 11, "italic", TRUE,
-#'                expand = AM_MARK_EXPAND_BOTH)
+#' am_mark(text_obj, 6, 11, "italic", TRUE,
+#'         expand = AM_MARK_EXPAND_BOTH)
 #'
 #' # Get all marks
 #' marks <- am_marks(text_obj)
 #' marks
-am_mark_create <- function(
+am_mark <- function(
   obj,
   start,
   end,
@@ -152,7 +152,7 @@ am_mark_create <- function(
   value,
   expand = AM_MARK_EXPAND_NONE
 ) {
-  invisible(.Call(C_am_mark_create, obj, start, end, name, value, expand))
+  invisible(.Call(C_am_mark, obj, start, end, name, value, expand))
 }
 
 #' Get all marks in a text object
@@ -169,7 +169,7 @@ am_mark_create <- function(
 #'     \item{start}{Integer start position (0-based inter-character position, inclusive)}
 #'     \item{end}{Integer end position (0-based inter-character position, exclusive)}
 #'   }
-#'   Returns an empty list if no marks are present. See [am_mark_create()] for
+#'   Returns an empty list if no marks are present. See [am_mark()] for
 #'   indexing details.
 #'
 #' @export
@@ -178,8 +178,8 @@ am_mark_create <- function(
 #' am_put(doc, AM_ROOT, "text", am_text("Hello World"))
 #' text_obj <- am_get(doc, AM_ROOT, "text")
 #'
-#' am_mark_create(text_obj, 0, 5, "bold", TRUE)
-#' am_mark_create(text_obj, 6, 11, "italic", TRUE)
+#' am_mark(text_obj, 0, 5, "bold", TRUE)
+#' am_mark(text_obj, 6, 11, "italic", TRUE)
 #'
 #' marks <- am_marks(text_obj)
 #' marks
@@ -196,7 +196,7 @@ am_marks <- function(obj) {
 #'
 #' @param obj An Automerge object ID (must be a text object)
 #' @param position Integer position (0-based inter-character position) to query.
-#'   See [am_mark_create()] for indexing details.
+#'   See [am_mark()] for indexing details.
 #'
 #' @return A list of marks that include the specified position. Returns an empty
 #'   list if no marks cover that position.
@@ -207,8 +207,8 @@ am_marks <- function(obj) {
 #' am_put(doc, AM_ROOT, "text", am_text("Hello World"))
 #' text_obj <- am_get(doc, AM_ROOT, "text")
 #'
-#' am_mark_create(text_obj, 0, 5, "bold", TRUE)
-#' am_mark_create(text_obj, 2, 7, "underline", TRUE)
+#' am_mark(text_obj, 0, 5, "bold", TRUE)
+#' am_mark(text_obj, 2, 7, "underline", TRUE)
 #'
 #' # Get marks at position 3 (inside "Hello")
 #' marks_at_3 <- am_marks_at(text_obj, 3)

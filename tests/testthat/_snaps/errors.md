@@ -742,116 +742,116 @@
       Error in `am_cursor_position()`:
       ! cursor must be an external pointer (am_cursor object)
 
-# am_mark_create validation errors
+# am_mark validation errors
 
     Code
-      am_mark_create(text_obj, "not numeric", 5, "bold", TRUE)
+      am_mark(text_obj, "not numeric", 5, "bold", TRUE)
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! start must be numeric
 
 ---
 
     Code
-      am_mark_create(text_obj, c(0, 1), 5, "bold", TRUE)
+      am_mark(text_obj, c(0, 1), 5, "bold", TRUE)
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! start must be a scalar
 
 ---
 
     Code
-      am_mark_create(text_obj, -1, 5, "bold", TRUE)
+      am_mark(text_obj, -1, 5, "bold", TRUE)
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! start must be non-negative (uses 0-based indexing)
 
 ---
 
     Code
-      am_mark_create(text_obj, 0, "not numeric", "bold", TRUE)
+      am_mark(text_obj, 0, "not numeric", "bold", TRUE)
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! end must be numeric
 
 ---
 
     Code
-      am_mark_create(text_obj, 0, c(3, 5), "bold", TRUE)
+      am_mark(text_obj, 0, c(3, 5), "bold", TRUE)
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! end must be a scalar
 
 ---
 
     Code
-      am_mark_create(text_obj, 0, -1, "bold", TRUE)
+      am_mark(text_obj, 0, -1, "bold", TRUE)
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! end must be non-negative (uses 0-based indexing)
 
 ---
 
     Code
-      am_mark_create(text_obj, 5, 5, "bold", TRUE)
+      am_mark(text_obj, 5, 5, "bold", TRUE)
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! end must be greater than start
 
 ---
 
     Code
-      am_mark_create(text_obj, 5, 3, "bold", TRUE)
+      am_mark(text_obj, 5, 3, "bold", TRUE)
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! end must be greater than start
 
 ---
 
     Code
-      am_mark_create(text_obj, 0, 5, 123, TRUE)
+      am_mark(text_obj, 0, 5, 123, TRUE)
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! name must be a single character string
 
 ---
 
     Code
-      am_mark_create(text_obj, 0, 5, c("a", "b"), TRUE)
+      am_mark(text_obj, 0, 5, c("a", "b"), TRUE)
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! name must be a single character string
 
 ---
 
     Code
-      am_mark_create(text_obj, 0, 5, "bold", TRUE, expand = "invalid")
+      am_mark(text_obj, 0, 5, "bold", TRUE, expand = "invalid")
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! Invalid expand value: must be "none", "before", "after", or "both"
 
 ---
 
     Code
-      am_mark_create(text_obj, 0, 5, "bold", TRUE, expand = 123)
+      am_mark(text_obj, 0, 5, "bold", TRUE, expand = 123)
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! expand must be a single character string
 
 ---
 
     Code
-      am_mark_create(text_obj, 0, 5, "time", as.POSIXct(c("2024-01-01", "2024-01-02")))
+      am_mark(text_obj, 0, 5, "time", as.POSIXct(c("2024-01-01", "2024-01-02")))
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! Mark value must be scalar
 
 ---
 
     Code
-      am_mark_create(text_obj, 0, 5, "counter", counter)
+      am_mark(text_obj, 0, 5, "counter", counter)
     Condition
-      Error in `am_mark_create()`:
+      Error in `am_mark()`:
       ! Counter must be a scalar integer
 
 # am_marks_at validation errors

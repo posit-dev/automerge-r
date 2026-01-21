@@ -32,7 +32,7 @@
 #'
 #' @section Mark Expansion Modes:
 #' Constants for controlling how text marks expand when text is inserted
-#' at their boundaries (used with `am_mark_create`):
+#' at their boundaries (used with `am_mark`):
 #' \describe{
 #'   \item{AM_MARK_EXPAND_NONE}{Mark does not expand when text is inserted
 #'     at either boundary.}

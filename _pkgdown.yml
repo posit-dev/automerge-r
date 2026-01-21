@@ -44,9 +44,9 @@ reference:
       Work with collaborative text objects
     contents:
       - am_text
-      - am_text_get
+      - am_text_content
       - am_text_splice
-      - am_text_splice_diff
+      - am_text_update
       - as.character.am_text
 
   - title: "Counters"
@@ -62,7 +62,7 @@ reference:
     contents:
       - am_cursor
       - am_cursor_position
-      - am_mark_create
+      - am_mark
       - am_marks
       - am_marks_at
 
