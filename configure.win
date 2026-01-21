@@ -150,7 +150,7 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
     # Force GNU target to match MinGW toolchain from Rtools
     export RUSTUP_TOOLCHAIN="stable-x86_64-pc-windows-gnu"
 
-    cmake -G "MinGW Makefiles" \
+    cmake -G "Unix Makefiles" \
         -S src/automerge/rust/automerge-c -B build \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
