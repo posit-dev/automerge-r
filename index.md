@@ -40,12 +40,12 @@ am_commit(bob, "Bob's data")
 am_sync(alice, bob)
 alice
 #> <Automerge Document>
-#> Actor: c369131a86cd82c31677aa24e3cadaca 
+#> Actor: e5f2557c243b2ced27187d9daa230154 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 bob
 #> <Automerge Document>
-#> Actor: dc5ba83c10cbd570b666319bb0c25283 
+#> Actor: af4c6407ae26f633c5f219ff9b014517 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 ```
@@ -68,10 +68,10 @@ bob
 ## Installation
 
 ``` r
-install.packages("automerge", repos = "https://posit-dev.r-universe.dev")
+install.packages("automerge")
 ```
 
-Building from source requires Rust \>= 1.81
+Building from source requires Rust \>= 1.80
 ([rustup.rs](https://rustup.rs/)) and CMake \>= 3.25 (included in
 Rtools43+ on Windows).
 
@@ -96,11 +96,6 @@ Rtools43+ on Windows).
   Reference](https://posit-dev.github.io/automerge-r/reference/index.html):
   Complete API documentation
 
-## Status
-
-**Under Active Development**: This package is in initial development and
-functionality may change at any time.
-
 ## External Resources
 
 - [Automerge Website](https://automerge.org/) - Official Automerge
@@ -112,9 +107,9 @@ functionality may change at any time.
 
 ## Related Projects
 
-- [autosync](https://shikokuchuo.net/autosync) - automerge-repo
+- [autosync](https://shikokuchuo.net/autosync/) - automerge-repo
   compatible R sync server
-- [autoedit](https://shikokuchuo.net/autoedit) - Collaborative code
+- [autoedit](https://shikokuchuo.net/autoedit/) - Collaborative code
   editor widget for R and Shiny
 
 ## License

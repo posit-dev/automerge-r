@@ -82,7 +82,7 @@ technology stacks.
 ## Binary Format Compatibility
 
 Automerge uses a standardized binary format (see
-[automerge.org/automerge-binary-format-spec](https://automerge.org/automerge-binary-format-spec))
+[automerge.org/automerge-binary-format-spec](https://automerge.org/automerge-binary-format-spec/))
 that is identical across all implementations. This means:
 
 - Documents saved in JavaScript can be loaded in R
