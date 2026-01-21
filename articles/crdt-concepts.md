@@ -194,7 +194,7 @@ am_text_splice(text8, 19, 0, " high") # Insert " high" at position 19 (end)
 am_merge(doc7, doc8)
 
 # Both edits preserved
-am_text_get(text7)
+am_text_content(text7)
 #> [1] "The quick brown fox jumps high"
 ```
 
@@ -233,7 +233,7 @@ am_text_splice(text11, 5, 0, " World")
 am_text_splice(text12, 5, 0, " Everyone")
 am_merge(doc11, doc12)
 
-am_text_get(text11)
+am_text_content(text11)
 #> [1] "Hello World Everyone"
 ```
 
@@ -287,9 +287,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-01-21 11:34:18 UTC"
+#> [1] "2026-01-21 13:43:36 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-01-21 11:34:18 UTC"
+#> [1] "2026-01-21 13:43:36 UTC"
 ```
 
 **When to use**: Audit trails, modification times, temporal metadata.
@@ -332,10 +332,10 @@ am_put(doc18, AM_ROOT, "text", am_text("Hello World"))
 text18 <- am_get(doc18, AM_ROOT, "text")
 
 # Mark "Hello" as bold (positions 0-4, 0-based)
-am_mark_create(text18, 0, 5, "bold", TRUE, expand = "none")
+am_mark(text18, 0, 5, "bold", TRUE, expand = "none")
 
 # Mark "World" as italic (positions 6-10)
-am_mark_create(text18, 6, 11, "italic", TRUE, expand = "none")
+am_mark(text18, 6, 11, "italic", TRUE, expand = "none")
 
 # Query marks
 marks <- am_marks(text18)
@@ -377,7 +377,7 @@ am_put(doc19, AM_ROOT, "text", am_text("Hello"))
 text19 <- am_get(doc19, AM_ROOT, "text")
 
 # Mark with expansion
-am_mark_create(text19, 0, 5, "bold", TRUE, expand = "after")
+am_mark(text19, 0, 5, "bold", TRUE, expand = "after")
 
 # Insert at end of mark
 am_text_splice(text19, 5, 0, " World")
@@ -541,7 +541,7 @@ am_merge(doc26, doc27)
 
 # One will win - application should handle both states sensibly
 doc26[["status"]] # Should be prepared for either 'published' or 'archived'
-#> [1] "published"
+#> [1] "archived"
 ```
 
 ## Further Reading

@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -197,18 +197,18 @@ documentation with <code>?function_name</code>.</p>
 <span></span>
 <span><span class="co"># Operations</span></span>
 <span><span class="fu"><a href="../reference/am_text_splice.html">am_text_splice</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">5</span>, <span class="fl">0</span>, <span class="st">" World"</span><span class="op">)</span> <span class="co"># Insert at position 5</span></span>
-<span><span class="va">content</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_text_get.html">am_text_get</a></span><span class="op">(</span><span class="va">text_obj</span><span class="op">)</span> <span class="co"># Get full text</span></span>
+<span><span class="va">content</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_text_content.html">am_text_content</a></span><span class="op">(</span><span class="va">text_obj</span><span class="op">)</span> <span class="co"># Get full text</span></span>
 <span></span>
-<span><span class="co"># Optimized diff+splice (ideal for collaborative editing)</span></span>
-<span><span class="va">old_text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_text_get.html">am_text_get</a></span><span class="op">(</span><span class="va">text_obj</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/am_text_splice_diff.html">am_text_splice_diff</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="va">old_text</span>, <span class="st">"Hello Universe"</span><span class="op">)</span> <span class="co"># Computes and applies diff</span></span>
+<span><span class="co"># Update text (ideal for collaborative editing)</span></span>
+<span><span class="va">old_text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_text_content.html">am_text_content</a></span><span class="op">(</span><span class="va">text_obj</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_text_update.html">am_text_update</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="va">old_text</span>, <span class="st">"Hello Universe"</span><span class="op">)</span> <span class="co"># Computes and applies diff</span></span>
 <span></span>
 <span><span class="co"># Cursors (stable positions)</span></span>
 <span><span class="va">cursor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_cursor.html">am_cursor</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">5</span><span class="op">)</span> <span class="co"># Create cursor at position 5</span></span>
 <span><span class="va">pos</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_cursor_position.html">am_cursor_position</a></span><span class="op">(</span><span class="va">cursor</span><span class="op">)</span> <span class="co"># Get current position</span></span>
 <span></span>
 <span><span class="co"># Marks (formatting)</span></span>
-<span><span class="fu"><a href="../reference/am_mark_create.html">am_mark_create</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="st">"bold"</span>, <span class="cn">TRUE</span>, expand <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_mark.html">am_mark</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="st">"bold"</span>, <span class="cn">TRUE</span>, expand <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span><span class="va">marks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_marks.html">am_marks</a></span><span class="op">(</span><span class="va">text_obj</span><span class="op">)</span> <span class="co"># Get all marks</span></span>
 <span><span class="va">marks_at</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_marks_at.html">am_marks_at</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">2</span><span class="op">)</span> <span class="co"># Marks at position 2</span></span></code></pre></div>
 </div>

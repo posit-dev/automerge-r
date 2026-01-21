@@ -35,6 +35,6 @@ text_string <- as.character(text_obj)
 text_string  # "Hello World"
 #> [1] "Hello World"
 
-identical(as.character(text_obj), am_text_get(text_obj))  # TRUE
+identical(as.character(text_obj), am_text_content(text_obj))  # TRUE
 #> [1] TRUE
 ```

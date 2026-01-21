@@ -19,7 +19,7 @@ am_marks_at(obj, position)
 - position:
 
   Integer position (0-based inter-character position) to query. See
-  [`am_mark_create()`](https://posit-dev.github.io/automerge-r/reference/am_mark_create.md)
+  [`am_mark()`](https://posit-dev.github.io/automerge-r/reference/am_mark.md)
   for indexing details.
 
 ## Value
@@ -34,8 +34,8 @@ doc <- am_create()
 am_put(doc, AM_ROOT, "text", am_text("Hello World"))
 text_obj <- am_get(doc, AM_ROOT, "text")
 
-am_mark_create(text_obj, 0, 5, "bold", TRUE)
-am_mark_create(text_obj, 2, 7, "underline", TRUE)
+am_mark(text_obj, 0, 5, "bold", TRUE)
+am_mark(text_obj, 2, 7, "underline", TRUE)
 
 # Get marks at position 3 (inside "Hello")
 marks_at_3 <- am_marks_at(text_obj, 3)

@@ -9,7 +9,7 @@ edit text CRDT objects."><script src="https://cdn.jsdelivr.net/gh/posit-dev/supp
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -107,7 +107,7 @@ counts as 1 character, matching R's <code><a href="https://rdrr.io/r/base/nchar.
 <span class="r-in"><span><span class="fu">am_text_splice</span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">5</span>, <span class="fl">0</span>, <span class="st">" World"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get the full text</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="am_text_get.html">am_text_get</a></span><span class="op">(</span><span class="va">text_obj</span><span class="op">)</span>  <span class="co"># "Hello World"</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="am_text_content.html">am_text_content</a></span><span class="op">(</span><span class="va">text_obj</span><span class="op">)</span>  <span class="co"># "Hello World"</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Hello World"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Works naturally with multibyte characters</span></span></span>
@@ -116,7 +116,7 @@ counts as 1 character, matching R's <code><a href="https://rdrr.io/r/base/nchar.
 <span class="r-in"><span><span class="fu">am_text_splice</span><span class="op">(</span><span class="va">text_obj2</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="st">"Hello😀"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Position 5 is the emoji (character index, not bytes)</span></span></span>
 <span class="r-in"><span><span class="fu">am_text_splice</span><span class="op">(</span><span class="va">text_obj2</span>, <span class="fl">6</span>, <span class="fl">0</span>, <span class="st">"World"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="am_text_get.html">am_text_get</a></span><span class="op">(</span><span class="va">text_obj2</span><span class="op">)</span>  <span class="co"># "Hello😀World"</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="am_text_content.html">am_text_content</a></span><span class="op">(</span><span class="va">text_obj2</span><span class="op">)</span>  <span class="co"># "Hello😀World"</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Hello😀World"</span>
 </code></pre></div>
     </div>

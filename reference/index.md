@@ -55,12 +55,12 @@ Work with collaborative text objects
 
 - [`am_text()`](https://posit-dev.github.io/automerge-r/reference/am_text.md)
   : Create an Automerge text object
-- [`am_text_get()`](https://posit-dev.github.io/automerge-r/reference/am_text_get.md)
-  : Get text from a text object
+- [`am_text_content()`](https://posit-dev.github.io/automerge-r/reference/am_text_content.md)
+  : Get text content from a text object
 - [`am_text_splice()`](https://posit-dev.github.io/automerge-r/reference/am_text_splice.md)
   : Splice text in a text object
-- [`am_text_splice_diff()`](https://posit-dev.github.io/automerge-r/reference/am_text_splice_diff.md)
-  : Compute diff and splice text in one operation
+- [`am_text_update()`](https://posit-dev.github.io/automerge-r/reference/am_text_update.md)
+  : Update text content
 - [`as.character(`*`<am_text>`*`)`](https://posit-dev.github.io/automerge-r/reference/as.character.am_text.md)
   : Convert text object to character string
 
@@ -81,7 +81,7 @@ Stable positions and text formatting
   : Create a cursor at a position in a text object
 - [`am_cursor_position()`](https://posit-dev.github.io/automerge-r/reference/am_cursor_position.md)
   : Get the current position of a cursor
-- [`am_mark_create()`](https://posit-dev.github.io/automerge-r/reference/am_mark_create.md)
+- [`am_mark()`](https://posit-dev.github.io/automerge-r/reference/am_mark.md)
   : Create a mark on a text range
 - [`am_marks()`](https://posit-dev.github.io/automerge-r/reference/am_marks.md)
   : Get all marks in a text object

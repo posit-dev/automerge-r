@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -273,7 +273,7 @@ They handle concurrent insertions, deletions, and edits gracefully.</p>
 <span><span class="fu"><a href="../reference/am_merge.html">am_merge</a></span><span class="op">(</span><span class="va">doc7</span>, <span class="va">doc8</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Both edits preserved</span></span>
-<span><span class="fu"><a href="../reference/am_text_get.html">am_text_get</a></span><span class="op">(</span><span class="va">text7</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_text_content.html">am_text_content</a></span><span class="op">(</span><span class="va">text7</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "The quick brown fox jumps high"</span></span></code></pre></div>
 <p><strong>When to use</strong>: Collaborative documents, shared notes,
 code editors, chat messages.</p>
@@ -308,7 +308,7 @@ provide character-level CRDT merging.</p>
 <span><span class="fu"><a href="../reference/am_text_splice.html">am_text_splice</a></span><span class="op">(</span><span class="va">text12</span>, <span class="fl">5</span>, <span class="fl">0</span>, <span class="st">" Everyone"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_merge.html">am_merge</a></span><span class="op">(</span><span class="va">doc11</span>, <span class="va">doc12</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/am_text_get.html">am_text_get</a></span><span class="op">(</span><span class="va">text11</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_text_content.html">am_text_content</a></span><span class="op">(</span><span class="va">text11</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Hello World Everyone"</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -359,9 +359,9 @@ conflict resolution semantics (one value wins).</p>
 <span><span class="fu"><a href="../reference/am_merge.html">am_merge</a></span><span class="op">(</span><span class="va">doc15</span>, <span class="va">doc16</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc15</span><span class="op">[[</span><span class="st">"created_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-01-21 11:34:18 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-01-21 13:43:36 UTC"</span></span>
 <span><span class="va">doc15</span><span class="op">[[</span><span class="st">"updated_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-01-21 11:34:18 UTC"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "2026-01-21 13:43:36 UTC"</span></span></code></pre></div>
 <p><strong>When to use</strong>: Audit trails, modification times,
 temporal metadata.</p>
 </div>
@@ -403,10 +403,10 @@ annotations.</p>
 <span><span class="va">text18</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get.html">am_get</a></span><span class="op">(</span><span class="va">doc18</span>, <span class="va">AM_ROOT</span>, <span class="st">"text"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Mark "Hello" as bold (positions 0-4, 0-based)</span></span>
-<span><span class="fu"><a href="../reference/am_mark_create.html">am_mark_create</a></span><span class="op">(</span><span class="va">text18</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="st">"bold"</span>, <span class="cn">TRUE</span>, expand <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_mark.html">am_mark</a></span><span class="op">(</span><span class="va">text18</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="st">"bold"</span>, <span class="cn">TRUE</span>, expand <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Mark "World" as italic (positions 6-10)</span></span>
-<span><span class="fu"><a href="../reference/am_mark_create.html">am_mark_create</a></span><span class="op">(</span><span class="va">text18</span>, <span class="fl">6</span>, <span class="fl">11</span>, <span class="st">"italic"</span>, <span class="cn">TRUE</span>, expand <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_mark.html">am_mark</a></span><span class="op">(</span><span class="va">text18</span>, <span class="fl">6</span>, <span class="fl">11</span>, <span class="st">"italic"</span>, <span class="cn">TRUE</span>, expand <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Query marks</span></span>
 <span><span class="va">marks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_marks.html">am_marks</a></span><span class="op">(</span><span class="va">text18</span><span class="op">)</span></span>
@@ -445,7 +445,7 @@ is inserted at boundaries: - <code>"none"</code>: Mark doesn’t expand -
 <span><span class="va">text19</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get.html">am_get</a></span><span class="op">(</span><span class="va">doc19</span>, <span class="va">AM_ROOT</span>, <span class="st">"text"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Mark with expansion</span></span>
-<span><span class="fu"><a href="../reference/am_mark_create.html">am_mark_create</a></span><span class="op">(</span><span class="va">text19</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="st">"bold"</span>, <span class="cn">TRUE</span>, expand <span class="op">=</span> <span class="st">"after"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_mark.html">am_mark</a></span><span class="op">(</span><span class="va">text19</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="st">"bold"</span>, <span class="cn">TRUE</span>, expand <span class="op">=</span> <span class="st">"after"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Insert at end of mark</span></span>
 <span><span class="fu"><a href="../reference/am_text_splice.html">am_text_splice</a></span><span class="op">(</span><span class="va">text19</span>, <span class="fl">5</span>, <span class="fl">0</span>, <span class="st">" World"</span><span class="op">)</span></span>
@@ -618,7 +618,7 @@ well:</p>
 <span></span>
 <span><span class="co"># One will win - application should handle both states sensibly</span></span>
 <span><span class="va">doc26</span><span class="op">[[</span><span class="st">"status"</span><span class="op">]</span><span class="op">]</span> <span class="co"># Should be prepared for either 'published' or 'archived'</span></span>
-<span><span class="co">#&gt; [1] "published"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "archived"</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">

@@ -122,18 +122,18 @@ text_obj <- am_get(doc, AM_ROOT, "content")
 
 # Operations
 am_text_splice(text_obj, 5, 0, " World") # Insert at position 5
-content <- am_text_get(text_obj) # Get full text
+content <- am_text_content(text_obj) # Get full text
 
-# Optimized diff+splice (ideal for collaborative editing)
-old_text <- am_text_get(text_obj)
-am_text_splice_diff(text_obj, old_text, "Hello Universe") # Computes and applies diff
+# Update text (ideal for collaborative editing)
+old_text <- am_text_content(text_obj)
+am_text_update(text_obj, old_text, "Hello Universe") # Computes and applies diff
 
 # Cursors (stable positions)
 cursor <- am_cursor(text_obj, 5) # Create cursor at position 5
 pos <- am_cursor_position(cursor) # Get current position
 
 # Marks (formatting)
-am_mark_create(text_obj, 0, 5, "bold", TRUE, expand = "none")
+am_mark(text_obj, 0, 5, "bold", TRUE, expand = "none")
 marks <- am_marks(text_obj) # Get all marks
 marks_at <- am_marks_at(text_obj, 2) # Marks at position 2
 ```

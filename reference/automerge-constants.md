@@ -73,7 +73,7 @@ String constants for creating Automerge objects:
 ## Mark Expansion Modes
 
 Constants for controlling how text marks expand when text is inserted at
-their boundaries (used with `am_mark_create`):
+their boundaries (used with `am_mark`):
 
 - AM_MARK_EXPAND_NONE:
 

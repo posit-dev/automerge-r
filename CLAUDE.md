@@ -110,7 +110,7 @@ Cursor operations:
 [`am_cursor()`](https://posit-dev.github.io/automerge-r/reference/am_cursor.md),
 [`am_cursor_position()`](https://posit-dev.github.io/automerge-r/reference/am_cursor_position.md) -
 Mark operations:
-[`am_mark_create()`](https://posit-dev.github.io/automerge-r/reference/am_mark_create.md),
+[`am_mark()`](https://posit-dev.github.io/automerge-r/reference/am_mark.md),
 [`am_marks()`](https://posit-dev.github.io/automerge-r/reference/am_marks.md) -
 Positions specify locations **between** characters (0 = before first
 character)

@@ -36,7 +36,7 @@ A list of marks, where each mark is a list with fields:
   Integer end position (0-based inter-character position, exclusive)
 
 Returns an empty list if no marks are present. See
-[`am_mark_create()`](https://posit-dev.github.io/automerge-r/reference/am_mark_create.md)
+[`am_mark()`](https://posit-dev.github.io/automerge-r/reference/am_mark.md)
 for indexing details.
 
 ## Examples
@@ -46,8 +46,8 @@ doc <- am_create()
 am_put(doc, AM_ROOT, "text", am_text("Hello World"))
 text_obj <- am_get(doc, AM_ROOT, "text")
 
-am_mark_create(text_obj, 0, 5, "bold", TRUE)
-am_mark_create(text_obj, 6, 11, "italic", TRUE)
+am_mark(text_obj, 0, 5, "bold", TRUE)
+am_mark(text_obj, 6, 11, "italic", TRUE)
 
 marks <- am_marks(text_obj)
 marks

@@ -43,7 +43,7 @@ library(automerge)
 doc <- am_create()
 print(doc)
 #> <Automerge Document>
-#> Actor: 90dae4ee876b8b4437d44d841748d245 
+#> Actor: 0703a6a8f5037e33ab7d5998d6ab664e 
 #> Root keys: 0
 ```
 
@@ -244,14 +244,14 @@ text_obj <- am_get(doc7, AM_ROOT, "content")
 # 0 1 2 3 4 5  <- positions (0-based, between characters)
 
 am_text_splice(text_obj, 8, 0, "amazing ") # Insert at position 8
-am_text_get(text_obj)
+am_text_content(text_obj)
 #> [1] "Initial amazing content"
 
-# For collaborative editors, use am_text_splice_diff() which computes
+# For collaborative editors, use am_text_update() which computes
 # and applies the minimal diff in one step:
-old_text <- am_text_get(text_obj)
-am_text_splice_diff(text_obj, old_text, "New content from user input")
-am_text_get(text_obj)
+old_text <- am_text_content(text_obj)
+am_text_update(text_obj, old_text, "New content from user input")
+am_text_content(text_obj)
 #> [1] "New content from user input"
 ```
 
@@ -285,7 +285,7 @@ am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
-#> [1] "2026-01-21 11:34:15 UTC"
+#> [1] "2026-01-21 13:43:33 UTC"
 ```
 
 ## Saving and Loading Documents
@@ -366,7 +366,7 @@ doc12[["value1"]]
 doc12[["value2"]]
 #> [1] 200
 doc12[["source"]] # One value wins deterministically for conflicting keys
-#> [1] "doc13"
+#> [1] "doc12"
 ```
 
 ## Basic Synchronization
