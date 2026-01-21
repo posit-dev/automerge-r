@@ -67,10 +67,10 @@ bob
 ## Installation
 
 ```r
-install.packages("automerge", repos = "https://posit-dev.r-universe.dev")
+install.packages("automerge")
 ```
 
-Building from source requires Rust >= 1.81 ([rustup.rs](https://rustup.rs/)) and CMake >= 3.25 (included in Rtools43+ on Windows).
+Building from source requires Rust >= 1.80 ([rustup.rs](https://rustup.rs/)) and CMake >= 3.25 (included in Rtools43+ on Windows).
 
 ## Documentation
 
@@ -81,10 +81,6 @@ Building from source requires Rust >= 1.81 ([rustup.rs](https://rustup.rs/)) and
 - [Cross-Platform Synchronization](https://posit-dev.github.io/automerge-r/articles/cross-platform.html): Interoperability with JavaScript and other platforms
 - [Function Reference](https://posit-dev.github.io/automerge-r/reference/index.html): Complete API documentation
 
-## Status
-
-**Under Active Development**: This package is in initial development and functionality may change at any time.
-
 ## External Resources
 
 - [Automerge Website](https://automerge.org/) - Official Automerge documentation and guides
@@ -93,8 +89,8 @@ Building from source requires Rust >= 1.81 ([rustup.rs](https://rustup.rs/)) and
 
 ## Related Projects
 
-- [autosync](https://shikokuchuo.net/autosync) - automerge-repo compatible R sync server
-- [autoedit](https://shikokuchuo.net/autoedit) - Collaborative code editor widget for R and Shiny
+- [autosync](https://shikokuchuo.net/autosync/) - automerge-repo compatible R sync server
+- [autoedit](https://shikokuchuo.net/autoedit/) - Collaborative code editor widget for R and Shiny
 
 ## License
 

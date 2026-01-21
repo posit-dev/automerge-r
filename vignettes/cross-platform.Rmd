@@ -89,7 +89,7 @@ One of Automerge's key strengths is seamless synchronization across different pl
 
 ## Binary Format Compatibility
 
-Automerge uses a standardized binary format (see [automerge.org/automerge-binary-format-spec](https://automerge.org/automerge-binary-format-spec)) that is identical across all implementations. This means:
+Automerge uses a standardized binary format (see [automerge.org/automerge-binary-format-spec](https://automerge.org/automerge-binary-format-spec/)) that is identical across all implementations. This means:
 
 - Documents saved in JavaScript can be loaded in R
 - Changes made in R can be merged back into JavaScript

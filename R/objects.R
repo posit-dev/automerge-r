@@ -288,8 +288,8 @@ am_text <- function(initial = "") {
 #'  0 1 2 3 4 5  <- positions (0-based, between characters)
 #' }
 #'
-#' Positions count Unicode code points (characters), not bytes. The emoji "😀"
-#' counts as 1 character, matching R's `nchar()` behavior.
+#' Positions count Unicode code points (characters), not bytes. The word
+#' "Français" counts as 8 characters, matching R's `nchar()` behavior.
 #'
 #' @export
 #' @examples
@@ -304,12 +304,12 @@ am_text <- function(initial = "") {
 #' am_text_content(text_obj)  # "Hello World"
 #'
 #' # Works naturally with multibyte characters
-#' am_put(doc, AM_ROOT, "emoji", am_text(""))
-#' text_obj2 <- am_get(doc, AM_ROOT, "emoji")
-#' am_text_splice(text_obj2, 0, 0, "Hello😀")
-#' # Position 5 is the emoji (character index, not bytes)
-#' am_text_splice(text_obj2, 6, 0, "World")
-#' am_text_content(text_obj2)  # "Hello😀World"
+#' am_put(doc, AM_ROOT, "greet", am_text(""))
+#' text_obj2 <- am_get(doc, AM_ROOT, "greet")
+#' am_text_splice(text_obj2, 0, 0, "Column café")
+#' # Position 11 is after "café" (character index, not bytes)
+#' am_text_splice(text_obj2, 11, 0, "!")
+#' am_text_content(text_obj2)  # "Column café!"
 am_text_splice <- function(text_obj, pos, del_count, text) {
   invisible(.Call(C_am_text_splice, text_obj, pos, del_count, text))
 }

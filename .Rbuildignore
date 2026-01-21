@@ -19,3 +19,4 @@
 ^vignettes/.*\.automerge$
 ^inst/js/.*\.automerge$
 ^src/automerge/rust/vendor$
+^cran-comments\.md$
