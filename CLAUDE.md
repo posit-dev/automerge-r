@@ -55,7 +55,7 @@ The package uses a two-phase build approach:
 
 2. **Bundled Build**: If system library not found, builds from `src/automerge/rust/automerge-c/`
    - Uses CMake with `-DUTF32_INDEXING=ON`
-   - Requires Rust >= 1.81.0 and CMake >= 3.25
+   - Requires Rust >= 1.80.0 and CMake >= 3.25
 
 ## Code Structure
 

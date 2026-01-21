@@ -4,7 +4,7 @@
 # ============================================================================
 #
 # This script reduces the Minimum Supported Rust Version (MSRV) from 1.89 to
-# 1.81 by downgrading dependencies and replacing unstable std library features.
+# 1.80 by downgrading dependencies and replacing unstable std library features.
 #
 # IMPORTANT: These patches have already been applied to the source files and
 # vendored dependencies in this package. This script is kept for reference
@@ -56,7 +56,7 @@ sedi() {
 # Patch automerge/Cargo.toml
 CARGO_AUTOMERGE="$RUST_DIR/automerge/Cargo.toml"
 if [ -f "$CARGO_AUTOMERGE" ]; then
-    sedi 's/rust-version = "1.89.0"/rust-version = "1.81.0"/' "$CARGO_AUTOMERGE"
+    sedi 's/rust-version = "1.89.0"/rust-version = "1.80.0"/' "$CARGO_AUTOMERGE"
     sedi 's/sha2 = "0.11.0-pre.5"/sha2 = "0.10.8"/' "$CARGO_AUTOMERGE"
     sedi 's/smol_str = { version = "0.3"/smol_str = { version = "0.2"/' "$CARGO_AUTOMERGE"
     sedi 's/getrandom = "0.3"/getrandom = "0.2"/' "$CARGO_AUTOMERGE"
@@ -129,4 +129,4 @@ if [ -f "$RUST_DIR/Cargo.lock" ]; then
     rm -f "$RUST_DIR/Cargo.lock"
 fi
 
-echo "MSRV patch applied successfully (target: Rust 1.81)"
+echo "MSRV patch applied successfully (target: Rust 1.80)"
