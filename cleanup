@@ -2,8 +2,7 @@
 
 rm -f src/Makevars src/Makevars.win
 rm -f src/*.o src/*.so src/*.dll src/symbols.rds
-rm -rf build
-rm -rf install
+rm -rf am-build am-install
 rm -rf src/automerge/rust/automerge-c/build
 rm -f src/automerge/rust/automerge-c/cmake_config.log
 rm -f src/automerge/rust/automerge-c/cmake_build.log

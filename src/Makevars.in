@@ -4,12 +4,12 @@ PKG_LIBS = @PKG_LIBS@
 SOURCES = cursors.c document.c errors.c init.c memory.c objects.c sync.c
 OBJECTS = $(SOURCES:.c=.o)
 
-.PHONY: all clean-archives clean
+.PHONY: all tidy clean
 
-all: clean-archives
+all: tidy
 
-clean-archives: $(SHLIB)
-	@rm -rf automerge/rust/vendor ../install/lib/*.a
+tidy: $(SHLIB)
+	@rm -rf automerge/rust/vendor ../am-build ../am-install
 
 $(SHLIB): $(OBJECTS)
 

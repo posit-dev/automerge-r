@@ -1,6 +1,6 @@
 Type: Package
 Package: automerge
-Title: R Bindings for Automerge CRDT Library
+Title: R Bindings for 'Automerge' 'CRDT' Library
 Version: 0.1.0.9001
 Authors@R: c(
     person("Charlie", "Gao", , "charlie.gao@posit.co", role = c("aut", "cre"),
@@ -11,7 +11,7 @@ Authors@R: c(
            comment = "see inst/AUTHORS file")
   )
 Description: Provides R bindings to the 'Automerge' Conflict-free
-    Replicated Data Type (CRDT) library. 'Automerge' enables automatic
+    Replicated Data Type ('CRDT') library. 'Automerge' enables automatic
     merging of concurrent changes without conflicts, making it ideal for
     distributed systems, collaborative applications, and offline-first
     architectures.  The package supports all 'Automerge' data types (maps,

@@ -152,10 +152,10 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
     echo "using Rust package manager: '$($CARGO_CMD --version)'"
     echo "using Rust compiler: '$($RUSTC_CMD --version)'"
 
-    rm -rf build install
+    rm -rf am-build am-install
 
     # Set TMPDIR to avoid rustix test file warning in R CMD check
-    export TMPDIR="${PWD}/build/tmp"
+    export TMPDIR="${PWD}/am-build/tmp"
     mkdir -p "$TMPDIR"
 
     # Extract vendored Rust dependencies (CMakeLists.txt configures Cargo to use them)
@@ -164,10 +164,10 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
         xz -dc src/automerge/rust/vendor.tar.xz | tar -xf - -C src/automerge/rust
     fi
 
-    cmake -S src/automerge/rust/automerge-c -B build \
+    cmake -S src/automerge/rust/automerge-c -B am-build \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-        -DCMAKE_INSTALL_PREFIX="${PWD}/install" \
+        -DCMAKE_INSTALL_PREFIX="${PWD}/am-install" \
         -DCMAKE_INSTALL_LIBDIR=lib \
         -DBUILD_TESTING=OFF \
         -DCMAKE_COLOR_MAKEFILE=OFF \
@@ -176,23 +176,23 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
         || { echo "ERROR: CMake configuration failed"; exit 1; }
 
     echo "Building (this may take several minutes)..."
-    cmake --build build --config Release \
+    cmake --build am-build --config Release \
         || { echo "ERROR: Build failed"; exit 1; }
 
-    cmake --build build --target install \
+    cmake --build am-build --target install \
         || { echo "ERROR: Install failed"; exit 1; }
 
-    rm -rf build
+    rm -rf am-build
 
-    if [ ! -d "install/lib" ]; then
+    if [ ! -d "am-install/lib" ]; then
         echo "ERROR: Installation did not create expected lib directory"
         exit 1
     fi
 
     echo "Successfully built automerge-c from source"
 
-    PKG_CFLAGS="-I../install/include"
-    PKG_LIBS="../install/lib/libautomerge.a -pthread"
+    PKG_CFLAGS="-I../am-install/include"
+    PKG_LIBS="../am-install/lib/libautomerge.a -pthread"
 fi
 
 case "$(uname -s)" in

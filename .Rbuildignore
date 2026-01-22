@@ -6,8 +6,8 @@
 ^\.github$
 ^\.claude$
 ^CLAUDE.md$
-^build$
-^install$
+^am-build$
+^am-install$
 ^README\.Rmd$
 ^[.]?air[.]toml$
 ^\.vscode$

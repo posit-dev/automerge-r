@@ -9,8 +9,8 @@
 automerge.Rcheck/
 src/Makevars
 compile_commands.json
-build
-install
+am-build
+am-install
 /.quarto/
 **/*.quarto_ipynb
 docs
