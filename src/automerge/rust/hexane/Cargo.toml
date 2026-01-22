@@ -13,7 +13,6 @@ bench = false
 
 
 [features]
-wasm = ["web-sys"]
 
 [dependencies]
 leb128 = "^0.2.5"
@@ -22,15 +21,6 @@ thiserror = "^2.0.12"
 [lints]
 workspace = true
 
-[dev-dependencies]
-proptest = { version = "^1.7", default-features = false, features = ["std"] }
-rand = { version = "^0.8", optional = false, features = ["small_rng"] }
-divan = "0.1.15"
-
 [profile.release]
 debug = true
 
-[dependencies.web-sys]
-version = "^0.3.55"
-features = ["console"]
-optional = true

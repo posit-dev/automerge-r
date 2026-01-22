@@ -6,7 +6,6 @@ Authors of bundled Rust crates:
  - bitflags 1.3.2: The Rust Project Developers
  - bitflags 2.10.0: The Rust Project Developers
  - block-buffer 0.10.4: RustCrypto Developers
- - bumpalo 3.19.1: Nick Fitzgerald
  - cbindgen 0.26.0: Emilio Cobos Álvarez, Jeff Muizelaar, Kartikaya Gupta, Ryan Hunt
  - cfg-if 1.0.4: Alex Crichton
  - cpufeatures 0.2.17: RustCrypto Developers
@@ -36,14 +35,13 @@ Authors of bundled Rust crates:
  - once_cell 1.21.3: Aleksey Kladov
  - os_str_bytes 6.6.1: dylni
  - ppv-lite86 0.2.21: The CryptoCorrosion Contributors
- - proc-macro2 1.0.105: David Tolnay, Alex Crichton
+ - proc-macro2 1.0.106: David Tolnay, Alex Crichton
  - quote 1.0.43: David Tolnay
  - rand 0.8.5: The Rand Project Developers, The Rust Project Developers
  - rand_chacha 0.3.1: The Rand Project Developers, The Rust Project Developers, The CryptoCorrosion Contributors
  - rand_core 0.6.4: The Rand Project Developers, The Rust Project Developers
  - rustc-hash 2.1.1: The Rust Project Developers
  - rustix 1.1.3: Dan Gohman, Jakub Konka
- - rustversion 1.0.22: David Tolnay
  - serde 1.0.228: Erick Tryzelaar, David Tolnay
  - serde_core 1.0.228: Erick Tryzelaar, David Tolnay
  - serde_derive 1.0.228: Erick Tryzelaar, David Tolnay
@@ -79,4 +77,4 @@ Authors of bundled Rust crates:
  - zerocopy-derive 0.8.33: Joshua Liebow-Feeser, Jack Wrenn
  - zmij 1.0.16: David Tolnay
 
-(Generated from Cargo.toml files on 2026-01-21)
+(Generated from Cargo.toml files on 2026-01-22)
