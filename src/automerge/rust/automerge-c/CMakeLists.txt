@@ -141,7 +141,7 @@ add_custom_command(
         # Force cbindgen to regenerate the header file by updating its configuration file; removing the header won't.
         ${CMAKE_COMMAND} -DCONDITION=NOT_EXISTS -P ${PROJECT_SOURCE_DIR}/cmake/file-touch.cmake -- ${CBINDGEN_TARGET_DIR}/${LIBRARY_NAME}.h ${PROJECT_SOURCE_DIR}/cbindgen.toml
     COMMAND
-        ${CMAKE_COMMAND} -E env CARGO_TARGET_DIR=${CARGO_TARGET_DIR} CBINDGEN_TARGET_DIR=${CBINDGEN_TARGET_DIR} RUSTUP_TOOLCHAIN=${RUSTUP_TOOLCHAIN} RUSTFLAGS=${RUSTFLAGS} ${CARGO_CMD} build ${CARGO_FLAGS} ${CARGO_FEATURES}
+        ${CMAKE_COMMAND} -E env CARGO_SOURCE_CRATES_IO_REPLACE_WITH=vendored-sources CARGO_SOURCE_VENDORED_SOURCES_DIRECTORY=${PROJECT_SOURCE_DIR}/../vendor CARGO_TARGET_DIR=${CARGO_TARGET_DIR} CBINDGEN_TARGET_DIR=${CBINDGEN_TARGET_DIR} RUSTUP_TOOLCHAIN=${RUSTUP_TOOLCHAIN} RUSTFLAGS=${RUSTFLAGS} ${CARGO_CMD} build ${CARGO_FLAGS} ${CARGO_FEATURES}
     COMMAND
         # Compensate for cbindgen's translation of consecutive uppercase letters to "ScreamingSnakeCase".
         ${CMAKE_COMMAND} -DMATCH_REGEX=A_M\([^_]+\)_ -DREPLACE_EXPR=AM_\\1_ -P ${PROJECT_SOURCE_DIR}/cmake/file-regex-replace.cmake -- ${CBINDGEN_TARGET_DIR}/${LIBRARY_NAME}.h

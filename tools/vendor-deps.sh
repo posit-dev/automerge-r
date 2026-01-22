@@ -211,6 +211,20 @@ mkdir -p inst
 CRATE_COUNT=$(grep -c "^ - " "$AUTHORS_FILE" || echo "0")
 echo "  Written $AUTHORS_FILE with $CRATE_COUNT crate entries"
 
+# ----------------------------------------------------------------------------
+# Patch CMakeLists.txt to use vendored sources via environment variables
+# ----------------------------------------------------------------------------
+echo "Patching CMakeLists.txt for vendored sources..."
+
+CMAKELISTS="$RUST_DIR/automerge-c/CMakeLists.txt"
+
+# Add vendor environment variables to the cargo build command
+# The env vars are (per https://doc.rust-lang.org/cargo/reference/environment-variables.html):
+#   CARGO_SOURCE_CRATES_IO_REPLACE_WITH - replaces crates-io source
+#   CARGO_SOURCE_VENDORED_SOURCES_DIRECTORY - path to vendored crates
+sed -i.bak 's|\(${CMAKE_COMMAND} -E env\) \(CARGO_TARGET_DIR=\)|\1 CARGO_SOURCE_CRATES_IO_REPLACE_WITH=vendored-sources CARGO_SOURCE_VENDORED_SOURCES_DIRECTORY=${PROJECT_SOURCE_DIR}/../vendor \2|' "$CMAKELISTS"
+rm -f "${CMAKELISTS}.bak"
+
 # Create compressed archive
 echo "Creating archive..."
 tar -cJf "$ARCHIVE" -C "$RUST_DIR" vendor

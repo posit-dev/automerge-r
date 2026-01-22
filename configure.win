@@ -137,15 +137,11 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
     export TMPDIR="${PWD}/build/tmp"
     mkdir -p "$TMPDIR"
 
-    # Extract vendored Rust dependencies
+    # Extract vendored Rust dependencies (CMakeLists.txt configures Cargo to use them)
     if [ -f "src/automerge/rust/vendor.tar.xz" ] && [ ! -d "src/automerge/rust/vendor" ]; then
         echo "Extracting vendored Rust dependencies..."
         xz -dc src/automerge/rust/vendor.tar.xz | tar -xf - -C src/automerge/rust
     fi
-
-    # Configure Cargo to use vendored sources
-    export CARGO_SOURCE_CRATES_IO_REPLACE_WITH=vendored-sources
-    export CARGO_SOURCE_VENDORED_SOURCES_DIRECTORY="${PWD}/src/automerge/rust/vendor"
 
     # Force GNU target to match MinGW toolchain from Rtools
     export RUSTUP_TOOLCHAIN="stable-x86_64-pc-windows-gnu"
