@@ -156,8 +156,8 @@ for (i in seq_len(am_length(doc5, items5))) {
   print(am_get(doc5, items5, i))
 }
 #> [1] "A"
-#> [1] "B2"
 #> [1] "B1"
+#> [1] "B2"
 #> [1] "C"
 ```
 
@@ -287,9 +287,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-01-22 00:19:36 UTC"
+#> [1] "2026-01-22 09:22:19 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-01-22 00:19:36 UTC"
+#> [1] "2026-01-22 09:22:19 UTC"
 ```
 
 **When to use**: Audit trails, modification times, temporal metadata.
@@ -541,7 +541,7 @@ am_merge(doc26, doc27)
 
 # One will win - application should handle both states sensibly
 doc26[["status"]] # Should be prepared for either 'published' or 'archived'
-#> [1] "published"
+#> [1] "archived"
 ```
 
 ## Further Reading

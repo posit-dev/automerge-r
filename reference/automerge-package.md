@@ -1,13 +1,13 @@
-# automerge: R Bindings for Automerge CRDT Library
+# automerge: R Bindings for 'Automerge' 'CRDT' Library
 
 Provides R bindings to the 'Automerge' Conflict-free Replicated Data
-Type (CRDT) library. 'Automerge' enables automatic merging of concurrent
-changes without conflicts, making it ideal for distributed systems,
-collaborative applications, and offline-first architectures. The package
-supports all 'Automerge' data types (maps, lists, text, counters) and
-provides both low-level and high-level synchronization protocols for
-seamless interoperability with JavaScript and other 'Automerge'
-implementations.
+Type ('CRDT') library. 'Automerge' enables automatic merging of
+concurrent changes without conflicts, making it ideal for distributed
+systems, collaborative applications, and offline-first architectures.
+The package supports all 'Automerge' data types (maps, lists, text,
+counters) and provides both low-level and high-level synchronization
+protocols for seamless interoperability with JavaScript and other
+'Automerge' implementations.
 
 ## See also
 
