@@ -137,6 +137,21 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
     export TMPDIR="${PWD}/am-build/tmp"
     mkdir -p "$TMPDIR"
 
+    # Set CARGO_HOME to prevent writes to ~/.cargo (CRAN policy)
+    export CARGO_HOME="${PWD}/am-build/.cargo"
+    mkdir -p "$CARGO_HOME"
+
+    # Generate vendor config with absolute path (env vars don't work for source replacement)
+    # Use pwd -W to get Windows-style path (MSYS2 bash built-in)
+    WIN_PWD=$(pwd -W)
+    cat > "$CARGO_HOME/config.toml" << EOF
+[source.crates-io]
+replace-with = "vendored-sources"
+
+[source.vendored-sources]
+directory = "${WIN_PWD}/src/automerge/rust/vendor"
+EOF
+
     # Extract vendored Rust dependencies (CMakeLists.txt configures Cargo to use them)
     if [ -f "src/automerge/rust/vendor.tar.xz" ] && [ ! -d "src/automerge/rust/vendor" ]; then
         echo "Extracting vendored Rust dependencies..."

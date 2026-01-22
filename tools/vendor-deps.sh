@@ -35,19 +35,30 @@ rm -rf "$VENDOR_DIR"
 rm -f "$ARCHIVE"
 
 # ----------------------------------------------------------------------------
-# Step 1: Temporarily remove dev-dependencies to reduce vendor size
+# Step 1: Temporarily remove dev-dependencies and WASM deps to reduce vendor size
 # ----------------------------------------------------------------------------
-echo "Preparing Cargo.toml files (removing dev-dependencies)..."
+echo "Preparing Cargo.toml files (removing dev-dependencies and WASM deps)..."
 
 # Files with dev-dependencies that need modification
 CARGO_FILES="$RUST_DIR/automerge/Cargo.toml $RUST_DIR/hexane/Cargo.toml"
 
-# Backup and strip dev-dependencies
+# Backup and strip dev-dependencies and WASM optional deps
 for cargo_file in $CARGO_FILES; do
     if [ -f "$cargo_file" ]; then
         cp "$cargo_file" "${cargo_file}.bak"
-        # Remove [dev-dependencies] section and everything until next section or EOF
-        sed '/^\[dev-dependencies\]/,/^\[/{/^\[dev-dependencies\]/d;/^\[/!d;}' "$cargo_file" > "${cargo_file}.tmp"
+        # Remove section contents (keep headers for idempotent patching)
+        # Remove wasm feature line and js-sys, wasm-bindgen optional deps
+        # Using awk for BSD/GNU portability
+        awk '
+            /^\[dev-dependencies\]/ { skip = 1; print; next }
+            /^\[dependencies\.web-sys\]/ { skip = 1; print; next }
+            /^\[/ { skip = 0 }
+            skip { next }
+            /^wasm = \[/ { next }
+            /^js-sys = / { next }
+            /^wasm-bindgen = / { next }
+            { print }
+        ' "$cargo_file" > "${cargo_file}.tmp"
         mv "${cargo_file}.tmp" "$cargo_file"
     fi
 done
@@ -64,22 +75,14 @@ cd "$RUST_DIR"
 cargo vendor vendor
 cd - > /dev/null
 
-# Restore original Cargo.toml files
-echo "Restoring Cargo.toml files..."
+# Remove backup files (keep stripped Cargo.toml files without dev-deps and WASM)
+echo "Removing backup files..."
 for cargo_file in $CARGO_FILES; do
-    if [ -f "${cargo_file}.bak" ]; then
-        mv "${cargo_file}.bak" "$cargo_file"
-    fi
+    rm -f "${cargo_file}.bak"
 done
 
-# Restore original Cargo.lock
-echo "Restoring Cargo.lock..."
-cd "$RUST_DIR"
-cargo generate-lockfile
-cd - > /dev/null
-
 # ----------------------------------------------------------------------------
-# Step 2: Remove WASM-related crates (unused by C FFI)
+# Step 2: Remove WASM-related crates (unused by C FFI, excluded from Cargo.lock)
 # ----------------------------------------------------------------------------
 echo "Removing WASM-related crates..."
 WASM_CRATES="web-sys js-sys wasm-bindgen wasm-bindgen-backend wasm-bindgen-macro wasm-bindgen-macro-support wasm-bindgen-shared"
@@ -89,14 +92,19 @@ done
 
 echo "Pruning unnecessary files..."
 
-# Remove test directories
+# Remove test, example, and benchmark directories
 find "$VENDOR_DIR" -type d -name "tests" -exec rm -rf {} + 2>/dev/null || true
-
-# Remove example directories
 find "$VENDOR_DIR" -type d -name "examples" -exec rm -rf {} + 2>/dev/null || true
-
-# Remove benchmark directories
 find "$VENDOR_DIR" -type d -name "benches" -exec rm -rf {} + 2>/dev/null || true
+
+# Remove README files
+find "$VENDOR_DIR" -type f -name "README*" -delete 2>/dev/null || true
+
+# Restore empty placeholders for crates with build.rs or include_str! that require them
+mkdir -p "$VENDOR_DIR/cbindgen/tests/rust" "$VENDOR_DIR/cbindgen/tests/depfile"
+mkdir -p "$VENDOR_DIR/clap/examples"
+touch "$VENDOR_DIR/clap/examples/demo.rs" "$VENDOR_DIR/clap/examples/demo.md"
+touch "$VENDOR_DIR/getrandom/README.md" "$VENDOR_DIR/getrandom-0.2.17/README.md"
 
 # Remove CI directories
 find "$VENDOR_DIR" -type d -name ".github" -exec rm -rf {} + 2>/dev/null || true
@@ -119,9 +127,6 @@ find "$VENDOR_DIR" -type f -name ".travis.yml" -delete 2>/dev/null || true
 find "$VENDOR_DIR" -type f -name ".appveyor.yml" -delete 2>/dev/null || true
 find "$VENDOR_DIR" -type f -name "azure-pipelines.yml" -delete 2>/dev/null || true
 find "$VENDOR_DIR" -type f -name ".circleci" -delete 2>/dev/null || true
-
-# Remove README files (keep LICENSE files)
-find "$VENDOR_DIR" -type f -name "README*" -delete 2>/dev/null || true
 
 # Remove editor and tool config
 find "$VENDOR_DIR" -type f -name ".editorconfig" -delete 2>/dev/null || true
@@ -212,17 +217,17 @@ CRATE_COUNT=$(grep -c "^ - " "$AUTHORS_FILE" || echo "0")
 echo "  Written $AUTHORS_FILE with $CRATE_COUNT crate entries"
 
 # ----------------------------------------------------------------------------
-# Patch CMakeLists.txt to use vendored sources via environment variables
+# Patch CMakeLists.txt to pass CARGO_HOME to cargo
 # ----------------------------------------------------------------------------
-echo "Patching CMakeLists.txt for vendored sources..."
+echo "Patching CMakeLists.txt..."
 
 CMAKELISTS="$RUST_DIR/automerge-c/CMakeLists.txt"
 
-# Add vendor environment variables to the cargo build command
-# The env vars are (per https://doc.rust-lang.org/cargo/reference/environment-variables.html):
-#   CARGO_SOURCE_CRATES_IO_REPLACE_WITH - replaces crates-io source
-#   CARGO_SOURCE_VENDORED_SOURCES_DIRECTORY - path to vendored crates
-sed -i.bak 's|\(${CMAKE_COMMAND} -E env\) \(CARGO_TARGET_DIR=\)|\1 CARGO_SOURCE_CRATES_IO_REPLACE_WITH=vendored-sources CARGO_SOURCE_VENDORED_SOURCES_DIRECTORY=${PROJECT_SOURCE_DIR}/../vendor \2|' "$CMAKELISTS"
+# Add CARGO_HOME to the cargo build command and limit parallel jobs to 2
+# (CRAN policy compliance). Source replacement config is generated by
+# configure scripts with absolute paths, since CARGO_SOURCE_* env vars
+# don't work for source replacement settings.
+sed -i.bak 's|\(${CMAKE_COMMAND} -E env\) \(CARGO_TARGET_DIR=\)|\1 CARGO_HOME=$ENV{CARGO_HOME} \2|; s|\(${CARGO_CMD} build\) \(${CARGO_FLAGS}\)|\1 -j2 \2|' "$CMAKELISTS"
 rm -f "${CMAKELISTS}.bak"
 
 # Create compressed archive
