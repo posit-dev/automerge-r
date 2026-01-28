@@ -53,9 +53,9 @@ am_create <- function(actor_id = NULL) {
 #' bytes <- am_save(doc)
 #'
 #' # Save to file
-#' \dontrun{
-#' writeBin(am_save(doc), "document.automerge")
-#' }
+#' file <- tempfile()
+#' writeBin(am_save(doc), file)
+#' unlink(file)
 am_save <- function(doc) {
   .Call(C_am_save, doc)
 }
@@ -78,10 +78,12 @@ am_save <- function(doc) {
 #' bytes <- am_save(doc1)
 #' doc2 <- am_load(bytes)
 #'
-#' # Load from file
-#' \dontrun{
-#' doc <- am_load(readBin("document.automerge", "raw", 1e7))
-#' }
+#' # Save to and load from file
+#' file <- tempfile()
+#' writeBin(am_save(doc1), file)
+#'
+#' doc <- am_load(readBin(file, "raw", 1e5))
+#' unlink(file)
 am_load <- function(data) {
   .Call(C_am_load, data)
 }
