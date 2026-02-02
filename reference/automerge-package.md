@@ -4,9 +4,12 @@ Provides R bindings to the 'Automerge' Conflict-free Replicated Data
 Type ('CRDT') library. 'Automerge' enables automatic merging of
 concurrent changes without conflicts, making it ideal for distributed
 systems, collaborative applications, and offline-first architectures.
-The package supports all 'Automerge' data types (maps, lists, text,
+The approach of local-first software was proposed in Kleppmann, M.,
+Wiggins, A., van Hardenberg, P., McGranaghan, M. (2019)
+[doi:10.1145/3359591.3359737](https://doi.org/10.1145/3359591.3359737) .
+This package supports all 'Automerge' data types (maps, lists, text,
 counters) and provides both low-level and high-level synchronization
-protocols for seamless interoperability with JavaScript and other
+protocols for seamless interoperability with 'JavaScript' and other
 'Automerge' implementations.
 
 ## See also

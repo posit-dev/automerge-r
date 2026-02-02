@@ -1,8 +1,10 @@
 # Changelog
 
-## automerge (development version)
+## automerge 0.2.0
 
-- Pre-release.
+CRAN release: 2026-01-31
+
+- Initial CRAN release.
 
 ## automerge 0.1.0
 

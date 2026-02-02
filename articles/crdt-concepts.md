@@ -234,7 +234,7 @@ am_text_splice(text12, 5, 0, " Everyone")
 am_merge(doc11, doc12)
 
 am_text_content(text11)
-#> [1] "Hello Everyone World"
+#> [1] "Hello World Everyone"
 ```
 
 ### Counters
@@ -287,9 +287,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-01-22 13:39:58 UTC"
+#> [1] "2026-02-02 09:03:39 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-01-22 13:39:58 UTC"
+#> [1] "2026-02-02 09:03:39 UTC"
 ```
 
 **When to use**: Audit trails, modification times, temporal metadata.
