@@ -15,16 +15,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/posit-dev/automerge-r/blob/v0.2.0/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/posit-dev/automerge-r/blob/main/DESCRIPTION)
 
 Gao C (2026). *automerge: R Bindings for 'Automerge' 'CRDT' Library*. R
-package version 0.2.0, <https://github.com/posit-dev/automerge-r>.
+package version 0.2.0.9000, <https://github.com/posit-dev/automerge-r>.
 
     @Manual{,
       title = {automerge: R Bindings for 'Automerge' 'CRDT' Library},
       author = {Charlie Gao},
       year = {2026},
-      note = {R package version 0.2.0},
+      note = {R package version 0.2.0.9000},
       url = {https://github.com/posit-dev/automerge-r},
     }
 
