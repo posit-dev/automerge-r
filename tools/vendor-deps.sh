@@ -14,8 +14,9 @@
 #
 # Size Optimization Strategy:
 #   1. Temporarily removes [dev-dependencies] sections before vendoring
-#   2. Removes unused WASM-related crates (web-sys, js-sys, wasm-bindgen)
-#   3. Prunes test/example/benchmark directories and documentation
+#   2. Pins tempfile to 3.3.0 (uses winapi instead of windows-sys for smaller footprint)
+#   3. Removes unused WASM-related crates (web-sys, js-sys, wasm-bindgen, wit-bindgen)
+#   4. Prunes test/example/benchmark directories and documentation
 #
 # ============================================================================
 
@@ -67,6 +68,8 @@ done
 echo "Regenerating Cargo.lock..."
 cd "$RUST_DIR"
 cargo generate-lockfile
+# Pin tempfile to 3.3.0 to use winapi instead of windows-sys (smaller dependency footprint)
+cargo update -p tempfile --precise 3.3.0
 cd - > /dev/null
 
 # Vendor dependencies (now without dev-dependencies)
@@ -85,7 +88,7 @@ done
 # Step 2: Remove WASM-related crates (unused by C FFI, excluded from Cargo.lock)
 # ----------------------------------------------------------------------------
 echo "Removing WASM-related crates..."
-WASM_CRATES="web-sys js-sys wasm-bindgen wasm-bindgen-backend wasm-bindgen-macro wasm-bindgen-macro-support wasm-bindgen-shared"
+WASM_CRATES="web-sys js-sys wasm-bindgen wasm-bindgen-backend wasm-bindgen-macro wasm-bindgen-macro-support wasm-bindgen-shared wit-bindgen wit-bindgen-rt wasip2"
 for crate in $WASM_CRATES; do
     rm -rf "$VENDOR_DIR/$crate"
 done
@@ -102,9 +105,12 @@ find "$VENDOR_DIR" -type f -name "README*" -delete 2>/dev/null || true
 
 # Restore empty placeholders for crates with build.rs or include_str! that require them
 mkdir -p "$VENDOR_DIR/cbindgen/tests/rust" "$VENDOR_DIR/cbindgen/tests/depfile"
-mkdir -p "$VENDOR_DIR/clap/examples"
-touch "$VENDOR_DIR/clap/examples/demo.rs" "$VENDOR_DIR/clap/examples/demo.md"
-touch "$VENDOR_DIR/getrandom/README.md" "$VENDOR_DIR/getrandom-0.2.17/README.md"
+mkdir -p "$VENDOR_DIR/winnow/examples/css"
+touch "$VENDOR_DIR/winnow/examples/css/parser.rs"
+# getrandom requires README.md (may have version suffix like getrandom-0.2.17)
+for dir in "$VENDOR_DIR"/getrandom*; do
+    [ -d "$dir" ] && touch "$dir/README.md"
+done
 
 # Remove CI directories
 find "$VENDOR_DIR" -type d -name ".github" -exec rm -rf {} + 2>/dev/null || true

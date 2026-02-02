@@ -288,7 +288,7 @@ impl<'a> VecEncoder<'a> {
         let num_ops = num_ops as usize;
         let mut data = Vec::new();
         data.try_reserve(num_ops).map_err(|_| OutOfMemory)?;
-        data.extend(std::iter::repeat(None).take(num_ops));
+        data.extend(std::iter::repeat_n(None, num_ops));
         Ok(Self { data })
     }
 

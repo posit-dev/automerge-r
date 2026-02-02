@@ -84,7 +84,7 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
     echo "System automerge not found, building from bundled source..."
 
     # Minimum Rust version required (MSRV)
-    RUST_MSRV="1.80"
+    RUST_MSRV="1.84"
 
     # Check for Rust toolchain (cargo and rustc)
     # CRAN policy: check both system PATH and ~/.cargo/bin
