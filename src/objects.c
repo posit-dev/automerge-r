@@ -186,7 +186,8 @@ static void populate_object_from_r_list(AMdoc *doc, const AMobjId *obj_id,
         Rf_error("Expected R list for nested object population");
     }
 
-    SEXP names = Rf_getAttrib(r_list, R_NamesSymbol);
+    SEXP names;
+    PROTECT(names = Rf_getAttrib(r_list, R_NamesSymbol));
     bool is_map = (names != R_NilValue);
 
     R_xlen_t n = Rf_xlength(r_list);
@@ -222,6 +223,7 @@ static void populate_object_from_r_list(AMdoc *doc, const AMobjId *obj_id,
             UNPROTECT(1);
         }
     }
+    UNPROTECT(1);
 }
 
 /**
