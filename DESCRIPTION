@@ -1,7 +1,7 @@
 Type: Package
 Package: automerge
 Title: R Bindings for 'Automerge' 'CRDT' Library
-Version: 0.1.0.9001
+Version: 0.2.0
 Authors@R: c(
     person("Charlie", "Gao", , "charlie.gao@posit.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-0750-061X")),
@@ -14,10 +14,12 @@ Description: Provides R bindings to the 'Automerge' Conflict-free
     Replicated Data Type ('CRDT') library. 'Automerge' enables automatic
     merging of concurrent changes without conflicts, making it ideal for
     distributed systems, collaborative applications, and offline-first
-    architectures.  The package supports all 'Automerge' data types (maps,
-    lists, text, counters) and provides both low-level and high-level
-    synchronization protocols for seamless interoperability with
-    JavaScript and other 'Automerge' implementations.
+    architectures. The approach of local-first software was proposed in
+    Kleppmann, M., Wiggins, A., van Hardenberg, P., McGranaghan, M. (2019)
+    <doi:10.1145/3359591.3359737>. This package supports all 'Automerge'
+    data types (maps, lists, text, counters) and provides both low-level
+    and high-level synchronization protocols for seamless interoperability
+    with 'JavaScript' and other 'Automerge' implementations.
 License: MIT + file LICENSE
 URL: https://github.com/posit-dev/automerge-r,
     https://posit-dev.github.io/automerge-r/

@@ -1,6 +1,6 @@
-# automerge (development version)
+# automerge 0.2.0
 
-* Pre-release.
+* Initial CRAN release.
 
 # automerge 0.1.0
 

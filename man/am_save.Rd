@@ -23,7 +23,7 @@ doc <- am_create()
 bytes <- am_save(doc)
 
 # Save to file
-\dontrun{
-writeBin(am_save(doc), "document.automerge")
-}
+file <- tempfile()
+writeBin(am_save(doc), file)
+unlink(file)
 }

@@ -24,8 +24,10 @@ doc1 <- am_create()
 bytes <- am_save(doc1)
 doc2 <- am_load(bytes)
 
-# Load from file
-\dontrun{
-doc <- am_load(readBin("document.automerge", "raw", 1e7))
-}
+# Save to and load from file
+file <- tempfile()
+writeBin(am_save(doc1), file)
+
+doc <- am_load(readBin(file, "raw", 1e5))
+unlink(file)
 }
