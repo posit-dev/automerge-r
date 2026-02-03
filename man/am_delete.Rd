@@ -25,4 +25,5 @@ Removes a key-value pair from a map or an element from a list.
 doc <- am_create()
 am_put(doc, AM_ROOT, "temp", "value")
 am_delete(doc, AM_ROOT, "temp")
+am_close(doc)
 }

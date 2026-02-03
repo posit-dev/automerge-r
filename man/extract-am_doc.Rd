@@ -31,4 +31,5 @@ am_put(doc, AM_ROOT, "age", 30L)
 
 doc[["name"]]  # "Alice"
 doc$age        # 30L
+am_close(doc)
 }

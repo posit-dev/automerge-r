@@ -22,6 +22,7 @@
 #'
 #' doc[["name"]]  # "Alice"
 #' doc$age        # 30L
+#' am_close(doc)
 `[[.am_doc` <- function(x, i) {
   am_get(x, AM_ROOT, i)
 }
@@ -50,6 +51,7 @@
 #' doc <- am_create()
 #' doc[["name"]] <- "Bob"
 #' doc$age <- 25L
+#' am_close(doc)
 `[[<-.am_doc` <- function(x, i, value) {
   am_put(x, AM_ROOT, i, value)
 }
@@ -72,6 +74,7 @@
 #' doc$a <- 1
 #' doc$b <- 2
 #' length(doc)  # 2
+#' am_close(doc)
 length.am_doc <- function(x) {
   am_length(x, AM_ROOT)
 }
@@ -88,6 +91,7 @@ length.am_doc <- function(x) {
 #' doc$name <- "Alice"
 #' doc$age <- 30L
 #' names(doc)  # c("name", "age")
+#' am_close(doc)
 names.am_doc <- function(x) {
   am_keys(x, AM_ROOT)
 }
@@ -134,6 +138,7 @@ print.am_doc <- function(x, ...) {
 #' doc$age <- 30L
 #'
 #' as.list(doc)  # list(name = "Alice", age = 30L)
+#' am_close(doc)
 as.list.am_doc <- function(x, ...) {
   root_keys <- am_keys(x, AM_ROOT)
   root_values <- am_values(x, AM_ROOT)
@@ -169,6 +174,7 @@ as.list.am_doc <- function(x, ...) {
 #'
 #' user[["name"]]  # "Bob"
 #' user$age        # 25L
+#' am_close(doc)
 `[[.am_object` <- function(x, i) {
   doc <- .Call(C_get_doc_from_objid, x)
   am_get(doc, x, i)
@@ -201,6 +207,7 @@ as.list.am_doc <- function(x, ...) {
 #'
 #' user[["name"]] <- "Alice"
 #' user$age <- 30L
+#' am_close(doc)
 `[[<-.am_object` <- function(x, i, value) {
   doc <- .Call(C_get_doc_from_objid, x)
   am_put(doc, x, i, value)
@@ -418,6 +425,7 @@ as.list.am_text <- function(x, doc = NULL, ...) {
 #' text_string  # "Hello World"
 #'
 #' identical(as.character(text_obj), am_text_content(text_obj))  # TRUE
+#' am_close(doc)
 as.character.am_text <- function(x, ...) {
   am_text_content(x)
 }

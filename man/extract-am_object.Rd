@@ -30,4 +30,5 @@ user <- am_get(doc, AM_ROOT, "user")
 
 user[["name"]]  # "Bob"
 user$age        # 25L
+am_close(doc)
 }

@@ -36,4 +36,5 @@ doc$users <- list(
   list(name = "Carol")
 )
 am_get_path(doc, list("users", 1, "name"))  # "Bob"
+am_close(doc)
 }

@@ -33,4 +33,6 @@ changes <- am_get_changes(doc1, NULL)
 am_apply_changes(doc2, changes)
 
 # Now doc2 has the same data as doc1
+am_close(doc1)
+am_close(doc2)
 }

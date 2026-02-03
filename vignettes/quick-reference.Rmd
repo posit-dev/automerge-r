@@ -55,6 +55,9 @@ am_merge(doc, doc2) # Merge doc2 into doc1
 # Transactions
 am_commit(doc, "message") # Commit changes
 am_rollback(doc) # Cancel pending changes
+
+# Cleanup
+am_close(doc) # Explicitly free resources (optional)
 ```
 
 ## Basic Access (Maps)

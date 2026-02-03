@@ -25,4 +25,5 @@ am_put(doc, AM_ROOT, "b", 2)
 
 keys <- am_keys(doc, AM_ROOT)
 keys  # c("a", "b")
+am_close(doc)
 }

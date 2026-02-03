@@ -32,4 +32,5 @@ am_set_actor(doc, "0123456789abcdef0123456789abcdef")
 
 # Generate new random actor ID
 am_set_actor(doc, NULL)
+am_close(doc)
 }

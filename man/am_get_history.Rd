@@ -32,4 +32,5 @@ am_commit(doc, "Update")
 
 history <- am_get_history(doc)
 cat("Document history contains", length(history), "change(s)\n")
+am_close(doc)
 }

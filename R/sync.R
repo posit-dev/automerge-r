@@ -23,6 +23,8 @@
 #' sync2 <- am_sync_state_new()
 #'
 #' # Use with am_sync_encode() and am_sync_decode()
+#' am_close(doc1)
+#' am_close(doc2)
 am_sync_state_new <- function() {
   .Call(C_am_sync_state_new)
 }
@@ -51,6 +53,7 @@ am_sync_state_new <- function() {
 #' if (!is.null(msg)) {
 #'   # Send msg to peer...
 #' }
+#' am_close(doc)
 am_sync_encode <- function(doc, sync_state) {
   .Call(C_am_sync_encode, doc, sync_state)
 }
@@ -75,6 +78,7 @@ am_sync_encode <- function(doc, sync_state) {
 #' # Receive message from peer
 #' # message <- ... (received from network)
 #' # am_sync_decode(doc, sync_state, message)
+#' am_close(doc)
 am_sync_decode <- function(doc, sync_state, message) {
   invisible(.Call(C_am_sync_decode, doc, sync_state, message))
 }
@@ -110,6 +114,8 @@ am_sync_decode <- function(doc, sync_state, message) {
 #' cat("Synced in", rounds, "rounds\n")
 #'
 #' # Now both documents have both x and y
+#' am_close(doc1)
+#' am_close(doc2)
 am_sync <- function(doc1, doc2) {
   if (!inherits(doc1, "am_doc")) {
     stop("doc1 must be an Automerge document")
@@ -165,6 +171,7 @@ am_sync <- function(doc1, doc2) {
 #'
 #' heads <- am_get_heads(doc)
 #' cat("Document has", length(heads), "head(s)\n")
+#' am_close(doc)
 am_get_heads <- function(doc) {
   .Call(C_am_get_heads, doc)
 }
@@ -192,6 +199,7 @@ am_get_heads <- function(doc) {
 #' # Get all changes
 #' all_changes <- am_get_changes(doc, NULL)
 #' cat("Document has", length(all_changes), "change(s)\n")
+#' am_close(doc)
 am_get_changes <- function(doc, heads = NULL) {
   .Call(C_am_get_changes, doc, heads)
 }
@@ -222,6 +230,8 @@ am_get_changes <- function(doc, heads = NULL) {
 #' am_apply_changes(doc2, changes)
 #'
 #' # Now doc2 has the same data as doc1
+#' am_close(doc1)
+#' am_close(doc2)
 am_apply_changes <- function(doc, changes) {
   invisible(.Call(C_am_apply_changes, doc, changes))
 }
@@ -251,6 +261,7 @@ am_apply_changes <- function(doc, changes) {
 #'
 #' history <- am_get_history(doc)
 #' cat("Document history contains", length(history), "change(s)\n")
+#' am_close(doc)
 am_get_history <- function(doc) {
   am_get_changes(doc, NULL)
 }

@@ -54,6 +54,8 @@ doc <- am_create()
 print(doc)
 ```
 
+Note: When you're done working with a document, you can explicitly free its resources with `am_close(doc)` if you don't want to wait for garbage collection.
+
 ### Adding Data - Three Approaches
 
 Automerge provides multiple ways to add data, from functional to R-idiomatic:
@@ -93,6 +95,8 @@ doc2 <- am_create() |>
   am_commit("Initial setup")
 
 doc2 |> am_get(AM_ROOT, "name")
+
+am_close(doc2)
 ```
 
 ## Working with Nested Structures
@@ -153,6 +157,9 @@ am_put_path(doc4, c("config", "cache", "ttl"), 3600L)
 
 # Retrieve values with paths
 am_get_path(doc4, c("config", "database", "host"))
+
+am_close(doc3)
+am_close(doc4)
 ```
 
 ### Converting R Data Structures
@@ -181,6 +188,8 @@ am_commit(doc5, "Initial configuration")
 
 # Easy access with paths
 am_get_path(doc5, c("database", "port"))
+
+am_close(doc5)
 ```
 
 ## Working with Lists
@@ -208,6 +217,8 @@ am_length(doc6, items)
 # Access by index
 am_get(doc6, items, 1)
 am_get(doc6, items, 2)
+
+am_close(doc6)
 ```
 
 ## Special Automerge Types
@@ -239,6 +250,8 @@ am_text_content(text_obj)
 old_text <- am_text_content(text_obj)
 am_text_update(text_obj, old_text, "New content from user input")
 am_text_content(text_obj)
+
+am_close(doc7)
 ```
 
 ### Counters (for CRDT Counting)
@@ -256,6 +269,8 @@ am_counter_increment(doc8, AM_ROOT, "score", 5)
 am_counter_increment(doc8, AM_ROOT, "score", -3)
 
 doc8[["score"]]
+
+am_close(doc8)
 ```
 
 ### Timestamps
@@ -269,6 +284,8 @@ am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
+
+am_close(doc9)
 ```
 
 ## Saving and Loading Documents
@@ -291,6 +308,10 @@ doc_from_file <- am_load(readBin(temp_file, "raw", 1e6))
 
 # Verify data persisted
 doc_from_file[["name"]]
+
+am_close(doc)
+am_close(doc_loaded)
+am_close(doc_from_file)
 ```
 
 ## Document Lifecycle
@@ -322,6 +343,9 @@ doc11 <- am_fork(doc10)
 # Changes to fork don't affect original
 doc11[["w"]] <- 4
 doc10[["w"]] # NULL - not in original
+
+am_close(doc10)
+am_close(doc11)
 ```
 
 ### Merging Documents
@@ -345,6 +369,9 @@ am_merge(doc12, doc13)
 doc12[["value1"]]
 doc12[["value2"]]
 doc12[["source"]] # One value wins deterministically for conflicting keys
+
+am_close(doc12)
+am_close(doc13)
 ```
 
 ## Basic Synchronization
@@ -372,6 +399,9 @@ peer1[["data1"]]
 peer1[["data2"]]
 peer2[["data1"]]
 peer2[["data2"]]
+
+am_close(peer1)
+am_close(peer2)
 ```
 
 ## Next Steps

@@ -2,6 +2,7 @@
 
 static const R_CallMethodDef CallEntries[] = {
     // Document lifecycle
+    {"C_am_close", (DL_FUNC) &C_am_close, 1},
     {"C_am_create", (DL_FUNC) &C_am_create, 1},
     {"C_am_save", (DL_FUNC) &C_am_save, 1},
     {"C_am_load", (DL_FUNC) &C_am_load, 1},

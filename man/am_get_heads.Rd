@@ -26,4 +26,5 @@ am_commit(doc)
 
 heads <- am_get_heads(doc)
 cat("Document has", length(heads), "head(s)\n")
+am_close(doc)
 }

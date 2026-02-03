@@ -26,4 +26,6 @@ doc1 <- am_create()
 doc2 <- am_fork(doc1)
 
 # Now doc1 and doc2 can diverge independently
+am_close(doc1)
+am_close(doc2)
 }

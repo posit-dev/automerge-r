@@ -20,4 +20,5 @@ bindings (JavaScript BigInt, Python int, etc.).
 \examples{
 doc <- am_create()
 am_put(doc, AM_ROOT, "id", am_uint64(12345))
+am_close(doc)
 }

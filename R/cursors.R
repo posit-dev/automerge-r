@@ -47,6 +47,8 @@
 #' # Cursor position automatically adjusts
 #' new_pos <- am_cursor_position(cursor)
 #' new_pos  # 8 (cursor moved by 3 characters)
+#'
+#' am_close(doc)
 am_cursor <- function(obj, position) {
   .Call(C_am_cursor, obj, position)
 }
@@ -75,6 +77,8 @@ am_cursor <- function(obj, position) {
 #' # Get position
 #' pos <- am_cursor_position(cursor)
 #' pos  # 5
+#'
+#' am_close(doc)
 am_cursor_position <- function(cursor) {
   .Call(C_am_cursor_position, cursor)
 }
@@ -144,6 +148,8 @@ am_cursor_position <- function(cursor) {
 #' # Get all marks
 #' marks <- am_marks(text_obj)
 #' marks
+#'
+#' am_close(doc)
 am_mark <- function(
   obj,
   start,
@@ -184,6 +190,8 @@ am_mark <- function(
 #' marks <- am_marks(text_obj)
 #' marks
 #' # List of 2 marks with name, value, start, end
+#'
+#' am_close(doc)
 am_marks <- function(obj) {
   .Call(C_am_marks, obj)
 }
@@ -214,6 +222,8 @@ am_marks <- function(obj) {
 #' marks_at_3 <- am_marks_at(text_obj, 3)
 #' marks_at_3
 #' # List of 2 marks (both "bold" and "underline" include position 3)
+#'
+#' am_close(doc)
 am_marks_at <- function(obj, position) {
   .Call(C_am_marks_at, obj, position)
 }

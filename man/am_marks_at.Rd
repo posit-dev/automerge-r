@@ -33,4 +33,6 @@ am_mark(text_obj, 2, 7, "underline", TRUE)
 marks_at_3 <- am_marks_at(text_obj, 3)
 marks_at_3
 # List of 2 marks (both "bold" and "underline" include position 3)
+
+am_close(doc)
 }

@@ -31,4 +31,6 @@ am_put(doc2, AM_ROOT, "y", 2)
 # Merge doc2's changes into doc1
 am_merge(doc1, doc2)
 # Now doc1 has both x and y
+am_close(doc1)
+am_close(doc2)
 }

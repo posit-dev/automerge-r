@@ -35,4 +35,6 @@ am_mark(text_obj, 6, 11, "italic", TRUE)
 marks <- am_marks(text_obj)
 marks
 # List of 2 marks with name, value, start, end
+
+am_close(doc)
 }

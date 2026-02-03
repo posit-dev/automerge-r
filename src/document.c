@@ -3,6 +3,35 @@
 // Document Lifecycle Functions ------------------------------------------------
 
 /**
+ * Close an Automerge document and free its resources.
+ *
+ * This function explicitly frees the document's memory rather than waiting
+ * for garbage collection. After calling this function, the document pointer
+ * becomes invalid and should not be used.
+ *
+ * @param doc_ptr External pointer to am_doc
+ * @return R_NilValue (invisibly)
+ */
+SEXP C_am_close(SEXP doc_ptr) {
+    if (TYPEOF(doc_ptr) != EXTPTRSXP) {
+        Rf_error("Expected external pointer for document");
+    }
+
+    am_doc *doc_wrapper = (am_doc *) R_ExternalPtrAddr(doc_ptr);
+    if (doc_wrapper) {
+        if (doc_wrapper->result) {
+            AMresultFree(doc_wrapper->result);
+            doc_wrapper->result = NULL;
+        }
+        doc_wrapper->doc = NULL;
+        free(doc_wrapper);
+    }
+    R_ClearExternalPtr(doc_ptr);
+
+    return R_NilValue;
+}
+
+/**
  * Create a new Automerge document.
  *
  * @param actor_id R object: NULL for random actor ID, character hex string,

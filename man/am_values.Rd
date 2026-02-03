@@ -25,4 +25,5 @@ am_put(doc, AM_ROOT, "c", 3)
 
 values <- am_values(doc, AM_ROOT)
 values  # list(1, 2, 3)
+am_close(doc)
 }

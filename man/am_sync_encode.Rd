@@ -32,4 +32,5 @@ msg <- am_sync_encode(doc, sync_state)
 if (!is.null(msg)) {
   # Send msg to peer...
 }
+am_close(doc)
 }

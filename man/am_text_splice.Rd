@@ -61,4 +61,5 @@ am_text_splice(text_obj2, 0, 0, "Column café")
 # Position 11 is after "café" (character index, not bytes)
 am_text_splice(text_obj2, 11, 0, "!")
 am_text_content(text_obj2)  # "Column café!"
+am_close(doc)
 }

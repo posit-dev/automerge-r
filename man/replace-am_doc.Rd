@@ -30,4 +30,5 @@ Replace or insert values at the root of an Automerge document using
 doc <- am_create()
 doc[["name"]] <- "Bob"
 doc$age <- 25L
+am_close(doc)
 }

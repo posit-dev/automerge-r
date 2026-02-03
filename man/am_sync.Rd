@@ -39,4 +39,6 @@ rounds <- am_sync(doc1, doc2)
 cat("Synced in", rounds, "rounds\n")
 
 # Now both documents have both x and y
+am_close(doc1)
+am_close(doc2)
 }

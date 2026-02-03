@@ -33,11 +33,14 @@ document with \code{am_create()} and synchronize changes via
 \examples{
 # Create document with random actor ID
 doc <- am_create()
+am_close(doc)
 
 # Create with custom hex actor ID
 doc2 <- am_create("0123456789abcdef0123456789abcdef")
+am_close(doc2)
 
 # Create with raw bytes actor ID
 actor_bytes <- as.raw(1:16)
 doc3 <- am_create(actor_bytes)
+am_close(doc3)
 }

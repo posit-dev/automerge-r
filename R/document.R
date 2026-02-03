@@ -1,5 +1,32 @@
 # Document Lifecycle Functions
 
+#' Close an Automerge document
+#'
+#' Explicitly frees the resources associated with an Automerge document.
+#' After calling this function, the document becomes invalid and should
+#' not be used.
+#'
+#' This function is useful when you need deterministic cleanup rather than
+#' waiting for garbage collection. It is safe to call on a document that
+#' has already been closed.
+#'
+#' @param doc An Automerge document (created with `am_create()` or `am_load()`)
+#'
+#' @return `NULL` (invisibly)
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "key", "value")
+#'
+#' # Explicitly free resources
+#' am_close(doc)
+#'
+#' # Document is now invalid - do not use after closing
+am_close <- function(doc) {
+  invisible(.Call(C_am_close, doc))
+}
+
 #' Create a new Automerge document
 #'
 #' Creates a new Automerge document with an optional custom actor ID.
@@ -25,13 +52,16 @@
 #' @examples
 #' # Create document with random actor ID
 #' doc <- am_create()
+#' am_close(doc)
 #'
 #' # Create with custom hex actor ID
 #' doc2 <- am_create("0123456789abcdef0123456789abcdef")
+#' am_close(doc2)
 #'
 #' # Create with raw bytes actor ID
 #' actor_bytes <- as.raw(1:16)
 #' doc3 <- am_create(actor_bytes)
+#' am_close(doc3)
 am_create <- function(actor_id = NULL) {
   .Call(C_am_create, actor_id)
 }
@@ -56,6 +86,7 @@ am_create <- function(actor_id = NULL) {
 #' file <- tempfile()
 #' writeBin(am_save(doc), file)
 #' unlink(file)
+#' am_close(doc)
 am_save <- function(doc) {
   .Call(C_am_save, doc)
 }
@@ -77,13 +108,18 @@ am_save <- function(doc) {
 #' doc1 <- am_create()
 #' bytes <- am_save(doc1)
 #' doc2 <- am_load(bytes)
+#' am_close(doc1)
+#' am_close(doc2)
 #'
 #' # Save to and load from file
+#' doc1 <- am_create()
 #' file <- tempfile()
 #' writeBin(am_save(doc1), file)
 #'
 #' doc <- am_load(readBin(file, "raw", 1e5))
 #' unlink(file)
+#' am_close(doc1)
+#' am_close(doc)
 am_load <- function(data) {
   .Call(C_am_load, data)
 }
@@ -107,6 +143,8 @@ am_load <- function(data) {
 #' doc2 <- am_fork(doc1)
 #'
 #' # Now doc1 and doc2 can diverge independently
+#' am_close(doc1)
+#' am_close(doc2)
 am_fork <- function(doc, heads = NULL) {
   .Call(C_am_fork, doc, heads)
 }
@@ -135,6 +173,8 @@ am_fork <- function(doc, heads = NULL) {
 #' # Merge doc2's changes into doc1
 #' am_merge(doc1, doc2)
 #' # Now doc1 has both x and y
+#' am_close(doc1)
+#' am_close(doc2)
 am_merge <- function(doc, other) {
   invisible(.Call(C_am_merge, doc, other))
 }
@@ -159,6 +199,7 @@ am_merge <- function(doc, other) {
 #' # Use am_get_actor_hex() for display
 #' actor_hex <- am_get_actor_hex(doc)
 #' cat("Actor ID:", actor_hex, "\n")
+#' am_close(doc)
 am_get_actor <- function(doc) {
   .Call(C_am_get_actor, doc)
 }
@@ -178,6 +219,7 @@ am_get_actor <- function(doc) {
 #' doc <- am_create()
 #' actor_hex <- am_get_actor_hex(doc)
 #' cat("Actor ID:", actor_hex, "\n")
+#' am_close(doc)
 am_get_actor_hex <- function(doc) {
   .Call(C_am_get_actor_hex, doc)
 }
@@ -207,6 +249,7 @@ am_get_actor_hex <- function(doc) {
 #'
 #' # Generate new random actor ID
 #' am_set_actor(doc, NULL)
+#' am_close(doc)
 am_set_actor <- function(doc, actor_id) {
   invisible(.Call(C_am_set_actor, doc, actor_id))
 }
@@ -232,6 +275,7 @@ am_set_actor <- function(doc, actor_id) {
 #'
 #' # Commit with specific timestamp
 #' am_commit(doc, "Update", Sys.time())
+#' am_close(doc)
 am_commit <- function(doc, message = NULL, time = NULL) {
   invisible(.Call(C_am_commit, doc, message, time))
 }
@@ -252,6 +296,7 @@ am_commit <- function(doc, message = NULL, time = NULL) {
 #' am_put(doc, AM_ROOT, "key", "value")
 #' # Changed my mind, discard the put
 #' am_rollback(doc)
+#' am_close(doc)
 am_rollback <- function(doc) {
   invisible(.Call(C_am_rollback, doc))
 }
@@ -282,6 +327,7 @@ am_rollback <- function(doc) {
 #' # Now we have a local change
 #' change <- am_get_last_local_change(doc)
 #' str(change)  # Raw vector
+#' am_close(doc)
 am_get_last_local_change <- function(doc) {
   .Call(C_am_get_last_local_change, doc)
 }
@@ -310,6 +356,7 @@ am_get_last_local_change <- function(doc) {
 #' # Retrieve the change by its hash
 #' change <- am_get_change_by_hash(doc, head_hash)
 #' str(change)  # Raw vector
+#' am_close(doc)
 am_get_change_by_hash <- function(doc, hash) {
   .Call(C_am_get_change_by_hash, doc, hash)
 }
@@ -348,6 +395,8 @@ am_get_change_by_hash <- function(doc, hash) {
 #'
 #' # Now doc1 has both x and y
 #' names(doc1)  # "x" "y"
+#' am_close(doc1)
+#' am_close(doc2)
 am_get_changes_added <- function(doc1, doc2) {
   .Call(C_am_get_changes_added, doc1, doc2)
 }

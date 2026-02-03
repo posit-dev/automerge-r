@@ -36,6 +36,7 @@ typedef struct {
 // Function Declarations -------------------------------------------------------
 
 // Document operations (document.c)
+SEXP C_am_close(SEXP doc_ptr);
 SEXP C_am_create(SEXP actor_id);
 SEXP C_am_save(SEXP doc_ptr);
 SEXP C_am_load(SEXP data);
