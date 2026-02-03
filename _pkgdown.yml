@@ -18,6 +18,7 @@ reference:
       - am_merge
       - am_commit
       - am_rollback
+      - am_close
 
   - title: "Actor Management"
     desc: >
