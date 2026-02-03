@@ -129,10 +129,9 @@ test_that("print() displays document info", {
   doc$name <- "Test"
   doc$value <- 123L
 
-  output <- capture.output(print(doc))
-  expect_true(any(grepl("Automerge Document", output)))
-  expect_true(any(grepl("Actor:", output)))
-  expect_true(any(grepl("Root keys:", output)))
+  expect_snapshot(print(doc), transform = function(x) {
+    sub("Actor: [a-f0-9]+", "Actor: <ACTOR_ID>", x)
+  })
 })
 
 test_that("as.list() converts document to R list", {
@@ -174,75 +173,58 @@ test_that("str() displays document structure", {
   doc$age <- 30L
   doc$active <- TRUE
 
-  output <- capture.output(str(doc))
-  expect_true(any(grepl("name:", output)))
-  expect_true(any(grepl("Alice", output)))
-  expect_true(any(grepl("age:", output)))
-  expect_true(any(grepl("30", output)))
-  expect_true(any(grepl("active:", output)))
+  expect_snapshot(str(doc))
 })
 
 test_that("str() displays nested structures", {
   doc <- am_create()
   doc$user <- list(name = "Bob", age = 25L)
 
-  output <- capture.output(str(doc))
-  expect_true(any(grepl("user:", output)))
-  expect_true(any(grepl("name:", output)))
-  expect_true(any(grepl("Bob", output)))
+  expect_snapshot(str(doc))
 })
 
 test_that("str() respects max.level parameter", {
   doc <- am_create()
   doc$level1 <- list(level2 = list(level3 = "deep"))
 
-  output_full <- capture.output(str(doc, max.level = 3))
-  output_limited <- capture.output(str(doc, max.level = 1))
-
-  expect_true(any(grepl("deep", output_full)))
-  expect_true(any(grepl("\\.\\.\\.", output_limited)))
+  expect_snapshot({
+    str(doc, max.level = 3)
+    str(doc, max.level = 1)
+  })
 })
 
 test_that("str() shows truncation indicator at max.level", {
   doc <- am_create()
   doc$nested <- list(child = list(grandchild = 1L))
 
-  output <- capture.output(str(doc, max.level = 0))
-  expect_true(any(grepl("\\.\\.\\.", output)))
+  expect_snapshot(str(doc, max.level = 0))
 })
 
 test_that("str() handles empty document", {
   doc <- am_create()
 
-  output <- capture.output(str(doc))
-  expect_true(any(grepl("empty", output)))
+  expect_snapshot(str(doc))
 })
 
 test_that("str() handles lists with many items", {
   doc <- am_create()
   doc$items <- as.list(1:10)
 
-  output <- capture.output(str(doc))
-  expect_true(any(grepl("\\[list", output)))
-  expect_true(any(grepl("\\.\\.\\. and .* more", output)))
+  expect_snapshot(str(doc))
 })
 
 test_that("str() truncates long strings", {
   doc <- am_create()
   doc$long <- paste(rep("x", 100), collapse = "")
 
-  output <- capture.output(str(doc))
-  expect_true(any(grepl("\\.\\.\\.", output)))
+  expect_snapshot(str(doc))
 })
 
 test_that("str() handles list with character items", {
   doc <- am_create()
   doc$tags <- am_list("alpha", "beta", "gamma")
 
-  output <- capture.output(str(doc))
-  expect_true(any(grepl("tags:", output)))
-  expect_true(any(grepl('"alpha"', output)))
-  expect_true(any(grepl('"beta"', output)))
+  expect_snapshot(str(doc))
 })
 
 test_that("str() truncates long character items in lists", {
@@ -250,8 +232,7 @@ test_that("str() truncates long character items in lists", {
   long_string <- paste(rep("x", 50), collapse = "")
   doc$items <- am_list(long_string)
 
-  output <- capture.output(str(doc))
-  expect_true(any(grepl("\\.\\.\\.", output)))
+  expect_snapshot(str(doc))
 })
 
 test_that("str() handles list with nested am_object items", {
@@ -261,20 +242,14 @@ test_that("str() handles list with nested am_object items", {
     list(name = "Bob", age = 25L)
   )
 
-  output <- capture.output(str(doc))
-  expect_true(any(grepl("users:", output)))
-  expect_true(any(grepl("\\{object\\}", output)))
-  expect_true(any(grepl("name:", output)))
-  expect_true(any(grepl("Alice", output)))
+  expect_snapshot(str(doc))
 })
 
 test_that("str() handles list with non-character, non-object items", {
   doc <- am_create()
   doc$numbers <- am_list(1L, 2L, 3L)
 
-  output <- capture.output(str(doc))
-  expect_true(any(grepl("numbers:", output)))
-  expect_true(any(grepl("\\[1\\]:", output)))
+  expect_snapshot(str(doc))
 })
 
 test_that("str() respects max.level for nested objects in lists", {
@@ -283,19 +258,31 @@ test_that("str() respects max.level for nested objects in lists", {
     list(nested = list(deep = "value"))
   )
 
-  output_deep <- capture.output(str(doc, max.level = 4))
-  output_shallow <- capture.output(str(doc, max.level = 1))
+  expect_snapshot({
+    str(doc, max.level = 4)
+    str(doc, max.level = 1)
+  })
+})
 
-  expect_true(any(grepl("deep", output_deep)))
-  expect_true(any(grepl("\\.\\.\\.", output_shallow)))
+test_that("str() shows ellipsis for am_list at max.level", {
+  doc <- am_create()
+  doc$data <- list(items = am_list("a", "b", "c"))
+
+  expect_snapshot(str(doc, max.level = 1))
+})
+
+test_that("str() displays raw bytes with class name", {
+  doc <- am_create()
+  doc$data <- as.raw(c(0x01, 0x02, 0x03))
+
+  expect_snapshot(str(doc))
 })
 
 test_that("str() handles NULL values", {
   doc <- am_create()
   doc$empty <- NULL
 
-  output <- capture.output(str(doc))
-  expect_true(any(grepl("NULL", output)))
+  expect_snapshot(str(doc))
 })
 
 # Object Extraction Methods ---------------------------------------------------
@@ -423,10 +410,7 @@ test_that("print() displays am_object info (map)", {
   am_put(doc, AM_ROOT, "user", list(name = "Test", age = 25L))
   user <- am_get(doc, AM_ROOT, "user")
 
-  output <- capture.output(print(user))
-  expect_true(any(grepl("Automerge Map", output)))
-  expect_true(any(grepl("Length:", output)))
-  expect_true(any(grepl("Keys:", output)))
+  expect_snapshot(print(user))
 })
 
 test_that("print() displays am_object info (list)", {
@@ -434,10 +418,7 @@ test_that("print() displays am_object info (list)", {
   am_put(doc, AM_ROOT, "items", am_list("a", "b", "c"))
   items <- am_get(doc, AM_ROOT, "items")
 
-  output <- capture.output(print(items))
-  expect_true(any(grepl("Automerge List", output)))
-  expect_true(any(grepl("Length:", output)))
-  expect_true(any(grepl("3", output)))
+  expect_snapshot(print(items))
 })
 
 test_that("print() displays am_object info (text)", {
@@ -445,11 +426,7 @@ test_that("print() displays am_object info (text)", {
   am_put(doc, AM_ROOT, "text", am_text("Hello, world!"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
-  output <- capture.output(print(text_obj))
-  expect_true(any(grepl("Automerge Text", output)))
-  expect_true(any(grepl("Length:", output)))
-  expect_true(any(grepl("Content:", output)))
-  expect_true(any(grepl("Hello, world!", output)))
+  expect_snapshot(print(text_obj))
 })
 
 test_that("print() handles very long text with truncation", {
@@ -458,10 +435,7 @@ test_that("print() handles very long text with truncation", {
   am_put(doc, AM_ROOT, "text", am_text(long_text))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
-  output <- capture.output(print(text_obj))
-  expect_true(any(grepl("Automerge Text", output)))
-  expect_true(any(grepl("100 characters", output)))
-  expect_true(any(grepl('\\.\\.\\."', output)))
+  expect_snapshot(print(text_obj))
 })
 
 test_that("print() displays map with many keys truncated", {
@@ -470,10 +444,7 @@ test_that("print() displays map with many keys truncated", {
   am_put(doc, AM_ROOT, "map", map_data)
   map_obj <- am_get(doc, AM_ROOT, "map")
 
-  output <- capture.output(print(map_obj))
-  expect_true(any(grepl("Automerge Map", output)))
-  expect_true(any(grepl("Length:", output)))
-  expect_true(any(grepl("\\.\\.\\.", output)))
+  expect_snapshot(print(map_obj))
 })
 
 test_that("as.list() converts am_object to R list", {
@@ -601,9 +572,10 @@ test_that("S3 methods respect CRDT semantics", {
 
 test_that("print() handles empty document", {
   doc <- am_create()
-  output <- capture.output(print(doc))
-  expect_true(length(output) > 0)
-  expect_true(any(grepl("Automerge Document", output)))
+
+  expect_snapshot(print(doc), transform = function(x) {
+    sub("Actor: [a-f0-9]+", "Actor: <ACTOR_ID>", x)
+  })
 })
 
 test_that("print() handles document with many keys", {
@@ -612,8 +584,9 @@ test_that("print() handles document with many keys", {
     doc[[paste0("key", i)]] <- i
   }
 
-  output <- capture.output(print(doc))
-  expect_true(length(output) > 0)
+  expect_snapshot(print(doc), transform = function(x) {
+    sub("Actor: [a-f0-9]+", "Actor: <ACTOR_ID>", x)
+  })
 })
 
 test_that("print() handles very long key names", {
@@ -621,8 +594,9 @@ test_that("print() handles very long key names", {
   long_key <- paste(rep("key", 100), collapse = "_")
   doc[[long_key]] <- "value"
 
-  output <- capture.output(print(doc))
-  expect_true(length(output) > 0)
+  expect_snapshot(print(doc), transform = function(x) {
+    sub("Actor: [a-f0-9]+", "Actor: <ACTOR_ID>", x)
+  })
 })
 
 test_that("as.list() handles empty document", {
@@ -753,9 +727,7 @@ test_that("print.am_counter displays counter value", {
   counter <- am_counter(10)
   doc$count <- counter
 
-  output <- capture.output(print(counter))
-  expect_true(any(grepl("Automerge Counter", output)))
-  expect_true(any(grepl("10", output)))
+  expect_snapshot(print(counter))
 })
 
 test_that("print.am_object displays generic object message", {
@@ -767,8 +739,7 @@ test_that("print.am_object displays generic object message", {
   class_backup <- class(obj)
   class(obj) <- "am_object"
 
-  output <- capture.output(print(obj))
-  expect_true(any(grepl("Automerge Object", output)))
+  expect_snapshot(print(obj))
 
   # Restore class
   class(obj) <- class_backup
@@ -849,13 +820,11 @@ test_that("print.am_cursor displays cursor info", {
   text_obj <- am_get(doc, AM_ROOT, "text")
   cursor <- am_cursor(text_obj, 5)
 
-  output <- capture.output(print(cursor))
-  expect_true(any(grepl("Automerge Cursor", output)))
+  expect_snapshot(print(cursor))
 })
 
 test_that("print.am_syncstate displays sync state info", {
   sync_state <- am_sync_state_new()
 
-  output <- capture.output(print(sync_state))
-  expect_true(any(grepl("Automerge Sync State", output)))
+  expect_snapshot(print(sync_state))
 })
