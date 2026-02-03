@@ -1,5 +1,27 @@
 # Document Lifecycle Tests (Phase 2)
 
+test_that("am_close() returns NULL invisibly", {
+  doc <- am_create()
+  result <- am_close(doc)
+  expect_null(result)
+})
+
+test_that("am_close() can be called twice (idempotent)", {
+  doc <- am_create()
+  expect_no_error(am_close(doc))
+  expect_no_error(am_close(doc))
+})
+
+test_that("document operations error after am_close()", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "key", "value")
+  am_close(doc)
+
+  expect_error(am_get(doc, AM_ROOT, "key"))
+  expect_error(am_save(doc))
+  expect_error(am_fork(doc))
+})
+
 test_that("am_create() creates a valid document", {
   doc <- am_create()
   expect_s3_class(doc, "am_doc")
