@@ -235,6 +235,61 @@ test_that("str() truncates long strings", {
   expect_true(any(grepl("\\.\\.\\.", output)))
 })
 
+test_that("str() handles list with character items", {
+  doc <- am_create()
+  doc$tags <- am_list("alpha", "beta", "gamma")
+
+  output <- capture.output(str(doc))
+  expect_true(any(grepl("tags:", output)))
+  expect_true(any(grepl('"alpha"', output)))
+  expect_true(any(grepl('"beta"', output)))
+})
+
+test_that("str() truncates long character items in lists", {
+  doc <- am_create()
+  long_string <- paste(rep("x", 50), collapse = "")
+  doc$items <- am_list(long_string)
+
+  output <- capture.output(str(doc))
+  expect_true(any(grepl("\\.\\.\\.", output)))
+})
+
+test_that("str() handles list with nested am_object items", {
+  doc <- am_create()
+  doc$users <- am_list(
+    list(name = "Alice", age = 30L),
+    list(name = "Bob", age = 25L)
+  )
+
+  output <- capture.output(str(doc))
+  expect_true(any(grepl("users:", output)))
+  expect_true(any(grepl("\\{object\\}", output)))
+  expect_true(any(grepl("name:", output)))
+  expect_true(any(grepl("Alice", output)))
+})
+
+test_that("str() handles list with non-character, non-object items", {
+  doc <- am_create()
+  doc$numbers <- am_list(1L, 2L, 3L)
+
+  output <- capture.output(str(doc))
+  expect_true(any(grepl("numbers:", output)))
+  expect_true(any(grepl("\\[1\\]:", output)))
+})
+
+test_that("str() respects max.level for nested objects in lists", {
+  doc <- am_create()
+  doc$items <- am_list(
+    list(nested = list(deep = "value"))
+  )
+
+  output_deep <- capture.output(str(doc, max.level = 4))
+  output_shallow <- capture.output(str(doc, max.level = 1))
+
+  expect_true(any(grepl("deep", output_deep)))
+  expect_true(any(grepl("\\.\\.\\.", output_shallow)))
+})
+
 test_that("str() handles NULL values", {
   doc <- am_create()
   doc$empty <- NULL
