@@ -315,6 +315,8 @@ R methods for Automerge objects
   : Get names from Automerge map object
 - [`as.list(`*`<am_doc>`*`)`](https://posit-dev.github.io/automerge-r/reference/as.list.am_doc.md)
   : Convert document root to R list
+- [`str(`*`<am_doc>`*`)`](https://posit-dev.github.io/automerge-r/reference/str.am_doc.md)
+  : Display the structure of an Automerge document
 
 # Articles
 
