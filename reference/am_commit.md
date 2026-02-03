@@ -37,5 +37,6 @@ am_commit(doc, "Add initial data")
 
 # Commit with specific timestamp
 am_commit(doc, "Update", Sys.time())
+
 am_close(doc)
 ```

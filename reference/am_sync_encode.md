@@ -43,5 +43,6 @@ if (!is.null(msg)) {
   # Send msg to peer...
 }
 #> NULL
+
 am_close(doc)
 ```

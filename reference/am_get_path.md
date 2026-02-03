@@ -45,5 +45,6 @@ doc$users <- list(
 )
 am_get_path(doc, list("users", 1, "name"))  # "Bob"
 #> [1] "Bob"
+
 am_close(doc)
 ```

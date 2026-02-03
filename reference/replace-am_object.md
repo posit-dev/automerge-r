@@ -38,10 +38,12 @@ The object (invisibly)
 
 ``` r
 doc <- am_create()
+
 am_put(doc, AM_ROOT, "user", list(name = "Bob", age = 25L))
 user <- am_get(doc, AM_ROOT, "user")
 
 user[["name"]] <- "Alice"
 user$age <- 30L
+
 am_close(doc)
 ```

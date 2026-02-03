@@ -74,5 +74,6 @@ am_text_splice(text_obj2, 0, 0, "Column café")
 am_text_splice(text_obj2, 11, 0, "!")
 am_text_content(text_obj2)  # "Column café!"
 #> [1] "Column café!"
+
 am_close(doc)
 ```

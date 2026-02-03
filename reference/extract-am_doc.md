@@ -35,6 +35,7 @@ The value at the specified key
 
 ``` r
 doc <- am_create()
+
 am_put(doc, AM_ROOT, "name", "Alice")
 am_put(doc, AM_ROOT, "age", 30L)
 
@@ -42,5 +43,6 @@ doc[["name"]]  # "Alice"
 #> [1] "Alice"
 doc$age        # 30L
 #> [1] 30
+
 am_close(doc)
 ```

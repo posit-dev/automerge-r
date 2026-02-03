@@ -39,5 +39,6 @@ as.list(doc)  # list(name = "Alice", age = 30L)
 #> $name
 #> [1] "Alice"
 #> 
+
 am_close(doc)
 ```

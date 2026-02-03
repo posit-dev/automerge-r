@@ -38,5 +38,6 @@ sync_state <- am_sync_state_new()
 # Receive message from peer
 # message <- ... (received from network)
 # am_sync_decode(doc, sync_state, message)
+
 am_close(doc)
 ```

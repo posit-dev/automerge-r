@@ -83,6 +83,7 @@ These operators provide R-idiomatic access to document data.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"name"</span>, <span class="st">"Alice"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"age"</span>, <span class="fl">30L</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -90,7 +91,9 @@ These operators provide R-idiomatic access to document data.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Alice"</span>
 <span class="r-in"><span><span class="va">doc</span><span class="op">$</span><span class="va">age</span>        <span class="co"># 30L</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 30</span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

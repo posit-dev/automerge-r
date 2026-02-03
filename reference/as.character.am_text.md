@@ -28,6 +28,7 @@ Character string with the full text content
 
 ``` r
 doc <- am_create()
+
 am_put(doc, AM_ROOT, "notes", am_text("Hello World"))
 text_obj <- am_get(doc, AM_ROOT, "notes")
 
@@ -37,5 +38,6 @@ text_string  # "Hello World"
 
 identical(as.character(text_obj), am_text_content(text_obj))  # TRUE
 #> [1] TRUE
+
 am_close(doc)
 ```

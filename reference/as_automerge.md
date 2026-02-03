@@ -48,5 +48,6 @@ doc[["name"]]  # "Alice"
 #> [1] "Alice"
 doc[["age"]]   # 30L
 #> [1] 30
+
 am_close(doc)
 ```

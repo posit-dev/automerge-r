@@ -84,17 +84,19 @@ document with <code>am_create()</code> and synchronize changes via
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Create document with random actor ID</span></span></span>
-<span class="r-in"><span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu">am_create</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">doc1</span> <span class="op">&lt;-</span> <span class="fu">am_create</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create with custom hex actor ID</span></span></span>
 <span class="r-in"><span><span class="va">doc2</span> <span class="op">&lt;-</span> <span class="fu">am_create</span><span class="op">(</span><span class="st">"0123456789abcdef0123456789abcdef"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc2</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create with raw bytes actor ID</span></span></span>
 <span class="r-in"><span><span class="va">actor_bytes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/raw.html" class="external-link">as.raw</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">16</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">doc3</span> <span class="op">&lt;-</span> <span class="fu">am_create</span><span class="op">(</span><span class="va">actor_bytes</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc3</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

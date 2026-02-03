@@ -40,6 +40,7 @@ The document `doc` (invisibly)
 
 ``` r
 doc <- am_create()
+
 # Create a list and get it
 am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
 items <- am_get(doc, AM_ROOT, "items")
@@ -47,5 +48,6 @@ items <- am_get(doc, AM_ROOT, "items")
 # Insert items
 am_insert(doc, items, "end", "first")
 am_insert(doc, items, "end", "second")
+
 am_close(doc)
 ```

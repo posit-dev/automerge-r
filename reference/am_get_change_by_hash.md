@@ -42,5 +42,6 @@ head_hash <- heads[[1]]
 change <- am_get_change_by_hash(doc, head_hash)
 str(change)  # Raw vector
 #>  raw [1:70] 85 6f 4a 83 ...
+
 am_close(doc)
 ```

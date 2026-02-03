@@ -33,6 +33,7 @@ bytes <- am_save(doc)
 # Save to file
 file <- tempfile()
 writeBin(am_save(doc), file)
+
 unlink(file)
 am_close(doc)
 ```
