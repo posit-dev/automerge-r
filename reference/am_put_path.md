@@ -45,4 +45,5 @@ am_put_path(doc, c("user", "name"), "Alice")
 # Verify
 am_get_path(doc, c("user", "address", "city"))  # "Boston"
 #> [1] "Boston"
+am_close(doc)
 ```

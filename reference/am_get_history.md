@@ -41,4 +41,5 @@ am_commit(doc, "Update")
 history <- am_get_history(doc)
 cat("Document history contains", length(history), "change(s)\n")
 #> Document history contains 2 change(s)
+am_close(doc)
 ```

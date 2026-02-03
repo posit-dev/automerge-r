@@ -28,4 +28,5 @@ text_obj <- am_get(doc, AM_ROOT, "doc")
 text <- am_text_content(text_obj)
 text  # "Hello"
 #> [1] "Hello"
+am_close(doc)
 ```

@@ -127,8 +127,11 @@ applications like shared notebooks or data pipelines</li>
 <code class="sourceCode R"><span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;Automerge Document&gt;</span></span>
-<span><span class="co">#&gt; Actor: 4e3ebbbda2cca6fa33c99a738d44ca43 </span></span>
+<span><span class="co">#&gt; Actor: 5440bcacf7132f7aeedd58a345ce316f </span></span>
 <span><span class="co">#&gt; Root keys: 0</span></span></code></pre></div>
+<p>Note: When you’re done working with a document, you can explicitly
+free its resources with <code>am_close(doc)</code> if you don’t want to
+wait for garbage collection.</p>
 </div>
 <div class="section level3">
 <h3 id="adding-data---three-approaches">Adding Data - Three Approaches<a class="anchor" aria-label="anchor" href="#adding-data---three-approaches"></a>
@@ -176,7 +179,9 @@ R-idiomatic:</p>
 <span>  <span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="st">"Initial setup"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc2</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/am_get.html">am_get</a></span><span class="op">(</span><span class="va">AM_ROOT</span>, <span class="st">"name"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Bob"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Bob"</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc2</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 </div>
@@ -242,7 +247,10 @@ easier:</p>
 <span></span>
 <span><span class="co"># Retrieve values with paths</span></span>
 <span><span class="fu"><a href="../reference/am_get_path.html">am_get_path</a></span><span class="op">(</span><span class="va">doc4</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"config"</span>, <span class="st">"database"</span>, <span class="st">"host"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "localhost"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "localhost"</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc4</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="converting-r-data-structures">Converting R Data Structures<a class="anchor" aria-label="anchor" href="#converting-r-data-structures"></a>
@@ -271,7 +279,9 @@ once:</p>
 <span></span>
 <span><span class="co"># Easy access with paths</span></span>
 <span><span class="fu"><a href="../reference/am_get_path.html">am_get_path</a></span><span class="op">(</span><span class="va">doc5</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"database"</span>, <span class="st">"port"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 5432</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 5432</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc5</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -301,7 +311,9 @@ once:</p>
 <span><span class="fu"><a href="../reference/am_get.html">am_get</a></span><span class="op">(</span><span class="va">doc6</span>, <span class="va">items</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "first"</span></span>
 <span><span class="fu"><a href="../reference/am_get.html">am_get</a></span><span class="op">(</span><span class="va">doc6</span>, <span class="va">items</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "second"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "second"</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc6</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="special-automerge-types">Special Automerge Types<a class="anchor" aria-label="anchor" href="#special-automerge-types"></a>
@@ -335,7 +347,9 @@ wins). For collaborative text editing, use text objects:</p>
 <span><span class="va">old_text</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_text_content.html">am_text_content</a></span><span class="op">(</span><span class="va">text_obj</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_text_update.html">am_text_update</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="va">old_text</span>, <span class="st">"New content from user input"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_text_content.html">am_text_content</a></span><span class="op">(</span><span class="va">text_obj</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "New content from user input"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "New content from user input"</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc7</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="counters-for-crdt-counting">Counters (for CRDT Counting)<a class="anchor" aria-label="anchor" href="#counters-for-crdt-counting"></a>
@@ -353,7 +367,9 @@ without conflicts:</p>
 <span><span class="fu"><a href="../reference/am_counter_increment.html">am_counter_increment</a></span><span class="op">(</span><span class="va">doc8</span>, <span class="va">AM_ROOT</span>, <span class="st">"score"</span>, <span class="op">-</span><span class="fl">3</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc8</span><span class="op">[[</span><span class="st">"score"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; &lt;Automerge Counter: 12 &gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;Automerge Counter: 12 &gt;</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc8</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="timestamps">Timestamps<a class="anchor" aria-label="anchor" href="#timestamps"></a>
@@ -366,7 +382,9 @@ without conflicts:</p>
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc9</span>, <span class="va">AM_ROOT</span>, <span class="st">"updated_at"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc9</span><span class="op">[[</span><span class="st">"created_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-02-03 00:29:01 UTC"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "2026-02-03 19:30:06 UTC"</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc9</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -389,7 +407,11 @@ without conflicts:</p>
 <span></span>
 <span><span class="co"># Verify data persisted</span></span>
 <span><span class="va">doc_from_file</span><span class="op">[[</span><span class="st">"name"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "Alice"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "Alice"</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_loaded</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_from_file</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="document-lifecycle">Document Lifecycle<a class="anchor" aria-label="anchor" href="#document-lifecycle"></a>
@@ -421,7 +443,10 @@ without conflicts:</p>
 <span><span class="co"># Changes to fork don't affect original</span></span>
 <span><span class="va">doc11</span><span class="op">[[</span><span class="st">"w"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">4</span></span>
 <span><span class="va">doc10</span><span class="op">[[</span><span class="st">"w"</span><span class="op">]</span><span class="op">]</span> <span class="co"># NULL - not in original</span></span>
-<span><span class="co">#&gt; NULL</span></span></code></pre></div>
+<span><span class="co">#&gt; NULL</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc10</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc11</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="merging-documents">Merging Documents<a class="anchor" aria-label="anchor" href="#merging-documents"></a>
@@ -446,7 +471,10 @@ without conflicts:</p>
 <span><span class="va">doc12</span><span class="op">[[</span><span class="st">"value2"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] 200</span></span>
 <span><span class="va">doc12</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span> <span class="co"># One value wins deterministically for conflicting keys</span></span>
-<span><span class="co">#&gt; [1] "doc13"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "doc12"</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc12</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc13</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -479,7 +507,10 @@ documents:</p>
 <span><span class="va">peer2</span><span class="op">[[</span><span class="st">"data1"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] 100</span></span>
 <span><span class="va">peer2</span><span class="op">[[</span><span class="st">"data2"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 200</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 200</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer2</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>

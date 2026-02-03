@@ -82,6 +82,9 @@ am_merge(doc1, doc2)
 # One value wins (deterministic, all replicas agree)
 doc1[["name"]]
 #> [1] "Alice Johnson"
+
+am_close(doc1)
+am_close(doc2)
 ```
 
 **When to use**: Simple values where automatic conflict resolution is
@@ -119,6 +122,9 @@ am_get(doc3, user_final, "age")
 #> [1] 31
 am_get(doc3, user_final, "city")
 #> [1] "New York"
+
+am_close(doc3)
+am_close(doc4)
 ```
 
 **When to use**: Structured data with multiple independent fields (user
@@ -156,9 +162,12 @@ for (i in seq_len(am_length(doc5, items5))) {
   print(am_get(doc5, items5, i))
 }
 #> [1] "A"
-#> [1] "B2"
 #> [1] "B1"
+#> [1] "B2"
 #> [1] "C"
+
+am_close(doc5)
+am_close(doc6)
 ```
 
 **When to use**: Ordered collections (task lists, sequences, timelines).
@@ -196,6 +205,9 @@ am_merge(doc7, doc8)
 # Both edits preserved
 am_text_content(text7)
 #> [1] "The quick brown fox jumps high"
+
+am_close(doc7)
+am_close(doc8)
 ```
 
 **When to use**: Collaborative documents, shared notes, code editors,
@@ -221,6 +233,9 @@ am_merge(doc9, doc10)
 doc9[["title"]] # One value wins deterministically
 #> [1] "My Document"
 
+am_close(doc9)
+am_close(doc10)
+
 # Text object (CRDT)
 doc11 <- am_create()
 am_put(doc11, AM_ROOT, "content", am_text("Hello"))
@@ -235,6 +250,9 @@ am_merge(doc11, doc12)
 
 am_text_content(text11)
 #> [1] "Hello World Everyone"
+
+am_close(doc11)
+am_close(doc12)
 ```
 
 ### Counters
@@ -259,6 +277,9 @@ am_merge(doc13, doc14)
 # Sum of all increments
 doc13[["likes"]]
 #> <Automerge Counter: 7 >
+
+am_close(doc13)
+am_close(doc14)
 ```
 
 **When to use**: Vote counts, like counts, inventory quantities,
@@ -287,9 +308,12 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-02-03 00:29:04 UTC"
+#> [1] "2026-02-03 19:30:08 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-02-03 00:29:04 UTC"
+#> [1] "2026-02-03 19:30:09 UTC"
+
+am_close(doc15)
+am_close(doc16)
 ```
 
 **When to use**: Audit trails, modification times, temporal metadata.
@@ -316,6 +340,8 @@ am_text_splice(text17, 0, 0, "Hi ")
 new_pos <- am_cursor_position(cursor)
 new_pos # Cursor moved with text from original position 6
 #> [1] 9
+
+am_close(doc17)
 ```
 
 **When to use**: Text editors (cursor tracking), collaborative
@@ -361,6 +387,8 @@ str(marks_at_pos)
 #>   ..$ value: logi TRUE
 #>   ..$ start: int 0
 #>   ..$ end  : int 5
+
+am_close(doc18)
 ```
 
 **When to use**: Rich text editors, collaborative annotations, syntax
@@ -391,6 +419,8 @@ str(marks)
 #>   ..$ value: logi TRUE
 #>   ..$ start: int 0
 #>   ..$ end  : int 11
+
+am_close(doc19)
 ```
 
 ## CRDT Design Trade-offs
@@ -412,6 +442,8 @@ am_commit(doc20)
 # Size includes all history
 length(am_save(doc20))
 #> [1] 508
+
+am_close(doc20)
 ```
 
 **Mitigation strategies**:
@@ -447,6 +479,9 @@ am_commit(doc22)
 am_merge(doc21, doc22)
 doc21[["temp"]] # Update takes precedence over delete
 #> [1] "updated"
+
+am_close(doc21)
+am_close(doc22)
 ```
 
 **Double deletion**: When both replicas delete the same key/element, the
@@ -476,6 +511,9 @@ for (i in seq_len(am_length(doc23, items23))) {
 #> [1] "A"
 #> [1] "X"
 #> [1] "C"
+
+am_close(doc23)
+am_close(doc24)
 ```
 
 ## Best Practices
@@ -503,6 +541,9 @@ doc_good[["votes"]] <- list(
 # Better than: Single counter for all votes
 doc_bad <- am_create()
 doc_bad[["total_votes"]] <- am_counter(0) # Loses attribution
+
+am_close(doc_good)
+am_close(doc_bad)
 ```
 
 ### 3. Commit at Logical Boundaries
@@ -521,6 +562,8 @@ doc25[["status"]] <- "active"
 am_commit(doc25, "Set status")
 doc25[["role"]] <- "admin"
 am_commit(doc25, "Set role")
+
+am_close(doc25)
 ```
 
 ### 4. Handle Concurrent Conflicts Gracefully
@@ -542,6 +585,9 @@ am_merge(doc26, doc27)
 # One will win - application should handle both states sensibly
 doc26[["status"]] # Should be prepared for either 'published' or 'archived'
 #> [1] "archived"
+
+am_close(doc26)
+am_close(doc27)
 ```
 
 ## Further Reading

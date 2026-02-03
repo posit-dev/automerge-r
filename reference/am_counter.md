@@ -24,4 +24,5 @@ An `am_counter` object
 ``` r
 doc <- am_create()
 am_put(doc, AM_ROOT, "score", am_counter(0))
+am_close(doc)
 ```

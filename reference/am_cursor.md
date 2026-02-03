@@ -65,4 +65,6 @@ am_text_splice(text_obj, 0, 0, "Hi ")
 new_pos <- am_cursor_position(cursor)
 new_pos  # 8 (cursor moved by 3 characters)
 #> [1] 8
+
+am_close(doc)
 ```

@@ -18,6 +18,8 @@ Create, save, load, and manage Automerge documents
   : Commit pending changes
 - [`am_rollback()`](https://posit-dev.github.io/automerge-r/reference/am_rollback.md)
   : Roll back pending operations
+- [`am_close()`](https://posit-dev.github.io/automerge-r/reference/am_close.md)
+  : Close an Automerge document
 
 ## Actor Management
 

@@ -37,4 +37,5 @@ text_string  # "Hello World"
 
 identical(as.character(text_obj), am_text_content(text_obj))  # TRUE
 #> [1] TRUE
+am_close(doc)
 ```

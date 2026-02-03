@@ -50,4 +50,6 @@ cat("Synced in", rounds, "rounds\n")
 #> Synced in 4 rounds
 
 # Now both documents have both x and y
+am_close(doc1)
+am_close(doc2)
 ```

@@ -69,4 +69,6 @@ marks_at_3
 #> 
 #> 
 # List of 2 marks (both "bold" and "underline" include position 3)
+
+am_close(doc)
 ```

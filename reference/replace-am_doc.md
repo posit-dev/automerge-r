@@ -41,4 +41,5 @@ The document (invisibly)
 doc <- am_create()
 doc[["name"]] <- "Bob"
 doc$age <- 25L
+am_close(doc)
 ```

@@ -47,6 +47,9 @@ peer2[["data1"]]
 #> [1] 100
 peer2[["data2"]]
 #> [1] 200
+
+am_close(peer1)
+am_close(peer2)
 ```
 
 **When to use**: Simple peer-to-peer synchronization where both sides
@@ -75,11 +78,14 @@ am_merge(target, source)
 
 # Target now has source's changes
 target[["version"]]
-#> [1] "2.0"
+#> [1] "1.0"
 
 # Source is unchanged
 names(source)
 #> [1] "features" "version"
+
+am_close(source)
+am_close(target)
 ```
 
 **When to use**: Client pulling updates from server, importing changes
@@ -140,6 +146,9 @@ peer3[["source"]]
 #> [1] "peer4"
 peer4[["source"]]
 #> [1] "peer4"
+
+am_close(peer3)
+am_close(peer4)
 ```
 
 ### Protocol Components
@@ -229,6 +238,11 @@ am_apply_changes(peer_c, loaded_changes)
 # Verify
 peer_c[["v3"]]
 #> [1] "third"
+
+am_close(base_doc)
+am_close(peer_a)
+am_close(peer_b)
+am_close(peer_c)
 ```
 
 **When to use**: Git-like workflows, change logs, selective sync.
@@ -283,6 +297,8 @@ changes_since_v1 <- am_get_changes(doc_main, heads_v1)
 str(changes_since_v1)
 #> List of 1
 #>  $ : raw [1:126] 85 6f 4a 83 ...
+
+am_close(doc_main)
 ```
 
 ### Incremental Sync Pattern
@@ -329,6 +345,9 @@ am_apply_changes(server, client_changes)
 
 server[["local_cache"]]
 #> [1] TRUE
+
+am_close(server)
+am_close(client)
 ```
 
 ### Detecting Divergence
@@ -377,6 +396,9 @@ rounds
 # After sync, heads are identical again
 identical(am_get_heads(peer_x), am_get_heads(peer_y))
 #> [1] TRUE
+
+am_close(peer_x)
+am_close(peer_y)
 ```
 
 ## Concurrent Edits
@@ -415,6 +437,10 @@ editor1[["counter"]]
 # Status: Deterministic conflict resolution (one value wins)
 editor1[["status"]]
 #> [1] "published"
+
+am_close(base)
+am_close(editor1)
+am_close(editor2)
 ```
 
 ## Sync Performance
@@ -463,6 +489,11 @@ length(am_save(doc_frequent))
 #> [1] 265
 length(am_save(doc_batched))
 #> [1] 186
+
+am_close(doc_frequent)
+am_close(peer_frequent)
+am_close(doc_batched)
+am_close(peer_batched)
 ```
 
 **Batching creates smaller documents** because:
@@ -508,6 +539,8 @@ am_commit(doc_hybrid, "Record login")
 
 # Sync again
 # result <- sync_with_server(doc_hybrid)
+
+am_close(doc_hybrid)
 ```
 
 ### Reusing Sync State
@@ -564,6 +597,11 @@ msg3 <- am_sync_encode(doc_reuse, sync_state_local)
 am_sync_decode(peer_reuse, sync_state_peer, msg3)
 
 # Sync state remembers what was already exchanged
+
+am_close(doc_no_reuse)
+am_close(peer_no_reuse)
+am_close(doc_reuse)
+am_close(peer_reuse)
 ```
 
 **When to persist sync state:**
@@ -603,11 +641,16 @@ measure_sync <- function(n_changes, batch_size) {
     syncs_performed <- syncs_performed + 1
   }
 
-  list(
+  result <- list(
     changes = changes_made,
     syncs = syncs_performed,
     size = length(am_save(doc))
   )
+
+  am_close(doc)
+  am_close(peer)
+
+  result
 }
 
 # No batching: commit and sync after every change

@@ -68,4 +68,5 @@ doc$counters <- list(am_counter(0), am_counter(5))
 counters_obj <- doc$counters
 am_counter_increment(doc, counters_obj, 1, 1)  # Increment first counter
 am_counter_increment(doc, counters_obj, 2, 2)  # Increment second counter
+am_close(doc)
 ```

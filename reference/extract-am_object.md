@@ -41,4 +41,5 @@ user[["name"]]  # "Bob"
 #> [1] "Bob"
 user$age        # 25L
 #> [1] 25
+am_close(doc)
 ```

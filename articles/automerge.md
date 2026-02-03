@@ -43,9 +43,13 @@ library(automerge)
 doc <- am_create()
 print(doc)
 #> <Automerge Document>
-#> Actor: 4e3ebbbda2cca6fa33c99a738d44ca43 
+#> Actor: 5440bcacf7132f7aeedd58a345ce316f 
 #> Root keys: 0
 ```
+
+Note: When you’re done working with a document, you can explicitly free
+its resources with `am_close(doc)` if you don’t want to wait for garbage
+collection.
 
 ### Adding Data - Three Approaches
 
@@ -93,6 +97,8 @@ doc2 <- am_create() |>
 
 doc2 |> am_get(AM_ROOT, "name")
 #> [1] "Bob"
+
+am_close(doc2)
 ```
 
 ## Working with Nested Structures
@@ -158,6 +164,9 @@ am_put_path(doc4, c("config", "cache", "ttl"), 3600L)
 # Retrieve values with paths
 am_get_path(doc4, c("config", "database", "host"))
 #> [1] "localhost"
+
+am_close(doc3)
+am_close(doc4)
 ```
 
 ### Converting R Data Structures
@@ -189,6 +198,8 @@ am_commit(doc5, "Initial configuration")
 # Easy access with paths
 am_get_path(doc5, c("database", "port"))
 #> [1] 5432
+
+am_close(doc5)
 ```
 
 ## Working with Lists
@@ -219,6 +230,8 @@ am_get(doc6, items, 1)
 #> [1] "first"
 am_get(doc6, items, 2)
 #> [1] "second"
+
+am_close(doc6)
 ```
 
 ## Special Automerge Types
@@ -253,6 +266,8 @@ old_text <- am_text_content(text_obj)
 am_text_update(text_obj, old_text, "New content from user input")
 am_text_content(text_obj)
 #> [1] "New content from user input"
+
+am_close(doc7)
 ```
 
 ### Counters (for CRDT Counting)
@@ -272,6 +287,8 @@ am_counter_increment(doc8, AM_ROOT, "score", -3)
 
 doc8[["score"]]
 #> <Automerge Counter: 12 >
+
+am_close(doc8)
 ```
 
 ### Timestamps
@@ -285,7 +302,9 @@ am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
-#> [1] "2026-02-03 00:29:01 UTC"
+#> [1] "2026-02-03 19:30:06 UTC"
+
+am_close(doc9)
 ```
 
 ## Saving and Loading Documents
@@ -309,6 +328,10 @@ doc_from_file <- am_load(readBin(temp_file, "raw", 1e6))
 # Verify data persisted
 doc_from_file[["name"]]
 #> [1] "Alice"
+
+am_close(doc)
+am_close(doc_loaded)
+am_close(doc_from_file)
 ```
 
 ## Document Lifecycle
@@ -341,6 +364,9 @@ doc11 <- am_fork(doc10)
 doc11[["w"]] <- 4
 doc10[["w"]] # NULL - not in original
 #> NULL
+
+am_close(doc10)
+am_close(doc11)
 ```
 
 ### Merging Documents
@@ -366,7 +392,10 @@ doc12[["value1"]]
 doc12[["value2"]]
 #> [1] 200
 doc12[["source"]] # One value wins deterministically for conflicting keys
-#> [1] "doc13"
+#> [1] "doc12"
+
+am_close(doc12)
+am_close(doc13)
 ```
 
 ## Basic Synchronization
@@ -399,6 +428,9 @@ peer2[["data1"]]
 #> [1] 100
 peer2[["data2"]]
 #> [1] 200
+
+am_close(peer1)
+am_close(peer2)
 ```
 
 ## Next Steps

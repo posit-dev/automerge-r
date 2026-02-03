@@ -104,6 +104,7 @@ for the document root</p></dd>
 <span class="r-in"><span><span class="co"># Create nested list and retrieve it</span></span></span>
 <span class="r-in"><span><span class="fu">am_put</span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"items"</span>, <span class="va">AM_OBJ_TYPE_LIST</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_get.html">am_get</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"items"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -43,4 +43,5 @@ am_commit(doc)
 all_changes <- am_get_changes(doc, NULL)
 cat("Document has", length(all_changes), "change(s)\n")
 #> Document has 1 change(s)
+am_close(doc)
 ```

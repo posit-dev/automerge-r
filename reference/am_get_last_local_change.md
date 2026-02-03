@@ -37,4 +37,5 @@ am_commit(doc, "Add key")
 change <- am_get_last_local_change(doc)
 str(change)  # Raw vector
 #>  raw [1:70] 85 6f 4a 83 ...
+am_close(doc)
 ```

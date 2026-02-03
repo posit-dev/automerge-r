@@ -39,4 +39,6 @@ cursor <- am_cursor(text_obj, 5)
 pos <- am_cursor_position(cursor)
 pos  # 5
 #> [1] 5
+
+am_close(doc)
 ```

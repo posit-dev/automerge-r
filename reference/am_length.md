@@ -32,4 +32,5 @@ am_put(doc, AM_ROOT, "b", 2)
 len <- am_length(doc, AM_ROOT)
 len  # 2
 #> [1] 2
+am_close(doc)
 ```

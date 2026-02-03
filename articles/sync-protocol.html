@@ -119,7 +119,10 @@ protocol automatically.</p>
 <span><span class="va">peer2</span><span class="op">[[</span><span class="st">"data1"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] 100</span></span>
 <span><span class="va">peer2</span><span class="op">[[</span><span class="st">"data2"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] 200</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 200</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer2</span><span class="op">)</span></span></code></pre></div>
 <p><strong>When to use</strong>: Simple peer-to-peer synchronization
 where both sides need all changes.</p>
 </div>
@@ -146,11 +149,14 @@ changes back:</p>
 <span></span>
 <span><span class="co"># Target now has source's changes</span></span>
 <span><span class="va">target</span><span class="op">[[</span><span class="st">"version"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2.0"</span></span>
+<span><span class="co">#&gt; [1] "1.0"</span></span>
 <span></span>
 <span><span class="co"># Source is unchanged</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">source</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "features" "version"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "features" "version"</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">source</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">target</span><span class="op">)</span></span></code></pre></div>
 <p><strong>When to use</strong>: Client pulling updates from server,
 importing changes from another peer.</p>
 </div>
@@ -211,7 +217,10 @@ API.</p>
 <span><span class="va">peer3</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] "peer4"</span></span>
 <span><span class="va">peer4</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer4"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "peer4"</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer4</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="protocol-components">Protocol Components<a class="anchor" aria-label="anchor" href="#protocol-components"></a>
@@ -305,7 +314,12 @@ changes:</p>
 <span></span>
 <span><span class="co"># Verify</span></span>
 <span><span class="va">peer_c</span><span class="op">[[</span><span class="st">"v3"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "third"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "third"</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">base_doc</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_a</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_b</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_c</span><span class="op">)</span></span></code></pre></div>
 <p><strong>When to use</strong>: Git-like workflows, change logs,
 selective sync.</p>
 </div>
@@ -361,7 +375,9 @@ graph.</p>
 <span><span class="va">changes_since_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc_main</span>, <span class="va">heads_v1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">changes_since_v1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 1</span></span>
-<span><span class="co">#&gt;  $ : raw [1:126] 85 6f 4a 83 ...</span></span></code></pre></div>
+<span><span class="co">#&gt;  $ : raw [1:126] 85 6f 4a 83 ...</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_main</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="incremental-sync-pattern">Incremental Sync Pattern<a class="anchor" aria-label="anchor" href="#incremental-sync-pattern"></a>
@@ -406,7 +422,10 @@ graph.</p>
 <span><span class="fu"><a href="../reference/am_apply_changes.html">am_apply_changes</a></span><span class="op">(</span><span class="va">server</span>, <span class="va">client_changes</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">server</span><span class="op">[[</span><span class="st">"local_cache"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">server</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">client</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="detecting-divergence">Detecting Divergence<a class="anchor" aria-label="anchor" href="#detecting-divergence"></a>
@@ -454,7 +473,10 @@ graph.</p>
 <span></span>
 <span><span class="co"># After sync, heads are identical again</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="fu"><a href="../reference/am_get_heads.html">am_get_heads</a></span><span class="op">(</span><span class="va">peer_x</span><span class="op">)</span>, <span class="fu"><a href="../reference/am_get_heads.html">am_get_heads</a></span><span class="op">(</span><span class="va">peer_y</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_x</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_y</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -492,7 +514,11 @@ graph.</p>
 <span></span>
 <span><span class="co"># Status: Deterministic conflict resolution (one value wins)</span></span>
 <span><span class="va">editor1</span><span class="op">[[</span><span class="st">"status"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "published"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "published"</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">base</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">editor1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">editor2</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="sync-performance">Sync Performance<a class="anchor" aria-label="anchor" href="#sync-performance"></a>
@@ -540,7 +566,12 @@ and <em>efficiency</em>:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="../reference/am_save.html">am_save</a></span><span class="op">(</span><span class="va">doc_frequent</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 265</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="../reference/am_save.html">am_save</a></span><span class="op">(</span><span class="va">doc_batched</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 186</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 186</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_frequent</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_frequent</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_batched</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_batched</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Batching creates smaller documents</strong> because:</p>
 <ul>
 <li>Fewer commit metadata entries</li>
@@ -584,7 +615,9 @@ and <em>efficiency</em>:</p>
 <span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc_hybrid</span>, <span class="st">"Record login"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Sync again</span></span>
-<span><span class="co"># result &lt;- sync_with_server(doc_hybrid)</span></span></code></pre></div>
+<span><span class="co"># result &lt;- sync_with_server(doc_hybrid)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_hybrid</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="reusing-sync-state">Reusing Sync State<a class="anchor" aria-label="anchor" href="#reusing-sync-state"></a>
@@ -639,7 +672,12 @@ incremental sync:</p>
 <span><span class="va">msg3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_sync_encode.html">am_sync_encode</a></span><span class="op">(</span><span class="va">doc_reuse</span>, <span class="va">sync_state_local</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_sync_decode.html">am_sync_decode</a></span><span class="op">(</span><span class="va">peer_reuse</span>, <span class="va">sync_state_peer</span>, <span class="va">msg3</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Sync state remembers what was already exchanged</span></span></code></pre></div>
+<span><span class="co"># Sync state remembers what was already exchanged</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_no_reuse</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_no_reuse</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_reuse</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_reuse</span><span class="op">)</span></span></code></pre></div>
 <p><strong>When to persist sync state:</strong></p>
 <ul>
 <li>Long-lived connections (WebSocket servers)</li>
@@ -679,11 +717,16 @@ incremental sync:</p>
 <span>    <span class="va">syncs_performed</span> <span class="op">&lt;-</span> <span class="va">syncs_performed</span> <span class="op">+</span> <span class="fl">1</span></span>
 <span>  <span class="op">}</span></span>
 <span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    changes <span class="op">=</span> <span class="va">changes_made</span>,</span>
 <span>    syncs <span class="op">=</span> <span class="va">syncs_performed</span>,</span>
 <span>    size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="../reference/am_save.html">am_save</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">result</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># No batching: commit and sync after every change</span></span>
