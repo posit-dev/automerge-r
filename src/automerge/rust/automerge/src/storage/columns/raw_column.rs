@@ -261,7 +261,7 @@ impl<T: compression::ColumnCompression> RawColumns<T> {
     }
 
     pub(crate) fn bytes<'a>(&self, c: ColumnSpec, data: &'a [u8]) -> &'a [u8] {
-        debug_assert!(self.0.windows(2).all(|w| w[0].spec() <= w[1].spec()));
+        debug_assert!(self.0.iter().map(|i| i.spec()).is_sorted());
         if let Ok(index) = self.0.binary_search_by(|col| col.spec().cmp(&c)) {
             &data[self.0[index].data().clone()]
         } else {

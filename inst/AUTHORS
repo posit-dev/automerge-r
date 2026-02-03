@@ -1,12 +1,9 @@
 Authors of bundled Rust crates:
 
  - adler2 2.0.1: Jonas Schievink, oyvindln
- - atty 0.2.14: softprops
- - autocfg 1.5.0: Josh Stone
  - bitflags 1.3.2: The Rust Project Developers
- - bitflags 2.10.0: The Rust Project Developers
  - block-buffer 0.10.4: RustCrypto Developers
- - cbindgen 0.26.0: Emilio Cobos Álvarez, Jeff Muizelaar, Kartikaya Gupta, Ryan Hunt
+ - cbindgen 0.29.2: Emilio Cobos Álvarez, Jeff Muizelaar, Kartikaya Gupta, Ryan Hunt
  - cfg-if 1.0.4: Alex Crichton
  - cpufeatures 0.2.17: RustCrypto Developers
  - crc32fast 1.5.0: Sam Rijs, Alex Crichton
@@ -14,34 +11,30 @@ Authors of bundled Rust crates:
  - digest 0.10.7: RustCrypto Developers
  - dot 0.1.4: The Rust Project Developers, Graham Dennis
  - either 1.15.0: bluss
- - errno 0.3.14: Chris Wong, Dan Gohman
- - fastrand 2.3.0: Stjepan Glavina
+ - fastrand 1.9.0: Stjepan Glavina
  - flate2 1.1.8: Alex Crichton, Josh Triplett
  - generic-array 0.14.7: Bartłomiej Kamiński, Aaron Trent
  - getrandom 0.2.17: The Rand Project Developers
- - getrandom 0.3.4: The Rand Project Developers
- - hashbrown 0.12.3: Amanieu d'Antras
- - heck 0.4.1: Without Boats
- - hermit-abi 0.1.19: Stefan Lankes
+ - hashbrown 0.16.1: Amanieu d'Antras
  - hex 0.4.3: KokaKiwi
+ - instant 0.1.13: sebcrozet
  - itertools 0.14.0: bluss
  - itoa 1.0.17: David Tolnay
  - leb128 0.2.5: Nick Fitzgerald, Philip Craig
  - libc 0.2.180: The Rust Project Developers
- - linux-raw-sys 0.11.0: Dan Gohman
  - log 0.4.29: The Rust Project Developers
  - memchr 2.7.6: Andrew Gallant, bluss
  - miniz_oxide 0.8.9: Frommi, oyvindln, Rich Geldreich richgel99@gmail.com
  - once_cell 1.21.3: Aleksey Kladov
- - os_str_bytes 6.6.1: dylni
  - ppv-lite86 0.2.21: The CryptoCorrosion Contributors
  - proc-macro2 1.0.106: David Tolnay, Alex Crichton
- - quote 1.0.43: David Tolnay
+ - quote 1.0.44: David Tolnay
  - rand 0.8.5: The Rand Project Developers, The Rust Project Developers
  - rand_chacha 0.3.1: The Rand Project Developers, The Rust Project Developers, The CryptoCorrosion Contributors
  - rand_core 0.6.4: The Rand Project Developers, The Rust Project Developers
+ - redox_syscall 0.2.16: Jeremy Soller
+ - remove_dir_all 0.5.3: Aaronepower
  - rustc-hash 2.1.1: The Rust Project Developers
- - rustix 1.1.3: Dan Gohman, Jakub Konka
  - serde 1.0.228: Erick Tryzelaar, David Tolnay
  - serde_core 1.0.228: Erick Tryzelaar, David Tolnay
  - serde_derive 1.0.228: Erick Tryzelaar, David Tolnay
@@ -49,17 +42,12 @@ Authors of bundled Rust crates:
  - sha2 0.10.9: RustCrypto Developers
  - simd-adler32 0.3.8: Marvin Countryman
  - smol_str 0.2.2: Aleksey Kladov
- - strsim 0.10.0: Danny Guo
- - syn 1.0.109: David Tolnay
  - syn 2.0.114: David Tolnay
- - tempfile 3.24.0: Steven Allen, The Rust Project Developers, Ashley Mannix, Jason White
- - termcolor 1.4.1: Andrew Gallant
- - textwrap 0.16.2: Martin Geisler
+ - tempfile 3.3.0: Steven Allen, The Rust Project Developers, Ashley Mannix, Jason White
  - thiserror 2.0.18: David Tolnay
  - thiserror-impl 2.0.18: David Tolnay
  - tinyvec 1.10.0: Lokathor
  - tinyvec_macros 0.1.1: Soveu
- - toml 0.5.11: Alex Crichton
  - tracing 0.1.44: Eliza Weisman, Tokio Contributors
  - tracing-attributes 0.1.31: Tokio Contributors, Eliza Weisman, David Barsky
  - tracing-core 0.1.36: Tokio Contributors
@@ -70,11 +58,9 @@ Authors of bundled Rust crates:
  - wasi 0.11.1+wasi-snapshot-preview1: The Cranelift Project Developers
  - winapi 0.3.9: Peter Atashian
  - winapi-i686-pc-windows-gnu 0.4.0: Peter Atashian
- - winapi-util 0.1.11: Andrew Gallant
  - winapi-x86_64-pc-windows-gnu 0.4.0: Peter Atashian
- - wit-bindgen 0.51.0: Alex Crichton
- - zerocopy 0.8.33: Joshua Liebow-Feeser, Jack Wrenn
- - zerocopy-derive 0.8.33: Joshua Liebow-Feeser, Jack Wrenn
- - zmij 1.0.16: David Tolnay
+ - zerocopy 0.8.37: Joshua Liebow-Feeser, Jack Wrenn
+ - zerocopy-derive 0.8.37: Joshua Liebow-Feeser, Jack Wrenn
+ - zmij 1.0.19: David Tolnay
 
-(Generated from Cargo.toml files on 2026-01-22)
+(Generated from Cargo.toml files on 2026-02-02)

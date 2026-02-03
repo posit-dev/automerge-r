@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![R-universe version](https://posit-dev.r-universe.dev/automerge/badges/version)](https://posit-dev.r-universe.dev/automerge)
+[![CRAN status](https://www.r-pkg.org/badges/version/automerge)](https://CRAN.R-project.org/package=automerge)
 [![R-CMD-check](https://github.com/posit-dev/automerge-r/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/posit-dev/automerge-r/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/posit-dev/automerge-r/graph/badge.svg)](https://app.codecov.io/gh/posit-dev/automerge-r)
 <!-- badges: end -->
@@ -70,7 +70,7 @@ bob
 install.packages("automerge")
 ```
 
-Building from source requires Rust >= 1.80 ([rustup.rs](https://rustup.rs/)) and CMake >= 3.25 (included in Rtools43+ on Windows).
+Building from source requires Rust >= 1.84 ([rustup.rs](https://rustup.rs/)) and CMake >= 3.25 (included in Rtools43+ on Windows).
 
 ## Documentation
 

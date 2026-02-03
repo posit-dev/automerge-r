@@ -39,4 +39,4 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 SystemRequirements: 'automerge-c', or Cargo (Rust's package manager),
-    rustc >= 1.80 and CMake >= 3.25 to build from package sources.
+    rustc >= 1.84 and CMake >= 3.25 to build from package sources.
