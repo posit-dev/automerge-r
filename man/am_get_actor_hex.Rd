@@ -21,5 +21,7 @@ This is more efficient than converting the raw bytes returned by
 doc <- am_create()
 actor_hex <- am_get_actor_hex(doc)
 cat("Actor ID:", actor_hex, "\n")
+
 am_close(doc)
+
 }

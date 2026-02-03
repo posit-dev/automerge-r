@@ -29,6 +29,8 @@ sync1 <- am_sync_state_new()
 sync2 <- am_sync_state_new()
 
 # Use with am_sync_encode() and am_sync_decode()
+
 am_close(doc1)
 am_close(doc2)
+
 }

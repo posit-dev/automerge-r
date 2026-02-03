@@ -28,5 +28,7 @@ am_delete_path(doc, c("user", "address"))
 
 # Address should be gone
 am_get_path(doc, c("user", "address"))  # NULL
+
 am_close(doc)
+
 }

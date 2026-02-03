@@ -38,5 +38,7 @@ am_text_content(text_obj)  # "Hello World"
 # Works with Unicode
 am_text_update(text_obj, "Hello World", "Hello World!")
 am_text_content(text_obj)  # "Hello World!"
+
 am_close(doc)
+
 }

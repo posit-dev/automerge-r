@@ -31,5 +31,7 @@ am_commit(doc)
 # Get all changes
 all_changes <- am_get_changes(doc, NULL)
 cat("Document has", length(all_changes), "change(s)\n")
+
 am_close(doc)
+
 }

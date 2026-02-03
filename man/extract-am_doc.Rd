@@ -26,10 +26,13 @@ These operators provide R-idiomatic access to document data.
 }
 \examples{
 doc <- am_create()
+
 am_put(doc, AM_ROOT, "name", "Alice")
 am_put(doc, AM_ROOT, "age", 30L)
 
 doc[["name"]]  # "Alice"
 doc$age        # 30L
+
 am_close(doc)
+
 }

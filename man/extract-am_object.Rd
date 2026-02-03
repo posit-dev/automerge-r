@@ -25,10 +25,13 @@ Extract values from an Automerge object (map or list) using \code{[[} or \code{$
 }
 \examples{
 doc <- am_create()
+
 am_put(doc, AM_ROOT, "user", list(name = "Bob", age = 25L))
 user <- am_get(doc, AM_ROOT, "user")
 
 user[["name"]]  # "Bob"
 user$age        # 25L
+
 am_close(doc)
+
 }

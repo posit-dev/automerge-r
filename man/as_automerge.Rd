@@ -36,5 +36,7 @@ data <- list(
 doc <- as_automerge(data)
 doc[["name"]]  # "Alice"
 doc[["age"]]   # 30L
+
 am_close(doc)
+
 }

@@ -27,4 +27,5 @@ doc$data <- list(x = 1L, y = 2L)
 str(doc)
 str(doc, max.level = 1)
 am_close(doc)
+
 }

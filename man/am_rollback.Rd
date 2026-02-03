@@ -19,8 +19,11 @@ commit.
 }
 \examples{
 doc <- am_create()
+
 am_put(doc, AM_ROOT, "key", "value")
 # Changed my mind, discard the put
 am_rollback(doc)
+
 am_close(doc)
+
 }

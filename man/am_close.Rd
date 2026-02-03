@@ -30,4 +30,5 @@ am_put(doc, AM_ROOT, "key", "value")
 am_close(doc)
 
 # Document is now invalid - do not use after closing
+
 }

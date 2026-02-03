@@ -25,5 +25,7 @@ doc$name <- "Alice"
 doc$age <- 30L
 
 as.list(doc)  # list(name = "Alice", age = 30L)
+
 am_close(doc)
+
 }

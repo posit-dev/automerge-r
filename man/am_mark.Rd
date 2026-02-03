@@ -82,4 +82,5 @@ marks <- am_marks(text_obj)
 marks
 
 am_close(doc)
+
 }

@@ -36,7 +36,9 @@
 #' # Create nested list and retrieve it
 #' am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
 #' items <- am_get(doc, AM_ROOT, "items")
+#'
 #' am_close(doc)
+#'
 am_put <- function(doc, obj, key, value) {
   invisible(.Call(C_am_put, doc, obj, key, value))
 }
@@ -62,7 +64,9 @@ am_put <- function(doc, obj, key, value) {
 #'
 #' name <- am_get(doc, AM_ROOT, "name")
 #' name  # "Alice"
+#'
 #' am_close(doc)
+#'
 am_get <- function(doc, obj, key) {
   .Call(C_am_get, doc, obj, key)
 }
@@ -85,6 +89,7 @@ am_get <- function(doc, obj, key) {
 #' am_put(doc, AM_ROOT, "temp", "value")
 #' am_delete(doc, AM_ROOT, "temp")
 #' am_close(doc)
+#'
 am_delete <- function(doc, obj, key) {
   invisible(.Call(C_am_delete, doc, obj, key))
 }
@@ -102,12 +107,15 @@ am_delete <- function(doc, obj, key) {
 #' @export
 #' @examples
 #' doc <- am_create()
+#'
 #' am_put(doc, AM_ROOT, "a", 1)
 #' am_put(doc, AM_ROOT, "b", 2)
 #'
 #' keys <- am_keys(doc, AM_ROOT)
 #' keys  # c("a", "b")
+#'
 #' am_close(doc)
+#'
 am_keys <- function(doc, obj) {
   .Call(C_am_keys, doc, obj)
 }
@@ -124,12 +132,15 @@ am_keys <- function(doc, obj) {
 #' @export
 #' @examples
 #' doc <- am_create()
+#'
 #' am_put(doc, AM_ROOT, "a", 1)
 #' am_put(doc, AM_ROOT, "b", 2)
 #'
 #' len <- am_length(doc, AM_ROOT)
 #' len  # 2
+#'
 #' am_close(doc)
+#'
 am_length <- function(doc, obj) {
   .Call(C_am_length, doc, obj)
 }
@@ -151,6 +162,7 @@ am_length <- function(doc, obj) {
 #' @export
 #' @examples
 #' doc <- am_create()
+#'
 #' # Create a list and get it
 #' am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
 #' items <- am_get(doc, AM_ROOT, "items")
@@ -158,7 +170,9 @@ am_length <- function(doc, obj) {
 #' # Insert items
 #' am_insert(doc, items, "end", "first")
 #' am_insert(doc, items, "end", "second")
+#'
 #' am_close(doc)
+#'
 am_insert <- function(doc, obj, pos, value) {
   invisible(.Call(C_am_insert, doc, obj, pos, value))
 }
@@ -177,6 +191,7 @@ am_insert <- function(doc, obj, pos, value) {
 #' doc <- am_create()
 #' am_put(doc, AM_ROOT, "score", am_counter(0))
 #' am_close(doc)
+#'
 am_counter <- function(value = 0L) {
   structure(as.integer(value), class = "am_counter")
 }
@@ -194,6 +209,7 @@ am_counter <- function(value = 0L) {
 #' doc <- am_create()
 #' am_put(doc, AM_ROOT, "id", am_uint64(12345))
 #' am_close(doc)
+#'
 am_uint64 <- function(value = 0) {
   value <- as.numeric(value)
   if (value < 0) {
@@ -219,6 +235,7 @@ am_uint64 <- function(value = 0) {
 #'
 #' # Populated list
 #' am_list("a", "b", "c")
+#'
 am_list <- function(...) {
   structure(list(...), class = c("am_list_type", "list"))
 }
@@ -237,6 +254,7 @@ am_list <- function(...) {
 #'
 #' # Populated map
 #' am_map(key1 = "value1", key2 = "value2")
+#'
 am_map <- function(...) {
   structure(list(...), class = c("am_map_type", "list"))
 }
@@ -260,6 +278,7 @@ am_map <- function(...) {
 #'
 #' # Text with initial content
 #' am_text("Hello, World!")
+#'
 am_text <- function(initial = "") {
   if (!is.character(initial) || length(initial) != 1) {
     stop("initial must be a single character string")
@@ -318,7 +337,9 @@ am_text <- function(initial = "") {
 #' # Position 11 is after "café" (character index, not bytes)
 #' am_text_splice(text_obj2, 11, 0, "!")
 #' am_text_content(text_obj2)  # "Column café!"
+#'
 #' am_close(doc)
+#'
 am_text_splice <- function(text_obj, pos, del_count, text) {
   invisible(.Call(C_am_text_splice, text_obj, pos, del_count, text))
 }
@@ -337,7 +358,9 @@ am_text_splice <- function(text_obj, pos, del_count, text) {
 #'
 #' text <- am_text_content(text_obj)
 #' text  # "Hello"
+#'
 #' am_close(doc)
+#'
 am_text_content <- function(text_obj) {
   .Call(C_am_text_content, text_obj)
 }
@@ -369,7 +392,9 @@ am_text_content <- function(text_obj) {
 #' # Works with Unicode
 #' am_text_update(text_obj, "Hello World", "Hello World!")
 #' am_text_content(text_obj)  # "Hello World!"
+#'
 #' am_close(doc)
+#'
 am_text_update <- function(text_obj, old_text, new_text) {
   invisible(.Call(C_am_text_update, text_obj, old_text, new_text))
 }
@@ -390,7 +415,9 @@ am_text_update <- function(text_obj, old_text, new_text) {
 #'
 #' values <- am_values(doc, AM_ROOT)
 #' values  # list(1, 2, 3)
+#'
 #' am_close(doc)
+#'
 am_values <- function(doc, obj) {
   .Call(C_am_values, doc, obj)
 }
@@ -433,7 +460,9 @@ am_values <- function(doc, obj) {
 #' counters_obj <- doc$counters
 #' am_counter_increment(doc, counters_obj, 1, 1)  # Increment first counter
 #' am_counter_increment(doc, counters_obj, 2, 2)  # Increment second counter
+#'
 #' am_close(doc)
+#'
 am_counter_increment <- function(doc, obj, key, delta) {
   invisible(.Call(C_am_counter_increment, doc, obj, key, delta))
 }

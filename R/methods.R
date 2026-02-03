@@ -17,12 +17,15 @@
 #' @export
 #' @examples
 #' doc <- am_create()
+#'
 #' am_put(doc, AM_ROOT, "name", "Alice")
 #' am_put(doc, AM_ROOT, "age", 30L)
 #'
 #' doc[["name"]]  # "Alice"
 #' doc$age        # 30L
+#'
 #' am_close(doc)
+#'
 `[[.am_doc` <- function(x, i) {
   am_get(x, AM_ROOT, i)
 }
@@ -52,6 +55,7 @@
 #' doc[["name"]] <- "Bob"
 #' doc$age <- 25L
 #' am_close(doc)
+#'
 `[[<-.am_doc` <- function(x, i, value) {
   am_put(x, AM_ROOT, i, value)
 }
@@ -75,6 +79,7 @@
 #' doc$b <- 2
 #' length(doc)  # 2
 #' am_close(doc)
+#'
 length.am_doc <- function(x) {
   am_length(x, AM_ROOT)
 }
@@ -92,6 +97,7 @@ length.am_doc <- function(x) {
 #' doc$age <- 30L
 #' names(doc)  # c("name", "age")
 #' am_close(doc)
+#'
 names.am_doc <- function(x) {
   am_keys(x, AM_ROOT)
 }
@@ -105,6 +111,7 @@ names.am_doc <- function(x) {
 #' @return The document (invisibly)
 #' @keywords internal
 #' @export
+#'
 print.am_doc <- function(x, ...) {
   cat("<Automerge Document>\n")
 
@@ -140,6 +147,7 @@ print.am_doc <- function(x, ...) {
 #' str(doc)
 #' str(doc, max.level = 1)
 #' am_close(doc)
+#'
 str.am_doc <- function(object, max.level = 2, ...) {
   str_am_doc_recurse(object, AM_ROOT, "", max.level, 0L)
 }
@@ -175,7 +183,9 @@ str_am_doc_recurse <- function(doc, obj, prefix, max.level, depth) {
         if (depth >= max.level) {
           cat(prefix, "  ...\n", sep = "")
         } else {
-          list_values <- tryCatch(am_values(doc, val), error = function(e) list())
+          list_values <- tryCatch(am_values(doc, val), error = function(e) {
+            list()
+          })
           for (j in seq_len(min(len, 5L))) {
             item <- list_values[[j]]
             cat(prefix, "  [", j, "]: ", sep = "")
@@ -243,7 +253,9 @@ str_am_doc_recurse <- function(doc, obj, prefix, max.level, depth) {
 #' doc$age <- 30L
 #'
 #' as.list(doc)  # list(name = "Alice", age = 30L)
+#'
 #' am_close(doc)
+#'
 as.list.am_doc <- function(x, ...) {
   root_keys <- am_keys(x, AM_ROOT)
   root_values <- am_values(x, AM_ROOT)
@@ -274,12 +286,15 @@ as.list.am_doc <- function(x, ...) {
 #' @export
 #' @examples
 #' doc <- am_create()
+#'
 #' am_put(doc, AM_ROOT, "user", list(name = "Bob", age = 25L))
 #' user <- am_get(doc, AM_ROOT, "user")
 #'
 #' user[["name"]]  # "Bob"
 #' user$age        # 25L
+#'
 #' am_close(doc)
+#'
 `[[.am_object` <- function(x, i) {
   doc <- .Call(C_get_doc_from_objid, x)
   am_get(doc, x, i)
@@ -287,6 +302,7 @@ as.list.am_doc <- function(x, ...) {
 
 #' @rdname extract-am_object
 #' @export
+#'
 `$.am_object` <- function(x, name) {
   doc <- .Call(C_get_doc_from_objid, x)
   am_get(doc, x, name)
@@ -307,12 +323,15 @@ as.list.am_doc <- function(x, ...) {
 #' @export
 #' @examples
 #' doc <- am_create()
+#'
 #' am_put(doc, AM_ROOT, "user", list(name = "Bob", age = 25L))
 #' user <- am_get(doc, AM_ROOT, "user")
 #'
 #' user[["name"]] <- "Alice"
 #' user$age <- 30L
+#'
 #' am_close(doc)
+#'
 `[[<-.am_object` <- function(x, i, value) {
   doc <- .Call(C_get_doc_from_objid, x)
   am_put(doc, x, i, value)
@@ -321,6 +340,7 @@ as.list.am_doc <- function(x, ...) {
 
 #' @rdname replace-am_object
 #' @export
+#'
 `$<-.am_object` <- function(x, name, value) {
   doc <- .Call(C_get_doc_from_objid, x)
   am_put(doc, x, name, value)
@@ -334,6 +354,7 @@ as.list.am_doc <- function(x, ...) {
 #' @param x An Automerge object
 #' @return Integer length
 #' @export
+#'
 length.am_object <- function(x) {
   doc <- .Call(C_get_doc_from_objid, x)
   am_length(doc, x)
@@ -346,6 +367,7 @@ length.am_object <- function(x) {
 #' @param x An Automerge map object
 #' @return Character vector of key names
 #' @export
+#'
 names.am_map <- function(x) {
   doc <- .Call(C_get_doc_from_objid, x)
   am_keys(doc, x)
@@ -358,6 +380,7 @@ names.am_map <- function(x) {
 #' @return The counter (invisibly)
 #' @keywords internal
 #' @export
+#'
 print.am_counter <- function(x, ...) {
   cat("<Automerge Counter:", as.integer(x), ">\n")
   invisible(x)
@@ -370,6 +393,7 @@ print.am_counter <- function(x, ...) {
 #' @return The uint64 (invisibly)
 #' @keywords internal
 #' @export
+#'
 print.am_uint64 <- function(x, ...) {
   cat("<Automerge uint64:", format(x, scientific = FALSE), ">\n")
   invisible(x)
@@ -382,6 +406,7 @@ print.am_uint64 <- function(x, ...) {
 #' @return The object (invisibly)
 #' @keywords internal
 #' @export
+#'
 print.am_object <- function(x, ...) {
   cat("<Automerge Object>\n")
   invisible(x)
@@ -394,6 +419,7 @@ print.am_object <- function(x, ...) {
 #' @return The object (invisibly)
 #' @keywords internal
 #' @export
+#'
 print.am_map <- function(x, ...) {
   doc <- .Call(C_get_doc_from_objid, x)
   obj_len <- am_length(doc, x)
@@ -419,6 +445,7 @@ print.am_map <- function(x, ...) {
 #' @return The object (invisibly)
 #' @keywords internal
 #' @export
+#'
 print.am_list <- function(x, ...) {
   doc <- .Call(C_get_doc_from_objid, x)
   obj_len <- am_length(doc, x)
@@ -435,6 +462,7 @@ print.am_list <- function(x, ...) {
 #' @return The object (invisibly)
 #' @keywords internal
 #' @export
+#'
 print.am_text <- function(x, ...) {
   text_content <- am_text_content(x)
   cat("<Automerge Text>\n")
@@ -458,6 +486,7 @@ print.am_text <- function(x, ...) {
 #' @param ... Additional arguments (unused)
 #' @return Named list
 #' @keywords internal
+#'
 as.list.am_map <- function(x, doc = NULL, ...) {
   if (is.null(doc)) {
     doc <- .Call(C_get_doc_from_objid, x)
@@ -484,6 +513,7 @@ as.list.am_map <- function(x, doc = NULL, ...) {
 #' @param ... Additional arguments (unused)
 #' @return Unnamed list
 #' @keywords internal
+#'
 as.list.am_list <- function(x, doc = NULL, ...) {
   if (is.null(doc)) {
     doc <- .Call(C_get_doc_from_objid, x)
@@ -508,6 +538,7 @@ as.list.am_list <- function(x, doc = NULL, ...) {
 #' @param ... Additional arguments (unused)
 #' @return Character string
 #' @keywords internal
+#'
 as.list.am_text <- function(x, doc = NULL, ...) {
   am_text_content(x)
 }
@@ -523,6 +554,7 @@ as.list.am_text <- function(x, doc = NULL, ...) {
 #' @export
 #' @examples
 #' doc <- am_create()
+#'
 #' am_put(doc, AM_ROOT, "notes", am_text("Hello World"))
 #' text_obj <- am_get(doc, AM_ROOT, "notes")
 #'
@@ -530,7 +562,9 @@ as.list.am_text <- function(x, doc = NULL, ...) {
 #' text_string  # "Hello World"
 #'
 #' identical(as.character(text_obj), am_text_content(text_obj))  # TRUE
+#'
 #' am_close(doc)
+#'
 as.character.am_text <- function(x, ...) {
   am_text_content(x)
 }
@@ -542,6 +576,7 @@ as.character.am_text <- function(x, ...) {
 #' @return The cursor (invisibly)
 #' @keywords internal
 #' @export
+#'
 print.am_cursor <- function(x, ...) {
   cat("<Automerge Cursor>\n")
   invisible(x)
@@ -554,6 +589,7 @@ print.am_cursor <- function(x, ...) {
 #' @return The sync state (invisibly)
 #' @keywords internal
 #' @export
+#'
 print.am_syncstate <- function(x, ...) {
   cat("<Automerge Sync State>\n")
   invisible(x)

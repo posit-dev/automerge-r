@@ -20,4 +20,5 @@ that support conflict-free increment and decrement operations.
 doc <- am_create()
 am_put(doc, AM_ROOT, "score", am_counter(0))
 am_close(doc)
+
 }

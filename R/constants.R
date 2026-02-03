@@ -45,34 +45,42 @@
 #' }
 #'
 #' @export
+#'
 AM_ROOT <- NULL
 
 #' @rdname automerge-constants
 #' @export
+#'
 AM_OBJ_TYPE_LIST <- structure("list", class = "am_obj_type")
 
 #' @rdname automerge-constants
 #' @export
+#'
 AM_OBJ_TYPE_MAP <- structure("map", class = "am_obj_type")
 
 #' @rdname automerge-constants
 #' @export
+#'
 AM_OBJ_TYPE_TEXT <- structure("text", class = "am_obj_type")
 
 #' @rdname automerge-constants
 #' @export
+#'
 AM_MARK_EXPAND_NONE <- "none"
 
 #' @rdname automerge-constants
 #' @export
+#'
 AM_MARK_EXPAND_BEFORE <- "before"
 
 #' @rdname automerge-constants
 #' @export
+#'
 AM_MARK_EXPAND_AFTER <- "after"
 
 #' @rdname automerge-constants
 #' @export
+#'
 AM_MARK_EXPAND_BOTH <- "both"
 
 # C code uses these maps to convert R string constants to C enums

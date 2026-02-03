@@ -22,5 +22,7 @@ doc$name <- "Alice"
 doc$age <- 30L
 
 from_automerge(doc)  # list(name = "Alice", age = 30L)
+
 am_close(doc)
+
 }

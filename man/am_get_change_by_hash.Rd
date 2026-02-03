@@ -31,5 +31,7 @@ head_hash <- heads[[1]]
 # Retrieve the change by its hash
 change <- am_get_change_by_hash(doc, head_hash)
 str(change)  # Raw vector
+
 am_close(doc)
+
 }

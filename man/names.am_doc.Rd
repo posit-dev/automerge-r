@@ -21,4 +21,5 @@ doc$name <- "Alice"
 doc$age <- 30L
 names(doc)  # c("name", "age")
 am_close(doc)
+
 }

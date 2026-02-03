@@ -58,4 +58,5 @@ new_pos <- am_cursor_position(cursor)
 new_pos  # 8 (cursor moved by 3 characters)
 
 am_close(doc)
+
 }

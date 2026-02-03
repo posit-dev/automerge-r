@@ -29,7 +29,9 @@
 #'   list(name = "Carol")
 #' )
 #' am_get_path(doc, list("users", 1, "name"))  # "Bob"
+#'
 #' am_close(doc)
+#'
 am_get_path <- function(doc, path) {
   if (!inherits(doc, "am_doc")) {
     stop("doc must be an Automerge document (am_doc)")
@@ -81,7 +83,9 @@ am_get_path <- function(doc, path) {
 #'
 #' # Verify
 #' am_get_path(doc, c("user", "address", "city"))  # "Boston"
+#'
 #' am_close(doc)
+#'
 am_put_path <- function(doc, path, value, create_intermediate = TRUE) {
   if (!inherits(doc, "am_doc")) {
     stop("doc must be an Automerge document (am_doc)")
@@ -153,7 +157,9 @@ am_put_path <- function(doc, path, value, create_intermediate = TRUE) {
 #'
 #' # Address should be gone
 #' am_get_path(doc, c("user", "address"))  # NULL
+#'
 #' am_close(doc)
+#'
 am_delete_path <- function(doc, path) {
   if (!inherits(doc, "am_doc")) {
     stop("doc must be an Automerge document (am_doc)")
@@ -223,7 +229,9 @@ am_delete_path <- function(doc, path) {
 #' doc <- as_automerge(data)
 #' doc[["name"]]  # "Alice"
 #' doc[["age"]]   # 30L
+#'
 #' am_close(doc)
+#'
 as_automerge <- function(x, doc = NULL, actor_id = NULL) {
   if (is.null(doc)) {
     doc <- am_create(actor_id = actor_id)
@@ -261,7 +269,9 @@ as_automerge <- function(x, doc = NULL, actor_id = NULL) {
 #' doc$age <- 30L
 #'
 #' from_automerge(doc)  # list(name = "Alice", age = 30L)
+#'
 #' am_close(doc)
+#'
 from_automerge <- function(doc) {
   if (!inherits(doc, "am_doc")) {
     stop("doc must be an Automerge document (am_doc)")

@@ -41,6 +41,8 @@ am_apply_changes(doc1, changes)
 
 # Now doc1 has both x and y
 names(doc1)  # "x" "y"
+
 am_close(doc1)
 am_close(doc2)
+
 }

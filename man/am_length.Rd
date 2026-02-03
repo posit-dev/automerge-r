@@ -19,10 +19,13 @@ Returns the number of key-value pairs in a map or elements in a list.
 }
 \examples{
 doc <- am_create()
+
 am_put(doc, AM_ROOT, "a", 1)
 am_put(doc, AM_ROOT, "b", 2)
 
 len <- am_length(doc, AM_ROOT)
 len  # 2
+
 am_close(doc)
+
 }
