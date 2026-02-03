@@ -168,6 +168,81 @@ test_that("as.list() recursively converts nested structures", {
   expect_equal(result$user$profile$zip, 02101L)
 })
 
+test_that("str() displays document structure", {
+  doc <- am_create()
+  doc$name <- "Alice"
+  doc$age <- 30L
+  doc$active <- TRUE
+
+  output <- capture.output(str(doc))
+  expect_true(any(grepl("name:", output)))
+  expect_true(any(grepl("Alice", output)))
+  expect_true(any(grepl("age:", output)))
+  expect_true(any(grepl("30", output)))
+  expect_true(any(grepl("active:", output)))
+})
+
+test_that("str() displays nested structures", {
+  doc <- am_create()
+  doc$user <- list(name = "Bob", age = 25L)
+
+  output <- capture.output(str(doc))
+  expect_true(any(grepl("user:", output)))
+  expect_true(any(grepl("name:", output)))
+  expect_true(any(grepl("Bob", output)))
+})
+
+test_that("str() respects max.level parameter", {
+  doc <- am_create()
+  doc$level1 <- list(level2 = list(level3 = "deep"))
+
+  output_full <- capture.output(str(doc, max.level = 3))
+  output_limited <- capture.output(str(doc, max.level = 1))
+
+  expect_true(any(grepl("deep", output_full)))
+  expect_true(any(grepl("\\.\\.\\.", output_limited)))
+})
+
+test_that("str() shows truncation indicator at max.level", {
+  doc <- am_create()
+  doc$nested <- list(child = list(grandchild = 1L))
+
+  output <- capture.output(str(doc, max.level = 0))
+  expect_true(any(grepl("\\.\\.\\.", output)))
+})
+
+test_that("str() handles empty document", {
+  doc <- am_create()
+
+  output <- capture.output(str(doc))
+  expect_true(any(grepl("empty", output)))
+})
+
+test_that("str() handles lists with many items", {
+  doc <- am_create()
+  doc$items <- as.list(1:10)
+
+  output <- capture.output(str(doc))
+  expect_true(any(grepl("\\[list", output)))
+  expect_true(any(grepl("\\.\\.\\. and .* more", output)))
+})
+
+test_that("str() truncates long strings", {
+  doc <- am_create()
+  doc$long <- paste(rep("x", 100), collapse = "")
+
+  output <- capture.output(str(doc))
+  expect_true(any(grepl("\\.\\.\\.", output)))
+})
+
+test_that("str() handles NULL values", {
+  doc <- am_create()
+  doc$empty <- NULL
+
+  output <- capture.output(str(doc))
+  expect_true(any(grepl("NULL", output)))
+})
+
 # Object Extraction Methods ---------------------------------------------------
 
 test_that("[[ and $ extract from am_object (maps)", {
