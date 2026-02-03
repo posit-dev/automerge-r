@@ -122,6 +122,111 @@ print.am_doc <- function(x, ...) {
   invisible(x)
 }
 
+#' Display the structure of an Automerge document
+#'
+#' S3 method for [utils::str()] that displays the structure of an Automerge
+#' document in a human-readable format.
+#'
+#' @param object An automerge document object.
+#' @param max.level Maximum depth to recurse into nested structures. Default 2.
+#' @param ... Additional arguments (ignored).
+#'
+#' @return Invisibly returns `NULL`.
+#' @export
+#' @examples
+#' doc <- am_create()
+#' doc$name <- "Alice"
+#' doc$data <- list(x = 1L, y = 2L)
+#' str(doc)
+#' str(doc, max.level = 1)
+#' am_close(doc)
+str.am_doc <- function(object, max.level = 2, ...) {
+  str_am_doc_recurse(object, AM_ROOT, "", max.level, 0L)
+}
+
+#' Recursive helper for str.am_doc
+#' @noRd
+str_am_doc_recurse <- function(doc, obj, prefix, max.level, depth) {
+  keys <- tryCatch(am_keys(doc, obj), error = function(e) character(0))
+  values <- tryCatch(am_values(doc, obj), error = function(e) list())
+
+  if (length(keys) == 0L) {
+    cat(prefix, "(empty)\n", sep = "")
+    return(invisible())
+  }
+
+  for (i in seq_along(keys)) {
+    key <- keys[i]
+    val <- values[[i]]
+
+    if (is.null(val)) {
+      cat(prefix, key, ": NULL\n", sep = "")
+    } else if (is.character(val) && length(val) == 1L) {
+      display <- if (nchar(val) > 60) paste0(substr(val, 1, 57), "...") else val
+      cat(prefix, key, ': "', display, '"\n', sep = "")
+    } else if (is.numeric(val) && length(val) == 1L) {
+      cat(prefix, key, ": ", val, "\n", sep = "")
+    } else if (is.logical(val) && length(val) == 1L) {
+      cat(prefix, key, ": ", if (val) "true" else "false", "\n", sep = "")
+    } else if (inherits(val, "am_list")) {
+      len <- tryCatch(am_length(doc, val), error = function(e) NA)
+      cat(prefix, key, ": [list, length ", len, "]\n", sep = "")
+      if (!is.na(len) && len > 0L) {
+        if (depth >= max.level) {
+          cat(prefix, "  ...\n", sep = "")
+        } else {
+          list_values <- tryCatch(am_values(doc, val), error = function(e) list())
+          for (j in seq_len(min(len, 5L))) {
+            item <- list_values[[j]]
+            cat(prefix, "  [", j, "]: ", sep = "")
+            if (is.character(item)) {
+              cat(
+                '"',
+                substr(item, 1, 40),
+                '"',
+                if (nchar(item) > 40) "..." else "",
+                "\n",
+                sep = ""
+              )
+            } else if (inherits(item, "am_object")) {
+              cat("{object}\n")
+              str_am_doc_recurse(
+                doc,
+                item,
+                paste0(prefix, "    "),
+                max.level,
+                depth + 1L
+              )
+            } else {
+              cat(class(item)[1], "\n")
+            }
+          }
+          if (len > 5L) {
+            cat(prefix, "  ... and ", len - 5L, " more items\n", sep = "")
+          }
+        }
+      }
+    } else if (inherits(val, "am_object")) {
+      cat(prefix, key, ": {object}\n", sep = "")
+      if (depth < max.level) {
+        str_am_doc_recurse(
+          doc,
+          val,
+          paste0(prefix, "  "),
+          max.level,
+          depth + 1L
+        )
+      } else {
+        cat(prefix, "  ...\n", sep = "")
+      }
+    } else {
+      cat(prefix, key, ": <", class(val)[1], ">\n", sep = "")
+    }
+  }
+
+  invisible()
+}
+
 #' Convert document root to R list
 #'
 #' Recursively converts the root of an Automerge document to a standard R list.

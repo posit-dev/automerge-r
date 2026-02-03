@@ -138,6 +138,7 @@ reference:
       - names.am_doc
       - names.am_map
       - as.list.am_doc
+      - str.am_doc
 
 articles:
   - title: "Getting Started"

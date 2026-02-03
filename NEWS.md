@@ -1,5 +1,6 @@
 # automerge (development version)
 
+* Adds `str.am_doc()` method to display the structure of an Automerge document.
 * Adds `am_close()` for explicitly closing a document.
 * Updates MSRV to 1.84.
 
