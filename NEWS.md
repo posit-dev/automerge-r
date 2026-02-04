@@ -1,4 +1,4 @@
-# automerge (development version)
+# automerge 0.2.1
 
 * Adds `str.am_doc()` method to display the structure of an Automerge document.
 * Adds `am_close()` for explicitly closing a document.
