@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@
       <h1>Understanding CRDTs in Automerge</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/v0.2.1/vignettes/crdt-concepts.Rmd" class="external-link"><code>vignettes/crdt-concepts.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/vignettes/crdt-concepts.Rmd" class="external-link"><code>vignettes/crdt-concepts.Rmd</code></a></small>
       <div class="d-none name"><code>crdt-concepts.Rmd</code></div>
     </div>
 
@@ -243,8 +243,8 @@ order and handles concurrent insertions elegantly.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/am_get.html">am_get</a></span><span class="op">(</span><span class="va">doc5</span>, <span class="va">items5</span>, <span class="va">i</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; [1] "A"</span></span>
-<span><span class="co">#&gt; [1] "B2"</span></span>
 <span><span class="co">#&gt; [1] "B1"</span></span>
+<span><span class="co">#&gt; [1] "B2"</span></span>
 <span><span class="co">#&gt; [1] "C"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc5</span><span class="op">)</span></span>
@@ -306,7 +306,7 @@ provide character-level CRDT merging.</p>
 <span><span class="va">doc10</span><span class="op">[[</span><span class="st">"title"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Our Document"</span></span>
 <span><span class="fu"><a href="../reference/am_merge.html">am_merge</a></span><span class="op">(</span><span class="va">doc9</span>, <span class="va">doc10</span><span class="op">)</span></span>
 <span><span class="va">doc9</span><span class="op">[[</span><span class="st">"title"</span><span class="op">]</span><span class="op">]</span> <span class="co"># One value wins deterministically</span></span>
-<span><span class="co">#&gt; [1] "My Document"</span></span>
+<span><span class="co">#&gt; [1] "Our Document"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc9</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc10</span><span class="op">)</span></span>
@@ -380,9 +380,9 @@ conflict resolution semantics (one value wins).</p>
 <span><span class="fu"><a href="../reference/am_merge.html">am_merge</a></span><span class="op">(</span><span class="va">doc15</span>, <span class="va">doc16</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc15</span><span class="op">[[</span><span class="st">"created_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-02-05 18:43:14 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-02-05 18:46:49 UTC"</span></span>
 <span><span class="va">doc15</span><span class="op">[[</span><span class="st">"updated_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-02-05 18:43:14 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-02-05 18:46:49 UTC"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc15</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc16</span><span class="op">)</span></span></code></pre></div>
@@ -661,7 +661,7 @@ well:</p>
 <span></span>
 <span><span class="co"># One will win - application should handle both states sensibly</span></span>
 <span><span class="va">doc26</span><span class="op">[[</span><span class="st">"status"</span><span class="op">]</span><span class="op">]</span> <span class="co"># Should be prepared for either 'published' or 'archived'</span></span>
-<span><span class="co">#&gt; [1] "published"</span></span>
+<span><span class="co">#&gt; [1] "archived"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc26</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc27</span><span class="op">)</span></span></code></pre></div>

@@ -1,5 +1,7 @@
 # Changelog
 
+## automerge (development version)
+
 ## automerge 0.2.1
 
 CRAN release: 2026-02-05

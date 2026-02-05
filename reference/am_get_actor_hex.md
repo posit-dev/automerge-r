@@ -27,7 +27,7 @@ A character string containing the hex-encoded actor ID
 doc <- am_create()
 actor_hex <- am_get_actor_hex(doc)
 cat("Actor ID:", actor_hex, "\n")
-#> Actor ID: 1c0600f4112bec75098ce3746e514fce 
+#> Actor ID: d89f1c645b1e8734e1de47d07fb1e9ab 
 
 am_close(doc)
 ```
