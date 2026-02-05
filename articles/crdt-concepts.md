@@ -81,7 +81,7 @@ am_merge(doc1, doc2)
 
 # One value wins (deterministic, all replicas agree)
 doc1[["name"]]
-#> [1] "Alice Smith"
+#> [1] "Alice Johnson"
 
 am_close(doc1)
 am_close(doc2)
@@ -231,7 +231,7 @@ doc9[["title"]] <- "My Document"
 doc10[["title"]] <- "Our Document"
 am_merge(doc9, doc10)
 doc9[["title"]] # One value wins deterministically
-#> [1] "My Document"
+#> [1] "Our Document"
 
 am_close(doc9)
 am_close(doc10)
@@ -249,7 +249,7 @@ am_text_splice(text12, 5, 0, " Everyone")
 am_merge(doc11, doc12)
 
 am_text_content(text11)
-#> [1] "Hello Everyone World"
+#> [1] "Hello World Everyone"
 
 am_close(doc11)
 am_close(doc12)
@@ -308,9 +308,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-02-03 21:21:57 UTC"
+#> [1] "2026-02-05 18:38:46 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-02-03 21:21:57 UTC"
+#> [1] "2026-02-05 18:38:46 UTC"
 
 am_close(doc15)
 am_close(doc16)
@@ -584,7 +584,7 @@ am_merge(doc26, doc27)
 
 # One will win - application should handle both states sensibly
 doc26[["status"]] # Should be prepared for either 'published' or 'archived'
-#> [1] "published"
+#> [1] "archived"
 
 am_close(doc26)
 am_close(doc27)

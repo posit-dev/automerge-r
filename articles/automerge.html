@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -127,7 +127,7 @@ applications like shared notebooks or data pipelines</li>
 <code class="sourceCode R"><span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;Automerge Document&gt;</span></span>
-<span><span class="co">#&gt; Actor: c54d0d3c8a6fa528ebf86f811fd9b24a </span></span>
+<span><span class="co">#&gt; Actor: 98b5f84a472c58368f9c797c11789fdd </span></span>
 <span><span class="co">#&gt; Root keys: 0</span></span></code></pre></div>
 <p>Note: When you’re done working with a document, you can explicitly
 free its resources with <code>am_close(doc)</code> if you don’t want to
@@ -382,7 +382,7 @@ without conflicts:</p>
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc9</span>, <span class="va">AM_ROOT</span>, <span class="st">"updated_at"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc9</span><span class="op">[[</span><span class="st">"created_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-02-03 21:21:54 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-02-05 18:38:43 UTC"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc9</span><span class="op">)</span></span></code></pre></div>
 </div>

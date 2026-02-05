@@ -1,6 +1,8 @@
 # Changelog
 
-## automerge (development version)
+## automerge 0.2.1
+
+CRAN release: 2026-02-05
 
 - Adds
   [`str.am_doc()`](https://posit-dev.github.io/automerge-r/reference/str.am_doc.md)
