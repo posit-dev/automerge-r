@@ -18,6 +18,9 @@
 # Dependency changes:
 #   smol_str:   0.3 -> 0.2   (MSRV 1.89 -> 1.56)
 #   cbindgen:   add default-features = false (removes clap CLI dependency)
+#   rand:       default-features = false (removes rand_chacha/ppv-lite86/zerocopy chain)
+#   sha2:       default-features = false (removes const-oid)
+#   dot:        remove unused optional dependency and optree-visualisation feature
 #
 # Note: tempfile is pinned to 3.3.0 in vendor-deps.sh to use winapi
 # instead of windows-sys (smaller dependency footprint)
@@ -51,6 +54,13 @@ sedi() {
 CARGO_AUTOMERGE="$RUST_DIR/automerge/Cargo.toml"
 if [ -f "$CARGO_AUTOMERGE" ]; then
     sedi 's/smol_str = { version = "0.3"/smol_str = { version = "0.2"/' "$CARGO_AUTOMERGE"
+    # Disable rand default features (only core traits needed; small_rng is test-only)
+    sedi 's/rand = { version = "\^0.9", optional = false, features = \["small_rng"\] }/rand = { version = "^0.9", default-features = false }/' "$CARGO_AUTOMERGE"
+    # Disable sha2 default features (no OID support needed)
+    sedi 's/sha2 = "0.11.0-pre.5"/sha2 = { version = "0.11.0-pre.5", default-features = false }/' "$CARGO_AUTOMERGE"
+    # Remove unused dot optional dependency and its feature
+    sedi '/^dot = /d' "$CARGO_AUTOMERGE"
+    sedi '/^optree-visualisation = /d' "$CARGO_AUTOMERGE"
 fi
 
 # Patch automerge-c/Cargo.toml
