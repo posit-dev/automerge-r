@@ -34,7 +34,7 @@ actor <- am_get_actor(doc)
 # Use am_get_actor_hex() for display
 actor_hex <- am_get_actor_hex(doc)
 cat("Actor ID:", actor_hex, "\n")
-#> Actor ID: a8bf393d40dca236c491663efb9ea64c 
+#> Actor ID: 282cf0275e9be069a9590295237d6a6d 
 
 am_close(doc)
 ```
