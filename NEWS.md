@@ -1,5 +1,7 @@
 # automerge (development version)
 
+* Updates MSRV to 1.85.
+
 # automerge 0.2.1
 
 * Adds `str.am_doc()` method to display the structure of an Automerge document.
