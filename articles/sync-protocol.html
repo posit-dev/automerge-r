@@ -149,7 +149,7 @@ changes back:</p>
 <span></span>
 <span><span class="co"># Target now has source's changes</span></span>
 <span><span class="va">target</span><span class="op">[[</span><span class="st">"version"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "1.0"</span></span>
+<span><span class="co">#&gt; [1] "2.0"</span></span>
 <span></span>
 <span><span class="co"># Source is unchanged</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">source</span><span class="op">)</span></span>
@@ -215,9 +215,9 @@ API.</p>
 <span><span class="va">round</span></span>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="va">peer3</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer4"</span></span>
+<span><span class="co">#&gt; [1] "peer3"</span></span>
 <span><span class="va">peer4</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer4"</span></span>
+<span><span class="co">#&gt; [1] "peer3"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer4</span><span class="op">)</span></span></code></pre></div>
@@ -514,7 +514,7 @@ graph.</p>
 <span></span>
 <span><span class="co"># Status: Deterministic conflict resolution (one value wins)</span></span>
 <span><span class="va">editor1</span><span class="op">[[</span><span class="st">"status"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "review"</span></span>
+<span><span class="co">#&gt; [1] "published"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">base</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">editor1</span><span class="op">)</span></span>
@@ -644,7 +644,7 @@ incremental sync:</p>
 <span><span class="co"># Second sync (creates new sync state, may resend some data)</span></span>
 <span><span class="va">rounds2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_sync.html">am_sync</a></span><span class="op">(</span><span class="va">doc_no_reuse</span>, <span class="va">peer_no_reuse</span><span class="op">)</span></span>
 <span><span class="va">rounds2</span></span>
-<span><span class="co">#&gt; [1] 4</span></span>
+<span><span class="co">#&gt; [1] 5</span></span>
 <span></span>
 <span><span class="co"># With reusing sync state (efficient)</span></span>
 <span><span class="va">doc_reuse</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
