@@ -455,26 +455,23 @@ impl PatchLog {
     // this is an uncommon operation so this seems preferable to storing ExId's in place
     // for every objid and opid
     pub(crate) fn migrate_actors(&mut self, others: &Vec<ActorId>) -> Result<(), AutomergeError> {
-        if &self.actors == others {
-            return Ok(());
-        }
-        if self.actors.is_empty() {
-            self.actors = others.clone();
-            return Ok(());
-        }
-        for i in 0..others.len() {
-            let b = &others[i];
-            if let Some(a) = self.actors.get(i) {
-                if a == b {
-                    // Same actor at position i
-                } else if b < a {
-                    self.actors.insert(i, b.clone());
-                    self.migrate_actor(i);
-                } else {
-                    return Err(AutomergeError::PatchLogMismatch);
+        if &self.actors != others {
+            if self.actors.is_empty() {
+                self.actors = others.clone();
+                return Ok(());
+            }
+            for i in 0..others.len() {
+                match (self.actors.get(i), others.get(i)) {
+                    (Some(a), Some(b)) if a == b => {}
+                    (Some(a), Some(b)) if b < a => {
+                        self.actors.insert(i, b.clone());
+                        self.migrate_actor(i);
+                    }
+                    (None, Some(b)) => {
+                        self.actors.insert(i, b.clone());
+                    }
+                    _ => return Err(AutomergeError::PatchLogMismatch),
                 }
-            } else {
-                self.actors.insert(i, b.clone());
             }
         }
         Ok(())
