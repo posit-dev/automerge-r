@@ -16,7 +16,7 @@
 #   3. CMakeLists.txt: Fix WIN32 check to WIN32 AND MSVC for lib tool
 #   4. CMakeLists.txt: Use CMake script for ar merge (GNU/BSD compatibility)
 #   5. Add ar-merge-objects.cmake helper for cross-platform static lib merging
-#   6. Fix Valgrind uninitialised value warning in migrate_actors
+#   6. Fix Valgrind uninitialised value warning in ActorId comparisons
 #   7. Ensure all source files end with newline (POSIX compliance)
 #
 # ============================================================================
@@ -200,68 +200,64 @@ endif()
 EOF
 
 # ----------------------------------------------------------------------------
-# Patch 6: Fix Valgrind uninitialised value warning in migrate_actors
+# Patch 6: Fix Valgrind uninitialised value warning in ActorId comparisons
 # ----------------------------------------------------------------------------
-# The original code uses tuple pattern matching which creates a stack-allocated
-# tuple containing Option<&ActorId>. ActorId wraps TinyVec<[u8; 16]> which may
-# have uninitialised padding bytes in inline storage, triggering Valgrind warnings.
-# Fix: restructure to avoid tuple pattern, use explicit control flow instead.
-echo "  Patching patch_log.rs: fixing migrate_actors Valgrind warning..."
+# ActorId wraps TinyVec<[u8; 16]>. The Inline enum variant is smaller than
+# Heap(Vec<u8>), leaving uninitialised union padding. When the compiler
+# inlines derived PartialEq/Ord into callers it can emit wide loads that
+# read padding alongside the discriminant, triggering Valgrind's
+# "conditional jump depends on uninitialised value" false positive.
+# Fix: replace derived comparison traits with manual impls that compare
+# byte slices through the existing to_bytes() method marked #[inline(never)],
+# so callers only see a fully-initialised &[u8] fat pointer.
+echo "  Patching types.rs: fixing ActorId Valgrind warning..."
 
-PATCH_LOG_RS="$RUST_DIR/automerge/src/patches/patch_log.rs"
-if [ -f "$PATCH_LOG_RS" ]; then
-    if grep -q 'match (self.actors.get(i), others.get(i))' "$PATCH_LOG_RS" 2>/dev/null; then
+TYPES_RS="$RUST_DIR/automerge/src/types.rs"
+if [ -f "$TYPES_RS" ]; then
+    if grep -q '#\[derive(Eq, PartialEq, Hash, Clone, PartialOrd, Ord)\]' "$TYPES_RS" 2>/dev/null; then
+        # Step 1: Replace the derive line
+        sedi 's/#\[derive(Eq, PartialEq, Hash, Clone, PartialOrd, Ord)\]/#[derive(Hash, Clone)]/' "$TYPES_RS"
+
+        # Step 2: Insert manual trait impls after the struct definition
         awk '
-        /pub\(crate\) fn migrate_actors\(&mut self, others: &Vec<ActorId>\)/ {
-            print  # Print the function signature line (includes return type and opening brace)
-            # Count braces to find the end of the function
-            # Start with 1 for the opening brace on the signature line
-            brace_count = 1
-            while (brace_count > 0) {
-                getline
-                # Count braces on this line
-                n = split($0, chars, "")
-                for (j = 1; j <= n; j++) {
-                    if (chars[j] == "{") brace_count++
-                    if (chars[j] == "}") brace_count--
-                }
-            }
-            # Now print the replacement function body
-            print "        if &self.actors == others {"
-            print "            return Ok(());"
-            print "        }"
-            print "        if self.actors.is_empty() {"
-            print "            self.actors = others.clone();"
-            print "            return Ok(());"
-            print "        }"
-            print "        for i in 0..others.len() {"
-            print "            let b = &others[i];"
-            print "            if let Some(a) = self.actors.get(i) {"
-            print "                if a == b {"
-            print "                    // Same actor at position i"
-            print "                } else if b < a {"
-            print "                    self.actors.insert(i, b.clone());"
-            print "                    self.migrate_actor(i);"
-            print "                } else {"
-            print "                    return Err(AutomergeError::PatchLogMismatch);"
-            print "                }"
-            print "            } else {"
-            print "                self.actors.insert(i, b.clone());"
-            print "            }"
-            print "        }"
-            print "        Ok(())"
+        /pub struct ActorId\(TinyVec<\[u8; 16\]>\);/ {
+            print
+            print ""
+            print "impl PartialEq for ActorId {"
+            print "    fn eq(&self, other: &Self) -> bool {"
+            print "        self.to_bytes() == other.to_bytes()"
             print "    }"
+            print "}"
+            print ""
+            print "impl Eq for ActorId {}"
+            print ""
+            print "impl PartialOrd for ActorId {"
+            print "    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {"
+            print "        Some(self.cmp(other))"
+            print "    }"
+            print "}"
+            print ""
+            print "impl Ord for ActorId {"
+            print "    fn cmp(&self, other: &Self) -> Ordering {"
+            print "        self.to_bytes().cmp(other.to_bytes())"
+            print "    }"
+            print "}"
             next
         }
         { print }
-        ' "$PATCH_LOG_RS" > "${PATCH_LOG_RS}.tmp"
-        mv "${PATCH_LOG_RS}.tmp" "$PATCH_LOG_RS"
-        echo "    Applied migrate_actors patch"
+        ' "$TYPES_RS" > "${TYPES_RS}.tmp"
+        mv "${TYPES_RS}.tmp" "$TYPES_RS"
+
+        # Step 3: Add #[inline(never)] to existing to_bytes() method
+        sedi 's/    pub fn to_bytes(&self) -> &\[u8\] {/    #[inline(never)]\
+    pub fn to_bytes(\&self) -> \&[u8] {/' "$TYPES_RS"
+
+        echo "    Applied ActorId comparison patch"
     else
         echo "    (already patched or pattern not found)"
     fi
 else
-    echo "    Warning: patch_log.rs not found"
+    echo "    Warning: types.rs not found"
 fi
 
 # ----------------------------------------------------------------------------
