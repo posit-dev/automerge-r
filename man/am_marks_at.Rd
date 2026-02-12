@@ -4,13 +4,16 @@
 \alias{am_marks_at}
 \title{Get marks at a specific position}
 \usage{
-am_marks_at(obj, position)
+am_marks_at(obj, position, heads = NULL)
 }
 \arguments{
 \item{obj}{An Automerge object ID (must be a text object)}
 
 \item{position}{Integer position (0-based inter-character position) to query.
 See \code{\link[=am_mark]{am_mark()}} for indexing details.}
+
+\item{heads}{Optional list of change hashes (raw vectors) to query marks at
+a historical document state. If \code{NULL} (default), uses the current state.}
 }
 \value{
 A list of marks that include the specified position. Returns an empty

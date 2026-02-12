@@ -270,6 +270,110 @@ am_set_actor <- function(doc, actor_id) {
   invisible(.Call(C_am_set_actor, doc, actor_id))
 }
 
+# Standalone Actor ID Functions ------------------------------------------------
+
+#' Create a random actor ID
+#'
+#' Generates a new random actor ID without creating a document. Useful for
+#' pre-generating actor IDs to assign to documents later.
+#'
+#' @return A raw vector containing the actor ID bytes (16 bytes)
+#'
+#' @export
+#' @examples
+#' actor <- am_actor_id_random()
+#' length(actor)  # 16
+#'
+#' # Use to create a document
+#' doc <- am_create(actor)
+#' identical(am_get_actor(doc), actor)  # TRUE
+#'
+#' am_close(doc)
+#'
+am_actor_id_random <- function() {
+  .Call(C_am_actor_id_random)
+}
+
+#' Create an actor ID from a hex string
+#'
+#' Converts a hex-encoded string to actor ID bytes. This is the inverse of
+#' [am_actor_id_to_string()].
+#'
+#' @param hex_string A character string containing the hex-encoded actor ID
+#'
+#' @return A raw vector containing the actor ID bytes
+#'
+#' @export
+#' @examples
+#' actor <- am_actor_id_from_string("0123456789abcdef0123456789abcdef")
+#' length(actor)  # 16
+#'
+#' # Round-trip
+#' hex <- am_actor_id_to_string(actor)
+#' hex  # "0123456789abcdef0123456789abcdef"
+#'
+am_actor_id_from_string <- function(hex_string) {
+  .Call(C_am_actor_id_from_string, hex_string)
+}
+
+#' Validate and normalize actor ID bytes
+#'
+#' Validates that the provided raw bytes form a valid actor ID and returns
+#' them. This is the inverse of [am_actor_id_to_bytes()].
+#'
+#' @param bytes A raw vector containing actor ID bytes
+#'
+#' @return A raw vector containing the validated actor ID bytes
+#'
+#' @export
+#' @examples
+#' bytes <- as.raw(1:16)
+#' actor <- am_actor_id_from_bytes(bytes)
+#' identical(actor, bytes)  # TRUE
+#'
+am_actor_id_from_bytes <- function(bytes) {
+  .Call(C_am_actor_id_from_bytes, bytes)
+}
+
+#' Convert an actor ID to a hex string
+#'
+#' Converts actor ID bytes to a hex-encoded string representation. This is
+#' the inverse of [am_actor_id_from_string()].
+#'
+#' @param actor_id A raw vector containing actor ID bytes
+#'
+#' @return A character string containing the hex-encoded actor ID
+#'
+#' @export
+#' @examples
+#' actor <- am_actor_id_random()
+#' hex <- am_actor_id_to_string(actor)
+#' nchar(hex)  # 32 (16 bytes * 2 hex chars each)
+#'
+am_actor_id_to_string <- function(actor_id) {
+  .Call(C_am_actor_id_to_string, actor_id)
+}
+
+#' Validate and return actor ID bytes
+#'
+#' Validates that the provided raw bytes form a valid actor ID and returns
+#' them. Equivalent to [am_actor_id_from_bytes()]; provided for API symmetry
+#' with [am_actor_id_to_string()].
+#'
+#' @param actor_id A raw vector containing actor ID bytes
+#'
+#' @return A raw vector containing the validated actor ID bytes
+#'
+#' @export
+#' @examples
+#' actor <- am_actor_id_random()
+#' bytes <- am_actor_id_to_bytes(actor)
+#' identical(actor, bytes)  # TRUE
+#'
+am_actor_id_to_bytes <- function(actor_id) {
+  .Call(C_am_actor_id_from_bytes, actor_id)
+}
+
 #' Commit pending changes
 #'
 #' Commits all pending operations in the current transaction,

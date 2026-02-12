@@ -316,11 +316,25 @@ am_text_splice(text17, 0, 0, "Hi ")
 # Cursor automatically adjusts
 new_pos <- am_cursor_position(cursor)
 new_pos # Cursor moved with text from original position 6
+```
+
+Cursors can be serialized for persistence across sessions, and compared for equality:
+
+```{r}
+# Serialize to bytes or string
+cursor_bytes <- am_cursor_to_bytes(cursor)
+cursor_str <- am_cursor_to_string(cursor)
+
+# Restore later (requires the text object)
+restored <- am_cursor_from_bytes(cursor_bytes, text17)
+am_cursor_position(restored)
+
+am_cursor_equal(cursor, restored) # TRUE
 
 am_close(doc17)
 ```
 
-**When to use**: Text editors (cursor tracking), collaborative commenting (position references).
+**When to use**: Text editors (cursor tracking), collaborative commenting (position references), saving editor state across sessions.
 
 ### Marks (Text Formatting)
 

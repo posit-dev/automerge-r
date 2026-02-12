@@ -627,6 +627,68 @@ test_that("am_fork() at specific head (single) works", {
   expect_null(am_get(fork_at_v1, AM_ROOT, "v2"))
 })
 
+# Actor ID Manipulation Tests --------------------------------------------------
+
+test_that("am_actor_id_random() returns 16-byte raw vector", {
+  actor <- am_actor_id_random()
+  expect_type(actor, "raw")
+  expect_equal(length(actor), 16)
+})
+
+test_that("am_actor_id_random() generates unique IDs", {
+  actor1 <- am_actor_id_random()
+  actor2 <- am_actor_id_random()
+  expect_false(identical(actor1, actor2))
+})
+
+test_that("am_actor_id_from_string() converts hex to bytes", {
+  hex <- "0123456789abcdef0123456789abcdef"
+  actor <- am_actor_id_from_string(hex)
+  expect_type(actor, "raw")
+  expect_equal(length(actor), 16)
+})
+
+test_that("am_actor_id_to_string() converts bytes to hex", {
+  hex <- "0123456789abcdef0123456789abcdef"
+  actor <- am_actor_id_from_string(hex)
+  result <- am_actor_id_to_string(actor)
+  expect_equal(result, hex)
+})
+
+test_that("am_actor_id_from_bytes() validates raw input", {
+  bytes <- as.raw(1:16)
+  actor <- am_actor_id_from_bytes(bytes)
+  expect_equal(actor, bytes)
+})
+
+test_that("am_actor_id_from_bytes() errors on non-raw input", {
+  expect_error(am_actor_id_from_bytes("not raw"), "bytes must be a raw vector")
+})
+
+test_that("am_actor_id_to_bytes() returns validated bytes", {
+  actor <- am_actor_id_random()
+  bytes <- am_actor_id_to_bytes(actor)
+  expect_equal(bytes, actor)
+})
+
+test_that("am_actor_id round-trip string <-> bytes", {
+  actor <- am_actor_id_random()
+  hex <- am_actor_id_to_string(actor)
+  restored <- am_actor_id_from_string(hex)
+  expect_equal(restored, actor)
+})
+
+test_that("am_actor_id_from_string() errors on invalid input", {
+  expect_error(am_actor_id_from_string(123), "hex_string must be a single character string")
+})
+
+test_that("am_actor_id works with am_create()", {
+  actor <- am_actor_id_random()
+  doc <- am_create(actor)
+  expect_equal(am_get_actor(doc), actor)
+  am_close(doc)
+})
+
 test_that("am_fork() with empty list works like NULL", {
   doc <- am_create()
   doc$key <- "value"

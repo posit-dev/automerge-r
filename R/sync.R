@@ -252,13 +252,14 @@ am_apply_changes <- function(doc, changes) {
 
 #' Get document history
 #'
-#' Returns the full change history of the document as a list of change metadata.
-#' This provides a simpler interface than `am_get_changes()` for examining
-#' document history without needing to work with serialized changes directly.
+#' Returns the full change history of the document as a list of serialized
+#' changes. Use the change introspection functions ([am_change_hash()],
+#' [am_change_message()], [am_change_time()], [am_change_actor_id()],
+#' [am_change_seq()], [am_change_deps()]) to extract metadata from each
+#' change.
 #'
-#' **Note**: A future implementation will add detailed change introspection
-#' functions to extract metadata like commit messages, timestamps,
-#' actor IDs, etc.
+#' For efficient multi-field extraction, first parse a change with
+#' [am_change_from_bytes()] to avoid repeated deserialization.
 #'
 #' @param doc An Automerge document
 #'
@@ -280,4 +281,234 @@ am_apply_changes <- function(doc, changes) {
 #'
 am_get_history <- function(doc) {
   am_get_changes(doc, NULL)
+}
+
+# Change Introspection Functions -----------------------------------------------
+
+#' Parse a serialized change for efficient field extraction
+#'
+#' Deserializes a change from raw bytes into an `am_change` object. This is
+#' more efficient than passing raw bytes to multiple introspection functions,
+#' as the change is only deserialized once.
+#'
+#' @param bytes A raw vector containing a serialized change (from
+#'   [am_get_changes()], [am_get_history()], or [am_get_last_local_change()])
+#'
+#' @return An `am_change` object (external pointer) that can be passed to
+#'   [am_change_hash()], [am_change_message()], [am_change_time()],
+#'   [am_change_actor_id()], [am_change_seq()], and [am_change_deps()].
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "key", "value")
+#' am_commit(doc, "Add key")
+#'
+#' history <- am_get_history(doc)
+#' change <- am_change_from_bytes(history[[1]])
+#'
+#' # Extract multiple fields efficiently
+#' am_change_hash(change)
+#' am_change_message(change)
+#' am_change_seq(change)
+#'
+#' am_close(doc)
+#'
+am_change_from_bytes <- function(bytes) {
+  .Call(C_am_change_from_bytes, bytes)
+}
+
+#' Serialize a change to raw bytes
+#'
+#' Converts an `am_change` object back to its serialized raw vector form.
+#'
+#' @param change An `am_change` object created by [am_change_from_bytes()]
+#'
+#' @return A raw vector containing the serialized change
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "key", "value")
+#' am_commit(doc, "Add key")
+#'
+#' history <- am_get_history(doc)
+#' change <- am_change_from_bytes(history[[1]])
+#' bytes <- am_change_to_bytes(change)
+#' identical(bytes, history[[1]])  # TRUE
+#'
+#' am_close(doc)
+#'
+am_change_to_bytes <- function(change) {
+  .Call(C_am_change_to_bytes, change)
+}
+
+#' Get the hash of a change
+#'
+#' Returns the unique hash identifier of a change. Change hashes are used
+#' to reference specific points in document history (e.g., with
+#' [am_get_change_by_hash()] or [am_fork()]).
+#'
+#' @param change An `am_change` object created by [am_change_from_bytes()]
+#'
+#' @return A raw vector (32 bytes) containing the change hash
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "key", "value")
+#' am_commit(doc, "Add key")
+#'
+#' history <- am_get_history(doc)
+#' change <- am_change_from_bytes(history[[1]])
+#' hash <- am_change_hash(change)
+#' length(hash)  # 32 bytes
+#'
+#' am_close(doc)
+#'
+am_change_hash <- function(change) {
+  .Call(C_am_change_hash, change)
+}
+
+#' Get the commit message of a change
+#'
+#' Returns the commit message attached to a change, or `NULL` if no message
+#' was provided when the change was committed.
+#'
+#' @param change An `am_change` object created by [am_change_from_bytes()]
+#'
+#' @return A character string containing the commit message, or `NULL`
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "key", "value")
+#' am_commit(doc, "Add key")
+#'
+#' history <- am_get_history(doc)
+#' change <- am_change_from_bytes(history[[1]])
+#' am_change_message(change)  # "Add key"
+#'
+#' am_close(doc)
+#'
+am_change_message <- function(change) {
+  .Call(C_am_change_message, change)
+}
+
+#' Get the timestamp of a change
+#'
+#' Returns the timestamp recorded when the change was committed.
+#' Note that timestamps are set by the committing peer and may not be
+#' accurate if the peer's clock is wrong.
+#'
+#' @param change An `am_change` object created by [am_change_from_bytes()]
+#'
+#' @return A `POSIXct` timestamp
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "key", "value")
+#' am_commit(doc, "Add key", Sys.time())
+#'
+#' history <- am_get_history(doc)
+#' change <- am_change_from_bytes(history[[1]])
+#' am_change_time(change)
+#'
+#' am_close(doc)
+#'
+am_change_time <- function(change) {
+  .Call(C_am_change_time, change)
+}
+
+#' Get the actor ID of a change
+#'
+#' Returns the actor ID of the peer that created the change.
+#'
+#' @param change An `am_change` object created by [am_change_from_bytes()]
+#'
+#' @return A raw vector containing the actor ID bytes
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "key", "value")
+#' am_commit(doc, "Add key")
+#'
+#' history <- am_get_history(doc)
+#' change <- am_change_from_bytes(history[[1]])
+#' actor <- am_change_actor_id(change)
+#'
+#' # Should match the document's actor
+#' identical(actor, am_get_actor(doc))  # TRUE
+#'
+#' am_close(doc)
+#'
+am_change_actor_id <- function(change) {
+  .Call(C_am_change_actor_id, change)
+}
+
+#' Get the sequence number of a change
+#'
+#' Returns the sequence number of the change within its actor's history.
+#' Sequence numbers start at 1 and increment with each change by the
+#' same actor.
+#'
+#' @param change An `am_change` object created by [am_change_from_bytes()]
+#'
+#' @return A numeric value (double, since sequence numbers can exceed R's
+#'   32-bit integer range)
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "x", 1)
+#' am_commit(doc, "First")
+#' am_put(doc, AM_ROOT, "y", 2)
+#' am_commit(doc, "Second")
+#'
+#' history <- am_get_history(doc)
+#' ch1 <- am_change_from_bytes(history[[1]])
+#' ch2 <- am_change_from_bytes(history[[2]])
+#' am_change_seq(ch1)  # 1
+#' am_change_seq(ch2)  # 2
+#'
+#' am_close(doc)
+#'
+am_change_seq <- function(change) {
+  .Call(C_am_change_seq, change)
+}
+
+#' Get the dependencies of a change
+#'
+#' Returns the hashes of the changes that this change depends on (i.e.,
+#' its parent changes in the causal graph). The first change in a document
+#' has no dependencies.
+#'
+#' @param change An `am_change` object created by [am_change_from_bytes()]
+#'
+#' @return A list of raw vectors (change hashes), each 32 bytes. Returns
+#'   an empty list for the first change in a document.
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "x", 1)
+#' am_commit(doc, "First")
+#' am_put(doc, AM_ROOT, "y", 2)
+#' am_commit(doc, "Second")
+#'
+#' history <- am_get_history(doc)
+#' ch1 <- am_change_from_bytes(history[[1]])
+#' ch2 <- am_change_from_bytes(history[[2]])
+#' deps1 <- am_change_deps(ch1)
+#' length(deps1)  # 0 (first change has no deps)
+#'
+#' deps2 <- am_change_deps(ch2)
+#' length(deps2)  # 1 (depends on first change)
+#'
+#' am_close(doc)
+#'
+am_change_deps <- function(change) {
+  .Call(C_am_change_deps, change)
 }

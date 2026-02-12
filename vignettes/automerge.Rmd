@@ -404,6 +404,93 @@ am_close(peer1)
 am_close(peer2)
 ```
 
+## Inspecting Document History
+
+Every change in an Automerge document carries metadata: who made it, when, what message was attached, and what it depended on. You can inspect this with the change introspection functions:
+
+```{r}
+doc14 <- am_create()
+doc14[["title"]] <- "My Project"
+am_commit(doc14, "Initial setup", Sys.time())
+
+doc14[["version"]] <- "1.0"
+am_commit(doc14, "Set version", Sys.time())
+
+# Get the full history
+history <- am_get_history(doc14)
+cat("Document has", length(history), "change(s)\n")
+
+# Inspect each change
+for (i in seq_along(history)) {
+  change <- am_change_from_bytes(history[[i]])
+  cat(
+    sprintf(
+      "Change %d: seq=%g, message=%s\n",
+      i,
+      am_change_seq(change),
+      am_change_message(change) %||% "(none)"
+    )
+  )
+}
+
+# Parse once, extract many fields
+change <- am_change_from_bytes(history[[2]])
+am_change_hash(change)     # Unique 32-byte hash
+am_change_message(change)  # Commit message
+am_change_time(change)     # Timestamp
+am_change_seq(change)      # Sequence number
+am_change_actor_id(change) # Who made the change
+am_change_deps(change)     # Parent change hashes
+
+am_close(doc14)
+```
+
+## Cursor Persistence
+
+Cursors can be serialized and restored across R sessions, which is useful for saving editor state:
+
+```{r}
+doc15 <- am_create()
+am_put(doc15, AM_ROOT, "content", am_text("Hello World"))
+text_obj <- am_get(doc15, AM_ROOT, "content")
+
+# Create a cursor and serialize it
+cursor <- am_cursor(text_obj, 5)
+cursor_bytes <- am_cursor_to_bytes(cursor)
+cursor_str <- am_cursor_to_string(cursor)
+
+# Later: restore the cursor
+restored <- am_cursor_from_bytes(cursor_bytes, text_obj)
+am_cursor_position(restored)  # 5
+
+# Compare cursors
+am_cursor_equal(cursor, restored)  # TRUE
+
+am_close(doc15)
+```
+
+## Standalone Actor IDs
+
+Actor IDs can be created and converted without a document, useful for pre-assigning identities:
+
+```{r}
+# Generate a random actor ID
+actor <- am_actor_id_random()
+
+# Convert between bytes and hex string
+hex <- am_actor_id_to_string(actor)
+cat("Actor ID:", hex, "\n")
+
+restored_actor <- am_actor_id_from_string(hex)
+identical(actor, restored_actor)  # TRUE
+
+# Use with a new document
+doc16 <- am_create(actor)
+identical(am_get_actor(doc16), actor)  # TRUE
+
+am_close(doc16)
+```
+
 ## Next Steps
 
 - Learn about [CRDT Concepts](crdt-concepts.html) to understand the theory behind Automerge

@@ -169,7 +169,7 @@ SEXP C_am_load(SEXP data) {
  * @param n_results Output parameter: number of results in array
  * @return AMresult containing change hash items (must be freed by caller)
  */
-static AMresult* convert_r_heads_to_amresult(SEXP heads_list, AMresult ***results_out, size_t *n_results) {
+AMresult* convert_r_heads_to_amresult(SEXP heads_list, AMresult ***results_out, size_t *n_results) {
     if (TYPEOF(heads_list) != VECSXP) {
         Rf_error("heads must be NULL or a list of raw vectors");
     }
@@ -452,6 +452,115 @@ SEXP C_am_rollback(SEXP doc_ptr) {
     AMrollback(doc);
 
     return doc_ptr;
+}
+
+// Actor ID Manipulation Functions ---------------------------------------------
+
+/**
+ * Create a random actor ID.
+ *
+ * @return Raw vector containing the actor ID bytes
+ */
+SEXP C_am_actor_id_random(void) {
+    AMresult *result = AMactorIdInit();
+    CHECK_RESULT(result, AM_VAL_TYPE_ACTOR_ID);
+
+    AMitem *item = AMresultItem(result);
+    AMactorId const *actor_id = NULL;
+    AMitemToActorId(item, &actor_id);
+
+    AMbyteSpan bytes = AMactorIdBytes(actor_id);
+
+    SEXP r_bytes = PROTECT(Rf_allocVector(RAWSXP, bytes.count));
+    memcpy(RAW(r_bytes), bytes.src, bytes.count);
+
+    AMresultFree(result);
+    UNPROTECT(1);
+    return r_bytes;
+}
+
+/**
+ * Create an actor ID from a hex string.
+ *
+ * @param hex Character string containing hex-encoded actor ID
+ * @return Raw vector containing the actor ID bytes
+ */
+SEXP C_am_actor_id_from_string(SEXP hex) {
+    if (TYPEOF(hex) != STRSXP || XLENGTH(hex) != 1) {
+        Rf_error("hex_string must be a single character string");
+    }
+    const char *hex_str = CHAR(STRING_ELT(hex, 0));
+    AMbyteSpan hex_span = {.src = (uint8_t const *) hex_str, .count = strlen(hex_str)};
+
+    AMresult *result = AMactorIdFromStr(hex_span);
+    CHECK_RESULT(result, AM_VAL_TYPE_ACTOR_ID);
+
+    AMitem *item = AMresultItem(result);
+    AMactorId const *actor_id = NULL;
+    AMitemToActorId(item, &actor_id);
+
+    AMbyteSpan bytes = AMactorIdBytes(actor_id);
+
+    SEXP r_bytes = PROTECT(Rf_allocVector(RAWSXP, bytes.count));
+    memcpy(RAW(r_bytes), bytes.src, bytes.count);
+
+    AMresultFree(result);
+    UNPROTECT(1);
+    return r_bytes;
+}
+
+/**
+ * Validate and return actor ID bytes.
+ *
+ * @param bytes Raw vector containing actor ID bytes
+ * @return Raw vector (validated actor ID bytes)
+ */
+SEXP C_am_actor_id_from_bytes(SEXP bytes) {
+    if (TYPEOF(bytes) != RAWSXP) {
+        Rf_error("bytes must be a raw vector");
+    }
+
+    AMresult *result = AMactorIdFromBytes(RAW(bytes), (size_t) XLENGTH(bytes));
+    CHECK_RESULT(result, AM_VAL_TYPE_ACTOR_ID);
+
+    AMitem *item = AMresultItem(result);
+    AMactorId const *actor_id = NULL;
+    AMitemToActorId(item, &actor_id);
+
+    AMbyteSpan out_bytes = AMactorIdBytes(actor_id);
+
+    SEXP r_bytes = PROTECT(Rf_allocVector(RAWSXP, out_bytes.count));
+    memcpy(RAW(r_bytes), out_bytes.src, out_bytes.count);
+
+    AMresultFree(result);
+    UNPROTECT(1);
+    return r_bytes;
+}
+
+/**
+ * Convert actor ID bytes to hex string.
+ *
+ * @param bytes Raw vector containing actor ID bytes
+ * @return Character string containing hex-encoded actor ID
+ */
+SEXP C_am_actor_id_to_string(SEXP bytes) {
+    if (TYPEOF(bytes) != RAWSXP) {
+        Rf_error("actor_id must be a raw vector");
+    }
+
+    AMresult *result = AMactorIdFromBytes(RAW(bytes), (size_t) XLENGTH(bytes));
+    CHECK_RESULT(result, AM_VAL_TYPE_ACTOR_ID);
+
+    AMitem *item = AMresultItem(result);
+    AMactorId const *actor_id = NULL;
+    AMitemToActorId(item, &actor_id);
+
+    AMbyteSpan hex_str = AMactorIdStr(actor_id);
+
+    SEXP r_str = Rf_ScalarString(Rf_mkCharLenCE((const char *) hex_str.src, hex_str.count, CE_UTF8));
+
+    AMresultFree(result);
+    return r_str;
 }
 
 // Historical Query and Advanced Fork/Merge Functions (Phase 6) ---------------

@@ -14,14 +14,15 @@ A list of raw vectors (serialized changes), one for each change
 in the document's history, in chronological order.
 }
 \description{
-Returns the full change history of the document as a list of change metadata.
-This provides a simpler interface than \code{am_get_changes()} for examining
-document history without needing to work with serialized changes directly.
+Returns the full change history of the document as a list of serialized
+changes. Use the change introspection functions (\code{\link[=am_change_hash]{am_change_hash()}},
+\code{\link[=am_change_message]{am_change_message()}}, \code{\link[=am_change_time]{am_change_time()}}, \code{\link[=am_change_actor_id]{am_change_actor_id()}},
+\code{\link[=am_change_seq]{am_change_seq()}}, \code{\link[=am_change_deps]{am_change_deps()}}) to extract metadata from each
+change.
 }
 \details{
-\strong{Note}: A future implementation will add detailed change introspection
-functions to extract metadata like commit messages, timestamps,
-actor IDs, etc.
+For efficient multi-field extraction, first parse a change with
+\code{\link[=am_change_from_bytes]{am_change_from_bytes()}} to avoid repeated deserialization.
 }
 \examples{
 doc <- am_create()
