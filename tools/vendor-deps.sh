@@ -93,6 +93,19 @@ for crate in $WASM_CRATES; do
     rm -rf "$VENDOR_DIR/$crate"
 done
 
+# Strip wasip2 target dep from getrandom (avoids vendoring wasip2/wit-bindgen chain)
+for dir in "$VENDOR_DIR"/getrandom*; do
+    if [ -f "$dir/Cargo.toml" ]; then
+        awk '
+            /^\[target.*wasip2/ { skip = 1; next }
+            /^\[/ { skip = 0 }
+            skip { next }
+            { print }
+        ' "$dir/Cargo.toml" > "$dir/Cargo.toml.tmp"
+        mv "$dir/Cargo.toml.tmp" "$dir/Cargo.toml"
+    fi
+done
+
 echo "Pruning unnecessary files..."
 
 # Remove test, example, and benchmark directories
@@ -107,9 +120,11 @@ find "$VENDOR_DIR" -type f -name "README*" -delete 2>/dev/null || true
 mkdir -p "$VENDOR_DIR/cbindgen/tests/rust" "$VENDOR_DIR/cbindgen/tests/depfile"
 mkdir -p "$VENDOR_DIR/winnow/examples/css"
 touch "$VENDOR_DIR/winnow/examples/css/parser.rs"
-# getrandom requires README.md (may have version suffix like getrandom-0.2.17)
-for dir in "$VENDOR_DIR"/getrandom*; do
-    [ -d "$dir" ] && touch "$dir/README.md"
+# Crates using include_str!("../README.md") need an empty placeholder
+for dir in "$VENDOR_DIR"/*/; do
+    if grep -rql 'include_str!("../README.md")' "$dir/src" 2>/dev/null; then
+        touch "$dir/README.md"
+    fi
 done
 
 # Remove CI directories

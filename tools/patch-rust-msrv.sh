@@ -4,7 +4,7 @@
 # ============================================================================
 #
 # This script reduces the Minimum Supported Rust Version (MSRV) from 1.89 to
-# 1.84 by downgrading dependencies that require Rust 1.85+.
+# 1.85 by downgrading dependencies that require Rust 1.89+.
 #
 # IMPORTANT: These patches have already been applied to the source files and
 # vendored dependencies in this package. This script is kept for reference
@@ -17,17 +17,13 @@
 #
 # Dependency changes:
 #   smol_str:   0.3 -> 0.2   (MSRV 1.89 -> 1.56)
-#   sha2:       0.11-pre -> 0.10 (MSRV 1.85 -> 1.72)
-#   getrandom:  0.3 -> 0.2   (MSRV 1.85 -> 1.60)
-#   rand:       0.9 -> 0.8   (MSRV 1.85 -> 1.56)
 #   cbindgen:   add default-features = false (removes clap CLI dependency)
+#   rand:       default-features = false (removes rand_chacha/ppv-lite86/zerocopy chain)
+#   sha2:       default-features = false (removes const-oid)
+#   dot:        remove unused optional dependency and optree-visualisation feature
 #
 # Note: tempfile is pinned to 3.3.0 in vendor-deps.sh to use winapi
 # instead of windows-sys (smaller dependency footprint)
-#
-# Source code changes (rand/getrandom 0.8/0.2 API compatibility):
-#   - rand 0.9 API -> rand 0.8 API
-#   - getrandom 0.3 API -> getrandom 0.2 API
 #
 # ============================================================================
 
@@ -57,13 +53,14 @@ sedi() {
 # Patch automerge/Cargo.toml
 CARGO_AUTOMERGE="$RUST_DIR/automerge/Cargo.toml"
 if [ -f "$CARGO_AUTOMERGE" ]; then
-    sedi 's/rust-version = "1.89.0"/rust-version = "1.84.0"/' "$CARGO_AUTOMERGE"
-    sedi 's/sha2 = "0.11.0-pre.5"/sha2 = "0.10.8"/' "$CARGO_AUTOMERGE"
     sedi 's/smol_str = { version = "0.3"/smol_str = { version = "0.2"/' "$CARGO_AUTOMERGE"
-    sedi 's/getrandom = "0.3"/getrandom = "0.2"/' "$CARGO_AUTOMERGE"
-    sedi 's/rand = { version = "\^0.9"/rand = { version = "^0.8"/' "$CARGO_AUTOMERGE"
-    # getrandom 0.2 uses "js" feature instead of "wasm_js"
-    sedi 's/getrandom\/wasm_js/getrandom\/js/' "$CARGO_AUTOMERGE"
+    # Disable rand default features (only core traits needed; small_rng is test-only)
+    sedi 's/rand = { version = "\^0.9", optional = false, features = \["small_rng"\] }/rand = { version = "^0.9", default-features = false }/' "$CARGO_AUTOMERGE"
+    # Disable sha2 default features (no OID support needed)
+    sedi 's/sha2 = "0.11.0-pre.5"/sha2 = { version = "0.11.0-pre.5", default-features = false }/' "$CARGO_AUTOMERGE"
+    # Remove unused dot optional dependency and its feature
+    sedi '/^dot = /d' "$CARGO_AUTOMERGE"
+    sedi '/^optree-visualisation = /d' "$CARGO_AUTOMERGE"
 fi
 
 # Patch automerge-c/Cargo.toml
@@ -80,36 +77,9 @@ if [ -f "$CARGO_CMAKE" ]; then
     sedi 's/cbindgen = "\^0.29"/cbindgen = { version = "^0.29", default-features = false }/' "$CARGO_CMAKE"
 fi
 
-# Patch hexane/Cargo.toml
-CARGO_HEXANE="$RUST_DIR/hexane/Cargo.toml"
-if [ -f "$CARGO_HEXANE" ]; then
-    sedi 's/rand = { version = "\^0.9"/rand = { version = "^0.8"/' "$CARGO_HEXANE"
-fi
-
-# Patch automerge/src/types.rs
-TYPES_RS="$RUST_DIR/automerge/src/types.rs"
-if [ -f "$TYPES_RS" ]; then
-    sedi 's/distr::{Distribution, StandardUniform}/distributions::{Distribution, Standard}/' "$TYPES_RS"
-    sedi 's/impl Distribution<ActorId> for StandardUniform/impl Distribution<ActorId> for Standard/' "$TYPES_RS"
-    sedi 's/getrandom::fill/getrandom::getrandom/' "$TYPES_RS"
-fi
-
-# Patch automerge/src/op_set2/skip_list.rs
-SKIP_LIST_RS="$RUST_DIR/automerge/src/op_set2/skip_list.rs"
-if [ -f "$SKIP_LIST_RS" ]; then
-    sedi 's/rand::rng()/rand::thread_rng()/' "$SKIP_LIST_RS"
-fi
-
-# Patch automerge/src/op_set2/op_set.rs
-OP_SET_RS="$RUST_DIR/automerge/src/op_set2/op_set.rs"
-if [ -f "$OP_SET_RS" ]; then
-    sedi 's/rand::distr::Alphanumeric/rand::distributions::Alphanumeric/' "$OP_SET_RS"
-    sedi 's/rand::rng()/rand::thread_rng()/' "$OP_SET_RS"
-fi
-
 # Remove Cargo.lock to allow fresh dependency resolution
 if [ -f "$RUST_DIR/Cargo.lock" ]; then
     rm -f "$RUST_DIR/Cargo.lock"
 fi
 
-echo "MSRV patch applied successfully (target: Rust 1.84)"
+echo "MSRV patch applied successfully (target: Rust 1.85)"

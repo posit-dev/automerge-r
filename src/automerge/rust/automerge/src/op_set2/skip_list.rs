@@ -280,7 +280,7 @@ where
             level: 1,
         };
         let len = 0;
-        let rng = rand::thread_rng();
+        let rng = rand::rng();
         SkipList {
             nodes,
             head,
@@ -497,7 +497,7 @@ where
         // Create random number between 0 and 2^32 - 1
         // Count leading zeros in that 32-bit number
         let rand: u32 = self.rng.gen();
-        //let rand: u32 = rand::thread_rng().gen();
+        //let rand: u32 = rand::rng().gen();
 
         let mut level = 1;
         while rand < 1 << (32 - 2 * level) && level < 16 {

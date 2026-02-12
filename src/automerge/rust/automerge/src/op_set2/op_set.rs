@@ -1346,7 +1346,7 @@ mod tests {
 
     use super::OpSet;
 
-    use rand::distributions::Alphanumeric;
+    use rand::distr::Alphanumeric;
     use rand::Rng;
 
     #[test]
@@ -1357,7 +1357,7 @@ mod tests {
         // and a mix of succ column values with delets and counters
 
         let mut doc = AutoCommit::new();
-        let rand_text: String = rand::thread_rng()
+        let rand_text: String = rand::rng()
             .sample_iter(&Alphanumeric)
             .take(1000)
             .map(char::from)

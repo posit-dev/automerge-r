@@ -84,7 +84,7 @@ bob
 install.packages("automerge")
 ```
 
-Building from source requires Rust \>= 1.84
+Building from source requires Rust \>= 1.85
 ([rustup.rs](https://rustup.rs/)) and CMake \>= 3.25 (included in
 Rtools43+ on Windows).
 
