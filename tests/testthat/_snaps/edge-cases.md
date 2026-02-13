@@ -236,7 +236,7 @@
       am_get_changes(doc, list(raw(5)))
     Condition
       Error in `am_get_changes()`:
-      ! Invalid change hash
+      ! Invalid change hash at index 0
 
 ---
 
@@ -244,7 +244,7 @@
       am_get_changes(doc, list(as.raw(1:50)))
     Condition
       Error in `am_get_changes()`:
-      ! Invalid change hash
+      ! Invalid change hash at index 0
 
 # text operations with empty text objects
 

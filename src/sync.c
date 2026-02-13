@@ -200,38 +200,22 @@ SEXP C_am_get_changes(SEXP doc_ptr, SEXP heads) {
     if (heads == R_NilValue) {
         result = AMgetChanges(doc, NULL);
     } else {
-        if (TYPEOF(heads) != VECSXP) {
-            Rf_error("heads must be NULL or a list of raw vectors");
-        }
-
-        R_xlen_t heads_count = Rf_xlength(heads);
-        if (heads_count == 0) {
-            // Empty list treated same as NULL
+        AMresult **head_results = NULL;
+        size_t n_head_results = 0;
+        AMresult *heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
+        if (n_head_results == 0) {
             result = AMgetChanges(doc, NULL);
-        } else if (heads_count == 1) {
-            SEXP r_hash = VECTOR_ELT(heads, 0);
-            if (TYPEOF(r_hash) != RAWSXP) {
-                Rf_error("Each head must be a raw vector");
-            }
-
-            AMbyteSpan hash_span = {
-                .src = RAW(r_hash),
-                .count = (size_t)Rf_xlength(r_hash)
-            };
-
-            AMresult *heads_result = AMitemFromChangeHash(hash_span);
-            if (!heads_result || AMresultStatus(heads_result) != AM_STATUS_OK) {
-                if (heads_result) AMresultFree(heads_result);
-                Rf_error("Invalid change hash");
-            }
-
+        } else if (n_head_results == 1) {
             AMitems heads_items = AMresultItems(heads_result);
             result = AMgetChanges(doc, &heads_items);
-
             AMresultFree(heads_result);
+            free(head_results);
         } else {
-            // Multiple heads not yet implemented
-            Rf_error("Getting changes since multiple specific heads not yet implemented (use single head or NULL)");
+            for (size_t i = 0; i < n_head_results; i++) {
+                AMresultFree(head_results[i]);
+            }
+            free(head_results);
+            Rf_error("multiple heads are not supported; commit first to produce a single head");
         }
     }
 

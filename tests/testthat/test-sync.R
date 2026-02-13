@@ -397,6 +397,41 @@ test_that("am_get_changes with specific heads", {
   expect_equal(length(changes_since), 2)
 })
 
+test_that("am_get_changes with empty heads list returns all changes", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "x", 1)
+  am_commit(doc, "First")
+  am_put(doc, AM_ROOT, "y", 2)
+  am_commit(doc, "Second")
+
+  changes <- am_get_changes(doc, list())
+  expect_type(changes, "list")
+
+  all_changes <- am_get_changes(doc, NULL)
+  expect_equal(length(changes), length(all_changes))
+})
+
+test_that("am_get_changes with multiple heads errors", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "x", 1)
+  am_commit(doc, "First")
+
+  doc2 <- am_fork(doc)
+  am_put(doc, AM_ROOT, "y", 2)
+  am_commit(doc, "doc1 edit")
+  am_put(doc2, AM_ROOT, "z", 3)
+  am_commit(doc2, "doc2 edit")
+
+  am_merge(doc, doc2)
+  heads <- am_get_heads(doc)
+  expect_true(length(heads) >= 2)
+
+  expect_error(
+    am_get_changes(doc, heads),
+    "multiple heads are not supported"
+  )
+})
+
 test_that("am_get_changes_added returns added changes", {
   doc1 <- am_create()
   am_put(doc1, AM_ROOT, "x", 1)
