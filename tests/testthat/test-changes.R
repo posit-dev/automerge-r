@@ -194,6 +194,20 @@ test_that("am_change functions error on raw bytes (must parse first)", {
   expect_error(am_change_to_bytes(raw_change), "am_change object")
 })
 
+test_that("am_apply_changes() errors on invalid am_change external pointer", {
+  doc <- am_create()
+
+  # A closed doc is an external pointer with NULL address,
+  # which triggers the !data check in the am_change validation loop
+  closed_doc <- am_create()
+  am_close(closed_doc)
+
+  expect_error(
+    am_apply_changes(doc, list(closed_doc)),
+    "Invalid am_change object at index"
+  )
+})
+
 # Change Metadata Round-Trip Tests ---------------------------------------------
 
 test_that("am_change_from_bytes() preserves all metadata through round-trip", {

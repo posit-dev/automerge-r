@@ -270,6 +270,153 @@ test_that("am_marks_at() works with heads parameter", {
   expect_equal(marks_then[[1]]$name, "bold")
 })
 
+# Empty and multi-head fallback paths ------------------------------------------
+
+test_that("am_cursor() with empty heads list falls back to current state", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello"))
+  am_commit(doc, "initial")
+
+  text_obj <- am_get(doc, AM_ROOT, "text")
+  cursor <- am_cursor(text_obj, 3, heads = list())
+  expect_s3_class(cursor, "am_cursor")
+  expect_equal(am_cursor_position(cursor), 3)
+})
+
+test_that("am_cursor_position() with empty heads list falls back to current state", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello world"))
+  am_commit(doc, "initial")
+
+  text_obj <- am_get(doc, AM_ROOT, "text")
+  cursor <- am_cursor(text_obj, 5)
+
+  am_text_splice(text_obj, 0, 0, "XX")
+  am_commit(doc, "insert")
+
+  # Empty heads list falls back to current state (cursor moved)
+  pos <- am_cursor_position(cursor, heads = list())
+  expect_equal(pos, 7)  # 5 + 2
+})
+
+test_that("am_marks() with empty heads list falls back to current state", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  am_mark(text_obj, 0, 5, "bold", TRUE)
+  am_commit(doc, "mark bold")
+
+  marks <- am_marks(text_obj, heads = list())
+  expect_length(marks, 1)
+  expect_equal(marks[[1]]$name, "bold")
+})
+
+test_that("am_marks_at() with empty heads list falls back to current state", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  am_mark(text_obj, 0, 5, "bold", TRUE)
+  am_commit(doc, "mark bold")
+
+  marks <- am_marks_at(text_obj, 3, heads = list())
+  expect_length(marks, 1)
+  expect_equal(marks[[1]]$name, "bold")
+})
+
+test_that("am_cursor() with multiple heads errors", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello"))
+  am_commit(doc, "initial")
+
+  doc2 <- am_fork(doc)
+  am_text_splice(am_get(doc, AM_ROOT, "text"), 5, 0, " world")
+  am_commit(doc, "doc1 edit")
+  am_text_splice(am_get(doc2, AM_ROOT, "text"), 5, 0, " there")
+  am_commit(doc2, "doc2 edit")
+
+  am_merge(doc, doc2)
+  heads <- am_get_heads(doc)
+  expect_true(length(heads) >= 2)
+
+  text_obj <- am_get(doc, AM_ROOT, "text")
+  expect_error(
+    am_cursor(text_obj, 3, heads = heads),
+    "multiple heads are not supported"
+  )
+})
+
+test_that("am_cursor_position() with multiple heads errors", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello"))
+  am_commit(doc, "initial")
+
+  text_obj <- am_get(doc, AM_ROOT, "text")
+  cursor <- am_cursor(text_obj, 3)
+
+  doc2 <- am_fork(doc)
+  am_text_splice(am_get(doc, AM_ROOT, "text"), 5, 0, " world")
+  am_commit(doc, "doc1 edit")
+  am_text_splice(am_get(doc2, AM_ROOT, "text"), 5, 0, " there")
+  am_commit(doc2, "doc2 edit")
+
+  am_merge(doc, doc2)
+  heads <- am_get_heads(doc)
+  expect_true(length(heads) >= 2)
+
+  expect_error(
+    am_cursor_position(cursor, heads = heads),
+    "multiple heads are not supported"
+  )
+})
+
+test_that("am_marks() with multiple heads errors", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+  am_mark(text_obj, 0, 5, "bold", TRUE)
+  am_commit(doc, "mark bold")
+
+  doc2 <- am_fork(doc)
+  am_put(doc, AM_ROOT, "x", 1)
+  am_commit(doc, "doc1 edit")
+  am_put(doc2, AM_ROOT, "y", 2)
+  am_commit(doc2, "doc2 edit")
+
+  am_merge(doc, doc2)
+  heads <- am_get_heads(doc)
+  expect_true(length(heads) >= 2)
+
+  expect_error(
+    am_marks(text_obj, heads = heads),
+    "multiple heads are not supported"
+  )
+})
+
+test_that("am_marks_at() with multiple heads errors", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+  am_mark(text_obj, 0, 5, "bold", TRUE)
+  am_commit(doc, "mark bold")
+
+  doc2 <- am_fork(doc)
+  am_put(doc, AM_ROOT, "x", 1)
+  am_commit(doc, "doc1 edit")
+  am_put(doc2, AM_ROOT, "y", 2)
+  am_commit(doc2, "doc2 edit")
+
+  am_merge(doc, doc2)
+  heads <- am_get_heads(doc)
+  expect_true(length(heads) >= 2)
+
+  expect_error(
+    am_marks_at(text_obj, 3, heads = heads),
+    "multiple heads are not supported"
+  )
+})
+
 test_that("cursors remain valid after text deletion", {
   doc <- am_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))

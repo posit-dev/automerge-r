@@ -214,11 +214,6 @@ AMresult* convert_r_heads_to_amresult(SEXP heads_list, AMresult ***results_out, 
     *results_out = results;
     *n_results = (size_t) n_heads;
 
-    if (n_heads != 1) {
-        // Lack of public API to build multi-item AMresults for AMfork
-        Rf_error("Forking at multiple specific heads not yet fully implemented (use single head or NULL)");
-    }
-
     return results[0];
 }
 
@@ -250,14 +245,11 @@ SEXP C_am_fork(SEXP doc_ptr, SEXP heads) {
             AMresultFree(heads_result);
             free(head_results);
         } else {
-            // Multiple heads not yet implemented - clean up and error
-            if (head_results) {
-                for (size_t i = 0; i < n_head_results; i++) {
-                    AMresultFree(head_results[i]);
-                }
-                free(head_results);
+            for (size_t i = 0; i < n_head_results; i++) {
+                AMresultFree(head_results[i]);
             }
-            Rf_error("Forking at multiple specific heads not yet fully implemented");
+            free(head_results);
+            Rf_error("multiple heads are not supported; commit first to produce a single head");
         }
     }
 
