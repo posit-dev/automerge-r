@@ -28,6 +28,7 @@ cursor <- am_cursor(text_obj, 5)
 str <- am_cursor_to_string(cursor)
 
 restored <- am_cursor_from_string(str, text_obj)
+restored
 am_cursor_position(restored)  # 5
 
 am_close(doc)

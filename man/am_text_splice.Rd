@@ -47,6 +47,7 @@ Positions count Unicode code points (characters), not bytes. The word
 doc <- am_create()
 am_put(doc, AM_ROOT, "doc", am_text("Hello"))
 text_obj <- am_get(doc, AM_ROOT, "doc")
+text_obj
 
 # Insert " World" at position 5 (after "Hello")
 am_text_splice(text_obj, 5, 0, " World")

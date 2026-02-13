@@ -26,6 +26,7 @@ doc2 <- am_create()
 
 # Create sync states for each peer
 sync1 <- am_sync_state()
+sync1
 sync2 <- am_sync_state()
 
 # Use with am_sync_encode() and am_sync_decode()

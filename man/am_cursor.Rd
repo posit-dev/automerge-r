@@ -52,6 +52,7 @@ text_obj <- am_get(doc, AM_ROOT, "text")
 
 # Create cursor at position 5 (after "Hello", before " ")
 cursor <- am_cursor(text_obj, 5)
+cursor
 
 # Modify text before cursor
 am_text_splice(text_obj, 0, 0, "Hi ")

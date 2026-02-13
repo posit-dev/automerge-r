@@ -23,6 +23,7 @@ The binary format is compatible across all Automerge implementations
 doc1 <- am_create()
 bytes <- am_save(doc1)
 doc2 <- am_load(bytes)
+doc2
 
 # Save to and load from file
 doc3 <- am_create()

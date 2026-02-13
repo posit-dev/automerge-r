@@ -42,6 +42,7 @@
 #'
 #' # Create cursor at position 5 (after "Hello", before " ")
 #' cursor <- am_cursor(text_obj, 5)
+#' cursor
 #'
 #' # Modify text before cursor
 #' am_text_splice(text_obj, 0, 0, "Hi ")
@@ -110,6 +111,7 @@ am_cursor_position <- function(cursor, heads = NULL) {
 #'
 #' cursor <- am_cursor(text_obj, 5)
 #' bytes <- am_cursor_to_bytes(cursor)
+#' bytes
 #'
 #' # Restore cursor later
 #' restored <- am_cursor_from_bytes(bytes, text_obj)
@@ -144,6 +146,7 @@ am_cursor_to_bytes <- function(cursor) {
 #' bytes <- am_cursor_to_bytes(cursor)
 #'
 #' restored <- am_cursor_from_bytes(bytes, text_obj)
+#' restored
 #' am_cursor_position(restored)  # 5
 #'
 #' am_close(doc)
@@ -171,6 +174,7 @@ am_cursor_from_bytes <- function(bytes, obj) {
 #'
 #' cursor <- am_cursor(text_obj, 5)
 #' str <- am_cursor_to_string(cursor)
+#' str
 #'
 #' # Restore cursor later
 #' restored <- am_cursor_from_string(str, text_obj)
@@ -205,6 +209,7 @@ am_cursor_to_string <- function(cursor) {
 #' str <- am_cursor_to_string(cursor)
 #'
 #' restored <- am_cursor_from_string(str, text_obj)
+#' restored
 #' am_cursor_position(restored)  # 5
 #'
 #' am_close(doc)

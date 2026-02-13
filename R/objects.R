@@ -36,6 +36,7 @@
 #' # Create nested list and retrieve it
 #' am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
 #' items <- am_get(doc, AM_ROOT, "items")
+#' items
 #'
 #' am_close(doc)
 #'
@@ -166,6 +167,7 @@ am_length <- function(doc, obj) {
 #' # Create a list and get it
 #' am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
 #' items <- am_get(doc, AM_ROOT, "items")
+#' items
 #'
 #' # Insert items
 #' am_insert(doc, items, "end", "first")
@@ -323,6 +325,7 @@ am_text <- function(initial = "") {
 #' doc <- am_create()
 #' am_put(doc, AM_ROOT, "doc", am_text("Hello"))
 #' text_obj <- am_get(doc, AM_ROOT, "doc")
+#' text_obj
 #'
 #' # Insert " World" at position 5 (after "Hello")
 #' am_text_splice(text_obj, 5, 0, " World")
@@ -355,6 +358,7 @@ am_text_splice <- function(text_obj, pos, del_count, text) {
 #' doc <- am_create()
 #' am_put(doc, AM_ROOT, "doc", am_text("Hello"))
 #' text_obj <- am_get(doc, AM_ROOT, "doc")
+#' text_obj
 #'
 #' text <- am_text_content(text_obj)
 #' text  # "Hello"
@@ -384,6 +388,7 @@ am_text_content <- function(text_obj) {
 #' doc <- am_create()
 #' am_put(doc, AM_ROOT, "content", am_text("Hello"))
 #' text_obj <- am_get(doc, AM_ROOT, "content")
+#' text_obj
 #'
 #' # Efficiently update text by computing and applying diff in one step
 #' am_text_update(text_obj, "Hello", "Hello World")

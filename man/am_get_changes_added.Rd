@@ -34,6 +34,7 @@ am_commit(doc2, "Add y")
 
 # Find changes in doc2 that aren't in doc1
 changes <- am_get_changes_added(doc1, doc2)
+changes
 length(changes)  # 1 change
 
 # Apply those changes to doc1

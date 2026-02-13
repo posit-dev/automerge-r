@@ -31,6 +31,7 @@ head_hash <- heads[[1]]
 
 # Retrieve the change by its hash
 change <- am_get_change_by_hash(doc, head_hash)
+change
 am_change_message(change)  # "Add key"
 
 am_close(doc)

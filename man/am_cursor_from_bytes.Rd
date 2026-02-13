@@ -28,6 +28,7 @@ cursor <- am_cursor(text_obj, 5)
 bytes <- am_cursor_to_bytes(cursor)
 
 restored <- am_cursor_from_bytes(bytes, text_obj)
+restored
 am_cursor_position(restored)  # 5
 
 am_close(doc)

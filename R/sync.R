@@ -20,6 +20,7 @@
 #'
 #' # Create sync states for each peer
 #' sync1 <- am_sync_state()
+#' sync1
 #' sync2 <- am_sync_state()
 #'
 #' # Use with am_sync_encode() and am_sync_decode()
@@ -312,6 +313,7 @@ am_get_history <- function(doc) {
 #' history <- am_get_history(doc)
 #' bytes <- am_change_to_bytes(history[[1]])
 #' change <- am_change_from_bytes(bytes)
+#' change
 #' am_change_message(change)  # "Add key"
 #'
 #' am_close(doc)
@@ -337,6 +339,7 @@ am_change_from_bytes <- function(bytes) {
 #'
 #' history <- am_get_history(doc)
 #' bytes <- am_change_to_bytes(history[[1]])
+#' bytes
 #'
 #' # Round-trip
 #' restored <- am_change_from_bytes(bytes)
@@ -367,6 +370,7 @@ am_change_to_bytes <- function(change) {
 #'
 #' history <- am_get_history(doc)
 #' hash <- am_change_hash(history[[1]])
+#' hash
 #' length(hash)  # 32 bytes
 #'
 #' am_close(doc)
@@ -443,6 +447,7 @@ am_change_time <- function(change) {
 #'
 #' history <- am_get_history(doc)
 #' actor <- am_change_actor_id(history[[1]])
+#' actor
 #'
 #' # Should match the document's actor
 #' identical(actor, am_get_actor(doc))  # TRUE

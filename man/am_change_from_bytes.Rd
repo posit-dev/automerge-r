@@ -34,6 +34,7 @@ am_commit(doc, "Add key")
 history <- am_get_history(doc)
 bytes <- am_change_to_bytes(history[[1]])
 change <- am_change_from_bytes(bytes)
+change
 am_change_message(change)  # "Add key"
 
 am_close(doc)

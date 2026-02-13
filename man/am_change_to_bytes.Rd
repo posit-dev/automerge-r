@@ -23,6 +23,7 @@ am_commit(doc, "Add key")
 
 history <- am_get_history(doc)
 bytes <- am_change_to_bytes(history[[1]])
+bytes
 
 # Round-trip
 restored <- am_change_from_bytes(bytes)

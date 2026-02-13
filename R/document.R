@@ -53,6 +53,7 @@ am_close <- function(doc) {
 #' @examples
 #' # Create document with random actor ID
 #' doc1 <- am_create()
+#' doc1
 #'
 #' # Create with custom hex actor ID
 #' doc2 <- am_create("0123456789abcdef0123456789abcdef")
@@ -84,6 +85,7 @@ am_create <- function(actor_id = NULL) {
 #' @examples
 #' doc <- am_create()
 #' bytes <- am_save(doc)
+#' bytes
 #'
 #' # Save to file
 #' file <- tempfile()
@@ -113,6 +115,7 @@ am_save <- function(doc) {
 #' doc1 <- am_create()
 #' bytes <- am_save(doc1)
 #' doc2 <- am_load(bytes)
+#' doc2
 #'
 #' # Save to and load from file
 #' doc3 <- am_create()
@@ -148,6 +151,7 @@ am_load <- function(data) {
 #' @examples
 #' doc1 <- am_create()
 #' doc2 <- am_fork(doc1)
+#' doc2
 #'
 #' # Now doc1 and doc2 can diverge independently
 #' am_close(doc1)
@@ -205,6 +209,7 @@ am_merge <- function(doc, other) {
 #' @examples
 #' doc <- am_create()
 #' actor <- am_get_actor(doc)
+#' actor
 #'
 #' # Use am_get_actor_hex() for display
 #' actor_hex <- am_get_actor_hex(doc)
@@ -230,7 +235,7 @@ am_get_actor <- function(doc) {
 #' @examples
 #' doc <- am_create()
 #' actor_hex <- am_get_actor_hex(doc)
-#' cat("Actor ID:", actor_hex, "\n")
+#' actor_hex
 #'
 #' am_close(doc)
 #'
@@ -346,6 +351,7 @@ am_rollback <- function(doc) {
 #'
 #' # Now we have a local change
 #' change <- am_get_last_local_change(doc)
+#' change
 #' am_change_message(change)  # "Add key"
 #'
 #' am_close(doc)
@@ -378,6 +384,7 @@ am_get_last_local_change <- function(doc) {
 #'
 #' # Retrieve the change by its hash
 #' change <- am_get_change_by_hash(doc, head_hash)
+#' change
 #' am_change_message(change)  # "Add key"
 #'
 #' am_close(doc)
@@ -413,6 +420,7 @@ am_get_change_by_hash <- function(doc, hash) {
 #'
 #' # Find changes in doc2 that aren't in doc1
 #' changes <- am_get_changes_added(doc1, doc2)
+#' changes
 #' length(changes)  # 1 change
 #'
 #' # Apply those changes to doc1

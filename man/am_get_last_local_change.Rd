@@ -28,6 +28,7 @@ am_commit(doc, "Add key")
 
 # Now we have a local change
 change <- am_get_last_local_change(doc)
+change
 am_change_message(change)  # "Add key"
 
 am_close(doc)
