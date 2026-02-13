@@ -81,7 +81,7 @@ am_merge(doc1, doc2)
 
 # One value wins (deterministic, all replicas agree)
 doc1[["name"]]
-#> [1] "Alice Smith"
+#> [1] "Alice Johnson"
 
 am_close(doc1)
 am_close(doc2)
@@ -308,9 +308,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-02-13 14:24:35 UTC"
+#> [1] "2026-02-13 14:37:24 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-02-13 14:24:35 UTC"
+#> [1] "2026-02-13 14:37:25 UTC"
 
 am_close(doc15)
 am_close(doc16)
@@ -601,7 +601,7 @@ am_merge(doc26, doc27)
 
 # One will win - application should handle both states sensibly
 doc26[["status"]] # Should be prepared for either 'published' or 'archived'
-#> [1] "published"
+#> [1] "archived"
 
 am_close(doc26)
 am_close(doc27)

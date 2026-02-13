@@ -36,8 +36,8 @@ am_commit(doc, "Add key")
 history <- am_get_history(doc)
 hash <- am_change_hash(history[[1]])
 hash
-#>  [1] d8 1b ab 06 b9 f9 11 f3 42 25 4c ed ad 04 96 1c ef a5 ee ed 2e 1f
-#> [23] 98 4b 36 21 c2 32 dc 85 78 b0
+#>  [1] 83 b9 8f 9b 0e 86 e1 ef 1b b5 33 f2 4f 02 1d 1b 29 69 39 fe 8b c6
+#> [23] ec 3a 99 71 16 4b 42 a6 cf df
 length(hash)  # 32 bytes
 #> [1] 32
 

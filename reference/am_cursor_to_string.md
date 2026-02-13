@@ -36,7 +36,7 @@ text_obj <- am_get(doc, AM_ROOT, "text")
 cursor <- am_cursor(text_obj, 5)
 str <- am_cursor_to_string(cursor)
 str
-#> [1] "7@a63d6ab4a87ed208952b3a60f62d6816"
+#> [1] "7@f20d97f2041c7613f52303c128fab279"
 
 # Restore cursor later
 restored <- am_cursor_from_string(str, text_obj)
