@@ -9,7 +9,8 @@ am_apply_changes(doc, changes)
 \arguments{
 \item{doc}{An Automerge document}
 
-\item{changes}{A list of raw vectors (serialized changes) from \code{am_get_changes()}}
+\item{changes}{A list of \code{am_change} objects (from \code{am_get_changes()}) or
+raw vectors (serialized changes from \code{am_change_to_bytes()})}
 }
 \value{
 The document \code{doc} (invisibly, for chaining)

@@ -10,19 +10,15 @@ am_get_history(doc)
 \item{doc}{An Automerge document}
 }
 \value{
-A list of raw vectors (serialized changes), one for each change
+A list of \code{am_change} objects, one for each change
 in the document's history, in chronological order.
 }
 \description{
-Returns the full change history of the document as a list of serialized
-changes. Use the change introspection functions (\code{\link[=am_change_hash]{am_change_hash()}},
+Returns the full change history of the document as a list of \code{am_change}
+objects. Use the change introspection functions (\code{\link[=am_change_hash]{am_change_hash()}},
 \code{\link[=am_change_message]{am_change_message()}}, \code{\link[=am_change_time]{am_change_time()}}, \code{\link[=am_change_actor_id]{am_change_actor_id()}},
 \code{\link[=am_change_seq]{am_change_seq()}}, \code{\link[=am_change_deps]{am_change_deps()}}) to extract metadata from each
 change.
-}
-\details{
-For efficient multi-field extraction, first parse a change with
-\code{\link[=am_change_from_bytes]{am_change_from_bytes()}} to avoid repeated deserialization.
 }
 \examples{
 doc <- am_create()

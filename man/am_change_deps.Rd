@@ -7,7 +7,8 @@
 am_change_deps(change)
 }
 \arguments{
-\item{change}{An \code{am_change} object created by \code{\link[=am_change_from_bytes]{am_change_from_bytes()}}}
+\item{change}{An \code{am_change} object (from \code{\link[=am_get_history]{am_get_history()}},
+\code{\link[=am_get_changes]{am_get_changes()}}, or \code{\link[=am_change_from_bytes]{am_change_from_bytes()}})}
 }
 \value{
 A list of raw vectors (change hashes), each 32 bytes. Returns
@@ -26,12 +27,10 @@ am_put(doc, AM_ROOT, "y", 2)
 am_commit(doc, "Second")
 
 history <- am_get_history(doc)
-ch1 <- am_change_from_bytes(history[[1]])
-ch2 <- am_change_from_bytes(history[[2]])
-deps1 <- am_change_deps(ch1)
+deps1 <- am_change_deps(history[[1]])
 length(deps1)  # 0 (first change has no deps)
 
-deps2 <- am_change_deps(ch2)
+deps2 <- am_change_deps(history[[2]])
 length(deps2)  # 1 (depends on first change)
 
 am_close(doc)

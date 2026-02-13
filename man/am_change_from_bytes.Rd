@@ -2,13 +2,13 @@
 % Please edit documentation in R/sync.R
 \name{am_change_from_bytes}
 \alias{am_change_from_bytes}
-\title{Parse a serialized change for efficient field extraction}
+\title{Parse a serialized change from raw bytes}
 \usage{
 am_change_from_bytes(bytes)
 }
 \arguments{
 \item{bytes}{A raw vector containing a serialized change (from
-\code{\link[=am_get_changes]{am_get_changes()}}, \code{\link[=am_get_history]{am_get_history()}}, or \code{\link[=am_get_last_local_change]{am_get_last_local_change()}})}
+\code{\link[=am_change_to_bytes]{am_change_to_bytes()}})}
 }
 \value{
 An \code{am_change} object (external pointer) that can be passed to
@@ -17,21 +17,24 @@ An \code{am_change} object (external pointer) that can be passed to
 }
 \description{
 Deserializes a change from raw bytes into an \code{am_change} object. This is
-more efficient than passing raw bytes to multiple introspection functions,
-as the change is only deserialized once.
+useful for restoring changes that were previously serialized with
+\code{\link[=am_change_to_bytes]{am_change_to_bytes()}} or saved to disk.
+}
+\details{
+Note: \code{\link[=am_get_changes]{am_get_changes()}}, \code{\link[=am_get_history]{am_get_history()}}, and other change-returning
+functions already return \code{am_change} objects directly, so this function
+is only needed when working with raw byte representations.
 }
 \examples{
 doc <- am_create()
 am_put(doc, AM_ROOT, "key", "value")
 am_commit(doc, "Add key")
 
+# Serialize a change and restore it
 history <- am_get_history(doc)
-change <- am_change_from_bytes(history[[1]])
-
-# Extract multiple fields efficiently
-am_change_hash(change)
-am_change_message(change)
-am_change_seq(change)
+bytes <- am_change_to_bytes(history[[1]])
+change <- am_change_from_bytes(bytes)
+am_change_message(change)  # "Add key"
 
 am_close(doc)
 

@@ -435,8 +435,7 @@ am_rollback <- function(doc) {
 #'
 #' @param doc An Automerge document
 #'
-#' @return A raw vector containing the serialized change, or `NULL` if no
-#'   local changes have been made.
+#' @return An `am_change` object, or `NULL` if no local changes have been made.
 #'
 #' @export
 #' @examples
@@ -451,7 +450,7 @@ am_rollback <- function(doc) {
 #'
 #' # Now we have a local change
 #' change <- am_get_last_local_change(doc)
-#' str(change)  # Raw vector
+#' am_change_message(change)  # "Add key"
 #'
 #' am_close(doc)
 #'
@@ -462,13 +461,14 @@ am_get_last_local_change <- function(doc) {
 #' Get a specific change by its hash
 #'
 #' Retrieves a change from the document's history by its unique hash identifier.
-#' The hash is typically obtained from `am_get_heads()` or `am_get_changes()`.
+#' The hash is typically obtained from `am_get_heads()` or
+#' `am_change_hash()`.
 #'
 #' @param doc An Automerge document
 #' @param hash A raw vector containing the change hash (must be exactly 32 bytes)
 #'
-#' @return A raw vector containing the serialized change, or `NULL` if the
-#'   change hash is not found in the document.
+#' @return An `am_change` object, or `NULL` if the change hash is not found
+#'   in the document.
 #'
 #' @export
 #' @examples
@@ -482,7 +482,7 @@ am_get_last_local_change <- function(doc) {
 #'
 #' # Retrieve the change by its hash
 #' change <- am_get_change_by_hash(doc, head_hash)
-#' str(change)  # Raw vector
+#' am_change_message(change)  # "Add key"
 #'
 #' am_close(doc)
 #'
@@ -500,9 +500,9 @@ am_get_change_by_hash <- function(doc, hash) {
 #' @param doc1 An Automerge document (base/reference document)
 #' @param doc2 An Automerge document (comparison document)
 #'
-#' @return A list of raw vectors, where each vector is a serialized change
-#'   that exists in `doc2` but not in `doc1`. Returns an empty list if
-#'   `doc1` already contains all changes from `doc2`.
+#' @return A list of `am_change` objects representing changes that exist in
+#'   `doc2` but not in `doc1`. Returns an empty list if `doc1` already
+#'   contains all changes from `doc2`.
 #'
 #' @export
 #' @examples

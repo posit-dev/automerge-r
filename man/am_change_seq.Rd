@@ -7,7 +7,8 @@
 am_change_seq(change)
 }
 \arguments{
-\item{change}{An \code{am_change} object created by \code{\link[=am_change_from_bytes]{am_change_from_bytes()}}}
+\item{change}{An \code{am_change} object (from \code{\link[=am_get_history]{am_get_history()}},
+\code{\link[=am_get_changes]{am_get_changes()}}, or \code{\link[=am_change_from_bytes]{am_change_from_bytes()}})}
 }
 \value{
 A numeric value (double, since sequence numbers can exceed R's
@@ -26,10 +27,8 @@ am_put(doc, AM_ROOT, "y", 2)
 am_commit(doc, "Second")
 
 history <- am_get_history(doc)
-ch1 <- am_change_from_bytes(history[[1]])
-ch2 <- am_change_from_bytes(history[[2]])
-am_change_seq(ch1)  # 1
-am_change_seq(ch2)  # 2
+am_change_seq(history[[1]])  # 1
+am_change_seq(history[[2]])  # 2
 
 am_close(doc)
 

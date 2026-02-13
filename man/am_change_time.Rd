@@ -7,7 +7,8 @@
 am_change_time(change)
 }
 \arguments{
-\item{change}{An \code{am_change} object created by \code{\link[=am_change_from_bytes]{am_change_from_bytes()}}}
+\item{change}{An \code{am_change} object (from \code{\link[=am_get_history]{am_get_history()}},
+\code{\link[=am_get_changes]{am_get_changes()}}, or \code{\link[=am_change_from_bytes]{am_change_from_bytes()}})}
 }
 \value{
 A \code{POSIXct} timestamp
@@ -23,8 +24,7 @@ am_put(doc, AM_ROOT, "key", "value")
 am_commit(doc, "Add key", Sys.time())
 
 history <- am_get_history(doc)
-change <- am_change_from_bytes(history[[1]])
-am_change_time(change)
+am_change_time(history[[1]])
 
 am_close(doc)
 

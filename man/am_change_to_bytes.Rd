@@ -7,7 +7,8 @@
 am_change_to_bytes(change)
 }
 \arguments{
-\item{change}{An \code{am_change} object created by \code{\link[=am_change_from_bytes]{am_change_from_bytes()}}}
+\item{change}{An \code{am_change} object (from \code{\link[=am_get_history]{am_get_history()}},
+\code{\link[=am_get_changes]{am_get_changes()}}, or \code{\link[=am_change_from_bytes]{am_change_from_bytes()}})}
 }
 \value{
 A raw vector containing the serialized change
@@ -21,9 +22,11 @@ am_put(doc, AM_ROOT, "key", "value")
 am_commit(doc, "Add key")
 
 history <- am_get_history(doc)
-change <- am_change_from_bytes(history[[1]])
-bytes <- am_change_to_bytes(change)
-identical(bytes, history[[1]])  # TRUE
+bytes <- am_change_to_bytes(history[[1]])
+
+# Round-trip
+restored <- am_change_from_bytes(bytes)
+identical(am_change_to_bytes(restored), bytes)  # TRUE
 
 am_close(doc)
 

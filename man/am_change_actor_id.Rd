@@ -7,7 +7,8 @@
 am_change_actor_id(change)
 }
 \arguments{
-\item{change}{An \code{am_change} object created by \code{\link[=am_change_from_bytes]{am_change_from_bytes()}}}
+\item{change}{An \code{am_change} object (from \code{\link[=am_get_history]{am_get_history()}},
+\code{\link[=am_get_changes]{am_get_changes()}}, or \code{\link[=am_change_from_bytes]{am_change_from_bytes()}})}
 }
 \value{
 A raw vector containing the actor ID bytes
@@ -21,8 +22,7 @@ am_put(doc, AM_ROOT, "key", "value")
 am_commit(doc, "Add key")
 
 history <- am_get_history(doc)
-change <- am_change_from_bytes(history[[1]])
-actor <- am_change_actor_id(change)
+actor <- am_change_actor_id(history[[1]])
 
 # Should match the document's actor
 identical(actor, am_get_actor(doc))  # TRUE

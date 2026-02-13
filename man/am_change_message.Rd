@@ -7,7 +7,8 @@
 am_change_message(change)
 }
 \arguments{
-\item{change}{An \code{am_change} object created by \code{\link[=am_change_from_bytes]{am_change_from_bytes()}}}
+\item{change}{An \code{am_change} object (from \code{\link[=am_get_history]{am_get_history()}},
+\code{\link[=am_get_changes]{am_get_changes()}}, or \code{\link[=am_change_from_bytes]{am_change_from_bytes()}})}
 }
 \value{
 A character string containing the commit message, or \code{NULL}
@@ -22,8 +23,7 @@ am_put(doc, AM_ROOT, "key", "value")
 am_commit(doc, "Add key")
 
 history <- am_get_history(doc)
-change <- am_change_from_bytes(history[[1]])
-am_change_message(change)  # "Add key"
+am_change_message(history[[1]])  # "Add key"
 
 am_close(doc)
 

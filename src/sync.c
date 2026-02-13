@@ -190,7 +190,7 @@ SEXP C_am_get_heads(SEXP doc_ptr) {
  *
  * @param doc_ptr External pointer to am_doc
  * @param heads List of raw vectors (change hashes), or NULL for all changes
- * @return List of raw vectors (serialized changes)
+ * @return List of am_change objects
  */
 SEXP C_am_get_changes(SEXP doc_ptr, SEXP heads) {
     AMdoc *doc = get_doc(doc_ptr);
@@ -247,6 +247,10 @@ SEXP C_am_get_changes(SEXP doc_ptr, SEXP heads) {
         return Rf_allocVector(VECSXP, 0);
     }
 
+    // Wrap the AMresult as a parent ext_ptr to keep it alive
+    SEXP parent_ptr = PROTECT(R_MakeExternalPtr(result, R_NilValue, R_NilValue));
+    R_RegisterCFinalizer(parent_ptr, am_result_finalizer);
+
     SEXP changes_list = PROTECT(Rf_allocVector(VECSXP, count));
 
     for (size_t i = 0; i < count; i++) {
@@ -256,32 +260,30 @@ SEXP C_am_get_changes(SEXP doc_ptr, SEXP heads) {
         AMchange *change = NULL;
         AMitemToChange(item, &change);
 
-        AMbyteSpan bytes = AMchangeRawBytes(change);
-
-        SEXP r_bytes = Rf_allocVector(RAWSXP, bytes.count);
-        memcpy(RAW(r_bytes), bytes.src, bytes.count);
-        SET_VECTOR_ELT(changes_list, i, r_bytes);
+        SEXP change_sexp = PROTECT(wrap_am_change_borrowed(change, parent_ptr));
+        SET_VECTOR_ELT(changes_list, i, change_sexp);
+        UNPROTECT(1);
     }
 
-    AMresultFree(result);
-    UNPROTECT(1);
+    UNPROTECT(2);
     return changes_list;
 }
 
 /**
  * Apply changes from another peer to this document.
  *
- * Uses AMloadIncremental() to apply each serialized change.
+ * Uses AMloadIncremental() to apply each change. Accepts a list of
+ * am_change objects or raw vectors (serialized changes).
  *
  * @param doc_ptr External pointer to am_doc
- * @param changes List of raw vectors (serialized changes)
+ * @param changes List of am_change objects or raw vectors
  * @return The document pointer (invisibly, for chaining)
  */
 SEXP C_am_apply_changes(SEXP doc_ptr, SEXP changes) {
     AMdoc *doc = get_doc(doc_ptr);
 
     if (TYPEOF(changes) != VECSXP) {
-        Rf_error("changes must be a list of raw vectors");
+        Rf_error("changes must be a list");
     }
 
     R_xlen_t n_changes = XLENGTH(changes);
@@ -290,13 +292,29 @@ SEXP C_am_apply_changes(SEXP doc_ptr, SEXP changes) {
     }
 
     for (R_xlen_t i = 0; i < n_changes; i++) {
-        SEXP change_bytes = VECTOR_ELT(changes, i);
-        if (TYPEOF(change_bytes) != RAWSXP) {
-            Rf_error("All changes must be raw vectors (got type %d at index %lld)",
-                    TYPEOF(change_bytes), (long long) i);
+        SEXP element = VECTOR_ELT(changes, i);
+        const uint8_t *bytes_ptr;
+        size_t bytes_len;
+        AMbyteSpan span;
+
+        if (TYPEOF(element) == RAWSXP) {
+            bytes_ptr = RAW(element);
+            bytes_len = (size_t) XLENGTH(element);
+        } else if (TYPEOF(element) == EXTPTRSXP) {
+            am_change_data *data = (am_change_data *) R_ExternalPtrAddr(element);
+            if (!data || !data->change) {
+                Rf_error("Invalid am_change object at index %lld", (long long) i);
+            }
+            span = AMchangeRawBytes(data->change);
+            bytes_ptr = span.src;
+            bytes_len = span.count;
+        } else {
+            Rf_error("Each change must be a raw vector or am_change object "
+                     "(got type %d at index %lld)",
+                     TYPEOF(element), (long long) i);
         }
 
-        AMresult *result = AMloadIncremental(doc, RAW(change_bytes), (size_t) XLENGTH(change_bytes));
+        AMresult *result = AMloadIncremental(doc, bytes_ptr, bytes_len);
 
         // Provide context about which change failed
         if (AMresultStatus(result) != AM_STATUS_OK) {

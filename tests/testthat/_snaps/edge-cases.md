@@ -76,7 +76,7 @@
       am_apply_changes(doc, list(123))
     Condition
       Error in `am_apply_changes()`:
-      ! All changes must be raw vectors (got type 14 at index 0)
+      ! Each change must be a raw vector or am_change object (got type 14 at index 0)
 
 ---
 
@@ -84,7 +84,7 @@
       am_apply_changes(doc, list("not raw"))
     Condition
       Error in `am_apply_changes()`:
-      ! All changes must be raw vectors (got type 16 at index 0)
+      ! Each change must be a raw vector or am_change object (got type 16 at index 0)
 
 # am_apply_changes with malformed change data
 

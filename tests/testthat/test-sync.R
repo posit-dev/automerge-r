@@ -202,10 +202,9 @@ test_that("am_get_changes returns document history", {
   changes <- am_get_changes(doc, NULL)
   expect_equal(length(changes), 3)
 
-  # Each change should be a raw vector
+  # Each change should be an am_change object
   for (change in changes) {
-    expect_type(change, "raw")
-    expect_gt(length(change), 0)
+    expect_s3_class(change, "am_change")
   }
 })
 
@@ -249,9 +248,9 @@ test_that("am_get_history returns full change history", {
   expect_type(history, "list")
   expect_equal(length(history), 3)
 
-  # Each history entry should be a serialized change
+  # Each history entry should be an am_change object
   for (entry in history) {
-    expect_type(entry, "raw")
+    expect_s3_class(entry, "am_change")
   }
 })
 

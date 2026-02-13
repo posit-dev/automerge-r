@@ -7,7 +7,8 @@
 am_change_hash(change)
 }
 \arguments{
-\item{change}{An \code{am_change} object created by \code{\link[=am_change_from_bytes]{am_change_from_bytes()}}}
+\item{change}{An \code{am_change} object (from \code{\link[=am_get_history]{am_get_history()}},
+\code{\link[=am_get_changes]{am_get_changes()}}, or \code{\link[=am_change_from_bytes]{am_change_from_bytes()}})}
 }
 \value{
 A raw vector (32 bytes) containing the change hash
@@ -23,8 +24,7 @@ am_put(doc, AM_ROOT, "key", "value")
 am_commit(doc, "Add key")
 
 history <- am_get_history(doc)
-change <- am_change_from_bytes(history[[1]])
-hash <- am_change_hash(change)
+hash <- am_change_hash(history[[1]])
 length(hash)  # 32 bytes
 
 am_close(doc)

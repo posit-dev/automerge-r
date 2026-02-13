@@ -13,15 +13,17 @@ am_get_changes(doc, heads = NULL)
 or \code{NULL} to get all changes.}
 }
 \value{
-A list of raw vectors, each containing a serialized change.
+A list of \code{am_change} objects.
 }
 \description{
 Returns all changes that have been made to the document since the specified
 heads. If \code{heads} is \code{NULL}, returns all changes in the document's history.
 }
 \details{
-Changes are returned as serialized raw vectors that can be transmitted over
-the network and applied to other documents using \code{am_apply_changes()}.
+Changes are returned as \code{am_change} objects that can be inspected with
+\code{\link[=am_change_hash]{am_change_hash()}}, \code{\link[=am_change_message]{am_change_message()}}, etc., serialized with
+\code{\link[=am_change_to_bytes]{am_change_to_bytes()}}, or applied to other documents using
+\code{\link[=am_apply_changes]{am_apply_changes()}}.
 }
 \examples{
 doc <- am_create()

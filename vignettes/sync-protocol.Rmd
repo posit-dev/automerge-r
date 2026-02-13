@@ -213,11 +213,11 @@ peer_b[["v3"]]
 ### Saving Changes to Files
 
 ```{r}
-# Save individual changes to files
+# Save individual changes to files (serialize to raw bytes first)
 temp_dir <- tempdir()
 for (i in seq_along(changes)) {
   change_file <- file.path(temp_dir, sprintf("change_%03d.bin", i))
-  writeBin(changes[[i]], change_file)
+  writeBin(am_change_to_bytes(changes[[i]]), change_file)
 }
 
 # Later: load and apply changes
@@ -227,7 +227,7 @@ for (i in seq_along(changes)) {
   loaded_changes[[i]] <- readBin(change_file, "raw", file.size(change_file))
 }
 
-# Apply loaded changes to a peer
+# Apply loaded changes to a peer (raw vectors work too)
 peer_c <- am_fork(base_doc)
 am_apply_changes(peer_c, loaded_changes)
 
@@ -281,19 +281,18 @@ Heads are useful for:
 history <- am_get_history(doc_main)
 length(history)
 
-# Inspect individual changes
+# Inspect individual changes (am_change objects returned directly)
 for (i in seq_along(history)) {
-  ch <- am_change_from_bytes(history[[i]])
   cat(sprintf(
     "  [%d] seq=%g message=%s\n",
     i,
-    am_change_seq(ch),
-    am_change_message(ch) %||% "(none)"
+    am_change_seq(history[[i]]),
+    am_change_message(history[[i]]) %||% "(none)"
   ))
 }
 
-# For multi-field extraction, parse once
-change <- am_change_from_bytes(history[[2]])
+# Extract multiple fields from the same change
+change <- history[[2]]
 am_change_hash(change)     # Unique hash
 am_change_actor_id(change) # Who made this change
 am_change_time(change)     # When

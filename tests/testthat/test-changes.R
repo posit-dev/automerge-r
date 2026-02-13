@@ -6,7 +6,7 @@ test_that("am_change_hash() returns 32-byte raw vector", {
   am_commit(doc, "Add key")
 
   history <- am_get_history(doc)
-  change <- am_change_from_bytes(history[[1]])
+  change <- history[[1]]
   hash <- am_change_hash(change)
 
   expect_type(hash, "raw")
@@ -20,7 +20,7 @@ test_that("am_change_hash() matches am_get_heads()", {
 
   heads <- am_get_heads(doc)
   history <- am_get_history(doc)
-  change <- am_change_from_bytes(history[[1]])
+  change <- history[[1]]
   hash <- am_change_hash(change)
 
   expect_equal(hash, heads[[1]])
@@ -32,7 +32,7 @@ test_that("am_change_message() returns commit message", {
   am_commit(doc, "Add key")
 
   history <- am_get_history(doc)
-  change <- am_change_from_bytes(history[[1]])
+  change <- history[[1]]
   msg <- am_change_message(change)
   expect_equal(msg, "Add key")
 })
@@ -43,7 +43,7 @@ test_that("am_change_message() returns NULL when no message", {
   am_commit(doc)
 
   history <- am_get_history(doc)
-  change <- am_change_from_bytes(history[[1]])
+  change <- history[[1]]
   msg <- am_change_message(change)
   expect_null(msg)
 })
@@ -54,7 +54,7 @@ test_that("am_change_message() handles UTF-8 messages", {
   am_commit(doc, "\u63d0\u4ea4\u6d88\u606f \U0001f389")
 
   history <- am_get_history(doc)
-  change <- am_change_from_bytes(history[[1]])
+  change <- history[[1]]
   msg <- am_change_message(change)
   expect_equal(msg, "\u63d0\u4ea4\u6d88\u606f \U0001f389")
 })
@@ -65,7 +65,7 @@ test_that("am_change_time() returns POSIXct", {
   am_commit(doc, "Add key", Sys.time())
 
   history <- am_get_history(doc)
-  change <- am_change_from_bytes(history[[1]])
+  change <- history[[1]]
   time <- am_change_time(change)
   expect_s3_class(time, "POSIXct")
 })
@@ -76,7 +76,7 @@ test_that("am_change_actor_id() matches document actor", {
   am_commit(doc, "Add key")
 
   history <- am_get_history(doc)
-  change <- am_change_from_bytes(history[[1]])
+  change <- history[[1]]
   actor <- am_change_actor_id(change)
   expect_equal(actor, am_get_actor(doc))
 })
@@ -89,8 +89,8 @@ test_that("am_change_seq() returns sequence numbers", {
   am_commit(doc, "Second")
 
   history <- am_get_history(doc)
-  ch1 <- am_change_from_bytes(history[[1]])
-  ch2 <- am_change_from_bytes(history[[2]])
+  ch1 <- history[[1]]
+  ch2 <- history[[2]]
   expect_equal(am_change_seq(ch1), 1)
   expect_equal(am_change_seq(ch2), 2)
 })
@@ -101,7 +101,7 @@ test_that("am_change_deps() returns empty list for first change", {
   am_commit(doc, "First")
 
   history <- am_get_history(doc)
-  change <- am_change_from_bytes(history[[1]])
+  change <- history[[1]]
   deps <- am_change_deps(change)
   expect_type(deps, "list")
   expect_length(deps, 0)
@@ -115,8 +115,8 @@ test_that("am_change_deps() returns parent hash for second change", {
   am_commit(doc, "Second")
 
   history <- am_get_history(doc)
-  ch1 <- am_change_from_bytes(history[[1]])
-  ch2 <- am_change_from_bytes(history[[2]])
+  ch1 <- history[[1]]
+  ch2 <- history[[2]]
   first_hash <- am_change_hash(ch1)
   deps <- am_change_deps(ch2)
 
@@ -130,7 +130,8 @@ test_that("am_change_from_bytes() creates am_change object", {
   am_commit(doc, "Add key")
 
   history <- am_get_history(doc)
-  change <- am_change_from_bytes(history[[1]])
+  bytes <- am_change_to_bytes(history[[1]])
+  change <- am_change_from_bytes(bytes)
   expect_s3_class(change, "am_change")
 })
 
@@ -138,31 +139,33 @@ test_that("am_change_from_bytes() errors on non-raw input", {
   expect_error(am_change_from_bytes("not raw"), "bytes must be a raw vector")
 })
 
-test_that("am_change_to_bytes() round-trips through am_change", {
+test_that("am_change_to_bytes() round-trips through am_change_from_bytes()", {
   doc <- am_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Add key")
 
   history <- am_get_history(doc)
-  change <- am_change_from_bytes(history[[1]])
+  change <- history[[1]]
   bytes <- am_change_to_bytes(change)
-  expect_equal(bytes, history[[1]])
+  restored <- am_change_from_bytes(bytes)
+  expect_equal(am_change_to_bytes(restored), bytes)
 })
 
-test_that("am_change functions work with am_change objects", {
+test_that("am_get_history() returns am_change objects directly", {
   doc <- am_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Add key")
 
   history <- am_get_history(doc)
-  change <- am_change_from_bytes(history[[1]])
+  expect_s3_class(history[[1]], "am_change")
 
-  expect_type(am_change_hash(change), "raw")
-  expect_equal(am_change_message(change), "Add key")
-  expect_s3_class(am_change_time(change), "POSIXct")
-  expect_equal(am_change_actor_id(change), am_get_actor(doc))
-  expect_equal(am_change_seq(change), 1)
-  expect_type(am_change_deps(change), "list")
+  # Can use introspection functions directly without am_change_from_bytes()
+  expect_type(am_change_hash(history[[1]]), "raw")
+  expect_equal(am_change_message(history[[1]]), "Add key")
+  expect_s3_class(am_change_time(history[[1]]), "POSIXct")
+  expect_equal(am_change_actor_id(history[[1]]), am_get_actor(doc))
+  expect_equal(am_change_seq(history[[1]]), 1)
+  expect_type(am_change_deps(history[[1]]), "list")
 })
 
 test_that("am_change functions error on invalid input", {
@@ -180,7 +183,7 @@ test_that("am_change functions error on raw bytes (must parse first)", {
   am_commit(doc, "Add key")
 
   history <- am_get_history(doc)
-  raw_change <- history[[1]]
+  raw_change <- am_change_to_bytes(history[[1]])
 
   expect_error(am_change_hash(raw_change), "am_change object")
   expect_error(am_change_message(raw_change), "am_change object")

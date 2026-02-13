@@ -572,7 +572,7 @@ SEXP C_am_actor_id_to_string(SEXP bytes) {
  * or NULL if no local changes have been made.
  *
  * @param doc_ptr External pointer to am_doc
- * @return Raw vector containing the serialized change, or NULL if none
+ * @return am_change object, or NULL if none
  */
 SEXP C_am_get_last_local_change(SEXP doc_ptr) {
     AMdoc *doc = get_doc(doc_ptr);
@@ -606,14 +606,7 @@ SEXP C_am_get_last_local_change(SEXP doc_ptr) {
         return R_NilValue;
     }
 
-    AMbyteSpan bytes = AMchangeRawBytes(change);
-
-    SEXP r_bytes = PROTECT(Rf_allocVector(RAWSXP, bytes.count));
-    memcpy(RAW(r_bytes), bytes.src, bytes.count);
-
-    AMresultFree(result);
-    UNPROTECT(1);
-    return r_bytes;
+    return wrap_am_change_owned(result);
 }
 
 /**
@@ -621,7 +614,7 @@ SEXP C_am_get_last_local_change(SEXP doc_ptr) {
  *
  * @param doc_ptr External pointer to am_doc
  * @param hash Raw vector containing the change hash (32 bytes)
- * @return Raw vector containing the serialized change, or NULL if not found
+ * @return am_change object, or NULL if not found
  */
 SEXP C_am_get_change_by_hash(SEXP doc_ptr, SEXP hash) {
     AMdoc *doc = get_doc(doc_ptr);
@@ -663,14 +656,7 @@ SEXP C_am_get_change_by_hash(SEXP doc_ptr, SEXP hash) {
         return R_NilValue;
     }
 
-    AMbyteSpan bytes = AMchangeRawBytes(change);
-
-    SEXP r_bytes = PROTECT(Rf_allocVector(RAWSXP, bytes.count));
-    memcpy(RAW(r_bytes), bytes.src, bytes.count);
-
-    AMresultFree(result);
-    UNPROTECT(1);
-    return r_bytes;
+    return wrap_am_change_owned(result);
 }
 
 /**
@@ -682,7 +668,7 @@ SEXP C_am_get_change_by_hash(SEXP doc_ptr, SEXP hash) {
  *
  * @param doc1_ptr External pointer to am_doc (base document)
  * @param doc2_ptr External pointer to am_doc (comparison document)
- * @return List of raw vectors (serialized changes)
+ * @return List of am_change objects
  */
 SEXP C_am_get_changes_added(SEXP doc1_ptr, SEXP doc2_ptr) {
     AMdoc *doc1 = get_doc(doc1_ptr);
@@ -702,6 +688,10 @@ SEXP C_am_get_changes_added(SEXP doc1_ptr, SEXP doc2_ptr) {
         return Rf_allocVector(VECSXP, 0);
     }
 
+    // Wrap the AMresult as a parent ext_ptr to keep it alive
+    SEXP parent_ptr = PROTECT(R_MakeExternalPtr(result, R_NilValue, R_NilValue));
+    R_RegisterCFinalizer(parent_ptr, am_result_finalizer);
+
     SEXP changes_list = PROTECT(Rf_allocVector(VECSXP, count));
 
     for (size_t i = 0; i < count; i++) {
@@ -711,14 +701,11 @@ SEXP C_am_get_changes_added(SEXP doc1_ptr, SEXP doc2_ptr) {
         AMchange *change = NULL;
         AMitemToChange(item, &change);
 
-        AMbyteSpan bytes = AMchangeRawBytes(change);
-
-        SEXP r_bytes = Rf_allocVector(RAWSXP, bytes.count);
-        memcpy(RAW(r_bytes), bytes.src, bytes.count);
-        SET_VECTOR_ELT(changes_list, i, r_bytes);
+        SEXP change_sexp = PROTECT(wrap_am_change_borrowed(change, parent_ptr));
+        SET_VECTOR_ELT(changes_list, i, change_sexp);
+        UNPROTECT(1);
     }
 
-    AMresultFree(result);
-    UNPROTECT(1);
+    UNPROTECT(2);
     return changes_list;
 }

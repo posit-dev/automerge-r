@@ -253,28 +253,37 @@ repeat {
 ## History & Changes
 
 ```{r}
-# Get heads
+# Get heads (fingerprint of current state)
 heads <- am_get_heads(doc)
 
-# Get changes
-changes <- am_get_changes(doc, NULL) # All changes
-changes <- am_get_changes(doc, heads) # Since specific heads
+# Get changes (returns am_change objects)
+changes <- am_get_changes(doc, NULL)  # All changes
+changes <- am_get_changes(doc, heads) # Changes since heads (i.e. none)
 
-# Apply changes
+# Typical pattern: remember a checkpoint, then get new changes later
+checkpoint <- am_get_heads(doc)
+am_put(doc, AM_ROOT, "new_key", "new_value")
+am_commit(doc, "Add new_key")
+new_changes <- am_get_changes(doc, checkpoint) # Only the new commit
+
+# Apply changes (accepts am_change objects or raw vectors)
 am_apply_changes(doc, changes)
 
-# Full history
+# Full history (returns am_change objects)
 history <- am_get_history(doc)
 
-# Change introspection (parse once, extract many fields)
-change <- am_change_from_bytes(history[[1]])
+# Change introspection
+change <- history[[1]]
 hash <- am_change_hash(change) # 32-byte hash
 msg <- am_change_message(change) # Commit message or NULL
 time <- am_change_time(change) # POSIXct timestamp
 actor <- am_change_actor_id(change) # Actor ID (raw bytes)
 seq <- am_change_seq(change) # Sequence number (double)
 deps <- am_change_deps(change) # List of parent hashes
-bytes <- am_change_to_bytes(change) # Serialize back to raw
+bytes <- am_change_to_bytes(change) # Serialize to raw
+
+# Deserialize from raw bytes (for stored changes)
+change <- am_change_from_bytes(bytes)
 ```
 
 ## Conversion

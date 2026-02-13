@@ -942,7 +942,7 @@ test_that("invalid change data structures", {
 
   # Test that changes have expected structure
   expect_true(length(changes) > 0)
-  expect_type(changes[[1]], "raw")
+  expect_s3_class(changes[[1]], "am_change")
 
   # Applying same changes again is idempotent (no error)
   am_apply_changes(doc2, changes)
