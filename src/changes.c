@@ -171,9 +171,8 @@ SEXP C_am_change_deps(SEXP change_ptr) {
 
     AMresult *deps_result = AMchangeDeps(ch);
 
-    if (!deps_result || AMresultStatus(deps_result) != AM_STATUS_OK) {
-        if (deps_result) AMresultFree(deps_result);
-        return Rf_allocVector(VECSXP, 0);
+    if (AMresultStatus(deps_result) != AM_STATUS_OK) {
+        CHECK_RESULT(deps_result, AM_VAL_TYPE_CHANGE_HASH);
     }
 
     AMitems items = AMresultItems(deps_result);

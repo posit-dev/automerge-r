@@ -395,6 +395,29 @@ test_that("am_get_changes with specific heads", {
   changes_since <- am_get_changes(doc, heads1)
   expect_type(changes_since, "list")
   expect_equal(length(changes_since), 2)
+
+  # Returned am_change objects (borrowed from parent result) are introspectable
+  expect_s3_class(changes_since[[1]], "am_change")
+  expect_s3_class(changes_since[[2]], "am_change")
+  expect_equal(am_change_message(changes_since[[1]]), "Second")
+  expect_equal(am_change_message(changes_since[[2]]), "Third")
+})
+
+test_that("am_get_changes with multiple explicit heads errors", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "x", 1)
+  am_commit(doc, "First")
+  am_put(doc, AM_ROOT, "y", 2)
+  am_commit(doc, "Second")
+
+  # Construct a list of 2 heads from history hashes
+  history <- am_get_history(doc)
+  two_heads <- list(am_change_hash(history[[1]]), am_change_hash(history[[2]]))
+
+  expect_error(
+    am_get_changes(doc, two_heads),
+    "multiple heads are not supported"
+  )
 })
 
 test_that("am_get_changes with empty heads list returns all changes", {
