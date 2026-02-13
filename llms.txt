@@ -228,7 +228,7 @@ Sync documents across peers
 
 - [`am_sync()`](https://posit-dev.github.io/automerge-r/reference/am_sync.md)
   : Bidirectional synchronization
-- [`am_sync_state_new()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state_new.md)
+- [`am_sync_state()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state.md)
   : Create a new sync state
 - [`am_sync_encode()`](https://posit-dev.github.io/automerge-r/reference/am_sync_encode.md)
   : Generate a sync message

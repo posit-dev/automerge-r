@@ -108,8 +108,8 @@ peer4[["source"]] <- "peer4"
 am_commit(peer4)
 
 # Each peer maintains its own sync state
-sync3 <- am_sync_state_new()
-sync4 <- am_sync_state_new()
+sync3 <- am_sync_state()
+sync4 <- am_sync_state()
 
 # Exchange messages until converged
 round <- 0
@@ -154,7 +154,7 @@ am_close(peer4)
 ### Protocol Components
 
 **Sync State**
-([`am_sync_state_new()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state_new.md)):
+([`am_sync_state()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state.md)):
 
 - Tracks what each peer knows
 - Document-independent (can be reused)
@@ -312,16 +312,16 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] 22 f9 e8 91 55 6b d0 c0 f2 4a 13 cb ba 8c 5b cd 8b 13 f4 0a 4c 38
-#> [23] b3 bb 97 97 ab 8f 40 0c f6 73
+#>  [1] 1a 47 0b c1 17 65 a9 8c 88 74 a5 69 e0 89 f1 27 0b 0d 9a 3d 64 c3
+#> [23] 63 57 9e e4 79 2e 76 6b c4 41
 am_change_actor_id(change) # Who made this change
-#>  [1] 37 9a 26 c1 de 40 e9 02 4a c4 68 9e 56 b0 8a c8
+#>  [1] 6a 32 4a 71 2c 56 3d 16 6f f8 60 4c 1a c4 d5 57
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] 8d ab 45 67 4f 32 28 50 a7 16 c1 8f 2f 5e 98 34 dc 43 d1 10 7f a8
-#> [23] 7e e5 2a 46 64 25 5b 5c 1b 9a
+#>  [1] a3 15 69 63 1c 90 54 b2 74 d5 20 a7 77 c4 bd d5 9b cf f8 df d4 28
+#> [23] 81 43 af c3 c2 68 90 69 98 af
 
 # Get changes between two points in history
 changes_since_v1 <- am_get_changes(doc_main, heads_v1)
@@ -607,8 +607,8 @@ doc_reuse[["v1"]] <- 1
 am_commit(doc_reuse)
 
 peer_reuse <- am_create()
-sync_state_local <- am_sync_state_new()
-sync_state_peer <- am_sync_state_new()
+sync_state_local <- am_sync_state()
+sync_state_peer <- am_sync_state()
 
 # Manual sync with persistent state
 msg1 <- am_sync_encode(doc_reuse, sync_state_local)

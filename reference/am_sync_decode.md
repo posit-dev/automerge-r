@@ -19,7 +19,7 @@ am_sync_decode(doc, sync_state, message)
 - sync_state:
 
   A sync state object (created with
-  [`am_sync_state_new()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state_new.md))
+  [`am_sync_state()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state.md))
 
 - message:
 
@@ -33,7 +33,7 @@ The document `doc` (invisibly, for chaining)
 
 ``` r
 doc <- am_create()
-sync_state <- am_sync_state_new()
+sync_state <- am_sync_state()
 
 # Receive message from peer
 # message <- ... (received from network)

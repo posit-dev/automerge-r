@@ -19,7 +19,7 @@ am_sync_encode(doc, sync_state)
 - sync_state:
 
   A sync state object (created with
-  [`am_sync_state_new()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state_new.md))
+  [`am_sync_state()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state.md))
 
 ## Value
 
@@ -35,7 +35,7 @@ send (synchronization is complete from this side).
 
 ``` r
 doc <- am_create()
-sync_state <- am_sync_state_new()
+sync_state <- am_sync_state()
 
 # Generate first sync message
 msg <- am_sync_encode(doc, sync_state)

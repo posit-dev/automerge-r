@@ -333,7 +333,7 @@ synchronization between JavaScript and R.</p>
 <span>  <span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="st">"Initial R doc"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create sync state</span></span>
-<span><span class="va">r_sync</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_sync_state_new.html">am_sync_state_new</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">r_sync</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_sync_state.html">am_sync_state</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Generate sync message to send to JavaScript</span></span>
 <span><span class="va">sync_msg_to_js</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_sync_encode.html">am_sync_encode</a></span><span class="op">(</span><span class="va">r_doc</span>, <span class="va">r_sync</span><span class="op">)</span></span>
