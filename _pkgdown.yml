@@ -77,7 +77,7 @@ reference:
       Sync documents across peers
     contents:
       - am_sync
-      - am_sync_state_new
+      - am_sync_state
       - am_sync_encode
       - am_sync_decode
 

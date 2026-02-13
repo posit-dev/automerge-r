@@ -110,8 +110,8 @@ peer4[["source"]] <- "peer4"
 am_commit(peer4)
 
 # Each peer maintains its own sync state
-sync3 <- am_sync_state_new()
-sync4 <- am_sync_state_new()
+sync3 <- am_sync_state()
+sync4 <- am_sync_state()
 
 # Exchange messages until converged
 round <- 0
@@ -152,7 +152,7 @@ am_close(peer4)
 
 ### Protocol Components
 
-**Sync State** (`am_sync_state_new()`):
+**Sync State** (`am_sync_state()`):
 
 - Tracks what each peer knows
 - Document-independent (can be reused)
@@ -562,8 +562,8 @@ doc_reuse[["v1"]] <- 1
 am_commit(doc_reuse)
 
 peer_reuse <- am_create()
-sync_state_local <- am_sync_state_new()
-sync_state_peer <- am_sync_state_new()
+sync_state_local <- am_sync_state()
+sync_state_peer <- am_sync_state()
 
 # Manual sync with persistent state
 msg1 <- am_sync_encode(doc_reuse, sync_state_local)

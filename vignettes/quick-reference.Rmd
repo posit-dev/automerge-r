@@ -221,7 +221,7 @@ am_merge(doc1, doc2) # Merge doc2 into doc1
 
 ```{r}
 # Create sync state
-sync_state <- am_sync_state_new()
+sync_state <- am_sync_state()
 
 # Encode/decode messages
 msg <- am_sync_encode(doc, sync_state)

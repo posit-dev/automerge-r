@@ -1,5 +1,5 @@
-test_that("am_sync_state_new creates a valid sync state", {
-  sync_state <- am_sync_state_new()
+test_that("am_sync_state creates a valid sync state", {
+  sync_state <- am_sync_state()
   expect_s3_class(sync_state, "am_syncstate")
   expect_type(sync_state, "externalptr")
 })
@@ -8,8 +8,8 @@ test_that("am_sync_encode/decode work with empty documents", {
   doc1 <- am_create()
   doc2 <- am_create()
 
-  sync1 <- am_sync_state_new()
-  sync2 <- am_sync_state_new()
+  sync1 <- am_sync_state()
+  sync2 <- am_sync_state()
 
   # First message from doc1
   msg1 <- am_sync_encode(doc1, sync1)
@@ -60,8 +60,8 @@ test_that("am_sync_encode/decode synchronize simple changes", {
   expect_null(am_get(doc2, AM_ROOT, "x"))
 
   # Create sync states
-  sync1 <- am_sync_state_new()
-  sync2 <- am_sync_state_new()
+  sync1 <- am_sync_state()
+  sync2 <- am_sync_state()
 
   # Exchange messages until convergence
   for (round in 1:20) {
@@ -294,7 +294,7 @@ test_that("sync works with nested objects", {
 
 test_that("sync protocol errors are handled gracefully", {
   doc <- am_create()
-  sync_state <- am_sync_state_new()
+  sync_state <- am_sync_state()
 
   # Try to decode invalid sync message
   invalid_msg <- raw(10) # Random bytes
@@ -315,7 +315,7 @@ test_that("sync state is document-independent", {
   doc3 <- am_create()
 
   # Single sync state can be used with different documents
-  sync_state <- am_sync_state_new()
+  sync_state <- am_sync_state()
 
   # Use it with doc1
   msg1 <- am_sync_encode(doc1, sync_state)

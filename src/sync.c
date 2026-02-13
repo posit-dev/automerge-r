@@ -10,7 +10,7 @@
  *
  * @return External pointer to am_syncstate structure (with class "am_syncstate")
  */
-SEXP C_am_sync_state_new(void) {
+SEXP C_am_sync_state(void) {
     AMresult *result = AMsyncStateInit();
     CHECK_RESULT(result, AM_VAL_TYPE_SYNC_STATE);
 

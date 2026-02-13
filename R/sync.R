@@ -19,16 +19,16 @@
 #' doc2 <- am_create()
 #'
 #' # Create sync states for each peer
-#' sync1 <- am_sync_state_new()
-#' sync2 <- am_sync_state_new()
+#' sync1 <- am_sync_state()
+#' sync2 <- am_sync_state()
 #'
 #' # Use with am_sync_encode() and am_sync_decode()
 #'
 #' am_close(doc1)
 #' am_close(doc2)
 #'
-am_sync_state_new <- function() {
-  .Call(C_am_sync_state_new)
+am_sync_state <- function() {
+  .Call(C_am_sync_state)
 }
 
 #' Generate a sync message
@@ -40,7 +40,7 @@ am_sync_state_new <- function() {
 #' (synchronization is complete from this side).
 #'
 #' @param doc An Automerge document
-#' @param sync_state A sync state object (created with `am_sync_state_new()`)
+#' @param sync_state A sync state object (created with `am_sync_state()`)
 #'
 #' @return A raw vector containing the encoded sync message, or `NULL` if no
 #'   message needs to be sent.
@@ -48,7 +48,7 @@ am_sync_state_new <- function() {
 #' @export
 #' @examples
 #' doc <- am_create()
-#' sync_state <- am_sync_state_new()
+#' sync_state <- am_sync_state()
 #'
 #' # Generate first sync message
 #' msg <- am_sync_encode(doc, sync_state)
@@ -69,7 +69,7 @@ am_sync_encode <- function(doc, sync_state) {
 #' to reflect the received changes.
 #'
 #' @param doc An Automerge document
-#' @param sync_state A sync state object (created with `am_sync_state_new()`)
+#' @param sync_state A sync state object (created with `am_sync_state()`)
 #' @param message A raw vector containing an encoded sync message
 #'
 #' @return The document `doc` (invisibly, for chaining)
@@ -77,7 +77,7 @@ am_sync_encode <- function(doc, sync_state) {
 #' @export
 #' @examples
 #' doc <- am_create()
-#' sync_state <- am_sync_state_new()
+#' sync_state <- am_sync_state()
 #'
 #' # Receive message from peer
 #' # message <- ... (received from network)
@@ -132,8 +132,8 @@ am_sync <- function(doc1, doc2) {
     stop("doc2 must be an Automerge document")
   }
 
-  sync1 <- am_sync_state_new()
-  sync2 <- am_sync_state_new()
+  sync1 <- am_sync_state()
+  sync2 <- am_sync_state()
 
   round <- 0
   repeat {

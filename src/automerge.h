@@ -87,7 +87,7 @@ SEXP C_am_values(SEXP doc_ptr, SEXP obj_ptr);
 SEXP C_am_counter_increment(SEXP doc_ptr, SEXP obj_ptr, SEXP key_or_pos, SEXP delta);
 
 // Synchronization operations (sync.c)
-SEXP C_am_sync_state_new(void);
+SEXP C_am_sync_state(void);
 SEXP C_am_sync_encode(SEXP doc_ptr, SEXP sync_state_ptr);
 SEXP C_am_sync_decode(SEXP doc_ptr, SEXP sync_state_ptr, SEXP message);
 SEXP C_am_get_heads(SEXP doc_ptr);

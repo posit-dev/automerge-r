@@ -9,7 +9,7 @@ am_sync_encode(doc, sync_state)
 \arguments{
 \item{doc}{An Automerge document}
 
-\item{sync_state}{A sync state object (created with \code{am_sync_state_new()})}
+\item{sync_state}{A sync state object (created with \code{am_sync_state()})}
 }
 \value{
 A raw vector containing the encoded sync message, or \code{NULL} if no
@@ -25,7 +25,7 @@ If the function returns \code{NULL}, it means there are no more messages to send
 }
 \examples{
 doc <- am_create()
-sync_state <- am_sync_state_new()
+sync_state <- am_sync_state()
 
 # Generate first sync message
 msg <- am_sync_encode(doc, sync_state)

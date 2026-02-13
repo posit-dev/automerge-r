@@ -324,7 +324,7 @@ test_that("Resource cleanup after errors", {
 
 test_that("am_sync_decode validates message type", {
   doc <- am_create()
-  sync_state <- am_sync_state_new()
+  sync_state <- am_sync_state()
 
   expect_snapshot(error = TRUE, {
     am_sync_decode(doc, sync_state, "not raw")
