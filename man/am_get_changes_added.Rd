@@ -12,9 +12,9 @@ am_get_changes_added(doc1, doc2)
 \item{doc2}{An Automerge document (comparison document)}
 }
 \value{
-A list of raw vectors, where each vector is a serialized change
-that exists in \code{doc2} but not in \code{doc1}. Returns an empty list if
-\code{doc1} already contains all changes from \code{doc2}.
+A list of \code{am_change} objects representing changes that exist in
+\code{doc2} but not in \code{doc1}. Returns an empty list if \code{doc1} already
+contains all changes from \code{doc2}.
 }
 \description{
 Compares two documents and returns the changes that exist in \code{doc2}
@@ -34,6 +34,7 @@ am_commit(doc2, "Add y")
 
 # Find changes in doc2 that aren't in doc1
 changes <- am_get_changes_added(doc1, doc2)
+changes
 length(changes)  # 1 change
 
 # Apply those changes to doc1

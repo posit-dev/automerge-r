@@ -53,6 +53,7 @@ am_close <- function(doc) {
 #' @examples
 #' # Create document with random actor ID
 #' doc1 <- am_create()
+#' doc1
 #'
 #' # Create with custom hex actor ID
 #' doc2 <- am_create("0123456789abcdef0123456789abcdef")
@@ -84,6 +85,7 @@ am_create <- function(actor_id = NULL) {
 #' @examples
 #' doc <- am_create()
 #' bytes <- am_save(doc)
+#' bytes
 #'
 #' # Save to file
 #' file <- tempfile()
@@ -113,6 +115,7 @@ am_save <- function(doc) {
 #' doc1 <- am_create()
 #' bytes <- am_save(doc1)
 #' doc2 <- am_load(bytes)
+#' doc2
 #'
 #' # Save to and load from file
 #' doc3 <- am_create()
@@ -148,6 +151,7 @@ am_load <- function(data) {
 #' @examples
 #' doc1 <- am_create()
 #' doc2 <- am_fork(doc1)
+#' doc2
 #'
 #' # Now doc1 and doc2 can diverge independently
 #' am_close(doc1)
@@ -205,6 +209,7 @@ am_merge <- function(doc, other) {
 #' @examples
 #' doc <- am_create()
 #' actor <- am_get_actor(doc)
+#' actor
 #'
 #' # Use am_get_actor_hex() for display
 #' actor_hex <- am_get_actor_hex(doc)
@@ -230,7 +235,7 @@ am_get_actor <- function(doc) {
 #' @examples
 #' doc <- am_create()
 #' actor_hex <- am_get_actor_hex(doc)
-#' cat("Actor ID:", actor_hex, "\n")
+#' actor_hex
 #'
 #' am_close(doc)
 #'
@@ -331,8 +336,7 @@ am_rollback <- function(doc) {
 #'
 #' @param doc An Automerge document
 #'
-#' @return A raw vector containing the serialized change, or `NULL` if no
-#'   local changes have been made.
+#' @return An `am_change` object, or `NULL` if no local changes have been made.
 #'
 #' @export
 #' @examples
@@ -347,7 +351,8 @@ am_rollback <- function(doc) {
 #'
 #' # Now we have a local change
 #' change <- am_get_last_local_change(doc)
-#' str(change)  # Raw vector
+#' change
+#' am_change_message(change)  # "Add key"
 #'
 #' am_close(doc)
 #'
@@ -358,13 +363,14 @@ am_get_last_local_change <- function(doc) {
 #' Get a specific change by its hash
 #'
 #' Retrieves a change from the document's history by its unique hash identifier.
-#' The hash is typically obtained from `am_get_heads()` or `am_get_changes()`.
+#' The hash is typically obtained from `am_get_heads()` or
+#' `am_change_hash()`.
 #'
 #' @param doc An Automerge document
 #' @param hash A raw vector containing the change hash (must be exactly 32 bytes)
 #'
-#' @return A raw vector containing the serialized change, or `NULL` if the
-#'   change hash is not found in the document.
+#' @return An `am_change` object, or `NULL` if the change hash is not found
+#'   in the document.
 #'
 #' @export
 #' @examples
@@ -378,7 +384,8 @@ am_get_last_local_change <- function(doc) {
 #'
 #' # Retrieve the change by its hash
 #' change <- am_get_change_by_hash(doc, head_hash)
-#' str(change)  # Raw vector
+#' change
+#' am_change_message(change)  # "Add key"
 #'
 #' am_close(doc)
 #'
@@ -396,9 +403,9 @@ am_get_change_by_hash <- function(doc, hash) {
 #' @param doc1 An Automerge document (base/reference document)
 #' @param doc2 An Automerge document (comparison document)
 #'
-#' @return A list of raw vectors, where each vector is a serialized change
-#'   that exists in `doc2` but not in `doc1`. Returns an empty list if
-#'   `doc1` already contains all changes from `doc2`.
+#' @return A list of `am_change` objects representing changes that exist in
+#'   `doc2` but not in `doc1`. Returns an empty list if `doc1` already
+#'   contains all changes from `doc2`.
 #'
 #' @export
 #' @examples
@@ -413,6 +420,7 @@ am_get_change_by_hash <- function(doc, hash) {
 #'
 #' # Find changes in doc2 that aren't in doc1
 #' changes <- am_get_changes_added(doc1, doc2)
+#' changes
 #' length(changes)  # 1 change
 #'
 #' # Apply those changes to doc1

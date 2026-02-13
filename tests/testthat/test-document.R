@@ -478,14 +478,14 @@ test_that("am_get_last_local_change() returns NULL for new document", {
   expect_null(change)
 })
 
-test_that("am_get_last_local_change() returns change after commit", {
+test_that("am_get_last_local_change() returns am_change after commit", {
   doc <- am_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Add key")
 
   change <- am_get_last_local_change(doc)
-  expect_type(change, "raw")
-  expect_true(length(change) > 0)
+  expect_s3_class(change, "am_change")
+  expect_equal(am_change_message(change), "Add key")
 })
 
 test_that("am_get_last_local_change() returns most recent change", {
@@ -499,8 +499,10 @@ test_that("am_get_last_local_change() returns most recent change", {
   am_commit(doc, "Second commit")
   change2 <- am_get_last_local_change(doc)
 
-  expect_false(identical(change1, change2))
-  expect_type(change2, "raw")
+  expect_s3_class(change1, "am_change")
+  expect_s3_class(change2, "am_change")
+  expect_equal(am_change_message(change1), "First commit")
+  expect_equal(am_change_message(change2), "Second commit")
 })
 
 test_that("am_get_change_by_hash() retrieves existing change", {
@@ -512,8 +514,8 @@ test_that("am_get_change_by_hash() retrieves existing change", {
   expect_length(heads, 1)
 
   change <- am_get_change_by_hash(doc, heads[[1]])
-  expect_type(change, "raw")
-  expect_true(length(change) > 0)
+  expect_s3_class(change, "am_change")
+  expect_equal(am_change_message(change), "Add key")
 })
 
 test_that("am_get_change_by_hash() returns NULL for non-existent hash", {
@@ -569,7 +571,7 @@ test_that("am_get_changes_added() finds new changes in doc2", {
   changes <- am_get_changes_added(doc1, doc2)
   expect_type(changes, "list")
   expect_length(changes, 1)
-  expect_type(changes[[1]], "raw")
+  expect_s3_class(changes[[1]], "am_change")
 })
 
 test_that("am_get_changes_added() can sync documents", {

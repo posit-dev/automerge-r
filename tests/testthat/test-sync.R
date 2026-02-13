@@ -1,15 +1,21 @@
-test_that("am_sync_state_new creates a valid sync state", {
-  sync_state <- am_sync_state_new()
+test_that("am_sync_state creates a valid sync state", {
+  sync_state <- am_sync_state()
   expect_s3_class(sync_state, "am_syncstate")
   expect_type(sync_state, "externalptr")
+})
+
+test_that("print.am_syncstate outputs expected text", {
+  sync_state <- am_sync_state()
+  output <- capture.output(print(sync_state))
+  expect_match(output, "Automerge Sync State")
 })
 
 test_that("am_sync_encode/decode work with empty documents", {
   doc1 <- am_create()
   doc2 <- am_create()
 
-  sync1 <- am_sync_state_new()
-  sync2 <- am_sync_state_new()
+  sync1 <- am_sync_state()
+  sync2 <- am_sync_state()
 
   # First message from doc1
   msg1 <- am_sync_encode(doc1, sync1)
@@ -60,8 +66,8 @@ test_that("am_sync_encode/decode synchronize simple changes", {
   expect_null(am_get(doc2, AM_ROOT, "x"))
 
   # Create sync states
-  sync1 <- am_sync_state_new()
-  sync2 <- am_sync_state_new()
+  sync1 <- am_sync_state()
+  sync2 <- am_sync_state()
 
   # Exchange messages until convergence
   for (round in 1:20) {
@@ -202,10 +208,9 @@ test_that("am_get_changes returns document history", {
   changes <- am_get_changes(doc, NULL)
   expect_equal(length(changes), 3)
 
-  # Each change should be a raw vector
+  # Each change should be an am_change object
   for (change in changes) {
-    expect_type(change, "raw")
-    expect_gt(length(change), 0)
+    expect_s3_class(change, "am_change")
   }
 })
 
@@ -249,9 +254,9 @@ test_that("am_get_history returns full change history", {
   expect_type(history, "list")
   expect_equal(length(history), 3)
 
-  # Each history entry should be a serialized change
+  # Each history entry should be an am_change object
   for (entry in history) {
-    expect_type(entry, "raw")
+    expect_s3_class(entry, "am_change")
   }
 })
 
@@ -295,7 +300,7 @@ test_that("sync works with nested objects", {
 
 test_that("sync protocol errors are handled gracefully", {
   doc <- am_create()
-  sync_state <- am_sync_state_new()
+  sync_state <- am_sync_state()
 
   # Try to decode invalid sync message
   invalid_msg <- raw(10) # Random bytes
@@ -316,7 +321,7 @@ test_that("sync state is document-independent", {
   doc3 <- am_create()
 
   # Single sync state can be used with different documents
-  sync_state <- am_sync_state_new()
+  sync_state <- am_sync_state()
 
   # Use it with doc1
   msg1 <- am_sync_encode(doc1, sync_state)
@@ -390,6 +395,64 @@ test_that("am_get_changes with specific heads", {
   changes_since <- am_get_changes(doc, heads1)
   expect_type(changes_since, "list")
   expect_equal(length(changes_since), 2)
+
+  # Returned am_change objects (borrowed from parent result) are introspectable
+  expect_s3_class(changes_since[[1]], "am_change")
+  expect_s3_class(changes_since[[2]], "am_change")
+  expect_equal(am_change_message(changes_since[[1]]), "Second")
+  expect_equal(am_change_message(changes_since[[2]]), "Third")
+})
+
+test_that("am_get_changes with multiple explicit heads errors", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "x", 1)
+  am_commit(doc, "First")
+  am_put(doc, AM_ROOT, "y", 2)
+  am_commit(doc, "Second")
+
+  # Construct a list of 2 heads from history hashes
+  history <- am_get_history(doc)
+  two_heads <- list(am_change_hash(history[[1]]), am_change_hash(history[[2]]))
+
+  expect_error(
+    am_get_changes(doc, two_heads),
+    "multiple heads are not supported"
+  )
+})
+
+test_that("am_get_changes with empty heads list returns all changes", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "x", 1)
+  am_commit(doc, "First")
+  am_put(doc, AM_ROOT, "y", 2)
+  am_commit(doc, "Second")
+
+  changes <- am_get_changes(doc, list())
+  expect_type(changes, "list")
+
+  all_changes <- am_get_changes(doc, NULL)
+  expect_equal(length(changes), length(all_changes))
+})
+
+test_that("am_get_changes with multiple heads errors", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "x", 1)
+  am_commit(doc, "First")
+
+  doc2 <- am_fork(doc)
+  am_put(doc, AM_ROOT, "y", 2)
+  am_commit(doc, "doc1 edit")
+  am_put(doc2, AM_ROOT, "z", 3)
+  am_commit(doc2, "doc2 edit")
+
+  am_merge(doc, doc2)
+  heads <- am_get_heads(doc)
+  expect_true(length(heads) >= 2)
+
+  expect_error(
+    am_get_changes(doc, heads),
+    "multiple heads are not supported"
+  )
 })
 
 test_that("am_get_changes_added returns added changes", {

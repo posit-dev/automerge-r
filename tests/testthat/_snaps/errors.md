@@ -412,7 +412,7 @@
       am_apply_changes(doc, "not a list")
     Condition
       Error in `am_apply_changes()`:
-      ! changes must be a list of raw vectors
+      ! changes must be a list
 
 ---
 
@@ -420,7 +420,7 @@
       am_apply_changes(doc, 123)
     Condition
       Error in `am_apply_changes()`:
-      ! changes must be a list of raw vectors
+      ! changes must be a list
 
 ---
 
@@ -428,7 +428,7 @@
       am_apply_changes(doc, raw(5))
     Condition
       Error in `am_apply_changes()`:
-      ! changes must be a list of raw vectors
+      ! changes must be a list
 
 ---
 
@@ -436,7 +436,7 @@
       am_apply_changes(doc, NULL)
     Condition
       Error in `am_apply_changes()`:
-      ! changes must be a list of raw vectors
+      ! changes must be a list
 
 # am_put_path validates with non-existent intermediate and no create
 

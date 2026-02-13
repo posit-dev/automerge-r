@@ -43,7 +43,7 @@ doc <- am_create("fd3ca50687f13477f1f9ea2b216b958a") # With custom actor ID
 bytes <- am_save(doc) # Save to bytes
 doc <- am_load(bytes) # Load from bytes
 
-# Actor ID
+# Actor ID (document-bound)
 actor <- am_get_actor(doc) # Get actor ID (raw bytes)
 actor_hex <- am_get_actor_hex(doc) # Get actor ID as hex string
 am_set_actor(doc, actor_hex) # Set actor ID (raw, hex, or NULL)
@@ -147,13 +147,24 @@ old_text <- am_text_content(text_obj)
 am_text_update(text_obj, old_text, "Hello Universe") # Computes and applies diff
 
 # Cursors (stable positions)
-cursor <- am_cursor(text_obj, 5) # Create cursor at position 5
+cursor <- am_cursor(text_obj, 5) # Create at position 5
 pos <- am_cursor_position(cursor) # Get current position
+cursor <- am_cursor(text_obj, 5, heads) # Create at historical state
+pos <- am_cursor_position(cursor, heads) # Position at historical state
+
+# Cursor serialization (persistence across sessions)
+bytes <- am_cursor_to_bytes(cursor) # Serialize to raw
+cursor <- am_cursor_from_bytes(bytes, text_obj) # Restore from raw
+str <- am_cursor_to_string(cursor) # Serialize to string
+cursor <- am_cursor_from_string(str, text_obj) # Restore from string
+am_cursor_equal(cursor1, cursor2) # Compare cursors
 
 # Marks (formatting)
 am_mark(text_obj, 0, 5, "bold", TRUE, expand = "none")
 marks <- am_marks(text_obj) # Get all marks
+marks <- am_marks(text_obj, heads) # Marks at historical state
 marks_at <- am_marks_at(text_obj, 2) # Marks at position 2
+marks_at <- am_marks_at(text_obj, 2, heads) # At position, historical state
 ```
 
 ## Value Types
@@ -210,7 +221,7 @@ am_merge(doc1, doc2) # Merge doc2 into doc1
 
 ```{r}
 # Create sync state
-sync_state <- am_sync_state_new()
+sync_state <- am_sync_state()
 
 # Encode/decode messages
 msg <- am_sync_encode(doc, sync_state)
@@ -235,18 +246,37 @@ repeat {
 ## History & Changes
 
 ```{r}
-# Get heads
+# Get heads (fingerprint of current state)
 heads <- am_get_heads(doc)
 
-# Get changes
-changes <- am_get_changes(doc, NULL) # All changes
-changes <- am_get_changes(doc, heads) # Since specific heads
+# Get changes (returns am_change objects)
+changes <- am_get_changes(doc, NULL)  # All changes
+changes <- am_get_changes(doc, heads) # Changes since heads (i.e. none)
+
+# Typical pattern: remember a checkpoint, then get new changes later
+checkpoint <- am_get_heads(doc)
+am_put(doc, AM_ROOT, "new_key", "new_value")
+am_commit(doc, "Add new_key")
+new_changes <- am_get_changes(doc, checkpoint) # Only the new commit
 
 # Apply changes
 am_apply_changes(doc, changes)
 
-# Full history
+# Full history (returns am_change objects)
 history <- am_get_history(doc)
+
+# Change introspection
+change <- history[[1]]
+hash <- am_change_hash(change) # 32-byte hash
+msg <- am_change_message(change) # Commit message or NULL
+time <- am_change_time(change) # POSIXct timestamp
+actor <- am_change_actor_id(change) # Actor ID (raw bytes)
+seq <- am_change_seq(change) # Sequence number (double)
+deps <- am_change_deps(change) # List of parent hashes
+bytes <- am_change_to_bytes(change) # Serialize to raw
+
+# Deserialize from raw bytes (for stored changes)
+change <- am_change_from_bytes(bytes)
 ```
 
 ## Conversion

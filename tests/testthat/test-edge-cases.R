@@ -359,7 +359,7 @@ strip_line_numbers <- function(x) {
 test_that("sync state operations with invalid pointers", {
   doc1 <- am_create()
   doc2 <- am_create()
-  sync_state <- am_sync_state_new()
+  sync_state <- am_sync_state()
 
   # Generate a valid message
   msg <- am_sync_encode(doc1, sync_state)
@@ -386,7 +386,7 @@ test_that("sync state operations with invalid pointers", {
 
 test_that("sync decode with zero-length message", {
   doc <- am_create()
-  sync_state <- am_sync_state_new()
+  sync_state <- am_sync_state()
 
   # Zero-length raw vector should trigger an error
   expect_snapshot(error = TRUE, transform = strip_line_numbers, {
@@ -396,7 +396,7 @@ test_that("sync decode with zero-length message", {
 
 test_that("sync decode with malformed message", {
   doc <- am_create()
-  sync_state <- am_sync_state_new()
+  sync_state <- am_sync_state()
 
   # Random bytes that aren't a valid sync message
   set.seed(123)
@@ -463,15 +463,11 @@ test_that("am_apply_changes with empty and invalid lists", {
   })
 })
 
-test_that("am_apply_changes with malformed change data", {
+test_that("am_apply_changes rejects raw vectors", {
   doc <- am_create()
 
-  # Random bytes that aren't valid changes
-  set.seed(456)
-  bad_change <- as.raw(sample(0:255, 100, replace = TRUE))
-
   expect_snapshot(error = TRUE, transform = strip_line_numbers, {
-    am_apply_changes(doc, list(bad_change))
+    am_apply_changes(doc, list(raw(10)))
   })
 })
 
@@ -712,7 +708,7 @@ test_that("sync between empty documents", {
 
 test_that("sync state lifecycle", {
   # Create sync state
-  state1 <- am_sync_state_new()
+  state1 <- am_sync_state()
   expect_s3_class(state1, "am_syncstate")
 
   # Use it multiple times
@@ -726,7 +722,7 @@ test_that("sync state lifecycle", {
   }
 
   # Create another state
-  state2 <- am_sync_state_new()
+  state2 <- am_sync_state()
   msg2 <- am_sync_encode(doc2, state2)
   if (!is.null(msg2)) {
     am_sync_decode(doc1, state2, msg2)
@@ -942,7 +938,7 @@ test_that("invalid change data structures", {
 
   # Test that changes have expected structure
   expect_true(length(changes) > 0)
-  expect_type(changes[[1]], "raw")
+  expect_s3_class(changes[[1]], "am_change")
 
   # Applying same changes again is idempotent (no error)
   am_apply_changes(doc2, changes)
@@ -953,7 +949,7 @@ test_that("sync with corrupted message state", {
   doc1 <- am_create()
   doc1$data <- "test"
   doc2 <- am_create()
-  sync_state <- am_sync_state_new()
+  sync_state <- am_sync_state()
 
   # Generate valid message
   msg <- am_sync_encode(doc1, sync_state)

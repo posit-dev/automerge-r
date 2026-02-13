@@ -9,6 +9,8 @@
 #'
 #' @param obj An Automerge object ID (must be a text object)
 #' @param position Integer position in the text (0-based inter-character position)
+#' @param heads Optional list of change hashes (raw vectors) to create the cursor
+#'   at a historical document state. If `NULL` (default), uses the current state.
 #'
 #' @return An `am_cursor` object (external pointer) that can be used with
 #'   [am_cursor_position()] to retrieve the current position
@@ -40,6 +42,7 @@
 #'
 #' # Create cursor at position 5 (after "Hello", before " ")
 #' cursor <- am_cursor(text_obj, 5)
+#' cursor
 #'
 #' # Modify text before cursor
 #' am_text_splice(text_obj, 0, 0, "Hi ")
@@ -50,8 +53,8 @@
 #'
 #' am_close(doc)
 #'
-am_cursor <- function(obj, position) {
-  .Call(C_am_cursor, obj, position)
+am_cursor <- function(obj, position, heads = NULL) {
+  .Call(C_am_cursor, obj, position, heads)
 }
 
 #' Get the current position of a cursor
@@ -62,6 +65,9 @@ am_cursor <- function(obj, position) {
 #' it was created for, so you only need to pass the cursor itself.
 #'
 #' @param cursor An `am_cursor` object created by [am_cursor()]
+#' @param heads Optional list of change hashes (raw vectors) to query cursor
+#'   position at a historical document state. If `NULL` (default), uses the
+#'   current state.
 #'
 #' @return Integer position (0-based inter-character position) where the cursor
 #'   currently points. See [am_cursor()] for indexing details.
@@ -81,8 +87,165 @@ am_cursor <- function(obj, position) {
 #'
 #' am_close(doc)
 #'
-am_cursor_position <- function(cursor) {
-  .Call(C_am_cursor_position, cursor)
+am_cursor_position <- function(cursor, heads = NULL) {
+  .Call(C_am_cursor_position, cursor, heads)
+}
+
+#' Serialize a cursor to bytes
+#'
+#' Converts a cursor to a raw vector representation that can be persisted
+#' and later restored with [am_cursor_from_bytes()]. This enables saving
+#' cursor positions across R sessions.
+#'
+#' @param cursor An `am_cursor` object created by [am_cursor()]
+#'
+#' @return A raw vector containing the serialized cursor
+#'
+#' @seealso [am_cursor_from_bytes()], [am_cursor_to_string()]
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "text", am_text("Hello World"))
+#' text_obj <- am_get(doc, AM_ROOT, "text")
+#'
+#' cursor <- am_cursor(text_obj, 5)
+#' bytes <- am_cursor_to_bytes(cursor)
+#' bytes
+#'
+#' # Restore cursor later
+#' restored <- am_cursor_from_bytes(bytes, text_obj)
+#' am_cursor_position(restored)  # 5
+#'
+#' am_close(doc)
+#'
+am_cursor_to_bytes <- function(cursor) {
+  .Call(C_am_cursor_to_bytes, cursor)
+}
+
+#' Restore a cursor from bytes
+#'
+#' Restores a cursor from a raw vector previously created by
+#' [am_cursor_to_bytes()]. The text object is required to associate the
+#' cursor with a document.
+#'
+#' @param bytes A raw vector containing a serialized cursor
+#' @param obj An Automerge text object to associate the cursor with
+#'
+#' @return An `am_cursor` object
+#'
+#' @seealso [am_cursor_to_bytes()]
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "text", am_text("Hello World"))
+#' text_obj <- am_get(doc, AM_ROOT, "text")
+#'
+#' cursor <- am_cursor(text_obj, 5)
+#' bytes <- am_cursor_to_bytes(cursor)
+#'
+#' restored <- am_cursor_from_bytes(bytes, text_obj)
+#' restored
+#' am_cursor_position(restored)  # 5
+#'
+#' am_close(doc)
+#'
+am_cursor_from_bytes <- function(bytes, obj) {
+  .Call(C_am_cursor_from_bytes, bytes, obj)
+}
+
+#' Serialize a cursor to a string
+#'
+#' Converts a cursor to a string representation that can be persisted
+#' and later restored with [am_cursor_from_string()].
+#'
+#' @param cursor An `am_cursor` object created by [am_cursor()]
+#'
+#' @return A character string containing the serialized cursor
+#'
+#' @seealso [am_cursor_from_string()], [am_cursor_to_bytes()]
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "text", am_text("Hello World"))
+#' text_obj <- am_get(doc, AM_ROOT, "text")
+#'
+#' cursor <- am_cursor(text_obj, 5)
+#' str <- am_cursor_to_string(cursor)
+#' str
+#'
+#' # Restore cursor later
+#' restored <- am_cursor_from_string(str, text_obj)
+#' am_cursor_position(restored)  # 5
+#'
+#' am_close(doc)
+#'
+am_cursor_to_string <- function(cursor) {
+  .Call(C_am_cursor_to_string, cursor)
+}
+
+#' Restore a cursor from a string
+#'
+#' Restores a cursor from a string previously created by
+#' [am_cursor_to_string()]. The text object is required to associate the
+#' cursor with a document.
+#'
+#' @param str A character string containing a serialized cursor
+#' @param obj An Automerge text object to associate the cursor with
+#'
+#' @return An `am_cursor` object
+#'
+#' @seealso [am_cursor_to_string()]
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "text", am_text("Hello World"))
+#' text_obj <- am_get(doc, AM_ROOT, "text")
+#'
+#' cursor <- am_cursor(text_obj, 5)
+#' str <- am_cursor_to_string(cursor)
+#'
+#' restored <- am_cursor_from_string(str, text_obj)
+#' restored
+#' am_cursor_position(restored)  # 5
+#'
+#' am_close(doc)
+#'
+am_cursor_from_string <- function(str, obj) {
+  .Call(C_am_cursor_from_string, str, obj)
+}
+
+#' Test equality of two cursors
+#'
+#' Compares two cursors to determine if they refer to the same position
+#' in a document. This compares the internal cursor representation, not
+#' just the current position.
+#'
+#' @param cursor1 An `am_cursor` object
+#' @param cursor2 An `am_cursor` object
+#'
+#' @return A logical scalar: `TRUE` if the cursors are equal, `FALSE` otherwise
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "text", am_text("Hello World"))
+#' text_obj <- am_get(doc, AM_ROOT, "text")
+#'
+#' cursor1 <- am_cursor(text_obj, 5)
+#' cursor2 <- am_cursor(text_obj, 5)
+#' cursor3 <- am_cursor(text_obj, 3)
+#'
+#' am_cursor_equal(cursor1, cursor2)  # TRUE
+#' am_cursor_equal(cursor1, cursor3)  # FALSE
+#'
+#' am_close(doc)
+#'
+am_cursor_equal <- function(cursor1, cursor2) {
+  .Call(C_am_cursor_equal, cursor1, cursor2)
 }
 
 #' Create a mark on a text range
@@ -170,6 +333,8 @@ am_mark <- function(
 #' object at a specific document state.
 #'
 #' @param obj An Automerge object ID (must be a text object)
+#' @param heads Optional list of change hashes (raw vectors) to query marks at
+#'   a historical document state. If `NULL` (default), uses the current state.
 #'
 #' @return A list of marks, where each mark is a list with fields:
 #'   \describe{
@@ -196,8 +361,8 @@ am_mark <- function(
 #'
 #' am_close(doc)
 #'
-am_marks <- function(obj) {
-  .Call(C_am_marks, obj)
+am_marks <- function(obj, heads = NULL) {
+  .Call(C_am_marks, obj, heads)
 }
 
 #' Get marks at a specific position
@@ -209,6 +374,8 @@ am_marks <- function(obj) {
 #' @param obj An Automerge object ID (must be a text object)
 #' @param position Integer position (0-based inter-character position) to query.
 #'   See [am_mark()] for indexing details.
+#' @param heads Optional list of change hashes (raw vectors) to query marks at
+#'   a historical document state. If `NULL` (default), uses the current state.
 #'
 #' @return A list of marks that include the specified position. Returns an empty
 #'   list if no marks cover that position.
@@ -229,6 +396,6 @@ am_marks <- function(obj) {
 #'
 #' am_close(doc)
 #'
-am_marks_at <- function(obj, position) {
-  .Call(C_am_marks_at, obj, position)
+am_marks_at <- function(obj, position, heads = NULL) {
+  .Call(C_am_marks_at, obj, position, heads)
 }

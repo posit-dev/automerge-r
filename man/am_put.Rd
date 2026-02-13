@@ -45,6 +45,7 @@ am_put(doc, AM_ROOT, "active", TRUE)
 # Create nested list and retrieve it
 am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
 items <- am_get(doc, AM_ROOT, "items")
+items
 
 am_close(doc)
 

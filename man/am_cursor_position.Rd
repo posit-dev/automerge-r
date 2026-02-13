@@ -4,10 +4,14 @@
 \alias{am_cursor_position}
 \title{Get the current position of a cursor}
 \usage{
-am_cursor_position(cursor)
+am_cursor_position(cursor, heads = NULL)
 }
 \arguments{
 \item{cursor}{An \code{am_cursor} object created by \code{\link[=am_cursor]{am_cursor()}}}
+
+\item{heads}{Optional list of change hashes (raw vectors) to query cursor
+position at a historical document state. If \code{NULL} (default), uses the
+current state.}
 }
 \value{
 Integer position (0-based inter-character position) where the cursor

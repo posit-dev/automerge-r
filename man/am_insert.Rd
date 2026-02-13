@@ -30,6 +30,7 @@ doc <- am_create()
 # Create a list and get it
 am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
 items <- am_get(doc, AM_ROOT, "items")
+items
 
 # Insert items
 am_insert(doc, items, "end", "first")

@@ -824,7 +824,7 @@ test_that("print.am_cursor displays cursor info", {
 })
 
 test_that("print.am_syncstate displays sync state info", {
-  sync_state <- am_sync_state_new()
+  sync_state <- am_sync_state()
 
   expect_snapshot(print(sync_state))
 })

@@ -12,12 +12,13 @@ am_get_change_by_hash(doc, hash)
 \item{hash}{A raw vector containing the change hash (must be exactly 32 bytes)}
 }
 \value{
-A raw vector containing the serialized change, or \code{NULL} if the
-change hash is not found in the document.
+An \code{am_change} object, or \code{NULL} if the change hash is not found
+in the document.
 }
 \description{
 Retrieves a change from the document's history by its unique hash identifier.
-The hash is typically obtained from \code{am_get_heads()} or \code{am_get_changes()}.
+The hash is typically obtained from \code{am_get_heads()} or
+\code{am_change_hash()}.
 }
 \examples{
 doc <- am_create()
@@ -30,7 +31,8 @@ head_hash <- heads[[1]]
 
 # Retrieve the change by its hash
 change <- am_get_change_by_hash(doc, head_hash)
-str(change)  # Raw vector
+change
+am_change_message(change)  # "Add key"
 
 am_close(doc)
 

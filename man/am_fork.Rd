@@ -24,6 +24,7 @@ with the original up to the fork point but can diverge afterwards.
 \examples{
 doc1 <- am_create()
 doc2 <- am_fork(doc1)
+doc2
 
 # Now doc1 and doc2 can diverge independently
 am_close(doc1)

@@ -9,7 +9,7 @@ am_sync_decode(doc, sync_state, message)
 \arguments{
 \item{doc}{An Automerge document}
 
-\item{sync_state}{A sync state object (created with \code{am_sync_state_new()})}
+\item{sync_state}{A sync state object (created with \code{am_sync_state()})}
 
 \item{message}{A raw vector containing an encoded sync message}
 }
@@ -23,7 +23,7 @@ to reflect the received changes.
 }
 \examples{
 doc <- am_create()
-sync_state <- am_sync_state_new()
+sync_state <- am_sync_state()
 
 # Receive message from peer
 # message <- ... (received from network)

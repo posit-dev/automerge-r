@@ -33,6 +33,16 @@ typedef struct {
     AMsyncState *state;     // Borrowed pointer extracted from result
 } am_syncstate;
 
+// Change wrapper
+// For owned changes (from am_change_from_bytes, am_get_last_local_change, etc.):
+//   result is non-NULL and freed by finalizer
+// For borrowed changes (from am_get_changes, am_get_changes_added):
+//   result is NULL; parent AMresult kept alive via ext_ptr protection chain
+typedef struct {
+    AMresult *result;   // Owning result (NULL if borrowed from parent)
+    AMchange *change;   // Borrowed pointer to the change
+} am_change_data;
+
 // Function Declarations -------------------------------------------------------
 
 // Document operations (document.c)
@@ -50,6 +60,18 @@ SEXP C_am_rollback(SEXP doc_ptr);
 SEXP C_am_get_last_local_change(SEXP doc_ptr);
 SEXP C_am_get_change_by_hash(SEXP doc_ptr, SEXP hash);
 SEXP C_am_get_changes_added(SEXP doc1_ptr, SEXP doc2_ptr);
+// Change introspection (changes.c)
+SEXP C_am_change_hash(SEXP change);
+SEXP C_am_change_message(SEXP change);
+SEXP C_am_change_time(SEXP change);
+SEXP C_am_change_actor_id(SEXP change);
+SEXP C_am_change_seq(SEXP change);
+SEXP C_am_change_deps(SEXP change);
+SEXP C_am_change_from_bytes(SEXP bytes);
+SEXP C_am_change_to_bytes(SEXP change);
+
+// Shared helpers
+AMresult* convert_r_heads_to_amresult(SEXP heads_list, AMresult ***results_out, size_t *n_results);
 
 // Object operations (objects.c)
 SEXP C_am_put(SEXP doc_ptr, SEXP obj_ptr, SEXP key_or_pos, SEXP value);
@@ -65,7 +87,7 @@ SEXP C_am_values(SEXP doc_ptr, SEXP obj_ptr);
 SEXP C_am_counter_increment(SEXP doc_ptr, SEXP obj_ptr, SEXP key_or_pos, SEXP delta);
 
 // Synchronization operations (sync.c)
-SEXP C_am_sync_state_new(void);
+SEXP C_am_sync_state(void);
 SEXP C_am_sync_encode(SEXP doc_ptr, SEXP sync_state_ptr);
 SEXP C_am_sync_decode(SEXP doc_ptr, SEXP sync_state_ptr, SEXP message);
 SEXP C_am_get_heads(SEXP doc_ptr);
@@ -73,16 +95,26 @@ SEXP C_am_get_changes(SEXP doc_ptr, SEXP heads);
 SEXP C_am_apply_changes(SEXP doc_ptr, SEXP changes);
 
 // Cursor and mark operations (cursors.c)
-SEXP C_am_cursor(SEXP obj_ptr, SEXP position);
-SEXP C_am_cursor_position(SEXP cursor_ptr);
+SEXP C_am_cursor(SEXP obj_ptr, SEXP position, SEXP heads);
+SEXP C_am_cursor_position(SEXP cursor_ptr, SEXP heads);
 SEXP C_am_mark(SEXP obj_ptr, SEXP start, SEXP end, SEXP name, SEXP value, SEXP expand);
-SEXP C_am_marks(SEXP obj_ptr);
-SEXP C_am_marks_at(SEXP obj_ptr, SEXP position);
+SEXP C_am_marks(SEXP obj_ptr, SEXP heads);
+SEXP C_am_marks_at(SEXP obj_ptr, SEXP position, SEXP heads);
+SEXP C_am_cursor_to_bytes(SEXP cursor_ptr);
+SEXP C_am_cursor_from_bytes(SEXP bytes, SEXP obj_ptr);
+SEXP C_am_cursor_to_string(SEXP cursor_ptr);
+SEXP C_am_cursor_from_string(SEXP str, SEXP obj_ptr);
+SEXP C_am_cursor_equal(SEXP cursor1_ptr, SEXP cursor2_ptr);
 
 // Finalizers (memory.c)
 void am_doc_finalizer(SEXP ext_ptr);
 void am_result_finalizer(SEXP ext_ptr);
 void am_syncstate_finalizer(SEXP ext_ptr);
+void am_change_finalizer(SEXP ext_ptr);
+
+// Change wrapping helpers (changes.c)
+SEXP wrap_am_change_owned(AMresult *result);
+SEXP wrap_am_change_borrowed(AMchange *ch, SEXP parent_result_ptr);
 
 // Helper functions (memory.c)
 AMdoc *get_doc(SEXP doc_ptr);  // Returns borrowed AMdoc* pointer

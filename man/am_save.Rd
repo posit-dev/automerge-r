@@ -21,6 +21,7 @@ The binary format is compatible across all Automerge implementations
 \examples{
 doc <- am_create()
 bytes <- am_save(doc)
+bytes
 
 # Save to file
 file <- tempfile()

@@ -227,6 +227,7 @@ am_delete_path <- function(doc, path) {
 #' )
 #'
 #' doc <- as_automerge(data)
+#' doc
 #' doc[["name"]]  # "Alice"
 #' doc[["age"]]   # 30L
 #'

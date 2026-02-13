@@ -11,7 +11,7 @@
  * @param position R integer (0-based position)
  * @return External pointer to AMcursor wrapped as am_cursor S3 class
  */
-SEXP C_am_cursor(SEXP obj_ptr, SEXP position) {
+SEXP C_am_cursor(SEXP obj_ptr, SEXP position, SEXP heads) {
     SEXP doc_ptr = get_doc_from_objid(obj_ptr);
     AMdoc *doc = get_doc(doc_ptr);
 
@@ -29,8 +29,29 @@ SEXP C_am_cursor(SEXP obj_ptr, SEXP position) {
     }
     size_t c_pos = (size_t) r_pos;
 
-    // heads parameter NULL for current state
-    AMresult *result = AMgetCursor(doc, obj_id, c_pos, NULL);
+    AMresult *result = NULL;
+    if (heads == R_NilValue) {
+        result = AMgetCursor(doc, obj_id, c_pos, NULL);
+    } else {
+        AMresult **head_results = NULL;
+        size_t n_head_results = 0;
+        AMresult *heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
+        if (n_head_results == 0) {
+            result = AMgetCursor(doc, obj_id, c_pos, NULL);
+        } else if (n_head_results == 1) {
+            AMitems heads_items = AMresultItems(heads_result);
+            result = AMgetCursor(doc, obj_id, c_pos, &heads_items);
+            AMresultFree(heads_result);
+            free(head_results);
+        } else {
+            for (size_t i = 0; i < n_head_results; i++) {
+                AMresultFree(head_results[i]);
+            }
+            free(head_results);
+            Rf_error("multiple heads are not supported; commit first to produce a single head");
+        }
+    }
+
     CHECK_RESULT(result, AM_VAL_TYPE_CURSOR);
 
     AMitem *item = AMresultItem(result);
@@ -55,7 +76,7 @@ SEXP C_am_cursor(SEXP obj_ptr, SEXP position) {
  * @param cursor_ptr External pointer to AMresult containing cursor
  * @return R integer (0-based position)
  */
-SEXP C_am_cursor_position(SEXP cursor_ptr) {
+SEXP C_am_cursor_position(SEXP cursor_ptr, SEXP heads) {
     if (TYPEOF(cursor_ptr) != EXTPTRSXP) {
         Rf_error("cursor must be an external pointer (am_cursor object)");
     }
@@ -79,7 +100,29 @@ SEXP C_am_cursor_position(SEXP cursor_ptr) {
     AMcursor const *cursor = NULL;
     AMitemToCursor(cursor_item, &cursor);
 
-    AMresult *result = AMgetCursorPosition(doc, obj_id, cursor, NULL);
+    AMresult *result = NULL;
+    if (heads == R_NilValue) {
+        result = AMgetCursorPosition(doc, obj_id, cursor, NULL);
+    } else {
+        AMresult **head_results = NULL;
+        size_t n_head_results = 0;
+        AMresult *heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
+        if (n_head_results == 0) {
+            result = AMgetCursorPosition(doc, obj_id, cursor, NULL);
+        } else if (n_head_results == 1) {
+            AMitems heads_items = AMresultItems(heads_result);
+            result = AMgetCursorPosition(doc, obj_id, cursor, &heads_items);
+            AMresultFree(heads_result);
+            free(head_results);
+        } else {
+            for (size_t i = 0; i < n_head_results; i++) {
+                AMresultFree(head_results[i]);
+            }
+            free(head_results);
+            Rf_error("multiple heads are not supported; commit first to produce a single head");
+        }
+    }
+
     CHECK_RESULT(result, AM_VAL_TYPE_UINT);
 
     AMitem *item = AMresultItem(result);
@@ -95,6 +138,150 @@ SEXP C_am_cursor_position(SEXP cursor_ptr) {
     AMresultFree(result);
 
     return Rf_ScalarInteger(r_pos);
+}
+
+// Cursor Serialization -------------------------------------------------------
+
+/**
+ * Serialize a cursor to bytes.
+ *
+ * @param cursor_ptr External pointer to AMresult containing cursor
+ * @return Raw vector containing the serialized cursor
+ */
+SEXP C_am_cursor_to_bytes(SEXP cursor_ptr) {
+    if (TYPEOF(cursor_ptr) != EXTPTRSXP) {
+        Rf_error("cursor must be an am_cursor object");
+    }
+
+    AMresult *cursor_result = (AMresult *) R_ExternalPtrAddr(cursor_ptr);
+    if (!cursor_result) {
+        Rf_error("Invalid cursor pointer (NULL or freed)");
+    }
+
+    AMitem *cursor_item = AMresultItem(cursor_result);
+    AMcursor const *cursor = NULL;
+    AMitemToCursor(cursor_item, &cursor);
+
+    AMbyteSpan bytes = AMcursorBytes(cursor);
+
+    SEXP r_bytes = PROTECT(Rf_allocVector(RAWSXP, bytes.count));
+    memcpy(RAW(r_bytes), bytes.src, bytes.count);
+
+    UNPROTECT(1);
+    return r_bytes;
+}
+
+/**
+ * Deserialize a cursor from bytes.
+ *
+ * @param bytes Raw vector containing serialized cursor
+ * @param obj_ptr External pointer to AMobjId (text object for association)
+ * @return External pointer to cursor with class "am_cursor"
+ */
+SEXP C_am_cursor_from_bytes(SEXP bytes, SEXP obj_ptr) {
+    if (TYPEOF(bytes) != RAWSXP) {
+        Rf_error("bytes must be a raw vector");
+    }
+    if (TYPEOF(obj_ptr) != EXTPTRSXP) {
+        Rf_error("obj must be a text object");
+    }
+
+    AMresult *result = AMcursorFromBytes(RAW(bytes), (size_t) XLENGTH(bytes));
+    CHECK_RESULT(result, AM_VAL_TYPE_CURSOR);
+
+    SEXP cursor_ptr = PROTECT(R_MakeExternalPtr(result, R_NilValue, obj_ptr));
+    R_RegisterCFinalizer(cursor_ptr, am_result_finalizer);
+    Rf_classgets(cursor_ptr, Rf_mkString("am_cursor"));
+
+    UNPROTECT(1);
+    return cursor_ptr;
+}
+
+/**
+ * Serialize a cursor to a string representation.
+ *
+ * @param cursor_ptr External pointer to AMresult containing cursor
+ * @return Character string
+ */
+SEXP C_am_cursor_to_string(SEXP cursor_ptr) {
+    if (TYPEOF(cursor_ptr) != EXTPTRSXP) {
+        Rf_error("cursor must be an am_cursor object");
+    }
+
+    AMresult *cursor_result = (AMresult *) R_ExternalPtrAddr(cursor_ptr);
+    if (!cursor_result) {
+        Rf_error("Invalid cursor pointer (NULL or freed)");
+    }
+
+    AMitem *cursor_item = AMresultItem(cursor_result);
+    AMcursor const *cursor = NULL;
+    AMitemToCursor(cursor_item, &cursor);
+
+    AMbyteSpan str = AMcursorStr(cursor);
+
+    return Rf_ScalarString(Rf_mkCharLenCE((const char *) str.src, str.count, CE_UTF8));
+}
+
+/**
+ * Deserialize a cursor from a string representation.
+ *
+ * @param str Character string containing serialized cursor
+ * @param obj_ptr External pointer to AMobjId (text object for association)
+ * @return External pointer to cursor with class "am_cursor"
+ */
+SEXP C_am_cursor_from_string(SEXP str, SEXP obj_ptr) {
+    if (TYPEOF(str) != STRSXP || XLENGTH(str) != 1) {
+        Rf_error("str must be a single character string");
+    }
+    if (TYPEOF(obj_ptr) != EXTPTRSXP) {
+        Rf_error("obj must be a text object");
+    }
+
+    const char *c_str = CHAR(STRING_ELT(str, 0));
+    AMbyteSpan span = {.src = (uint8_t const *) c_str, .count = strlen(c_str)};
+
+    AMresult *result = AMcursorFromStr(span);
+    CHECK_RESULT(result, AM_VAL_TYPE_CURSOR);
+
+    SEXP cursor_ptr = PROTECT(R_MakeExternalPtr(result, R_NilValue, obj_ptr));
+    R_RegisterCFinalizer(cursor_ptr, am_result_finalizer);
+    Rf_classgets(cursor_ptr, Rf_mkString("am_cursor"));
+
+    UNPROTECT(1);
+    return cursor_ptr;
+}
+
+/**
+ * Test equality of two cursors.
+ *
+ * @param cursor1_ptr External pointer to first cursor
+ * @param cursor2_ptr External pointer to second cursor
+ * @return Logical scalar
+ */
+SEXP C_am_cursor_equal(SEXP cursor1_ptr, SEXP cursor2_ptr) {
+    if (TYPEOF(cursor1_ptr) != EXTPTRSXP) {
+        Rf_error("cursor1 must be an am_cursor object");
+    }
+    if (TYPEOF(cursor2_ptr) != EXTPTRSXP) {
+        Rf_error("cursor2 must be an am_cursor object");
+    }
+
+    AMresult *result1 = (AMresult *) R_ExternalPtrAddr(cursor1_ptr);
+    AMresult *result2 = (AMresult *) R_ExternalPtrAddr(cursor2_ptr);
+    if (!result1) Rf_error("Invalid cursor1 pointer (NULL or freed)");
+    if (!result2) Rf_error("Invalid cursor2 pointer (NULL or freed)");
+
+    AMitem *item1 = AMresultItem(result1);
+    AMitem *item2 = AMresultItem(result2);
+
+    AMcursor const *cursor1 = NULL;
+    AMcursor const *cursor2 = NULL;
+    AMitemToCursor(item1, &cursor1);
+    AMitemToCursor(item2, &cursor2);
+
+    bool equal = AMcursorEqual(cursor1, cursor2);
+
+    return Rf_ScalarLogical(equal);
 }
 
 // Mark Support ---------------------------------------------------------------
@@ -140,14 +327,34 @@ static SEXP convert_mark_to_r_list(AMmark const *mark, size_t index) {
  *                        If < 0, return all marks (no filtering).
  * @return R list of marks
  */
-static SEXP C_am_marks_impl(SEXP obj_ptr, int filter_position) {
+static SEXP C_am_marks_impl(SEXP obj_ptr, int filter_position, SEXP heads) {
     SEXP doc_ptr = get_doc_from_objid(obj_ptr);
     AMdoc *doc = get_doc(doc_ptr);
 
     const AMobjId *obj_id = get_objid(obj_ptr);
 
-    // heads parameter NULL for current state
-    AMresult *result = AMmarks(doc, obj_id, NULL);
+    AMresult *result = NULL;
+    if (heads == R_NilValue) {
+        result = AMmarks(doc, obj_id, NULL);
+    } else {
+        AMresult **head_results = NULL;
+        size_t n_head_results = 0;
+        AMresult *heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
+        if (n_head_results == 0) {
+            result = AMmarks(doc, obj_id, NULL);
+        } else if (n_head_results == 1) {
+            AMitems heads_items = AMresultItems(heads_result);
+            result = AMmarks(doc, obj_id, &heads_items);
+            AMresultFree(heads_result);
+            free(head_results);
+        } else {
+            for (size_t i = 0; i < n_head_results; i++) {
+                AMresultFree(head_results[i]);
+            }
+            free(head_results);
+            Rf_error("multiple heads are not supported; commit first to produce a single head");
+        }
+    }
     CHECK_RESULT(result, AM_VAL_TYPE_VOID);
 
     AMitems items = AMresultItems(result);
@@ -453,8 +660,8 @@ SEXP C_am_mark(SEXP obj_ptr, SEXP start, SEXP end,
  * @param obj_ptr External pointer to AMobjId (must be text object)
  * @return R list of marks, each mark is a list with: name, value, start, end
  */
-SEXP C_am_marks(SEXP obj_ptr) {
-    return C_am_marks_impl(obj_ptr, -1);  // -1 = no filtering
+SEXP C_am_marks(SEXP obj_ptr, SEXP heads) {
+    return C_am_marks_impl(obj_ptr, -1, heads);  // -1 = no filtering
 }
 
 /**
@@ -466,7 +673,7 @@ SEXP C_am_marks(SEXP obj_ptr) {
  * @param position R integer (0-based position)
  * @return R list of marks that include the position, each mark is a list with: name, value, start, end
  */
-SEXP C_am_marks_at(SEXP obj_ptr, SEXP position) {
+SEXP C_am_marks_at(SEXP obj_ptr, SEXP position, SEXP heads) {
     if (TYPEOF(position) != INTSXP && TYPEOF(position) != REALSXP) {
         Rf_error("position must be numeric");
     }
@@ -478,5 +685,5 @@ SEXP C_am_marks_at(SEXP obj_ptr, SEXP position) {
         Rf_error("position must be non-negative (uses 0-based indexing)");
     }
 
-    return C_am_marks_impl(obj_ptr, r_pos);
+    return C_am_marks_impl(obj_ptr, r_pos, heads);
 }

@@ -10,8 +10,7 @@ am_get_last_local_change(doc)
 \item{doc}{An Automerge document}
 }
 \value{
-A raw vector containing the serialized change, or \code{NULL} if no
-local changes have been made.
+An \code{am_change} object, or \code{NULL} if no local changes have been made.
 }
 \description{
 Returns the most recent change created by this document's actor.
@@ -29,7 +28,8 @@ am_commit(doc, "Add key")
 
 # Now we have a local change
 change <- am_get_last_local_change(doc)
-str(change)  # Raw vector
+change
+am_change_message(change)  # "Add key"
 
 am_close(doc)
 

@@ -1,7 +1,7 @@
 PKG_CFLAGS = @PKG_CFLAGS@
 PKG_LIBS = @PKG_LIBS@
 
-SOURCES = cursors.c document.c errors.c init.c memory.c objects.c sync.c
+SOURCES = changes.c cursors.c document.c errors.c init.c memory.c objects.c sync.c
 OBJECTS = $(SOURCES:.c=.o)
 
 .PHONY: all cleanup clean

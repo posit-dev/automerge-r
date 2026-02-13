@@ -4,12 +4,15 @@
 \alias{am_cursor}
 \title{Create a cursor at a position in a text object}
 \usage{
-am_cursor(obj, position)
+am_cursor(obj, position, heads = NULL)
 }
 \arguments{
 \item{obj}{An Automerge object ID (must be a text object)}
 
 \item{position}{Integer position in the text (0-based inter-character position)}
+
+\item{heads}{Optional list of change hashes (raw vectors) to create the cursor
+at a historical document state. If \code{NULL} (default), uses the current state.}
 }
 \value{
 An \code{am_cursor} object (external pointer) that can be used with
@@ -49,6 +52,7 @@ text_obj <- am_get(doc, AM_ROOT, "text")
 
 # Create cursor at position 5 (after "Hello", before " ")
 cursor <- am_cursor(text_obj, 5)
+cursor
 
 # Modify text before cursor
 am_text_splice(text_obj, 0, 0, "Hi ")

@@ -4,10 +4,13 @@
 \alias{am_marks}
 \title{Get all marks in a text object}
 \usage{
-am_marks(obj)
+am_marks(obj, heads = NULL)
 }
 \arguments{
 \item{obj}{An Automerge object ID (must be a text object)}
+
+\item{heads}{Optional list of change hashes (raw vectors) to query marks at
+a historical document state. If \code{NULL} (default), uses the current state.}
 }
 \value{
 A list of marks, where each mark is a list with fields:

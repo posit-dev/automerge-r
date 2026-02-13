@@ -19,6 +19,7 @@ Retrieve the full text content from a text object as a string.
 doc <- am_create()
 am_put(doc, AM_ROOT, "doc", am_text("Hello"))
 text_obj <- am_get(doc, AM_ROOT, "doc")
+text_obj
 
 text <- am_text_content(text_obj)
 text  # "Hello"

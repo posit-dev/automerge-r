@@ -22,7 +22,7 @@ reference:
 
   - title: "Actor Management"
     desc: >
-      Get and set document actor IDs
+      Get and set actor IDs
     contents:
       - am_get_actor
       - am_get_actor_hex
@@ -59,10 +59,15 @@ reference:
 
   - title: "Cursors and Marks"
     desc: >
-      Stable positions and text formatting
+      Stable positions, text formatting, and cursor serialization
     contents:
       - am_cursor
       - am_cursor_position
+      - am_cursor_to_bytes
+      - am_cursor_from_bytes
+      - am_cursor_to_string
+      - am_cursor_from_string
+      - am_cursor_equal
       - am_mark
       - am_marks
       - am_marks_at
@@ -72,13 +77,13 @@ reference:
       Sync documents across peers
     contents:
       - am_sync
-      - am_sync_state_new
+      - am_sync_state
       - am_sync_encode
       - am_sync_decode
 
   - title: "History and Changes"
     desc: >
-      Track document history and changes
+      Track document history and inspect changes
     contents:
       - am_get_heads
       - am_get_changes
@@ -87,6 +92,14 @@ reference:
       - am_get_last_local_change
       - am_get_change_by_hash
       - am_get_changes_added
+      - am_change_from_bytes
+      - am_change_to_bytes
+      - am_change_hash
+      - am_change_message
+      - am_change_time
+      - am_change_actor_id
+      - am_change_seq
+      - am_change_deps
 
   - title: "Type Constructors"
     desc: >

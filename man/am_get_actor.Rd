@@ -23,6 +23,7 @@ For a hex string representation, use \code{\link[=am_get_actor_hex]{am_get_actor
 \examples{
 doc <- am_create()
 actor <- am_get_actor(doc)
+actor
 
 # Use am_get_actor_hex() for display
 actor_hex <- am_get_actor_hex(doc)
