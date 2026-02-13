@@ -225,8 +225,8 @@ am_get_changes <- function(doc, heads = NULL) {
 #' over a custom network protocol.
 #'
 #' @param doc An Automerge document
-#' @param changes A list of `am_change` objects (from `am_get_changes()`) or
-#'   raw vectors (serialized changes from `am_change_to_bytes()`)
+#' @param changes A list of `am_change` objects (from [am_get_changes()],
+#'   [am_get_history()], or [am_change_from_bytes()])
 #'
 #' @return The document `doc` (invisibly, for chaining)
 #'

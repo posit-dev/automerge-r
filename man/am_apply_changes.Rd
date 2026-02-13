@@ -9,8 +9,8 @@ am_apply_changes(doc, changes)
 \arguments{
 \item{doc}{An Automerge document}
 
-\item{changes}{A list of \code{am_change} objects (from \code{am_get_changes()}) or
-raw vectors (serialized changes from \code{am_change_to_bytes()})}
+\item{changes}{A list of \code{am_change} objects (from \code{\link[=am_get_changes]{am_get_changes()}},
+\code{\link[=am_get_history]{am_get_history()}}, or \code{\link[=am_change_from_bytes]{am_change_from_bytes()}})}
 }
 \value{
 The document \code{doc} (invisibly, for chaining)

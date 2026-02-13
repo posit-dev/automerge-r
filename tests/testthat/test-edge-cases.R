@@ -463,15 +463,11 @@ test_that("am_apply_changes with empty and invalid lists", {
   })
 })
 
-test_that("am_apply_changes with malformed change data", {
+test_that("am_apply_changes rejects raw vectors", {
   doc <- am_create()
 
-  # Random bytes that aren't valid changes
-  set.seed(456)
-  bad_change <- as.raw(sample(0:255, 100, replace = TRUE))
-
   expect_snapshot(error = TRUE, transform = strip_line_numbers, {
-    am_apply_changes(doc, list(bad_change))
+    am_apply_changes(doc, list(raw(10)))
   })
 })
 

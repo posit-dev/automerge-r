@@ -76,7 +76,7 @@
       am_apply_changes(doc, list(123))
     Condition
       Error in `am_apply_changes()`:
-      ! Each change must be a raw vector or am_change object (got type 14 at index 0)
+      ! Each change must be an am_change object (got type 14 at index 0)
 
 ---
 
@@ -84,15 +84,15 @@
       am_apply_changes(doc, list("not raw"))
     Condition
       Error in `am_apply_changes()`:
-      ! Each change must be a raw vector or am_change object (got type 16 at index 0)
+      ! Each change must be an am_change object (got type 16 at index 0)
 
-# am_apply_changes with malformed change data
+# am_apply_changes rejects raw vectors
 
     Code
-      am_apply_changes(doc, list(bad_change))
+      am_apply_changes(doc, list(raw(10)))
     Condition
       Error in `am_apply_changes()`:
-      ! Failed to apply change at index 0: unable to parse chunk: failed to parse header: Invalid magic bytes
+      ! Each change must be an am_change object (got type 24 at index 0)
 
 # am_get_change_by_hash with wrong size hash
 

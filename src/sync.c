@@ -272,11 +272,10 @@ SEXP C_am_get_changes(SEXP doc_ptr, SEXP heads) {
 /**
  * Apply changes from another peer to this document.
  *
- * Uses AMloadIncremental() to apply each change. Accepts a list of
- * am_change objects or raw vectors (serialized changes).
+ * Uses AMloadIncremental() to apply each change.
  *
  * @param doc_ptr External pointer to am_doc
- * @param changes List of am_change objects or raw vectors
+ * @param changes List of am_change objects
  * @return The document pointer (invisibly, for chaining)
  */
 SEXP C_am_apply_changes(SEXP doc_ptr, SEXP changes) {
@@ -293,30 +292,21 @@ SEXP C_am_apply_changes(SEXP doc_ptr, SEXP changes) {
 
     for (R_xlen_t i = 0; i < n_changes; i++) {
         SEXP element = VECTOR_ELT(changes, i);
-        const uint8_t *bytes_ptr;
-        size_t bytes_len;
-        AMbyteSpan span;
 
-        if (TYPEOF(element) == RAWSXP) {
-            bytes_ptr = RAW(element);
-            bytes_len = (size_t) XLENGTH(element);
-        } else if (TYPEOF(element) == EXTPTRSXP) {
-            am_change_data *data = (am_change_data *) R_ExternalPtrAddr(element);
-            if (!data || !data->change) {
-                Rf_error("Invalid am_change object at index %lld", (long long) i);
-            }
-            span = AMchangeRawBytes(data->change);
-            bytes_ptr = span.src;
-            bytes_len = span.count;
-        } else {
-            Rf_error("Each change must be a raw vector or am_change object "
-                     "(got type %d at index %lld)",
+        if (TYPEOF(element) != EXTPTRSXP) {
+            Rf_error("Each change must be an am_change object (got type %d at index %lld)",
                      TYPEOF(element), (long long) i);
         }
 
-        AMresult *result = AMloadIncremental(doc, bytes_ptr, bytes_len);
+        am_change_data *data = (am_change_data *) R_ExternalPtrAddr(element);
+        if (!data || !data->change) {
+            Rf_error("Invalid am_change object at index %lld", (long long) i);
+        }
 
-        // Provide context about which change failed
+        AMbyteSpan span = AMchangeRawBytes(data->change);
+
+        AMresult *result = AMloadIncremental(doc, span.src, span.count);
+
         if (AMresultStatus(result) != AM_STATUS_OK) {
             AMbyteSpan error_span = AMresultError(result);
             size_t msg_size = error_span.count < MAX_ERROR_MSG_SIZE ?

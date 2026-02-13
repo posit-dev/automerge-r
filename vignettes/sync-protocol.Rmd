@@ -220,14 +220,16 @@ for (i in seq_along(changes)) {
   writeBin(am_change_to_bytes(changes[[i]]), change_file)
 }
 
-# Later: load and apply changes
+# Later: load changes and restore as am_change objects
 loaded_changes <- list()
 for (i in seq_along(changes)) {
   change_file <- file.path(temp_dir, sprintf("change_%03d.bin", i))
-  loaded_changes[[i]] <- readBin(change_file, "raw", file.size(change_file))
+  loaded_changes[[i]] <- am_change_from_bytes(
+    readBin(change_file, "raw", file.size(change_file))
+  )
 }
 
-# Apply loaded changes to a peer (raw vectors work too)
+# Apply loaded changes to a peer
 peer_c <- am_fork(base_doc)
 am_apply_changes(peer_c, loaded_changes)
 

@@ -444,6 +444,103 @@ am_change_deps(change)     # Parent change hashes
 am_close(doc14)
 ```
 
+## Time Travel: Undoing Changes
+
+Since Automerge preserves every committed change, you can "time travel" back to any
+point in the document's history. The key is `am_fork(doc, heads)`, which creates
+an independent copy of the document at a specific historical state.
+
+### Reverting to a Known Checkpoint
+
+If you know you might want to undo future changes, save the heads before making them:
+
+```{r}
+doc_tt <- am_create()
+doc_tt[["title"]] <- "My Report"
+doc_tt[["status"]] <- "draft"
+am_commit(doc_tt, "Initial draft")
+
+# Save a checkpoint before making further changes
+checkpoint <- am_get_heads(doc_tt)
+
+# Continue editing
+doc_tt[["status"]] <- "review"
+doc_tt[["reviewer"]] <- "Bob"
+am_commit(doc_tt, "Send for review")
+
+doc_tt[["status"]] <- "rejected"
+am_commit(doc_tt, "Rejected by reviewer")
+
+# Oops - let's go back to the draft state
+draft <- am_fork(doc_tt, checkpoint)
+draft[["status"]]    # "draft"
+draft[["reviewer"]]  # NULL - this key didn't exist yet
+
+am_close(doc_tt)
+am_close(draft)
+```
+
+### Browsing History to Find the Right Point
+
+When you don't have a saved checkpoint, browse the history to find the
+change you want to revert to:
+
+```{r}
+doc_hist <- am_create()
+
+doc_hist[["data"]] <- list(x = 1, y = 2)
+am_commit(doc_hist, "Add initial data")
+
+doc_hist[["data"]] <- list(x = 1, y = 2, z = 3)
+am_commit(doc_hist, "Add z coordinate")
+
+doc_hist[["data"]] <- list(x = 10, y = 20, z = 30)
+am_commit(doc_hist, "Scale all values by 10")
+
+# Review the history
+history <- am_get_history(doc_hist)
+for (i in seq_along(history)) {
+  cat(sprintf("  [%d] %s\n", i, am_change_message(history[[i]])))
+}
+
+# We want to undo the scaling - go back to change 2
+target <- history[[2]]
+reverted <- am_fork(doc_hist, list(am_change_hash(target)))
+from_automerge(reverted)
+
+am_close(doc_hist)
+am_close(reverted)
+```
+
+### Continuing from a Historical State
+
+A forked document is fully independent, so you can make new changes from
+the historical state without affecting the original:
+
+```{r}
+doc_branch <- am_create()
+doc_branch[["text"]] <- am_text("Hello World")
+am_commit(doc_branch, "Initial text")
+
+# Save checkpoint
+v1_heads <- am_get_heads(doc_branch)
+
+text_obj <- am_get(doc_branch, AM_ROOT, "text")
+am_text_update(text_obj, "Hello World", "Hello World - CONFIDENTIAL")
+am_commit(doc_branch, "Add confidential marker")
+
+# Create a public version from v1 and take it in a different direction
+public <- am_fork(doc_branch, v1_heads)
+public_text <- am_get(public, AM_ROOT, "text")
+am_text_update(public_text, "Hello World", "Hello World - Public Draft")
+am_commit(public, "Public version")
+
+am_text_content(public_text) # "Hello World - Public Draft"
+
+am_close(doc_branch)
+am_close(public)
+```
+
 ## Cursor Persistence
 
 Cursors can be serialized and restored across R sessions, which is useful for saving editor state:

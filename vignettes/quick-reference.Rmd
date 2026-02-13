@@ -266,7 +266,7 @@ am_put(doc, AM_ROOT, "new_key", "new_value")
 am_commit(doc, "Add new_key")
 new_changes <- am_get_changes(doc, checkpoint) # Only the new commit
 
-# Apply changes (accepts am_change objects or raw vectors)
+# Apply changes
 am_apply_changes(doc, changes)
 
 # Full history (returns am_change objects)
