@@ -285,3 +285,106 @@ test_that("cursors remain valid after text deletion", {
   new_pos <- am_cursor_position(cursor)
   expect_equal(new_pos, 1)  # 7 - 6 = 1
 })
+
+# Cursor Serialization Error Path Tests ----------------------------------------
+
+test_that("am_cursor_to_bytes() errors on non-cursor input", {
+  expect_error(am_cursor_to_bytes("not a cursor"), "cursor must be an am_cursor object")
+  expect_error(am_cursor_to_bytes(123), "cursor must be an am_cursor object")
+})
+
+test_that("am_cursor_to_string() errors on non-cursor input", {
+  expect_error(am_cursor_to_string("not a cursor"), "cursor must be an am_cursor object")
+  expect_error(am_cursor_to_string(123), "cursor must be an am_cursor object")
+})
+
+test_that("am_cursor_equal() errors on non-cursor inputs", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+  cursor <- am_cursor(text_obj, 2)
+
+  expect_error(am_cursor_equal("not a cursor", cursor), "cursor1 must be an am_cursor object")
+  expect_error(am_cursor_equal(cursor, "not a cursor"), "cursor2 must be an am_cursor object")
+  expect_error(am_cursor_equal(123, cursor), "cursor1 must be an am_cursor object")
+})
+
+test_that("am_cursor_from_bytes() errors on non-text object", {
+  expect_error(am_cursor_from_bytes(raw(10), "not an obj"), "obj must be a text object")
+})
+
+test_that("am_cursor_from_string() errors on non-text object", {
+  expect_error(am_cursor_from_string("abc", "not an obj"), "obj must be a text object")
+})
+
+# Cursor Serialization Roundtrip After Edits -----------------------------------
+
+test_that("cursor serialized via bytes tracks position after text edits", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  cursor <- am_cursor(text_obj, 5)
+  bytes <- am_cursor_to_bytes(cursor)
+
+  # Insert text before cursor position
+  am_text_splice(text_obj, 0, 0, "XX")
+
+  # Restore cursor and check it tracks the new position
+  restored <- am_cursor_from_bytes(bytes, text_obj)
+  expect_equal(am_cursor_position(restored), 7)  # 5 + 2
+})
+
+test_that("cursor serialized via string tracks position after text edits", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  cursor <- am_cursor(text_obj, 5)
+  str <- am_cursor_to_string(cursor)
+
+  # Insert text before cursor position
+  am_text_splice(text_obj, 0, 0, "XX")
+
+  # Restore cursor and check it tracks the new position
+  restored <- am_cursor_from_string(str, text_obj)
+  expect_equal(am_cursor_position(restored), 7)  # 5 + 2
+})
+
+# Cursor Equality with Serialized Cursors --------------------------------------
+
+test_that("am_cursor_equal() works with serialized+restored cursors", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  cursor <- am_cursor(text_obj, 5)
+  bytes <- am_cursor_to_bytes(cursor)
+  restored <- am_cursor_from_bytes(bytes, text_obj)
+
+  expect_true(am_cursor_equal(cursor, restored))
+})
+
+test_that("am_cursor_equal() works with string-serialized cursors", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  cursor <- am_cursor(text_obj, 5)
+  str <- am_cursor_to_string(cursor)
+  restored <- am_cursor_from_string(str, text_obj)
+
+  expect_true(am_cursor_equal(cursor, restored))
+})
+
+# Print Methods ----------------------------------------------------------------
+
+test_that("print.am_cursor outputs expected text", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  cursor <- am_cursor(text_obj, 5)
+  output <- capture.output(print(cursor))
+  expect_match(output, "Automerge Cursor")
+})

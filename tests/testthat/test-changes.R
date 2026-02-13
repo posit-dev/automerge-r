@@ -193,3 +193,151 @@ test_that("am_change functions error on raw bytes (must parse first)", {
   expect_error(am_change_deps(raw_change), "am_change object")
   expect_error(am_change_to_bytes(raw_change), "am_change object")
 })
+
+# Change Metadata Round-Trip Tests ---------------------------------------------
+
+test_that("am_change_from_bytes() preserves all metadata through round-trip", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "key", "value")
+  time <- Sys.time()
+  am_commit(doc, "Test message", time)
+
+  history <- am_get_history(doc)
+  original <- history[[1]]
+
+  bytes <- am_change_to_bytes(original)
+  restored <- am_change_from_bytes(bytes)
+
+  expect_equal(am_change_hash(restored), am_change_hash(original))
+  expect_equal(am_change_message(restored), "Test message")
+  expect_equal(am_change_actor_id(restored), am_change_actor_id(original))
+  expect_equal(am_change_seq(restored), am_change_seq(original))
+  expect_equal(am_change_deps(restored), am_change_deps(original))
+  expect_s3_class(am_change_time(restored), "POSIXct")
+})
+
+test_that("am_change_to_bytes() returns raw vector", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "key", "value")
+  am_commit(doc, "Add key")
+
+  history <- am_get_history(doc)
+  bytes <- am_change_to_bytes(history[[1]])
+  expect_type(bytes, "raw")
+  expect_true(length(bytes) > 0)
+})
+
+test_that("am_change_from_bytes() errors on corrupted data", {
+  expect_error(am_change_from_bytes(raw(10)))
+  expect_error(am_change_from_bytes(as.raw(c(0xFF, 0xFF, 0xFF))))
+})
+
+test_that("am_change_time() returns POSIXct even without explicit timestamp", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "key", "value")
+  am_commit(doc)
+
+  history <- am_get_history(doc)
+  time <- am_change_time(history[[1]])
+  expect_s3_class(time, "POSIXct")
+})
+
+test_that("am_change_seq() returns numeric (double)", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "key", "value")
+  am_commit(doc, "Add key")
+
+  history <- am_get_history(doc)
+  seq <- am_change_seq(history[[1]])
+  expect_type(seq, "double")
+})
+
+# Change Dependencies with Multiple Parents ------------------------------------
+
+test_that("am_change_deps() returns multiple deps after merging concurrent changes", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "base", 0)
+  am_commit(doc, "Base")
+
+  # Fork and create concurrent changes
+  doc2 <- am_fork(doc)
+  am_put(doc, AM_ROOT, "x", 1)
+  am_commit(doc, "Add x")
+
+  am_put(doc2, AM_ROOT, "y", 2)
+  am_commit(doc2, "Add y")
+
+  # Merge creates concurrent heads
+  am_merge(doc, doc2)
+
+  # A new commit after merge depends on both concurrent heads
+  am_put(doc, AM_ROOT, "z", 3)
+  am_commit(doc, "After merge")
+
+  history <- am_get_history(doc)
+  last_change <- history[[length(history)]]
+  deps <- am_change_deps(last_change)
+
+  expect_true(length(deps) >= 2)
+  for (dep in deps) {
+    expect_type(dep, "raw")
+    expect_equal(length(dep), 32)
+  }
+})
+
+# Change Introspection on Serialized Changes from get_changes ------------------
+
+test_that("am_get_changes() returns introspectable am_change objects", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "x", 1)
+  am_commit(doc, "First")
+  am_put(doc, AM_ROOT, "y", 2)
+  am_commit(doc, "Second")
+
+  changes <- am_get_changes(doc, NULL)
+  expect_length(changes, 2)
+
+  expect_equal(am_change_message(changes[[1]]), "First")
+  expect_equal(am_change_message(changes[[2]]), "Second")
+  expect_equal(am_change_seq(changes[[1]]), 1)
+  expect_equal(am_change_seq(changes[[2]]), 2)
+})
+
+test_that("am_get_last_local_change() returns introspectable am_change", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "key", "value")
+  am_commit(doc, "Local change")
+
+  change <- am_get_last_local_change(doc)
+  expect_s3_class(change, "am_change")
+  expect_equal(am_change_message(change), "Local change")
+  expect_type(am_change_hash(change), "raw")
+  expect_equal(am_change_actor_id(change), am_get_actor(doc))
+})
+
+test_that("am_get_change_by_hash() returns introspectable am_change", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "key", "value")
+  am_commit(doc, "By hash")
+
+  heads <- am_get_heads(doc)
+  change <- am_get_change_by_hash(doc, heads[[1]])
+  expect_s3_class(change, "am_change")
+  expect_equal(am_change_message(change), "By hash")
+  expect_equal(am_change_hash(change), heads[[1]])
+})
+
+test_that("am_get_changes_added() returns introspectable am_change objects", {
+  doc1 <- am_create()
+  am_put(doc1, AM_ROOT, "x", 1)
+  am_commit(doc1, "In doc1")
+
+  doc2 <- am_fork(doc1)
+  am_put(doc2, AM_ROOT, "y", 2)
+  am_commit(doc2, "In doc2")
+
+  added <- am_get_changes_added(doc1, doc2)
+  expect_length(added, 1)
+  expect_s3_class(added[[1]], "am_change")
+  expect_equal(am_change_message(added[[1]]), "In doc2")
+})
