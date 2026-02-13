@@ -629,9 +629,6 @@ test_that("am_fork() at specific head (single) works", {
   expect_null(am_get(fork_at_v1, AM_ROOT, "v2"))
 })
 
-# Actor ID Manipulation Tests --------------------------------------------------
-
-
 test_that("am_fork() with empty list works like NULL", {
   doc <- am_create()
   doc$key <- "value"
