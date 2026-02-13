@@ -41,6 +41,10 @@ This means multibyte characters like emoji count as single characters.
 doc <- am_create()
 am_put(doc, AM_ROOT, "content", am_text("Hello"))
 text_obj <- am_get(doc, AM_ROOT, "content")
+text_obj
+#> <Automerge Text>
+#> Length: 5 characters
+#> Content: "Hello" 
 
 # Efficiently update text by computing and applying diff in one step
 am_text_update(text_obj, "Hello", "Hello World")

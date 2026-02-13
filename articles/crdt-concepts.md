@@ -81,7 +81,7 @@ am_merge(doc1, doc2)
 
 # One value wins (deterministic, all replicas agree)
 doc1[["name"]]
-#> [1] "Alice Smith"
+#> [1] "Alice Johnson"
 
 am_close(doc1)
 am_close(doc2)
@@ -308,9 +308,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-02-13 11:22:57 UTC"
+#> [1] "2026-02-13 11:35:15 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-02-13 11:22:58 UTC"
+#> [1] "2026-02-13 11:35:15 UTC"
 
 am_close(doc15)
 am_close(doc16)

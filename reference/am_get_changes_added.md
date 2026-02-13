@@ -41,6 +41,12 @@ am_commit(doc2, "Add y")
 
 # Find changes in doc2 that aren't in doc1
 changes <- am_get_changes_added(doc1, doc2)
+changes
+#> [[1]]
+#> <pointer: 0x5616d6b84eb0>
+#> attr(,"class")
+#> [1] "am_change"
+#> 
 length(changes)  # 1 change
 #> [1] 1
 

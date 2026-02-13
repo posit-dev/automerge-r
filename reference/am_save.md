@@ -29,6 +29,8 @@ A raw vector containing the serialized document
 ``` r
 doc <- am_create()
 bytes <- am_save(doc)
+bytes
+#>  [1] 85 6f 4a 83 b8 1a 95 44 00 04 00 00 00 00
 
 # Save to file
 file <- tempfile()

@@ -24,6 +24,10 @@ Character string with the full text
 doc <- am_create()
 am_put(doc, AM_ROOT, "doc", am_text("Hello"))
 text_obj <- am_get(doc, AM_ROOT, "doc")
+text_obj
+#> <Automerge Text>
+#> Length: 5 characters
+#> Content: "Hello" 
 
 text <- am_text_content(text_obj)
 text  # "Hello"

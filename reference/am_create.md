@@ -38,6 +38,10 @@ its own document with `am_create()` and synchronize changes via
 ``` r
 # Create document with random actor ID
 doc1 <- am_create()
+doc1
+#> <Automerge Document>
+#> Actor: 3b544efca36a6a3a088d49decd081585 
+#> Root keys: 0 
 
 # Create with custom hex actor ID
 doc2 <- am_create("0123456789abcdef0123456789abcdef")

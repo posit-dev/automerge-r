@@ -37,6 +37,10 @@ doc <- am_create()
 
 am_put(doc, AM_ROOT, "user", list(name = "Bob", age = 25L))
 user <- am_get(doc, AM_ROOT, "user")
+user
+#> <Automerge Map>
+#> Length: 2 
+#> Keys: age, name
 
 user[["name"]]  # "Bob"
 #> [1] "Bob"

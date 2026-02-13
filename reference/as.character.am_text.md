@@ -31,6 +31,10 @@ doc <- am_create()
 
 am_put(doc, AM_ROOT, "notes", am_text("Hello World"))
 text_obj <- am_get(doc, AM_ROOT, "notes")
+text_obj
+#> <Automerge Text>
+#> Length: 11 characters
+#> Content: "Hello World" 
 
 text_string <- as.character(text_obj)
 text_string  # "Hello World"

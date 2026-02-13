@@ -61,6 +61,9 @@ am_put(doc, AM_ROOT, "active", TRUE)
 # Create nested list and retrieve it
 am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
 items <- am_get(doc, AM_ROOT, "items")
+items
+#> <Automerge List>
+#> Length: 0 
 
 am_close(doc)
 ```
