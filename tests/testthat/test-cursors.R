@@ -524,6 +524,30 @@ test_that("am_cursor_equal() works with string-serialized cursors", {
   expect_true(am_cursor_equal(cursor, restored))
 })
 
+# NULL/freed cursor pointer paths ----------------------------------------------
+
+test_that("am_cursor_to_bytes() errors on NULL/freed cursor pointer", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  cursor <- am_cursor(text_obj, 5)
+  freed_cursor <- unserialize(serialize(cursor, NULL))
+
+  expect_error(am_cursor_to_bytes(freed_cursor), "Invalid cursor pointer")
+})
+
+test_that("am_cursor_to_string() errors on NULL/freed cursor pointer", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("hello world"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  cursor <- am_cursor(text_obj, 5)
+  freed_cursor <- unserialize(serialize(cursor, NULL))
+
+  expect_error(am_cursor_to_string(freed_cursor), "Invalid cursor pointer")
+})
+
 # Print Methods ----------------------------------------------------------------
 
 test_that("print.am_cursor outputs expected text", {
