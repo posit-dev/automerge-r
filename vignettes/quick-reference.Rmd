@@ -48,13 +48,6 @@ actor <- am_get_actor(doc) # Get actor ID (raw bytes)
 actor_hex <- am_get_actor_hex(doc) # Get actor ID as hex string
 am_set_actor(doc, actor_hex) # Set actor ID (raw, hex, or NULL)
 
-# Actor ID (standalone)
-actor <- am_actor_id_random() # Generate random actor ID
-actor <- am_actor_id_from_string("0123...cdef") # From hex string
-actor <- am_actor_id_from_bytes(raw_bytes) # From/validate raw bytes
-hex <- am_actor_id_to_string(actor) # Convert to hex string
-bytes <- am_actor_id_to_bytes(actor) # Validate and return bytes
-
 # Fork/Merge
 doc2 <- am_fork(doc) # Create independent copy
 am_merge(doc, doc2) # Merge doc2 into doc1

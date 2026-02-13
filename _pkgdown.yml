@@ -22,16 +22,11 @@ reference:
 
   - title: "Actor Management"
     desc: >
-      Get, set, and manipulate actor IDs
+      Get and set actor IDs
     contents:
       - am_get_actor
       - am_get_actor_hex
       - am_set_actor
-      - am_actor_id_random
-      - am_actor_id_from_string
-      - am_actor_id_from_bytes
-      - am_actor_id_to_string
-      - am_actor_id_to_bytes
 
   - title: "Object Operations"
     desc: >

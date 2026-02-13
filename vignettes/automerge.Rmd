@@ -565,28 +565,6 @@ am_cursor_equal(cursor, restored)  # TRUE
 am_close(doc15)
 ```
 
-## Standalone Actor IDs
-
-Actor IDs can be created and converted without a document, useful for pre-assigning identities:
-
-```{r}
-# Generate a random actor ID
-actor <- am_actor_id_random()
-
-# Convert between bytes and hex string
-hex <- am_actor_id_to_string(actor)
-cat("Actor ID:", hex, "\n")
-
-restored_actor <- am_actor_id_from_string(hex)
-identical(actor, restored_actor)  # TRUE
-
-# Use with a new document
-doc16 <- am_create(actor)
-identical(am_get_actor(doc16), actor)  # TRUE
-
-am_close(doc16)
-```
-
 ## Next Steps
 
 - Learn about [CRDT Concepts](crdt-concepts.html) to understand the theory behind Automerge

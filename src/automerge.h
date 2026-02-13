@@ -60,11 +60,6 @@ SEXP C_am_rollback(SEXP doc_ptr);
 SEXP C_am_get_last_local_change(SEXP doc_ptr);
 SEXP C_am_get_change_by_hash(SEXP doc_ptr, SEXP hash);
 SEXP C_am_get_changes_added(SEXP doc1_ptr, SEXP doc2_ptr);
-SEXP C_am_actor_id_random(void);
-SEXP C_am_actor_id_from_string(SEXP hex);
-SEXP C_am_actor_id_from_bytes(SEXP bytes);
-SEXP C_am_actor_id_to_string(SEXP bytes);
-
 // Change introspection (changes.c)
 SEXP C_am_change_hash(SEXP change);
 SEXP C_am_change_message(SEXP change);

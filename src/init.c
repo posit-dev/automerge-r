@@ -13,11 +13,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"C_am_set_actor", (DL_FUNC) &C_am_set_actor, 2},
     {"C_am_commit", (DL_FUNC) &C_am_commit, 3},
     {"C_am_rollback", (DL_FUNC) &C_am_rollback, 1},
-    // Actor ID manipulation
-    {"C_am_actor_id_random", (DL_FUNC) &C_am_actor_id_random, 0},
-    {"C_am_actor_id_from_string", (DL_FUNC) &C_am_actor_id_from_string, 1},
-    {"C_am_actor_id_from_bytes", (DL_FUNC) &C_am_actor_id_from_bytes, 1},
-    {"C_am_actor_id_to_string", (DL_FUNC) &C_am_actor_id_to_string, 1},
     // Object operations
     {"C_am_put", (DL_FUNC) &C_am_put, 4},
     {"C_am_get", (DL_FUNC) &C_am_get, 3},
