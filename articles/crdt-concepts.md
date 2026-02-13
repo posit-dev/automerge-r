@@ -308,9 +308,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-02-13 11:39:13 UTC"
+#> [1] "2026-02-13 12:00:06 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-02-13 11:39:14 UTC"
+#> [1] "2026-02-13 12:00:06 UTC"
 
 am_close(doc15)
 am_close(doc16)
