@@ -6,7 +6,7 @@ object at a specific document state.
 ## Usage
 
 ``` r
-am_marks(obj)
+am_marks(obj, heads = NULL)
 ```
 
 ## Arguments
@@ -14,6 +14,12 @@ am_marks(obj)
 - obj:
 
   An Automerge object ID (must be a text object)
+
+- heads:
+
+  Optional list of change hashes (raw vectors) to query marks at a
+  historical document state. If `NULL` (default), uses the current
+  state.
 
 ## Value
 

@@ -1,10 +1,14 @@
 # Get document history
 
-Returns the full change history of the document as a list of change
-metadata. This provides a simpler interface than
-[`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md)
-for examining document history without needing to work with serialized
-changes directly.
+Returns the full change history of the document as a list of `am_change`
+objects. Use the change introspection functions
+([`am_change_hash()`](https://posit-dev.github.io/automerge-r/reference/am_change_hash.md),
+[`am_change_message()`](https://posit-dev.github.io/automerge-r/reference/am_change_message.md),
+[`am_change_time()`](https://posit-dev.github.io/automerge-r/reference/am_change_time.md),
+[`am_change_actor_id()`](https://posit-dev.github.io/automerge-r/reference/am_change_actor_id.md),
+[`am_change_seq()`](https://posit-dev.github.io/automerge-r/reference/am_change_seq.md),
+[`am_change_deps()`](https://posit-dev.github.io/automerge-r/reference/am_change_deps.md))
+to extract metadata from each change.
 
 ## Usage
 
@@ -20,14 +24,8 @@ am_get_history(doc)
 
 ## Value
 
-A list of raw vectors (serialized changes), one for each change in the
-document's history, in chronological order.
-
-## Details
-
-**Note**: A future implementation will add detailed change introspection
-functions to extract metadata like commit messages, timestamps, actor
-IDs, etc.
+A list of `am_change` objects, one for each change in the document's
+history, in chronological order.
 
 ## Examples
 

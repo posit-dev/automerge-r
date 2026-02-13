@@ -43,7 +43,7 @@ library(automerge)
 doc <- am_create()
 print(doc)
 #> <Automerge Document>
-#> Actor: e9a527c7e5db45e92fa1e5857525593f 
+#> Actor: 219f74160ef50361c17b105c480884c2 
 #> Root keys: 0
 ```
 
@@ -302,7 +302,7 @@ am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
-#> [1] "2026-02-12 19:39:11 UTC"
+#> [1] "2026-02-13 11:08:43 UTC"
 
 am_close(doc9)
 ```
@@ -431,6 +431,201 @@ peer2[["data2"]]
 
 am_close(peer1)
 am_close(peer2)
+```
+
+## Inspecting Document History
+
+Every change in an Automerge document carries metadata: who made it,
+when, what message was attached, and what it depended on. You can
+inspect this with the change introspection functions:
+
+``` r
+doc14 <- am_create()
+doc14[["title"]] <- "My Project"
+am_commit(doc14, "Initial setup", Sys.time())
+
+doc14[["version"]] <- "1.0"
+am_commit(doc14, "Set version", Sys.time())
+
+# Get the full history (returns am_change objects directly)
+history <- am_get_history(doc14)
+cat("Document has", length(history), "change(s)\n")
+#> Document has 2 change(s)
+
+# Inspect each change - no parsing needed
+for (i in seq_along(history)) {
+  cat(
+    sprintf(
+      "Change %d: seq=%g, message=%s\n",
+      i,
+      am_change_seq(history[[i]]),
+      am_change_message(history[[i]]) %||% "(none)"
+    )
+  )
+}
+#> Change 1: seq=1, message=Initial setup
+#> Change 2: seq=2, message=Set version
+
+# Extract many fields from the same change
+change <- history[[2]]
+am_change_hash(change)     # Unique 32-byte hash
+#>  [1] b6 c2 2b 01 d5 0b eb b3 07 78 69 bf ff e1 03 16 62 1c f4 3a db f9
+#> [23] 09 8d 03 dd 43 97 0a fd 2d 8b
+am_change_message(change)  # Commit message
+#> [1] "Set version"
+am_change_time(change)     # Timestamp
+#> [1] "2026-02-13 11:08:43 UTC"
+am_change_seq(change)      # Sequence number
+#> [1] 2
+am_change_actor_id(change) # Who made the change
+#>  [1] ad c7 f6 b4 8f 23 ff 27 8c d7 f5 d4 e5 a7 4e 9e
+am_change_deps(change)     # Parent change hashes
+#> [[1]]
+#>  [1] 5b 45 69 65 13 46 b3 78 3e 84 14 b8 df 3a 3e 65 5e ef fa d6 4c 89
+#> [23] 96 26 b0 b4 dc 4e 4d 90 c1 45
+
+am_close(doc14)
+```
+
+## Time Travel: Undoing Changes
+
+Since Automerge preserves every committed change, you can “time travel”
+back to any point in the document’s history. The key is
+`am_fork(doc, heads)`, which creates an independent copy of the document
+at a specific historical state.
+
+### Reverting to a Known Checkpoint
+
+If you know you might want to undo future changes, save the heads before
+making them:
+
+``` r
+doc_tt <- am_create()
+doc_tt[["title"]] <- "My Report"
+doc_tt[["status"]] <- "draft"
+am_commit(doc_tt, "Initial draft")
+
+# Save a checkpoint before making further changes
+checkpoint <- am_get_heads(doc_tt)
+
+# Continue editing
+doc_tt[["status"]] <- "review"
+doc_tt[["reviewer"]] <- "Bob"
+am_commit(doc_tt, "Send for review")
+
+doc_tt[["status"]] <- "rejected"
+am_commit(doc_tt, "Rejected by reviewer")
+
+# Oops - let's go back to the draft state
+draft <- am_fork(doc_tt, checkpoint)
+draft[["status"]]    # "draft"
+#> [1] "draft"
+draft[["reviewer"]]  # NULL - this key didn't exist yet
+#> NULL
+
+am_close(doc_tt)
+am_close(draft)
+```
+
+### Browsing History to Find the Right Point
+
+When you don’t have a saved checkpoint, browse the history to find the
+change you want to revert to:
+
+``` r
+doc_hist <- am_create()
+
+doc_hist[["data"]] <- list(x = 1, y = 2)
+am_commit(doc_hist, "Add initial data")
+
+doc_hist[["data"]] <- list(x = 1, y = 2, z = 3)
+am_commit(doc_hist, "Add z coordinate")
+
+doc_hist[["data"]] <- list(x = 10, y = 20, z = 30)
+am_commit(doc_hist, "Scale all values by 10")
+
+# Review the history
+history <- am_get_history(doc_hist)
+for (i in seq_along(history)) {
+  cat(sprintf("  [%d] %s\n", i, am_change_message(history[[i]])))
+}
+#>   [1] Add initial data
+#>   [2] Add z coordinate
+#>   [3] Scale all values by 10
+
+# We want to undo the scaling - go back to change 2
+target <- history[[2]]
+reverted <- am_fork(doc_hist, list(am_change_hash(target)))
+from_automerge(reverted)
+#> $data
+#> $data$x
+#> [1] 1
+#> 
+#> $data$y
+#> [1] 2
+#> 
+#> $data$z
+#> [1] 3
+
+am_close(doc_hist)
+am_close(reverted)
+```
+
+### Continuing from a Historical State
+
+A forked document is fully independent, so you can make new changes from
+the historical state without affecting the original:
+
+``` r
+doc_branch <- am_create()
+doc_branch[["text"]] <- am_text("Hello World")
+am_commit(doc_branch, "Initial text")
+
+# Save checkpoint
+v1_heads <- am_get_heads(doc_branch)
+
+text_obj <- am_get(doc_branch, AM_ROOT, "text")
+am_text_update(text_obj, "Hello World", "Hello World - CONFIDENTIAL")
+am_commit(doc_branch, "Add confidential marker")
+
+# Create a public version from v1 and take it in a different direction
+public <- am_fork(doc_branch, v1_heads)
+public_text <- am_get(public, AM_ROOT, "text")
+am_text_update(public_text, "Hello World", "Hello World - Public Draft")
+am_commit(public, "Public version")
+
+am_text_content(public_text) # "Hello World - Public Draft"
+#> [1] "Hello World - Public Draft"
+
+am_close(doc_branch)
+am_close(public)
+```
+
+## Cursor Persistence
+
+Cursors can be serialized and restored across R sessions, which is
+useful for saving editor state:
+
+``` r
+doc15 <- am_create()
+am_put(doc15, AM_ROOT, "content", am_text("Hello World"))
+text_obj <- am_get(doc15, AM_ROOT, "content")
+
+# Create a cursor and serialize it
+cursor <- am_cursor(text_obj, 5)
+cursor_bytes <- am_cursor_to_bytes(cursor)
+cursor_str <- am_cursor_to_string(cursor)
+
+# Later: restore the cursor
+restored <- am_cursor_from_bytes(cursor_bytes, text_obj)
+am_cursor_position(restored)  # 5
+#> [1] 5
+
+# Compare cursors
+am_cursor_equal(cursor, restored)  # TRUE
+#> [1] TRUE
+
+am_close(doc15)
 ```
 
 ## Next Steps

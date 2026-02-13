@@ -68,7 +68,7 @@
       <h1>Quick Reference</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/vignettes/quick-reference.Rmd" class="external-link"><code>vignettes/quick-reference.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/dev/vignettes/quick-reference.Rmd" class="external-link"><code>vignettes/quick-reference.Rmd</code></a></small>
       <div class="d-none name"><code>quick-reference.Rmd</code></div>
     </div>
 
@@ -103,7 +103,7 @@ documentation with <code>?function_name</code>.</p>
 <span><span class="va">bytes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_save.html">am_save</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span> <span class="co"># Save to bytes</span></span>
 <span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_load.html">am_load</a></span><span class="op">(</span><span class="va">bytes</span><span class="op">)</span> <span class="co"># Load from bytes</span></span>
 <span></span>
-<span><span class="co"># Actor ID</span></span>
+<span><span class="co"># Actor ID (document-bound)</span></span>
 <span><span class="va">actor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_actor.html">am_get_actor</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span> <span class="co"># Get actor ID (raw bytes)</span></span>
 <span><span class="va">actor_hex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_actor_hex.html">am_get_actor_hex</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span> <span class="co"># Get actor ID as hex string</span></span>
 <span><span class="fu"><a href="../reference/am_set_actor.html">am_set_actor</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">actor_hex</span><span class="op">)</span> <span class="co"># Set actor ID (raw, hex, or NULL)</span></span>
@@ -207,13 +207,24 @@ documentation with <code>?function_name</code>.</p>
 <span><span class="fu"><a href="../reference/am_text_update.html">am_text_update</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="va">old_text</span>, <span class="st">"Hello Universe"</span><span class="op">)</span> <span class="co"># Computes and applies diff</span></span>
 <span></span>
 <span><span class="co"># Cursors (stable positions)</span></span>
-<span><span class="va">cursor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_cursor.html">am_cursor</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">5</span><span class="op">)</span> <span class="co"># Create cursor at position 5</span></span>
+<span><span class="va">cursor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_cursor.html">am_cursor</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">5</span><span class="op">)</span> <span class="co"># Create at position 5</span></span>
 <span><span class="va">pos</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_cursor_position.html">am_cursor_position</a></span><span class="op">(</span><span class="va">cursor</span><span class="op">)</span> <span class="co"># Get current position</span></span>
+<span><span class="va">cursor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_cursor.html">am_cursor</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">5</span>, <span class="va">heads</span><span class="op">)</span> <span class="co"># Create at historical state</span></span>
+<span><span class="va">pos</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_cursor_position.html">am_cursor_position</a></span><span class="op">(</span><span class="va">cursor</span>, <span class="va">heads</span><span class="op">)</span> <span class="co"># Position at historical state</span></span>
+<span></span>
+<span><span class="co"># Cursor serialization (persistence across sessions)</span></span>
+<span><span class="va">bytes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_cursor_to_bytes.html">am_cursor_to_bytes</a></span><span class="op">(</span><span class="va">cursor</span><span class="op">)</span> <span class="co"># Serialize to raw</span></span>
+<span><span class="va">cursor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_cursor_from_bytes.html">am_cursor_from_bytes</a></span><span class="op">(</span><span class="va">bytes</span>, <span class="va">text_obj</span><span class="op">)</span> <span class="co"># Restore from raw</span></span>
+<span><span class="va">str</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_cursor_to_string.html">am_cursor_to_string</a></span><span class="op">(</span><span class="va">cursor</span><span class="op">)</span> <span class="co"># Serialize to string</span></span>
+<span><span class="va">cursor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_cursor_from_string.html">am_cursor_from_string</a></span><span class="op">(</span><span class="va">str</span>, <span class="va">text_obj</span><span class="op">)</span> <span class="co"># Restore from string</span></span>
+<span><span class="fu"><a href="../reference/am_cursor_equal.html">am_cursor_equal</a></span><span class="op">(</span><span class="va">cursor1</span>, <span class="va">cursor2</span><span class="op">)</span> <span class="co"># Compare cursors</span></span>
 <span></span>
 <span><span class="co"># Marks (formatting)</span></span>
 <span><span class="fu"><a href="../reference/am_mark.html">am_mark</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">0</span>, <span class="fl">5</span>, <span class="st">"bold"</span>, <span class="cn">TRUE</span>, expand <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span><span class="va">marks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_marks.html">am_marks</a></span><span class="op">(</span><span class="va">text_obj</span><span class="op">)</span> <span class="co"># Get all marks</span></span>
-<span><span class="va">marks_at</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_marks_at.html">am_marks_at</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">2</span><span class="op">)</span> <span class="co"># Marks at position 2</span></span></code></pre></div>
+<span><span class="va">marks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_marks.html">am_marks</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="va">heads</span><span class="op">)</span> <span class="co"># Marks at historical state</span></span>
+<span><span class="va">marks_at</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_marks_at.html">am_marks_at</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">2</span><span class="op">)</span> <span class="co"># Marks at position 2</span></span>
+<span><span class="va">marks_at</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_marks_at.html">am_marks_at</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">2</span>, <span class="va">heads</span><span class="op">)</span> <span class="co"># At position, historical state</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="value-types">Value Types<a class="anchor" aria-label="anchor" href="#value-types"></a>
@@ -295,18 +306,37 @@ documentation with <code>?function_name</code>.</p>
 <h3 id="history-changes">History &amp; Changes<a class="anchor" aria-label="anchor" href="#history-changes"></a>
 </h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Get heads</span></span>
+<code class="sourceCode R"><span><span class="co"># Get heads (fingerprint of current state)</span></span>
 <span><span class="va">heads</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_heads.html">am_get_heads</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Get changes</span></span>
-<span><span class="va">changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span>, <span class="cn">NULL</span><span class="op">)</span> <span class="co"># All changes</span></span>
-<span><span class="va">changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">heads</span><span class="op">)</span> <span class="co"># Since specific heads</span></span>
+<span><span class="co"># Get changes (returns am_change objects)</span></span>
+<span><span class="va">changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span>, <span class="cn">NULL</span><span class="op">)</span>  <span class="co"># All changes</span></span>
+<span><span class="va">changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">heads</span><span class="op">)</span> <span class="co"># Changes since heads (i.e. none)</span></span>
+<span></span>
+<span><span class="co"># Typical pattern: remember a checkpoint, then get new changes later</span></span>
+<span><span class="va">checkpoint</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_heads.html">am_get_heads</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"new_key"</span>, <span class="st">"new_value"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc</span>, <span class="st">"Add new_key"</span><span class="op">)</span></span>
+<span><span class="va">new_changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">checkpoint</span><span class="op">)</span> <span class="co"># Only the new commit</span></span>
 <span></span>
 <span><span class="co"># Apply changes</span></span>
 <span><span class="fu"><a href="../reference/am_apply_changes.html">am_apply_changes</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">changes</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Full history</span></span>
-<span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_history.html">am_get_history</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Full history (returns am_change objects)</span></span>
+<span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_history.html">am_get_history</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Change introspection</span></span>
+<span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">hash</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># 32-byte hash</span></span>
+<span><span class="va">msg</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_message.html">am_change_message</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Commit message or NULL</span></span>
+<span><span class="va">time</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># POSIXct timestamp</span></span>
+<span><span class="va">actor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Actor ID (raw bytes)</span></span>
+<span><span class="va">seq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_seq.html">am_change_seq</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Sequence number (double)</span></span>
+<span><span class="va">deps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># List of parent hashes</span></span>
+<span><span class="va">bytes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_to_bytes.html">am_change_to_bytes</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Serialize to raw</span></span>
+<span></span>
+<span><span class="co"># Deserialize from raw bytes (for stored changes)</span></span>
+<span><span class="va">change</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_from_bytes.html">am_change_from_bytes</a></span><span class="op">(</span><span class="va">bytes</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="conversion">Conversion<a class="anchor" aria-label="anchor" href="#conversion"></a>

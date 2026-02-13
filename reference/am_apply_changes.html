@@ -43,7 +43,7 @@ over a custom network protocol."><script src="https://cdn.jsdelivr.net/gh/posit-
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Apply changes to a document</h1>
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/R/sync.R" class="external-link"><code>R/sync.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/dev/R/sync.R" class="external-link"><code>R/sync.R</code></a></small>
       <div class="d-none name"><code>am_apply_changes.Rd</code></div>
     </div>
 
@@ -67,7 +67,8 @@ over a custom network protocol.</p>
 
 
 <dt id="arg-changes">changes<a class="anchor" aria-label="anchor" href="#arg-changes"></a></dt>
-<dd><p>A list of raw vectors (serialized changes) from <code><a href="am_get_changes.html">am_get_changes()</a></code></p></dd>
+<dd><p>A list of <code>am_change</code> objects (from <code><a href="am_get_changes.html">am_get_changes()</a></code>,
+<code><a href="am_get_history.html">am_get_history()</a></code>, or <code><a href="am_change_from_bytes.html">am_change_from_bytes()</a></code>)</p></dd>
 
 </dl></div>
     <div class="section level2">

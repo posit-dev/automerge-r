@@ -7,7 +7,7 @@ of converting all marks to R objects.
 ## Usage
 
 ``` r
-am_marks_at(obj, position)
+am_marks_at(obj, position, heads = NULL)
 ```
 
 ## Arguments
@@ -21,6 +21,12 @@ am_marks_at(obj, position)
   Integer position (0-based inter-character position) to query. See
   [`am_mark()`](https://posit-dev.github.io/automerge-r/reference/am_mark.md)
   for indexing details.
+
+- heads:
+
+  Optional list of change hashes (raw vectors) to query marks at a
+  historical document state. If `NULL` (default), uses the current
+  state.
 
 ## Value
 

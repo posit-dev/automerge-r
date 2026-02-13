@@ -17,8 +17,7 @@ am_get_last_local_change(doc)
 
 ## Value
 
-A raw vector containing the serialized change, or `NULL` if no local
-changes have been made.
+An `am_change` object, or `NULL` if no local changes have been made.
 
 ## Examples
 
@@ -35,8 +34,8 @@ am_commit(doc, "Add key")
 
 # Now we have a local change
 change <- am_get_last_local_change(doc)
-str(change)  # Raw vector
-#>  raw [1:70] 85 6f 4a 83 ...
+am_change_message(change)  # "Add key"
+#> [1] "Add key"
 
 am_close(doc)
 ```

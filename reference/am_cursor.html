@@ -45,7 +45,7 @@ editing scenarios."><script src="https://cdn.jsdelivr.net/gh/posit-dev/supported
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Create a cursor at a position in a text object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/R/cursors.R" class="external-link"><code>R/cursors.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/dev/R/cursors.R" class="external-link"><code>R/cursors.R</code></a></small>
       <div class="d-none name"><code>am_cursor.Rd</code></div>
     </div>
 
@@ -58,7 +58,7 @@ editing scenarios.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">am_cursor</span><span class="op">(</span><span class="va">obj</span>, <span class="va">position</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">am_cursor</span><span class="op">(</span><span class="va">obj</span>, <span class="va">position</span>, heads <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -71,6 +71,11 @@ editing scenarios.</p>
 
 <dt id="arg-position">position<a class="anchor" aria-label="anchor" href="#arg-position"></a></dt>
 <dd><p>Integer position in the text (0-based inter-character position)</p></dd>
+
+
+<dt id="arg-heads">heads<a class="anchor" aria-label="anchor" href="#arg-heads"></a></dt>
+<dd><p>Optional list of change hashes (raw vectors) to create the cursor
+at a historical document state. If <code>NULL</code> (default), uses the current state.</p></dd>
 
 </dl></div>
     <div class="section level2">

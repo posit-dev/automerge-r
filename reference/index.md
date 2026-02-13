@@ -23,7 +23,7 @@ Create, save, load, and manage Automerge documents
 
 ## Actor Management
 
-Get and set document actor IDs
+Get and set actor IDs
 
 - [`am_get_actor()`](https://posit-dev.github.io/automerge-r/reference/am_get_actor.md)
   : Get the actor ID of a document
@@ -77,12 +77,22 @@ Create and increment CRDT counters
 
 ## Cursors and Marks
 
-Stable positions and text formatting
+Stable positions, text formatting, and cursor serialization
 
 - [`am_cursor()`](https://posit-dev.github.io/automerge-r/reference/am_cursor.md)
   : Create a cursor at a position in a text object
 - [`am_cursor_position()`](https://posit-dev.github.io/automerge-r/reference/am_cursor_position.md)
   : Get the current position of a cursor
+- [`am_cursor_to_bytes()`](https://posit-dev.github.io/automerge-r/reference/am_cursor_to_bytes.md)
+  : Serialize a cursor to bytes
+- [`am_cursor_from_bytes()`](https://posit-dev.github.io/automerge-r/reference/am_cursor_from_bytes.md)
+  : Restore a cursor from bytes
+- [`am_cursor_to_string()`](https://posit-dev.github.io/automerge-r/reference/am_cursor_to_string.md)
+  : Serialize a cursor to a string
+- [`am_cursor_from_string()`](https://posit-dev.github.io/automerge-r/reference/am_cursor_from_string.md)
+  : Restore a cursor from a string
+- [`am_cursor_equal()`](https://posit-dev.github.io/automerge-r/reference/am_cursor_equal.md)
+  : Test equality of two cursors
 - [`am_mark()`](https://posit-dev.github.io/automerge-r/reference/am_mark.md)
   : Create a mark on a text range
 - [`am_marks()`](https://posit-dev.github.io/automerge-r/reference/am_marks.md)
@@ -105,7 +115,7 @@ Sync documents across peers
 
 ## History and Changes
 
-Track document history and changes
+Track document history and inspect changes
 
 - [`am_get_heads()`](https://posit-dev.github.io/automerge-r/reference/am_get_heads.md)
   : Get the current heads of a document
@@ -121,6 +131,22 @@ Track document history and changes
   : Get a specific change by its hash
 - [`am_get_changes_added()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes_added.md)
   : Get changes in one document that are not in another
+- [`am_change_from_bytes()`](https://posit-dev.github.io/automerge-r/reference/am_change_from_bytes.md)
+  : Parse a serialized change from raw bytes
+- [`am_change_to_bytes()`](https://posit-dev.github.io/automerge-r/reference/am_change_to_bytes.md)
+  : Serialize a change to raw bytes
+- [`am_change_hash()`](https://posit-dev.github.io/automerge-r/reference/am_change_hash.md)
+  : Get the hash of a change
+- [`am_change_message()`](https://posit-dev.github.io/automerge-r/reference/am_change_message.md)
+  : Get the commit message of a change
+- [`am_change_time()`](https://posit-dev.github.io/automerge-r/reference/am_change_time.md)
+  : Get the timestamp of a change
+- [`am_change_actor_id()`](https://posit-dev.github.io/automerge-r/reference/am_change_actor_id.md)
+  : Get the actor ID of a change
+- [`am_change_seq()`](https://posit-dev.github.io/automerge-r/reference/am_change_seq.md)
+  : Get the sequence number of a change
+- [`am_change_deps()`](https://posit-dev.github.io/automerge-r/reference/am_change_deps.md)
+  : Get the dependencies of a change
 
 ## Type Constructors
 

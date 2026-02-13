@@ -4,7 +4,7 @@ Retrieves a change from the document's history by its unique hash
 identifier. The hash is typically obtained from
 [`am_get_heads()`](https://posit-dev.github.io/automerge-r/reference/am_get_heads.md)
 or
-[`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md).
+[`am_change_hash()`](https://posit-dev.github.io/automerge-r/reference/am_change_hash.md).
 
 ## Usage
 
@@ -24,8 +24,8 @@ am_get_change_by_hash(doc, hash)
 
 ## Value
 
-A raw vector containing the serialized change, or `NULL` if the change
-hash is not found in the document.
+An `am_change` object, or `NULL` if the change hash is not found in the
+document.
 
 ## Examples
 
@@ -40,8 +40,8 @@ head_hash <- heads[[1]]
 
 # Retrieve the change by its hash
 change <- am_get_change_by_hash(doc, head_hash)
-str(change)  # Raw vector
-#>  raw [1:70] 85 6f 4a 83 ...
+am_change_message(change)  # "Add key"
+#> [1] "Add key"
 
 am_close(doc)
 ```

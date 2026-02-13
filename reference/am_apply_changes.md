@@ -19,8 +19,11 @@ am_apply_changes(doc, changes)
 
 - changes:
 
-  A list of raw vectors (serialized changes) from
-  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md)
+  A list of `am_change` objects (from
+  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md),
+  [`am_get_history()`](https://posit-dev.github.io/automerge-r/reference/am_get_history.md),
+  or
+  [`am_change_from_bytes()`](https://posit-dev.github.io/automerge-r/reference/am_change_from_bytes.md))
 
 ## Value
 

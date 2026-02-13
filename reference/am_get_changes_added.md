@@ -23,9 +23,9 @@ am_get_changes_added(doc1, doc2)
 
 ## Value
 
-A list of raw vectors, where each vector is a serialized change that
-exists in `doc2` but not in `doc1`. Returns an empty list if `doc1`
-already contains all changes from `doc2`.
+A list of `am_change` objects representing changes that exist in `doc2`
+but not in `doc1`. Returns an empty list if `doc1` already contains all
+changes from `doc2`.
 
 ## Examples
 

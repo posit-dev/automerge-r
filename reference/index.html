@@ -109,7 +109,7 @@
       </dl></div><div class="section level2">
       <h2 id="actor-management">Actor Management<a class="anchor" aria-label="anchor" href="#actor-management"></a></h2>
 
-      <div class="section-desc"><p>Get and set document actor IDs</p></div>
+      <div class="section-desc"><p>Get and set actor IDs</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -264,7 +264,7 @@
       </dl></div><div class="section level2">
       <h2 id="cursors-and-marks">Cursors and Marks<a class="anchor" aria-label="anchor" href="#cursors-and-marks"></a></h2>
 
-      <div class="section-desc"><p>Stable positions and text formatting</p></div>
+      <div class="section-desc"><p>Stable positions, text formatting, and cursor serialization</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -284,6 +284,41 @@
 
         </dt>
         <dd>Get the current position of a cursor</dd>
+
+        <dt>
+
+          <code><a href="am_cursor_to_bytes.html">am_cursor_to_bytes()</a></code>
+
+        </dt>
+        <dd>Serialize a cursor to bytes</dd>
+
+        <dt>
+
+          <code><a href="am_cursor_from_bytes.html">am_cursor_from_bytes()</a></code>
+
+        </dt>
+        <dd>Restore a cursor from bytes</dd>
+
+        <dt>
+
+          <code><a href="am_cursor_to_string.html">am_cursor_to_string()</a></code>
+
+        </dt>
+        <dd>Serialize a cursor to a string</dd>
+
+        <dt>
+
+          <code><a href="am_cursor_from_string.html">am_cursor_from_string()</a></code>
+
+        </dt>
+        <dd>Restore a cursor from a string</dd>
+
+        <dt>
+
+          <code><a href="am_cursor_equal.html">am_cursor_equal()</a></code>
+
+        </dt>
+        <dd>Test equality of two cursors</dd>
 
         <dt>
 
@@ -345,7 +380,7 @@
       </dl></div><div class="section level2">
       <h2 id="history-and-changes">History and Changes<a class="anchor" aria-label="anchor" href="#history-and-changes"></a></h2>
 
-      <div class="section-desc"><p>Track document history and changes</p></div>
+      <div class="section-desc"><p>Track document history and inspect changes</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -400,6 +435,62 @@
 
         </dt>
         <dd>Get changes in one document that are not in another</dd>
+
+        <dt>
+
+          <code><a href="am_change_from_bytes.html">am_change_from_bytes()</a></code>
+
+        </dt>
+        <dd>Parse a serialized change from raw bytes</dd>
+
+        <dt>
+
+          <code><a href="am_change_to_bytes.html">am_change_to_bytes()</a></code>
+
+        </dt>
+        <dd>Serialize a change to raw bytes</dd>
+
+        <dt>
+
+          <code><a href="am_change_hash.html">am_change_hash()</a></code>
+
+        </dt>
+        <dd>Get the hash of a change</dd>
+
+        <dt>
+
+          <code><a href="am_change_message.html">am_change_message()</a></code>
+
+        </dt>
+        <dd>Get the commit message of a change</dd>
+
+        <dt>
+
+          <code><a href="am_change_time.html">am_change_time()</a></code>
+
+        </dt>
+        <dd>Get the timestamp of a change</dd>
+
+        <dt>
+
+          <code><a href="am_change_actor_id.html">am_change_actor_id()</a></code>
+
+        </dt>
+        <dd>Get the actor ID of a change</dd>
+
+        <dt>
+
+          <code><a href="am_change_seq.html">am_change_seq()</a></code>
+
+        </dt>
+        <dd>Get the sequence number of a change</dd>
+
+        <dt>
+
+          <code><a href="am_change_deps.html">am_change_deps()</a></code>
+
+        </dt>
+        <dd>Get the dependencies of a change</dd>
       </dl></div><div class="section level2">
       <h2 id="type-constructors">Type Constructors<a class="anchor" aria-label="anchor" href="#type-constructors"></a></h2>
 

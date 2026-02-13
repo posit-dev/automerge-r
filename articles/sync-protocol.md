@@ -78,7 +78,7 @@ am_merge(target, source)
 
 # Target now has source's changes
 target[["version"]]
-#> [1] "1.0"
+#> [1] "2.0"
 
 # Source is unchanged
 names(source)
@@ -217,18 +217,20 @@ peer_b[["v3"]]
 ### Saving Changes to Files
 
 ``` r
-# Save individual changes to files
+# Save individual changes to files (serialize to raw bytes first)
 temp_dir <- tempdir()
 for (i in seq_along(changes)) {
   change_file <- file.path(temp_dir, sprintf("change_%03d.bin", i))
-  writeBin(changes[[i]], change_file)
+  writeBin(am_change_to_bytes(changes[[i]]), change_file)
 }
 
-# Later: load and apply changes
+# Later: load changes and restore as am_change objects
 loaded_changes <- list()
 for (i in seq_along(changes)) {
   change_file <- file.path(temp_dir, sprintf("change_%03d.bin", i))
-  loaded_changes[[i]] <- readBin(change_file, "raw", file.size(change_file))
+  loaded_changes[[i]] <- am_change_from_bytes(
+    readBin(change_file, "raw", file.size(change_file))
+  )
 }
 
 # Apply loaded changes to a peer
@@ -280,6 +282,12 @@ Heads are useful for:
 - Tracking which changes you’ve already seen
 - Computing incremental updates
 - Detecting whether documents have diverged
+- Querying historical document states (pass `heads` to
+  [`am_cursor()`](https://posit-dev.github.io/automerge-r/reference/am_cursor.md),
+  [`am_cursor_position()`](https://posit-dev.github.io/automerge-r/reference/am_cursor_position.md),
+  [`am_marks()`](https://posit-dev.github.io/automerge-r/reference/am_marks.md),
+  or
+  [`am_marks_at()`](https://posit-dev.github.io/automerge-r/reference/am_marks_at.md))
 
 ### Working with History
 
@@ -289,14 +297,37 @@ history <- am_get_history(doc_main)
 length(history)
 #> [1] 2
 
-# History includes all commits ever made
-# Each entry contains metadata about a commit
+# Inspect individual changes (am_change objects returned directly)
+for (i in seq_along(history)) {
+  cat(sprintf(
+    "  [%d] seq=%g message=%s\n",
+    i,
+    am_change_seq(history[[i]]),
+    am_change_message(history[[i]]) %||% "(none)"
+  ))
+}
+#>   [1] seq=1 message=Initial version
+#>   [2] seq=2 message=Version 2
+
+# Extract multiple fields from the same change
+change <- history[[2]]
+am_change_hash(change)     # Unique hash
+#>  [1] 22 f9 e8 91 55 6b d0 c0 f2 4a 13 cb ba 8c 5b cd 8b 13 f4 0a 4c 38
+#> [23] b3 bb 97 97 ab 8f 40 0c f6 73
+am_change_actor_id(change) # Who made this change
+#>  [1] 37 9a 26 c1 de 40 e9 02 4a c4 68 9e 56 b0 8a c8
+am_change_time(change)     # When
+#> [1] "1970-01-01 UTC"
+am_change_deps(change)     # Parent changes
+#> [[1]]
+#>  [1] 8d ab 45 67 4f 32 28 50 a7 16 c1 8f 2f 5e 98 34 dc 43 d1 10 7f a8
+#> [23] 7e e5 2a 46 64 25 5b 5c 1b 9a
 
 # Get changes between two points in history
 changes_since_v1 <- am_get_changes(doc_main, heads_v1)
 str(changes_since_v1)
 #> List of 1
-#>  $ : raw [1:126] 85 6f 4a 83 ...
+#>  $ :Class 'am_change' <externalptr>
 
 am_close(doc_main)
 ```
@@ -383,10 +414,10 @@ y_changes <- am_get_changes(peer_y, common_heads)
 
 str(x_changes)
 #> List of 1
-#>  $ : raw [1:109] 85 6f 4a 83 ...
+#>  $ :Class 'am_change' <externalptr>
 str(y_changes)
 #> List of 1
-#>  $ : raw [1:109] 85 6f 4a 83 ...
+#>  $ :Class 'am_change' <externalptr>
 
 # Sync to merge divergent histories
 rounds <- am_sync(peer_x, peer_y)

@@ -81,7 +81,7 @@ am_merge(doc1, doc2)
 
 # One value wins (deterministic, all replicas agree)
 doc1[["name"]]
-#> [1] "Alice Johnson"
+#> [1] "Alice Smith"
 
 am_close(doc1)
 am_close(doc2)
@@ -162,8 +162,8 @@ for (i in seq_len(am_length(doc5, items5))) {
   print(am_get(doc5, items5, i))
 }
 #> [1] "A"
-#> [1] "B1"
 #> [1] "B2"
+#> [1] "B1"
 #> [1] "C"
 
 am_close(doc5)
@@ -308,9 +308,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-02-12 19:39:14 UTC"
+#> [1] "2026-02-13 11:08:47 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-02-12 19:39:15 UTC"
+#> [1] "2026-02-13 11:08:47 UTC"
 
 am_close(doc15)
 am_close(doc16)
@@ -340,12 +340,29 @@ am_text_splice(text17, 0, 0, "Hi ")
 new_pos <- am_cursor_position(cursor)
 new_pos # Cursor moved with text from original position 6
 #> [1] 9
+```
+
+Cursors can be serialized for persistence across sessions, and compared
+for equality:
+
+``` r
+# Serialize to bytes or string
+cursor_bytes <- am_cursor_to_bytes(cursor)
+cursor_str <- am_cursor_to_string(cursor)
+
+# Restore later (requires the text object)
+restored <- am_cursor_from_bytes(cursor_bytes, text17)
+am_cursor_position(restored)
+#> [1] 9
+
+am_cursor_equal(cursor, restored) # TRUE
+#> [1] TRUE
 
 am_close(doc17)
 ```
 
 **When to use**: Text editors (cursor tracking), collaborative
-commenting (position references).
+commenting (position references), saving editor state across sessions.
 
 ### Marks (Text Formatting)
 

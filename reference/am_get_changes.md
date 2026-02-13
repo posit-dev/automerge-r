@@ -24,12 +24,16 @@ am_get_changes(doc, heads = NULL)
 
 ## Value
 
-A list of raw vectors, each containing a serialized change.
+A list of `am_change` objects.
 
 ## Details
 
-Changes are returned as serialized raw vectors that can be transmitted
-over the network and applied to other documents using
+Changes are returned as `am_change` objects that can be inspected with
+[`am_change_hash()`](https://posit-dev.github.io/automerge-r/reference/am_change_hash.md),
+[`am_change_message()`](https://posit-dev.github.io/automerge-r/reference/am_change_message.md),
+etc., serialized with
+[`am_change_to_bytes()`](https://posit-dev.github.io/automerge-r/reference/am_change_to_bytes.md),
+or applied to other documents using
 [`am_apply_changes()`](https://posit-dev.github.io/automerge-r/reference/am_apply_changes.md).
 
 ## Examples

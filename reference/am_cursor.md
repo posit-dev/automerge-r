@@ -8,7 +8,7 @@ editing scenarios.
 ## Usage
 
 ``` r
-am_cursor(obj, position)
+am_cursor(obj, position, heads = NULL)
 ```
 
 ## Arguments
@@ -20,6 +20,12 @@ am_cursor(obj, position)
 - position:
 
   Integer position in the text (0-based inter-character position)
+
+- heads:
+
+  Optional list of change hashes (raw vectors) to create the cursor at a
+  historical document state. If `NULL` (default), uses the current
+  state.
 
 ## Value
 

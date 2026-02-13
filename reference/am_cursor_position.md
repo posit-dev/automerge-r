@@ -8,7 +8,7 @@ was created for, so you only need to pass the cursor itself.
 ## Usage
 
 ``` r
-am_cursor_position(cursor)
+am_cursor_position(cursor, heads = NULL)
 ```
 
 ## Arguments
@@ -17,6 +17,12 @@ am_cursor_position(cursor)
 
   An `am_cursor` object created by
   [`am_cursor()`](https://posit-dev.github.io/automerge-r/reference/am_cursor.md)
+
+- heads:
+
+  Optional list of change hashes (raw vectors) to query cursor position
+  at a historical document state. If `NULL` (default), uses the current
+  state.
 
 ## Value
 
