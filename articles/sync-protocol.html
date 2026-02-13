@@ -149,7 +149,7 @@ changes back:</p>
 <span></span>
 <span><span class="co"># Target now has source's changes</span></span>
 <span><span class="va">target</span><span class="op">[[</span><span class="st">"version"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "1.0"</span></span>
+<span><span class="co">#&gt; [1] "2.0"</span></span>
 <span></span>
 <span><span class="co"># Source is unchanged</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">source</span><span class="op">)</span></span>
@@ -215,9 +215,9 @@ API.</p>
 <span><span class="va">round</span></span>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="va">peer3</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer4"</span></span>
+<span><span class="co">#&gt; [1] "peer3"</span></span>
 <span><span class="va">peer4</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer4"</span></span>
+<span><span class="co">#&gt; [1] "peer3"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer4</span><span class="op">)</span></span></code></pre></div>
@@ -388,16 +388,16 @@ graph.</p>
 <span><span class="co"># Extract multiple fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique hash</span></span>
-<span><span class="co">#&gt;  [1] ad 3e 9c f0 f0 a8 0d 4c 7a 80 c9 db d3 7a 82 d8 d0 0e cf 94 13 42</span></span>
-<span><span class="co">#&gt; [23] 5a 6a 63 45 72 f6 a3 69 a2 e8</span></span>
+<span><span class="co">#&gt;  [1] bd 2c 7d 50 f5 a1 fb 3f 08 fb d0 af d8 bb 8d ac 06 c9 61 bb 07 2b</span></span>
+<span><span class="co">#&gt; [23] aa ad 2e e5 b3 a1 e0 95 e0 49</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made this change</span></span>
-<span><span class="co">#&gt;  [1] c9 29 fe da f3 3f aa ca d3 5e 22 a9 ff c8 16 37</span></span>
+<span><span class="co">#&gt;  [1] e0 2e 4a cc 77 4c 41 c7 a9 c1 20 f1 62 65 69 57</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># When</span></span>
 <span><span class="co">#&gt; [1] "1970-01-01 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent changes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] 25 3c 4c 7c c5 40 74 fe b5 d5 c9 be 52 68 95 3d f4 2b 2a 0a b1 03</span></span>
-<span><span class="co">#&gt; [23] 3d dd 55 1d 63 47 4e 2c 01 27</span></span>
+<span><span class="co">#&gt;  [1] cc 87 2a 8c 7b 40 b9 8e f3 ef 5b 45 7f 86 f6 fa 3e e1 3d d4 b2 ab</span></span>
+<span><span class="co">#&gt; [23] 6f 36 fb 38 7e e6 32 d2 72 8a</span></span>
 <span></span>
 <span><span class="co"># Get changes between two points in history</span></span>
 <span><span class="va">changes_since_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc_main</span>, <span class="va">heads_v1</span><span class="op">)</span></span>
@@ -542,7 +542,7 @@ graph.</p>
 <span></span>
 <span><span class="co"># Status: Deterministic conflict resolution (one value wins)</span></span>
 <span><span class="va">editor1</span><span class="op">[[</span><span class="st">"status"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "review"</span></span>
+<span><span class="co">#&gt; [1] "published"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">base</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">editor1</span><span class="op">)</span></span>

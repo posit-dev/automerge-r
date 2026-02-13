@@ -40,7 +40,7 @@ its own document with `am_create()` and synchronize changes via
 doc1 <- am_create()
 doc1
 #> <Automerge Document>
-#> Actor: e13028c57c460600b2c1a1275d92c87b 
+#> Actor: 5eb199b138b32a6dcaa590ad9cde63d4 
 #> Root keys: 0 
 
 # Create with custom hex actor ID
