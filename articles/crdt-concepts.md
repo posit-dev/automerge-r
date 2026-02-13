@@ -249,7 +249,7 @@ am_text_splice(text12, 5, 0, " Everyone")
 am_merge(doc11, doc12)
 
 am_text_content(text11)
-#> [1] "Hello World Everyone"
+#> [1] "Hello Everyone World"
 
 am_close(doc11)
 am_close(doc12)
@@ -308,9 +308,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-02-13 12:00:06 UTC"
+#> [1] "2026-02-13 13:38:21 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-02-13 12:00:06 UTC"
+#> [1] "2026-02-13 13:38:21 UTC"
 
 am_close(doc15)
 am_close(doc16)
