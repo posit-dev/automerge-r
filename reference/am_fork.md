@@ -33,7 +33,7 @@ doc1 <- am_create()
 doc2 <- am_fork(doc1)
 doc2
 #> <Automerge Document>
-#> Actor: 68b784e74ca26fff6cee986335fb10f9 
+#> Actor: 5eb50513bc953b5e6d20298b8dfb449b 
 #> Root keys: 0 
 
 # Now doc1 and doc2 can diverge independently

@@ -78,7 +78,7 @@ am_merge(target, source)
 
 # Target now has source's changes
 target[["version"]]
-#> [1] "2.0"
+#> [1] "1.0"
 
 # Source is unchanged
 names(source)
@@ -312,16 +312,16 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] bd 2c 7d 50 f5 a1 fb 3f 08 fb d0 af d8 bb 8d ac 06 c9 61 bb 07 2b
-#> [23] aa ad 2e e5 b3 a1 e0 95 e0 49
+#>  [1] 9c 94 f7 1b 22 14 cc f2 1e c4 ab 80 14 70 f3 78 77 90 03 bd dc 3f
+#> [23] 42 ae be f6 58 e5 19 e4 dd b6
 am_change_actor_id(change) # Who made this change
-#>  [1] e0 2e 4a cc 77 4c 41 c7 a9 c1 20 f1 62 65 69 57
+#>  [1] 32 8f 44 79 f1 7e d6 81 6b 70 39 68 6e d8 ee 3a
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] cc 87 2a 8c 7b 40 b9 8e f3 ef 5b 45 7f 86 f6 fa 3e e1 3d d4 b2 ab
-#> [23] 6f 36 fb 38 7e e6 32 d2 72 8a
+#>  [1] 02 f9 2e db d7 25 dc c9 30 0d 1a 96 71 59 67 c3 86 c2 4f 4c 5f 60
+#> [23] 6a 3b 0a 5e b0 2a f9 b7 d9 03
 
 # Get changes between two points in history
 changes_since_v1 <- am_get_changes(doc_main, heads_v1)
