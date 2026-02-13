@@ -43,7 +43,7 @@ library(automerge)
 doc <- am_create()
 print(doc)
 #> <Automerge Document>
-#> Actor: 9c681a6120a0d93ef35b485957e3f596 
+#> Actor: 3f7620b110abe9b34e3725124963a8e4 
 #> Root keys: 0
 ```
 
@@ -302,7 +302,7 @@ am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
-#> [1] "2026-02-13 11:35:11 UTC"
+#> [1] "2026-02-13 11:39:09 UTC"
 
 am_close(doc9)
 ```
@@ -469,20 +469,20 @@ for (i in seq_along(history)) {
 # Extract many fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique 32-byte hash
-#>  [1] 2c 1b c1 3a 4f 0b 30 07 6a 88 c5 b2 7a e0 e7 7b 69 72 85 c8 62 f3
-#> [23] b3 8a e1 2d 13 5f 1f c8 5e a0
+#>  [1] 0d 4a 37 7a 2d 74 80 07 79 91 fb dc 0b 58 66 68 23 5e 80 85 99 a4
+#> [23] d1 e1 0c 12 b8 09 4a bc 85 94
 am_change_message(change)  # Commit message
 #> [1] "Set version"
 am_change_time(change)     # Timestamp
-#> [1] "2026-02-13 11:35:11 UTC"
+#> [1] "2026-02-13 11:39:10 UTC"
 am_change_seq(change)      # Sequence number
 #> [1] 2
 am_change_actor_id(change) # Who made the change
-#>  [1] b7 f2 a1 ff ff 33 f8 7f e5 31 94 ad 60 1e fa c2
+#>  [1] 3b 15 cc e1 e5 f2 22 67 b4 eb aa 4d e4 ba 75 6c
 am_change_deps(change)     # Parent change hashes
 #> [[1]]
-#>  [1] 50 09 49 1f ea cb 07 95 06 1a 7b 21 2a e0 eb d4 1b 3a f7 f3 4f 74
-#> [23] 3c 5c 9d 34 af 42 45 dd 00 48
+#>  [1] 75 0b d4 2b 66 81 32 61 06 bc 44 4b 9f 7b 0c 0d 0e a3 b8 36 d5 b1
+#> [23] 2a 1b 97 76 ce 8a c3 ad ed d5
 
 am_close(doc14)
 ```
