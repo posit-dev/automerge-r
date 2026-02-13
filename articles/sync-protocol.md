@@ -78,7 +78,7 @@ am_merge(target, source)
 
 # Target now has source's changes
 target[["version"]]
-#> [1] "1.0"
+#> [1] "2.0"
 
 # Source is unchanged
 names(source)
@@ -312,16 +312,16 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] b0 cb 13 94 e2 00 83 39 64 34 23 fb 8b de 5e 9a 77 bf 03 e7 91 a7
-#> [23] 4e 42 41 9b 5f 44 51 ed e6 a4
+#>  [1] b9 33 c7 7e 0e 2b ec e7 d6 81 8b f4 f0 bf 20 b8 0d f1 65 42 86 07
+#> [23] 83 66 16 f6 03 bd 86 83 40 b4
 am_change_actor_id(change) # Who made this change
-#>  [1] a3 e3 90 19 6c 1e ca 33 b9 56 93 60 20 36 98 51
+#>  [1] 4d 29 84 2a 48 24 25 bb c8 1b 4d 46 b8 e5 6a 6e
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] 9a 10 ae ca 9a 08 39 77 d2 79 aa b3 9d e1 67 0e 09 b7 f1 95 69 90
-#> [23] 41 aa 7b 23 21 6a e7 84 3e f4
+#>  [1] ad db 79 1c c9 b9 97 e0 c2 ca f6 58 f4 a3 0a 22 c0 ec 28 46 7b d6
+#> [23] cf 76 76 dc 93 1a af db 21 18
 
 # Get changes between two points in history
 changes_since_v1 <- am_get_changes(doc_main, heads_v1)
@@ -467,7 +467,7 @@ editor1[["counter"]]
 
 # Status: Deterministic conflict resolution (one value wins)
 editor1[["status"]]
-#> [1] "review"
+#> [1] "published"
 
 am_close(base)
 am_close(editor1)
