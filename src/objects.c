@@ -1250,7 +1250,17 @@ SEXP C_am_items(SEXP doc_ptr, SEXP obj_ptr, SEXP heads) {
         }
     }
 
-    AMresult *result = AMobjItems(doc, obj_id, heads_ptr);
+    AMobjType obj_type = obj_id ? AMobjObjType(doc, obj_id) : AM_OBJ_TYPE_MAP;
+    bool is_map = (obj_type == AM_OBJ_TYPE_MAP);
+
+    AMresult *result;
+    if (is_map) {
+        AMbyteSpan null_span = {.src = NULL, .count = 0};
+        result = AMmapRange(doc, obj_id, null_span, null_span, heads_ptr);
+    } else {
+        size_t size = AMobjSize(doc, obj_id, heads_ptr);
+        result = AMlistRange(doc, obj_id, 0, size, heads_ptr);
+    }
     if (heads_result) AMresultFree(heads_result);
 
     if (AMresultStatus(result) != AM_STATUS_OK) {
@@ -1259,9 +1269,6 @@ SEXP C_am_items(SEXP doc_ptr, SEXP obj_ptr, SEXP heads) {
 
     AMitems items = AMresultItems(result);
     size_t count = AMitemsSize(&items);
-
-    AMobjType obj_type = obj_id ? AMobjObjType(doc, obj_id) : AM_OBJ_TYPE_MAP;
-    bool is_map = (obj_type == AM_OBJ_TYPE_MAP);
 
     SEXP result_sexp = PROTECT(wrap_am_result(result, doc_ptr));
     SEXP list = PROTECT(Rf_allocVector(VECSXP, count));

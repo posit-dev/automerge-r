@@ -839,3 +839,185 @@ test_that("multiple incremental saves accumulate correctly", {
   expect_equal(am_get(doc2, AM_ROOT, "b"), 2)
   expect_equal(am_get(doc2, AM_ROOT, "c"), 3)
 })
+
+# Additional am_clone tests
+
+test_that("am_clone() preserves the actor ID", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+
+  clone <- am_clone(doc)
+  expect_equal(am_get_actor(doc), am_get_actor(clone))
+  expect_equal(am_get_actor_hex(doc), am_get_actor_hex(clone))
+})
+
+test_that("am_clone() preserves nested structures", {
+  doc <- am_create()
+  doc$config <- list(host = "localhost", port = 8080L)
+  doc$items <- am_list("a", "b", "c")
+  am_commit(doc)
+
+  clone <- am_clone(doc)
+  config <- am_get(clone, AM_ROOT, "config")
+  expect_equal(am_get(clone, config, "host"), "localhost")
+  expect_equal(am_get(clone, config, "port"), 8080L)
+  items <- am_get(clone, AM_ROOT, "items")
+  expect_equal(am_length(clone, items), 3)
+})
+
+test_that("am_clone() preserves history", {
+  doc <- am_create()
+  doc$v1 <- 1
+  am_commit(doc, "First")
+  doc$v2 <- 2
+  am_commit(doc, "Second")
+
+  clone <- am_clone(doc)
+  history <- am_get_history(clone)
+  expect_length(history, 2)
+  expect_equal(am_change_message(history[[1]]), "First")
+  expect_equal(am_change_message(history[[2]]), "Second")
+})
+
+# Additional am_equal tests
+
+test_that("am_equal() is reflexive", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+  expect_true(am_equal(doc, doc))
+})
+
+test_that("am_equal() after fork and mutual merge", {
+  doc1 <- am_create()
+  doc1$x <- 1
+  am_commit(doc1)
+
+  doc2 <- am_fork(doc1)
+  doc2$y <- 2
+  am_commit(doc2)
+
+  doc1$z <- 3
+  am_commit(doc1)
+
+  am_merge(doc1, doc2)
+  am_merge(doc2, doc1)
+
+  expect_true(am_equal(doc1, doc2))
+})
+
+test_that("am_equal() distinguishes docs with different content", {
+  doc1 <- am_create()
+  doc1$key <- "alpha"
+  am_commit(doc1)
+
+  doc2 <- am_create()
+  doc2$key <- "beta"
+  am_commit(doc2)
+
+  expect_false(am_equal(doc1, doc2))
+})
+
+# Additional am_pending_ops tests
+
+test_that("am_pending_ops() counts multiple operations", {
+  doc <- am_create()
+  doc$a <- 1
+  doc$b <- 2
+  doc$c <- 3
+  expect_gt(am_pending_ops(doc), 1L)
+})
+
+test_that("am_pending_ops() returns zero after rollback", {
+  doc <- am_create()
+  doc$key <- "value"
+  expect_gt(am_pending_ops(doc), 0L)
+  am_rollback(doc)
+  expect_equal(am_pending_ops(doc), 0L)
+})
+
+# Additional am_commit_empty tests
+
+test_that("am_commit_empty() on fresh doc creates head", {
+  doc <- am_create()
+  expect_length(am_get_heads(doc), 0)
+  am_commit_empty(doc, "Genesis")
+  expect_length(am_get_heads(doc), 1)
+})
+
+test_that("am_commit_empty() with timestamp", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+
+  ts <- as.POSIXct("2025-06-15 12:00:00", tz = "UTC")
+  am_commit_empty(doc, "Timestamped", ts)
+
+  change <- am_get_last_local_change(doc)
+  expect_s3_class(am_change_time(change), "POSIXct")
+})
+
+test_that("am_commit_empty() without message", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+
+  am_commit_empty(doc)
+  change <- am_get_last_local_change(doc)
+  expect_null(am_change_message(change))
+})
+
+# Additional am_save_incremental / am_load_incremental tests
+
+test_that("am_load_incremental() returns operation count invisibly", {
+  doc1 <- am_create()
+  doc1$key <- "value"
+  am_commit(doc1)
+  full <- am_save(doc1)
+
+  doc1$key2 <- "value2"
+  am_commit(doc1)
+  inc <- am_save_incremental(doc1)
+
+  doc2 <- am_load(full)
+  result <- withVisible(am_load_incremental(doc2, inc))
+  expect_false(result$visible)
+  expect_type(result$value, "double")
+})
+
+test_that("incremental save/load with nested objects", {
+  doc1 <- am_create()
+  doc1$base <- "data"
+  am_commit(doc1)
+  full <- am_save(doc1)
+
+  doc1$config <- list(host = "localhost", port = 8080L)
+  am_commit(doc1)
+  inc <- am_save_incremental(doc1)
+
+  doc2 <- am_load(full)
+  am_load_incremental(doc2, inc)
+  config <- am_get(doc2, AM_ROOT, "config")
+  expect_equal(am_get(doc2, config, "host"), "localhost")
+})
+
+test_that("am_save_incremental() resets after am_save()", {
+  doc <- am_create()
+  doc$a <- 1
+  am_commit(doc)
+
+  inc1 <- am_save_incremental(doc)
+  expect_gt(length(inc1), 0)
+
+  # After full save, incremental should have nothing new
+
+  am_save(doc)
+  inc2 <- am_save_incremental(doc)
+  expect_lte(length(inc2), length(inc1))
+})
+
+test_that("am_load_incremental() errors on invalid bytes", {
+  doc <- am_create()
+  expect_error(am_load_incremental(doc, raw(10)))
+})

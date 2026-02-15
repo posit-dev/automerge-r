@@ -588,3 +588,185 @@ test_that("sync state round-trip works with active sync", {
 test_that("am_sync_state_decode() errors on non-raw", {
   expect_error(am_sync_state_decode("not raw"), "data must be a raw vector")
 })
+
+# Additional am_get_missing_deps tests
+
+test_that("am_get_missing_deps() on empty doc returns empty", {
+  doc <- am_create()
+  missing <- am_get_missing_deps(doc)
+  expect_type(missing, "list")
+  expect_length(missing, 0)
+})
+
+test_that("am_get_missing_deps() with NULL heads same as default", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+
+  missing_default <- am_get_missing_deps(doc)
+  missing_null <- am_get_missing_deps(doc, NULL)
+  expect_equal(missing_default, missing_null)
+})
+
+test_that("am_get_missing_deps() after sync returns empty", {
+  doc1 <- am_create()
+  doc1$x <- 1
+  am_commit(doc1)
+
+  doc2 <- am_fork(doc1)
+  doc2$y <- 2
+  am_commit(doc2)
+
+  am_merge(doc1, doc2)
+
+  missing <- am_get_missing_deps(doc1)
+  expect_length(missing, 0)
+})
+
+# Additional am_load_changes tests
+
+test_that("am_load_changes() preserves change metadata", {
+  doc <- am_create()
+  doc$key <- "value"
+  ts <- as.POSIXct("2025-06-15 12:00:00", tz = "UTC")
+  am_commit(doc, "Test message", ts)
+  bytes <- am_save(doc)
+
+  changes <- am_load_changes(bytes)
+  expect_length(changes, 1)
+  expect_equal(am_change_message(changes[[1]]), "Test message")
+  expect_equal(am_change_actor_id(changes[[1]]), am_get_actor(doc))
+  expect_equal(am_change_seq(changes[[1]]), 1L)
+})
+
+test_that("am_load_changes() with nested structures", {
+  doc <- am_create()
+  doc$config <- list(host = "localhost", port = 8080L)
+  doc$items <- am_list("a", "b", "c")
+  am_commit(doc, "Add nested")
+  bytes <- am_save(doc)
+
+  changes <- am_load_changes(bytes)
+  expect_length(changes, 1)
+
+  # Apply to new doc and verify structure
+  doc2 <- am_create()
+  am_apply_changes(doc2, changes)
+  config <- am_get(doc2, AM_ROOT, "config")
+  expect_equal(am_get(doc2, config, "host"), "localhost")
+  items <- am_get(doc2, AM_ROOT, "items")
+  expect_equal(am_length(doc2, items), 3)
+})
+
+test_that("am_load_changes() errors on invalid bytes", {
+  expect_error(am_load_changes(raw(10)))
+})
+
+test_that("am_load_changes() preserves change dependencies", {
+  doc <- am_create()
+  doc$a <- 1
+  am_commit(doc, "First")
+  doc$b <- 2
+  am_commit(doc, "Second")
+  doc$c <- 3
+  am_commit(doc, "Third")
+  bytes <- am_save(doc)
+
+  changes <- am_load_changes(bytes)
+  expect_length(changes, 3)
+
+  # First change has no deps, subsequent changes have deps
+  deps1 <- am_change_deps(changes[[1]])
+  expect_length(deps1, 0)
+
+  deps2 <- am_change_deps(changes[[2]])
+  expect_length(deps2, 1)
+  expect_equal(deps2[[1]], am_change_hash(changes[[1]]))
+})
+
+test_that("am_load_changes() selective apply works", {
+  doc <- am_create()
+  doc$a <- 1
+  am_commit(doc, "First")
+  doc$b <- 2
+  am_commit(doc, "Second")
+  doc$c <- 3
+  am_commit(doc, "Third")
+  bytes <- am_save(doc)
+
+  changes <- am_load_changes(bytes)
+
+  # Apply only the first change
+  doc2 <- am_create()
+  am_apply_changes(doc2, changes[1])
+  expect_equal(am_get(doc2, AM_ROOT, "a"), 1)
+  expect_null(am_get(doc2, AM_ROOT, "b"))
+})
+
+# Additional am_sync_state_encode/decode tests
+
+test_that("sync state round-trip preserves sync progress", {
+  doc1 <- am_create()
+  doc1$x <- 1
+  am_commit(doc1)
+
+  doc2 <- am_create()
+
+  sync1 <- am_sync_state()
+  sync2 <- am_sync_state()
+
+  # Complete a sync
+  am_sync(doc1, doc2)
+
+  # Now make a new change in doc1
+  doc1$y <- 2
+  am_commit(doc1)
+
+  # Start syncing with fresh states
+
+  sync1 <- am_sync_state()
+  sync2 <- am_sync_state()
+
+  # Do first round of sync
+  msg1 <- am_sync_encode(doc1, sync1)
+  am_sync_decode(doc2, sync2, msg1)
+
+  # Serialize and restore sync states
+  bytes1 <- am_sync_state_encode(sync1)
+  bytes2 <- am_sync_state_encode(sync2)
+  sync1_restored <- am_sync_state_decode(bytes1)
+  sync2_restored <- am_sync_state_decode(bytes2)
+
+  # Continue syncing with restored states
+  msg2 <- am_sync_encode(doc2, sync2_restored)
+  if (!is.null(msg2)) {
+    am_sync_decode(doc1, sync1_restored, msg2)
+  }
+
+  # Complete the sync
+  for (i in 1:10) {
+    msg_a <- am_sync_encode(doc1, sync1_restored)
+    msg_b <- am_sync_encode(doc2, sync2_restored)
+    if (is.null(msg_a) && is.null(msg_b)) break
+    if (!is.null(msg_a)) am_sync_decode(doc2, sync2_restored, msg_a)
+    if (!is.null(msg_b)) am_sync_decode(doc1, sync1_restored, msg_b)
+  }
+
+  expect_equal(am_get(doc2, AM_ROOT, "x"), 1)
+  expect_equal(am_get(doc2, AM_ROOT, "y"), 2)
+})
+
+test_that("am_sync_state_encode() on fresh state has consistent output", {
+  sync1 <- am_sync_state()
+  sync2 <- am_sync_state()
+
+  bytes1 <- am_sync_state_encode(sync1)
+  bytes2 <- am_sync_state_encode(sync2)
+
+  # Fresh sync states should produce identical encodings
+  expect_equal(bytes1, bytes2)
+})
+
+test_that("am_sync_state_decode() errors on invalid bytes", {
+  expect_error(am_sync_state_decode(raw(3)))
+})

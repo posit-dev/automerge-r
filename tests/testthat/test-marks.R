@@ -510,3 +510,98 @@ test_that("am_mark_clear() partial range", {
   # After clearing first half, mark should remain on second half
   expect_gte(length(marks), 1)
 })
+
+test_that("am_mark_clear() on non-existent mark is no-op", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello World"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  am_mark(text_obj, 0, 11, "bold", TRUE)
+  # Clear a mark that doesn't exist
+  am_mark_clear(text_obj, 0, 11, "italic")
+
+  marks <- am_marks(text_obj)
+  expect_length(marks, 1)
+  expect_equal(marks[[1]]$name, "bold")
+})
+
+test_that("am_mark_clear() persists after commit and save/load", {
+  doc1 <- am_create()
+  am_put(doc1, AM_ROOT, "text", am_text("Hello World"))
+  text_obj <- am_get(doc1, AM_ROOT, "text")
+
+  am_mark(text_obj, 0, 11, "bold", TRUE)
+  am_mark(text_obj, 0, 11, "italic", TRUE)
+  am_commit(doc1, "Add marks")
+
+  am_mark_clear(text_obj, 0, 11, "bold")
+  am_commit(doc1, "Clear bold")
+
+  bytes <- am_save(doc1)
+  doc2 <- am_load(bytes)
+  text_obj2 <- am_get(doc2, AM_ROOT, "text")
+
+  marks <- am_marks(text_obj2)
+  expect_length(marks, 1)
+  expect_equal(marks[[1]]$name, "italic")
+})
+
+test_that("am_mark_clear() with expand mode", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello World"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  am_mark(text_obj, 0, 11, "bold", TRUE, expand = AM_MARK_EXPAND_BOTH)
+  am_mark_clear(text_obj, 0, 11, "bold", expand = AM_MARK_EXPAND_BOTH)
+
+  marks <- am_marks(text_obj)
+  expect_length(marks, 0)
+})
+
+test_that("am_mark_clear() survives sync", {
+  doc1 <- am_create()
+  am_put(doc1, AM_ROOT, "text", am_text("Hello World"))
+  text_obj1 <- am_get(doc1, AM_ROOT, "text")
+
+  am_mark(text_obj1, 0, 11, "bold", TRUE)
+  am_mark(text_obj1, 0, 11, "italic", TRUE)
+  am_commit(doc1, "Add marks")
+
+  doc2 <- am_fork(doc1)
+  text_obj2 <- am_get(doc2, AM_ROOT, "text")
+
+  # Clear bold in doc2
+  am_mark_clear(text_obj2, 0, 11, "bold")
+  am_commit(doc2, "Clear bold")
+
+  am_merge(doc1, doc2)
+
+  marks <- am_marks(text_obj1)
+  expect_length(marks, 1)
+  expect_equal(marks[[1]]$name, "italic")
+})
+
+test_that("am_mark_clear() clears overlapping marks correctly", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello World"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  # Create two overlapping bold marks
+  am_mark(text_obj, 0, 5, "bold", TRUE)   # "Hello"
+  am_mark(text_obj, 3, 11, "bold", TRUE)  # "lo World"
+
+  # Clear bold on full range
+  am_mark_clear(text_obj, 0, 11, "bold")
+
+  marks <- am_marks(text_obj)
+  expect_length(marks, 0)
+})
+
+test_that("am_mark_clear() validates range on empty text", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text(""))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  # Clearing requires end > start
+  expect_error(am_mark_clear(text_obj, 0, 0, "bold"), "end must be greater than start")
+})

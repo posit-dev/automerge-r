@@ -1628,3 +1628,266 @@ test_that("am_items() returns empty list for empty object", {
   items <- am_items(doc, AM_ROOT)
   expect_length(items, 0)
 })
+
+# Additional am_map_get_all tests
+
+test_that("am_map_get_all() returns empty for non-existent key", {
+  doc <- am_create()
+  doc$key <- "value"
+
+  values <- am_map_get_all(doc, AM_ROOT, "nonexistent")
+  expect_type(values, "list")
+  expect_length(values, 0)
+})
+
+test_that("am_map_get_all() works on nested map", {
+  doc <- am_create()
+  doc$config <- list(host = "localhost", port = 8080L)
+  config <- am_get(doc, AM_ROOT, "config")
+
+  values <- am_map_get_all(doc, config, "host")
+  expect_length(values, 1)
+  expect_equal(values[[1]], "localhost")
+})
+
+test_that("am_map_get_all() returns nested objects", {
+  doc <- am_create()
+  doc$nested <- list(inner = list(deep = "value"))
+
+  values <- am_map_get_all(doc, AM_ROOT, "nested")
+  expect_length(values, 1)
+  expect_s3_class(values[[1]], "am_object")
+})
+
+test_that("am_map_get_all() with historical heads", {
+  doc <- am_create()
+  doc$key <- "v1"
+  am_commit(doc, "Version 1")
+  heads_v1 <- am_get_heads(doc)
+
+  doc$key <- "v2"
+  am_commit(doc, "Version 2")
+
+  # Current value
+  values_now <- am_map_get_all(doc, AM_ROOT, "key")
+  expect_equal(values_now[[1]], "v2")
+
+  # Value at heads_v1
+  values_then <- am_map_get_all(doc, AM_ROOT, "key", heads_v1)
+  expect_equal(values_then[[1]], "v1")
+})
+
+test_that("am_map_get_all() both values present after conflict", {
+  doc1 <- am_create()
+  doc1$status <- "draft"
+  am_commit(doc1)
+
+  doc2 <- am_fork(doc1)
+  doc1$status <- "published"
+  am_commit(doc1)
+  doc2$status <- "archived"
+  am_commit(doc2)
+
+  am_merge(doc1, doc2)
+
+  values <- am_map_get_all(doc1, AM_ROOT, "status")
+  expect_length(values, 2)
+  expect_setequal(unlist(values), c("published", "archived"))
+})
+
+# Additional am_list_get_all tests
+
+test_that("am_list_get_all() returns multiple values with conflict", {
+  doc1 <- am_create()
+  doc1$items <- list(100L)
+  am_commit(doc1)
+
+  doc2 <- am_fork(doc1)
+  items1 <- am_get(doc1, AM_ROOT, "items")
+  items2 <- am_get(doc2, AM_ROOT, "items")
+
+  am_put(doc1, items1, 1, 200L)
+  am_commit(doc1)
+  am_put(doc2, items2, 1, 300L)
+  am_commit(doc2)
+
+  am_merge(doc1, doc2)
+  values <- am_list_get_all(doc1, items1, 1)
+  expect_length(values, 2)
+  expect_setequal(unlist(values), c(200L, 300L))
+})
+
+test_that("am_list_get_all() with historical heads", {
+  doc <- am_create()
+  doc$items <- list("first")
+  am_commit(doc)
+  heads_v1 <- am_get_heads(doc)
+
+  items <- am_get(doc, AM_ROOT, "items")
+  am_put(doc, items, 1, "second")
+  am_commit(doc)
+
+  values_now <- am_list_get_all(doc, items, 1)
+  expect_equal(values_now[[1]], "second")
+
+  values_then <- am_list_get_all(doc, items, 1, heads_v1)
+  expect_equal(values_then[[1]], "first")
+})
+
+# Additional am_map_range tests
+
+test_that("am_map_range() on empty map returns empty", {
+  doc <- am_create()
+  range <- am_map_range(doc, AM_ROOT, "a", "z")
+  expect_length(range, 0)
+})
+
+test_that("am_map_range() with nested objects", {
+  doc <- am_create()
+  doc$config <- list(host = "localhost")
+  doc$data <- list(value = 42)
+  doc$meta <- list(version = "1.0")
+
+  range <- am_map_range(doc, AM_ROOT, "c", "e")
+  expect_true("config" %in% names(range))
+  expect_true("data" %in% names(range))
+  expect_false("meta" %in% names(range))
+  expect_s3_class(range[["config"]], "am_object")
+})
+
+test_that("am_map_range() with historical heads", {
+  doc <- am_create()
+  doc$a <- 1
+  doc$b <- 2
+  am_commit(doc)
+  heads_v1 <- am_get_heads(doc)
+
+  doc$c <- 3
+  am_commit(doc)
+
+  range_now <- am_map_range(doc, AM_ROOT, "a", "z")
+  expect_length(range_now, 3)
+
+  range_then <- am_map_range(doc, AM_ROOT, "a", "z", heads_v1)
+  expect_length(range_then, 2)
+})
+
+# Additional am_list_range tests
+
+test_that("am_list_range() full range returns all items", {
+  doc <- am_create()
+  doc$items <- list("a", "b", "c")
+  items <- doc$items
+
+  range <- am_list_range(doc, items, 1, 4)
+  expect_length(range, 3)
+  expect_equal(range[[1]], "a")
+  expect_equal(range[[3]], "c")
+})
+
+test_that("am_list_range() single element range", {
+  doc <- am_create()
+  doc$items <- list("a", "b", "c")
+  items <- doc$items
+
+  range <- am_list_range(doc, items, 2, 3)
+  expect_length(range, 1)
+  expect_equal(range[[1]], "b")
+})
+
+test_that("am_list_range() with nested objects", {
+  doc <- am_create()
+  doc$items <- list(list(name = "Alice"), list(name = "Bob"))
+  items <- doc$items
+
+  range <- am_list_range(doc, items, 1, 3)
+  expect_length(range, 2)
+  expect_s3_class(range[[1]], "am_object")
+})
+
+test_that("am_list_range() with historical heads", {
+  doc <- am_create()
+  doc$items <- list("a", "b")
+  am_commit(doc)
+  heads_v1 <- am_get_heads(doc)
+
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, "end", "c")
+  am_commit(doc)
+
+  range_now <- am_list_range(doc, items, 1, 4)
+  expect_length(range_now, 3)
+
+  range_then <- am_list_range(doc, items, 1, 3, heads_v1)
+  expect_length(range_then, 2)
+})
+
+test_that("am_list_range() on empty list returns empty", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+
+  range <- am_list_range(doc, items, 1, 1)
+  expect_length(range, 0)
+})
+
+# Additional am_items tests
+
+test_that("am_items() map items have string keys", {
+  doc <- am_create()
+  doc$alpha <- 1
+  doc$beta <- 2
+
+  items <- am_items(doc, AM_ROOT)
+  keys <- vapply(items, function(x) x$key, character(1))
+  expect_setequal(keys, c("alpha", "beta"))
+})
+
+test_that("am_items() list items have integer keys", {
+  doc <- am_create()
+  doc$items <- list("a", "b", "c")
+  items_obj <- doc$items
+
+  items <- am_items(doc, items_obj)
+  keys <- vapply(items, function(x) x$key, integer(1))
+  expect_equal(keys, c(1L, 2L, 3L))
+})
+
+test_that("am_items() with mixed value types", {
+  doc <- am_create()
+  doc$str <- "text"
+  doc$int <- 42L
+  doc$bool <- TRUE
+  doc$dbl <- 3.14
+
+  items <- am_items(doc, AM_ROOT)
+  expect_length(items, 4)
+  values <- lapply(items, function(x) x$value)
+  expect_true("text" %in% values)
+  expect_true(42L %in% values)
+})
+
+test_that("am_items() with nested objects returns am_object", {
+  doc <- am_create()
+  doc$nested <- list(key = "value")
+
+  items <- am_items(doc, AM_ROOT)
+  expect_length(items, 1)
+  expect_s3_class(items[[1]]$value, "am_object")
+})
+
+test_that("am_items() with historical heads", {
+  doc <- am_create()
+  doc$a <- 1
+  am_commit(doc)
+  heads_v1 <- am_get_heads(doc)
+
+  doc$b <- 2
+  am_commit(doc)
+
+  items_now <- am_items(doc, AM_ROOT)
+  expect_length(items_now, 2)
+
+  items_then <- am_items(doc, AM_ROOT, heads_v1)
+  expect_length(items_then, 1)
+})
