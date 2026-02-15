@@ -11,12 +11,36 @@
   `am_get_changes_added()`) now return `am_change` objects instead of raw
   vectors.
 
+* `am_cursor()`, `am_cursor_position()`, `am_marks()`, and `am_marks_at()`
+  gain a `heads` parameter for querying at historical document states.
+
 * Adds cursor serialization and comparison: `am_cursor_to_bytes()`,
   `am_cursor_from_bytes()`, `am_cursor_to_string()`,
   `am_cursor_from_string()`, and `am_cursor_equal()`.
 
-* `am_cursor()`, `am_cursor_position()`, `am_marks()`, and `am_marks_at()`
-  gain a `heads` parameter for querying at historical document states.
+* Adds incremental save/load: `am_save_incremental()` and
+  `am_load_incremental()` for exchanging only new changes since the last save.
+
+* Adds conflict inspection: `am_map_get_all()` and `am_list_get_all()` for
+  retrieving all conflicting values at a key or index after concurrent edits.
+
+* Adds range queries: `am_map_range()` for retrieving map entries within a key
+  range, `am_list_range()` for retrieving a subrange of list items, and
+  `am_obj_items()` for getting all key-value entries from any object.
+
+* Adds `am_mark_clear()` for removing marks from text ranges.
+
+* Adds sync state serialization: `am_sync_state_encode()` and
+  `am_sync_state_decode()` for persisting sync state across sessions.
+
+* Adds `am_change_load_document()` for decomposing saved document bytes into
+  individual changes, and `am_get_missing_deps()` for checking document
+  completeness.
+
+* Adds document utilities: `am_clone()` for deep copying (preserving actor
+  ID), `am_equal()` for testing document equality, `am_pending_ops()` for
+  counting uncommitted operations, and `am_empty_change()` for creating empty
+  changes.
 
 * Renames `am_sync_state_new()` to `am_sync_state()`.
 
