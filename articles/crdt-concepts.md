@@ -171,8 +171,8 @@ for (i in seq_len(am_length(doc5, items5))) {
   print(am_get(doc5, items5, i))
 }
 #> [1] "A"
-#> [1] "B2"
 #> [1] "B1"
+#> [1] "B2"
 #> [1] "C"
 
 am_close(doc5)
@@ -188,6 +188,88 @@ IDs.
 **Limitation**: There are cases where insertion order is not perfectly
 preserved, primarily when inserting elements in reverse order. However,
 the algorithm performs well in most common scenarios.
+
+### Inspecting Conflicts
+
+Automerge always picks a single winner for concurrent edits to the same
+key or index, but both values are retained internally. Use
+[`am_map_get_all()`](https://posit-dev.github.io/automerge-r/reference/am_map_get_all.md)
+and
+[`am_list_get_all()`](https://posit-dev.github.io/automerge-r/reference/am_list_get_all.md)
+to inspect all conflicting values and present them to users or apply
+application-specific resolution logic.
+
+``` r
+# Map conflict: two peers edit the same key concurrently
+doc_c1 <- am_create()
+doc_c1[["status"]] <- "draft"
+am_commit(doc_c1)
+
+doc_c2 <- am_fork(doc_c1)
+
+doc_c1[["status"]] <- "published"
+am_commit(doc_c1)
+doc_c2[["status"]] <- "archived"
+am_commit(doc_c2)
+
+am_merge(doc_c1, doc_c2)
+
+# am_get returns the winner
+am_get(doc_c1, AM_ROOT, "status")
+#> [1] "archived"
+
+# am_map_get_all returns all conflicting values
+all_statuses <- am_map_get_all(doc_c1, AM_ROOT, "status")
+length(all_statuses) # 2
+#> [1] 2
+all_statuses
+#> [[1]]
+#> [1] "published"
+#> 
+#> [[2]]
+#> [1] "archived"
+```
+
+The same approach works for lists — when two peers concurrently update
+the same index,
+[`am_list_get_all()`](https://posit-dev.github.io/automerge-r/reference/am_list_get_all.md)
+reveals both values:
+
+``` r
+# List conflict: two peers update the same index
+doc_l1 <- am_create()
+am_put(doc_l1, AM_ROOT, "scores", AM_OBJ_TYPE_LIST)
+scores <- am_get(doc_l1, AM_ROOT, "scores")
+am_insert(doc_l1, scores, 1, 100L)
+am_commit(doc_l1)
+
+doc_l2 <- am_fork(doc_l1)
+scores2 <- am_get(doc_l2, AM_ROOT, "scores")
+
+am_put(doc_l1, scores, 1, 200L)
+am_commit(doc_l1)
+am_put(doc_l2, scores2, 1, 300L)
+am_commit(doc_l2)
+
+am_merge(doc_l1, doc_l2)
+
+# Winner
+am_get(doc_l1, scores, 1)
+#> [1] 300
+
+# All conflicting values
+am_list_get_all(doc_l1, scores, 1)
+#> [[1]]
+#> [1] 200
+#> 
+#> [[2]]
+#> [1] 300
+
+am_close(doc_c1)
+am_close(doc_c2)
+am_close(doc_l1)
+am_close(doc_l2)
+```
 
 ### Text CRDTs (Collaborative Text Editing)
 
@@ -317,9 +399,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-02-15 12:14:46 UTC"
+#> [1] "2026-02-15 12:28:30 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-02-15 12:14:46 UTC"
+#> [1] "2026-02-15 12:28:30 UTC"
 
 am_close(doc15)
 am_close(doc16)

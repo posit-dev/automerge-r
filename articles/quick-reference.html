@@ -120,7 +120,7 @@ documentation with <code>?function_name</code>.</p>
 <span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc</span>, <span class="st">"message"</span><span class="op">)</span> <span class="co"># Commit changes</span></span>
 <span><span class="fu"><a href="../reference/am_rollback.html">am_rollback</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span> <span class="co"># Cancel pending changes</span></span>
 <span><span class="fu"><a href="../reference/am_pending_ops.html">am_pending_ops</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span> <span class="co"># Number of uncommitted operations</span></span>
-<span><span class="fu"><a href="../reference/am_empty_change.html">am_empty_change</a></span><span class="op">(</span><span class="va">doc</span>, <span class="st">"checkpoint"</span><span class="op">)</span> <span class="co"># Create empty change (bookkeeping)</span></span>
+<span><span class="fu"><a href="../reference/am_commit_empty.html">am_commit_empty</a></span><span class="op">(</span><span class="va">doc</span>, <span class="st">"checkpoint"</span><span class="op">)</span> <span class="co"># Create empty change (bookkeeping)</span></span>
 <span></span>
 <span><span class="co"># Incremental save/load</span></span>
 <span><span class="va">inc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_save_incremental.html">am_save_incremental</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span> <span class="co"># Only changes since last save</span></span>
@@ -150,7 +150,7 @@ documentation with <code>?function_name</code>.</p>
 <span><span class="va">values</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_values.html">am_values</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span><span class="op">)</span> <span class="co"># Get all values</span></span>
 <span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span> <span class="co"># Number of keys</span></span>
 <span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_length.html">am_length</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span><span class="op">)</span> <span class="co"># Functional version</span></span>
-<span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_obj_items.html">am_obj_items</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span><span class="op">)</span> <span class="co"># All key-value entries</span></span>
+<span><span class="va">items</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_items.html">am_items</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span><span class="op">)</span> <span class="co"># All key-value entries</span></span>
 <span></span>
 <span><span class="co"># All conflicting values for a key (after concurrent edits)</span></span>
 <span><span class="va">conflicts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_map_get_all.html">am_map_get_all</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"key"</span><span class="op">)</span></span>
@@ -201,7 +201,7 @@ documentation with <code>?function_name</code>.</p>
 <span></span>
 <span><span class="co"># Introspection</span></span>
 <span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_length.html">am_length</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">items</span><span class="op">)</span> <span class="co"># List length</span></span>
-<span><span class="va">items_entries</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_obj_items.html">am_obj_items</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">items</span><span class="op">)</span> <span class="co"># All index-value entries</span></span>
+<span><span class="va">items_entries</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_items.html">am_items</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">items</span><span class="op">)</span> <span class="co"># All index-value entries</span></span>
 <span></span>
 <span><span class="co"># All conflicting values at index (after concurrent edits)</span></span>
 <span><span class="va">conflicts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_list_get_all.html">am_list_get_all</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">items</span>, <span class="fl">1</span><span class="op">)</span></span>
@@ -368,7 +368,7 @@ documentation with <code>?function_name</code>.</p>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_from_bytes.html">am_change_from_bytes</a></span><span class="op">(</span><span class="va">bytes</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Decompose saved document into individual changes</span></span>
-<span><span class="va">changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_load_document.html">am_change_load_document</a></span><span class="op">(</span><span class="va">bytes</span><span class="op">)</span> <span class="co"># From am_save() output</span></span>
+<span><span class="va">changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_load_changes.html">am_load_changes</a></span><span class="op">(</span><span class="va">bytes</span><span class="op">)</span> <span class="co"># From am_save() output</span></span>
 <span></span>
 <span><span class="co"># Check document completeness</span></span>
 <span><span class="va">missing</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_missing_deps.html">am_get_missing_deps</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>

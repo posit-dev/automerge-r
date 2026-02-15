@@ -57,7 +57,7 @@
   for retrieving map entries within a key range,
   [`am_list_range()`](https://posit-dev.github.io/automerge-r/reference/am_list_range.md)
   for retrieving a subrange of list items, and
-  [`am_obj_items()`](https://posit-dev.github.io/automerge-r/reference/am_obj_items.md)
+  [`am_items()`](https://posit-dev.github.io/automerge-r/reference/am_items.md)
   for getting all key-value entries from any object.
 
 - Adds
@@ -71,7 +71,7 @@
   for persisting sync state across sessions.
 
 - Adds
-  [`am_change_load_document()`](https://posit-dev.github.io/automerge-r/reference/am_change_load_document.md)
+  [`am_load_changes()`](https://posit-dev.github.io/automerge-r/reference/am_load_changes.md)
   for decomposing saved document bytes into individual changes, and
   [`am_get_missing_deps()`](https://posit-dev.github.io/automerge-r/reference/am_get_missing_deps.md)
   for checking document completeness.
@@ -83,7 +83,7 @@
   for testing document equality,
   [`am_pending_ops()`](https://posit-dev.github.io/automerge-r/reference/am_pending_ops.md)
   for counting uncommitted operations, and
-  [`am_empty_change()`](https://posit-dev.github.io/automerge-r/reference/am_empty_change.md)
+  [`am_commit_empty()`](https://posit-dev.github.io/automerge-r/reference/am_commit_empty.md)
   for creating empty changes.
 
 - Renames `am_sync_state_new()` to

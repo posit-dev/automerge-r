@@ -78,7 +78,7 @@ am_merge(target, source)
 
 # Target now has source's changes
 target[["version"]]
-#> [1] "2.0"
+#> [1] "1.0"
 
 # Source is unchanged
 names(source)
@@ -253,7 +253,7 @@ If you have a saved document (from
 [`am_save()`](https://posit-dev.github.io/automerge-r/reference/am_save.md))
 and want to extract its individual changes without loading the full
 document, use
-[`am_change_load_document()`](https://posit-dev.github.io/automerge-r/reference/am_change_load_document.md):
+[`am_load_changes()`](https://posit-dev.github.io/automerge-r/reference/am_load_changes.md):
 
 ``` r
 # Save a document with multiple commits
@@ -265,7 +265,7 @@ am_commit(doc_decompose, "Add y")
 saved_bytes <- am_save(doc_decompose)
 
 # Extract individual changes from the saved bytes
-extracted_changes <- am_change_load_document(saved_bytes)
+extracted_changes <- am_load_changes(saved_bytes)
 length(extracted_changes)
 #> [1] 2
 
@@ -372,16 +372,16 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] 3a f1 c6 1e 45 4b 6d 2f 47 72 d9 d6 b2 7a 52 77 6b d9 ed 5f bc 56
-#> [23] 58 7b a3 73 c3 2a 14 cc 01 75
+#>  [1] 19 03 70 bc f0 e5 c2 7b c7 37 c8 b9 f2 27 d0 0b 65 af 32 30 bf 5e
+#> [23] 1f 6b 6e ec 0c cd 71 ab f4 a5
 am_change_actor_id(change) # Who made this change
-#>  [1] 4e d0 cb 0f 2c d8 1b 88 ec 4e 86 b4 bc e2 0e 61
+#>  [1] fc c5 5d bd 02 ae da 0b 08 2f 5a 29 0a f2 e7 0e
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] b3 0c 21 6d 3a 39 7c c6 6a aa 09 bf fb aa 57 3c fc 83 16 30 6c af
-#> [23] 04 6b eb f6 8a fa de cb 12 8b
+#>  [1] 80 b0 78 8c 9d b4 af 3c b5 f9 91 b8 d5 24 4d e0 ed 5e f5 aa c4 82
+#> [23] 08 80 1c ce 16 cf 85 94 cf bd
 
 # Get changes between two points in history
 changes_since_v1 <- am_get_changes(doc_main, heads_v1)

@@ -149,7 +149,7 @@ changes back:</p>
 <span></span>
 <span><span class="co"># Target now has source's changes</span></span>
 <span><span class="va">target</span><span class="op">[[</span><span class="st">"version"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2.0"</span></span>
+<span><span class="co">#&gt; [1] "1.0"</span></span>
 <span></span>
 <span><span class="co"># Source is unchanged</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">source</span><span class="op">)</span></span>
@@ -328,7 +328,7 @@ changes:</p>
 </h3>
 <p>If you have a saved document (from <code><a href="../reference/am_save.html">am_save()</a></code>) and want
 to extract its individual changes without loading the full document, use
-<code><a href="../reference/am_change_load_document.html">am_change_load_document()</a></code>:</p>
+<code><a href="../reference/am_load_changes.html">am_load_changes()</a></code>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Save a document with multiple commits</span></span>
 <span><span class="va">doc_decompose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -339,7 +339,7 @@ to extract its individual changes without loading the full document, use
 <span><span class="va">saved_bytes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_save.html">am_save</a></span><span class="op">(</span><span class="va">doc_decompose</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Extract individual changes from the saved bytes</span></span>
-<span><span class="va">extracted_changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_load_document.html">am_change_load_document</a></span><span class="op">(</span><span class="va">saved_bytes</span><span class="op">)</span></span>
+<span><span class="va">extracted_changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_load_changes.html">am_load_changes</a></span><span class="op">(</span><span class="va">saved_bytes</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">extracted_changes</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span></span>
@@ -444,16 +444,16 @@ document has all its dependencies with
 <span><span class="co"># Extract multiple fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique hash</span></span>
-<span><span class="co">#&gt;  [1] 3a f1 c6 1e 45 4b 6d 2f 47 72 d9 d6 b2 7a 52 77 6b d9 ed 5f bc 56</span></span>
-<span><span class="co">#&gt; [23] 58 7b a3 73 c3 2a 14 cc 01 75</span></span>
+<span><span class="co">#&gt;  [1] 19 03 70 bc f0 e5 c2 7b c7 37 c8 b9 f2 27 d0 0b 65 af 32 30 bf 5e</span></span>
+<span><span class="co">#&gt; [23] 1f 6b 6e ec 0c cd 71 ab f4 a5</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made this change</span></span>
-<span><span class="co">#&gt;  [1] 4e d0 cb 0f 2c d8 1b 88 ec 4e 86 b4 bc e2 0e 61</span></span>
+<span><span class="co">#&gt;  [1] fc c5 5d bd 02 ae da 0b 08 2f 5a 29 0a f2 e7 0e</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># When</span></span>
 <span><span class="co">#&gt; [1] "1970-01-01 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent changes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] b3 0c 21 6d 3a 39 7c c6 6a aa 09 bf fb aa 57 3c fc 83 16 30 6c af</span></span>
-<span><span class="co">#&gt; [23] 04 6b eb f6 8a fa de cb 12 8b</span></span>
+<span><span class="co">#&gt;  [1] 80 b0 78 8c 9d b4 af 3c b5 f9 91 b8 d5 24 4d e0 ed 5e f5 aa c4 82</span></span>
+<span><span class="co">#&gt; [23] 08 80 1c ce 16 cf 85 94 cf bd</span></span>
 <span></span>
 <span><span class="co"># Get changes between two points in history</span></span>
 <span><span class="va">changes_since_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc_main</span>, <span class="va">heads_v1</span><span class="op">)</span></span>

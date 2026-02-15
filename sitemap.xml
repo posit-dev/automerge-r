@@ -17,7 +17,6 @@
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_change_deps.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_change_from_bytes.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_change_hash.html</loc></url>
-<url><loc>https://posit-dev.github.io/automerge-r/reference/am_change_load_document.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_change_message.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_change_seq.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_change_time.html</loc></url>
@@ -25,6 +24,7 @@
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_clone.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_close.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_commit.html</loc></url>
+<url><loc>https://posit-dev.github.io/automerge-r/reference/am_commit_empty.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_counter.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_counter_increment.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_create.html</loc></url>
@@ -37,7 +37,6 @@
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_cursor_to_string.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_delete.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_delete_path.html</loc></url>
-<url><loc>https://posit-dev.github.io/automerge-r/reference/am_empty_change.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_equal.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_fork.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_get.html</loc></url>
@@ -52,12 +51,14 @@
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_get_missing_deps.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_get_path.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_insert.html</loc></url>
+<url><loc>https://posit-dev.github.io/automerge-r/reference/am_items.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_keys.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_length.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_list.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_list_get_all.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_list_range.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_load.html</loc></url>
+<url><loc>https://posit-dev.github.io/automerge-r/reference/am_load_changes.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_load_incremental.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_map.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_map_get_all.html</loc></url>
@@ -67,7 +68,6 @@
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_marks.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_marks_at.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_merge.html</loc></url>
-<url><loc>https://posit-dev.github.io/automerge-r/reference/am_obj_items.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_pending_ops.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_put.html</loc></url>
 <url><loc>https://posit-dev.github.io/automerge-r/reference/am_put_path.html</loc></url>

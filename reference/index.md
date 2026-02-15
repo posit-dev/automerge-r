@@ -26,7 +26,7 @@ Create, save, load, and manage Automerge documents
   : Test document equality
 - [`am_pending_ops()`](https://posit-dev.github.io/automerge-r/reference/am_pending_ops.md)
   : Get the number of pending operations
-- [`am_empty_change()`](https://posit-dev.github.io/automerge-r/reference/am_empty_change.md)
+- [`am_commit_empty()`](https://posit-dev.github.io/automerge-r/reference/am_commit_empty.md)
   : Create an empty change
 - [`am_save_incremental()`](https://posit-dev.github.io/automerge-r/reference/am_save_incremental.md)
   : Save incremental changes
@@ -62,7 +62,7 @@ Create and manipulate maps, lists, and nested objects
   : Get all values from a map or list
 - [`am_length()`](https://posit-dev.github.io/automerge-r/reference/am_length.md)
   : Get the length of an Automerge map or list
-- [`am_obj_items()`](https://posit-dev.github.io/automerge-r/reference/am_obj_items.md)
+- [`am_items()`](https://posit-dev.github.io/automerge-r/reference/am_items.md)
   : Get full item details from an object
 - [`am_list_range()`](https://posit-dev.github.io/automerge-r/reference/am_list_range.md)
   : Get a range of list items
@@ -177,7 +177,7 @@ Track document history and inspect changes
   : Get the dependencies of a change
 - [`am_get_missing_deps()`](https://posit-dev.github.io/automerge-r/reference/am_get_missing_deps.md)
   : Get missing dependencies
-- [`am_change_load_document()`](https://posit-dev.github.io/automerge-r/reference/am_change_load_document.md)
+- [`am_load_changes()`](https://posit-dev.github.io/automerge-r/reference/am_load_changes.md)
   : Load a document as individual changes
 
 ## Type Constructors
