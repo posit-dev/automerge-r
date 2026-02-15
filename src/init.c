@@ -61,7 +61,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"C_am_clone", (DL_FUNC) &C_am_clone, 1},
     {"C_am_equal", (DL_FUNC) &C_am_equal, 2},
     {"C_am_pending_ops", (DL_FUNC) &C_am_pending_ops, 1},
-    {"C_am_empty_change", (DL_FUNC) &C_am_empty_change, 3},
+    {"C_am_commit_empty", (DL_FUNC) &C_am_commit_empty, 3},
     {"C_am_save_incremental", (DL_FUNC) &C_am_save_incremental, 1},
     {"C_am_load_incremental", (DL_FUNC) &C_am_load_incremental, 2},
     // v1.2 Object operations
@@ -69,10 +69,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"C_am_list_get_all", (DL_FUNC) &C_am_list_get_all, 4},
     {"C_am_map_range", (DL_FUNC) &C_am_map_range, 5},
     {"C_am_list_range", (DL_FUNC) &C_am_list_range, 5},
-    {"C_am_obj_items", (DL_FUNC) &C_am_obj_items, 3},
+    {"C_am_items", (DL_FUNC) &C_am_items, 3},
     // v1.2 Change/sync operations
     {"C_am_get_missing_deps", (DL_FUNC) &C_am_get_missing_deps, 2},
-    {"C_am_change_load_document", (DL_FUNC) &C_am_change_load_document, 1},
+    {"C_am_load_changes", (DL_FUNC) &C_am_load_changes, 1},
     // v1.2 Mark operations
     {"C_am_mark_clear", (DL_FUNC) &C_am_mark_clear, 5},
     // v1.2 Sync serialization

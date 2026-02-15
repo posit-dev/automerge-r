@@ -60,7 +60,7 @@ am_equal(doc, doc2) # TRUE if same state
 am_commit(doc, "message") # Commit changes
 am_rollback(doc) # Cancel pending changes
 am_pending_ops(doc) # Number of uncommitted operations
-am_empty_change(doc, "checkpoint") # Create empty change (bookkeeping)
+am_commit_empty(doc, "checkpoint") # Create empty change (bookkeeping)
 
 # Incremental save/load
 inc <- am_save_incremental(doc) # Only changes since last save
@@ -90,7 +90,7 @@ keys <- am_keys(doc, AM_ROOT) # Functional version
 values <- am_values(doc, AM_ROOT) # Get all values
 n <- length(doc) # Number of keys
 n <- am_length(doc, AM_ROOT) # Functional version
-items <- am_obj_items(doc, AM_ROOT) # All key-value entries
+items <- am_items(doc, AM_ROOT) # All key-value entries
 
 # All conflicting values for a key (after concurrent edits)
 conflicts <- am_map_get_all(doc, AM_ROOT, "key")
@@ -141,7 +141,7 @@ am_delete(doc, items, 1) # Delete index 1
 
 # Introspection
 n <- am_length(doc, items) # List length
-items_entries <- am_obj_items(doc, items) # All index-value entries
+items_entries <- am_items(doc, items) # All index-value entries
 
 # All conflicting values at index (after concurrent edits)
 conflicts <- am_list_get_all(doc, items, 1)
@@ -308,7 +308,7 @@ bytes <- am_change_to_bytes(change) # Serialize to raw
 change <- am_change_from_bytes(bytes)
 
 # Decompose saved document into individual changes
-changes <- am_change_load_document(bytes) # From am_save() output
+changes <- am_load_changes(bytes) # From am_save() output
 
 # Check document completeness
 missing <- am_get_missing_deps(doc)

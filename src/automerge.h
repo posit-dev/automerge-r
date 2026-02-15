@@ -74,7 +74,7 @@ SEXP C_am_change_to_bytes(SEXP change);
 SEXP C_am_clone(SEXP doc_ptr);
 SEXP C_am_equal(SEXP doc1_ptr, SEXP doc2_ptr);
 SEXP C_am_pending_ops(SEXP doc_ptr);
-SEXP C_am_empty_change(SEXP doc_ptr, SEXP message, SEXP time);
+SEXP C_am_commit_empty(SEXP doc_ptr, SEXP message, SEXP time);
 SEXP C_am_save_incremental(SEXP doc_ptr);
 SEXP C_am_load_incremental(SEXP doc_ptr, SEXP data);
 
@@ -98,7 +98,7 @@ SEXP C_am_map_get_all(SEXP doc_ptr, SEXP obj_ptr, SEXP key, SEXP heads);
 SEXP C_am_list_get_all(SEXP doc_ptr, SEXP obj_ptr, SEXP pos, SEXP heads);
 SEXP C_am_map_range(SEXP doc_ptr, SEXP obj_ptr, SEXP begin, SEXP end, SEXP heads);
 SEXP C_am_list_range(SEXP doc_ptr, SEXP obj_ptr, SEXP begin, SEXP end, SEXP heads);
-SEXP C_am_obj_items(SEXP doc_ptr, SEXP obj_ptr, SEXP heads);
+SEXP C_am_items(SEXP doc_ptr, SEXP obj_ptr, SEXP heads);
 
 // Synchronization operations (sync.c)
 SEXP C_am_sync_state(void);
@@ -109,7 +109,7 @@ SEXP C_am_get_changes(SEXP doc_ptr, SEXP heads);
 SEXP C_am_apply_changes(SEXP doc_ptr, SEXP changes);
 // v1.2 Sync/change operations (sync.c, changes.c)
 SEXP C_am_get_missing_deps(SEXP doc_ptr, SEXP heads);
-SEXP C_am_change_load_document(SEXP data);
+SEXP C_am_load_changes(SEXP data);
 SEXP C_am_sync_state_encode(SEXP sync_state_ptr);
 SEXP C_am_sync_state_decode(SEXP data);
 

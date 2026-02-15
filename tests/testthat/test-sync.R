@@ -501,9 +501,9 @@ test_that("am_get_missing_deps() with specific heads", {
   expect_length(missing, 0)
 })
 
-# am_change_load_document tests
+# am_load_changes tests
 
-test_that("am_change_load_document() decomposes document", {
+test_that("am_load_changes() decomposes document", {
   doc <- am_create()
   doc$key1 <- "value1"
   am_commit(doc, "First")
@@ -511,7 +511,7 @@ test_that("am_change_load_document() decomposes document", {
   am_commit(doc, "Second")
   bytes <- am_save(doc)
 
-  changes <- am_change_load_document(bytes)
+  changes <- am_load_changes(bytes)
   expect_type(changes, "list")
   expect_length(changes, 2)
   expect_s3_class(changes[[1]], "am_change")
@@ -520,7 +520,7 @@ test_that("am_change_load_document() decomposes document", {
   expect_equal(am_change_message(changes[[2]]), "Second")
 })
 
-test_that("am_change_load_document() changes can be applied", {
+test_that("am_load_changes() changes can be applied", {
   doc1 <- am_create()
   doc1$x <- 1
   am_commit(doc1, "Add x")
@@ -528,7 +528,7 @@ test_that("am_change_load_document() changes can be applied", {
   am_commit(doc1, "Add y")
   bytes <- am_save(doc1)
 
-  changes <- am_change_load_document(bytes)
+  changes <- am_load_changes(bytes)
 
   doc2 <- am_create()
   am_apply_changes(doc2, changes)
@@ -536,15 +536,15 @@ test_that("am_change_load_document() changes can be applied", {
   expect_equal(am_get(doc2, AM_ROOT, "y"), 2)
 })
 
-test_that("am_change_load_document() errors on non-raw", {
-  expect_error(am_change_load_document("not raw"), "data must be a raw vector")
+test_that("am_load_changes() errors on non-raw", {
+  expect_error(am_load_changes("not raw"), "data must be a raw vector")
 })
 
-test_that("am_change_load_document() on empty doc", {
+test_that("am_load_changes() on empty doc", {
   doc <- am_create()
   bytes <- am_save(doc)
 
-  changes <- am_change_load_document(bytes)
+  changes <- am_load_changes(bytes)
   expect_type(changes, "list")
   expect_length(changes, 0)
 })

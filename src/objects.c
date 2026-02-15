@@ -1224,7 +1224,7 @@ SEXP C_am_list_range(SEXP doc_ptr, SEXP obj_ptr, SEXP begin, SEXP end, SEXP head
  * @param heads Optional list of change hashes (or NULL)
  * @return List of lists, each with key (or index), value, and obj_id fields
  */
-SEXP C_am_obj_items(SEXP doc_ptr, SEXP obj_ptr, SEXP heads) {
+SEXP C_am_items(SEXP doc_ptr, SEXP obj_ptr, SEXP heads) {
     AMdoc *doc = get_doc(doc_ptr);
     const AMobjId *obj_id = get_objid(obj_ptr);
 

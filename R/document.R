@@ -568,12 +568,12 @@ am_pending_ops <- function(doc) {
 #' am_commit(doc, "Initial data")
 #'
 #' # Create empty change as a checkpoint
-#' am_empty_change(doc, "Checkpoint")
+#' am_commit_empty(doc, "Checkpoint")
 #'
 #' am_close(doc)
 #'
-am_empty_change <- function(doc, message = NULL, time = NULL) {
-  invisible(.Call(C_am_empty_change, doc, message, time))
+am_commit_empty <- function(doc, message = NULL, time = NULL) {
+  invisible(.Call(C_am_commit_empty, doc, message, time))
 }
 
 #' Save incremental changes

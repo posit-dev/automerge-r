@@ -672,7 +672,7 @@ SEXP C_am_pending_ops(SEXP doc_ptr) {
  * @param time POSIXct timestamp (or NULL)
  * @return The document pointer (invisibly)
  */
-SEXP C_am_empty_change(SEXP doc_ptr, SEXP message, SEXP time) {
+SEXP C_am_commit_empty(SEXP doc_ptr, SEXP message, SEXP time) {
     AMdoc *doc = get_doc(doc_ptr);
 
     AMbyteSpan msg_span = {.src = NULL, .count = 0};

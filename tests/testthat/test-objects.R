@@ -1594,14 +1594,14 @@ test_that("am_list_range() errors on invalid end", {
   expect_error(am_list_range(doc, items, 1, 0), "end must be >= 1")
 })
 
-# am_obj_items tests
+# am_items tests
 
-test_that("am_obj_items() returns items from map", {
+test_that("am_items() returns items from map", {
   doc <- am_create()
   doc$name <- "Alice"
   doc$age <- 30L
 
-  items <- am_obj_items(doc, AM_ROOT)
+  items <- am_items(doc, AM_ROOT)
   expect_type(items, "list")
   expect_length(items, 2)
 
@@ -1610,12 +1610,12 @@ test_that("am_obj_items() returns items from map", {
   expect_true(all(vapply(items, function(x) "value" %in% names(x), logical(1))))
 })
 
-test_that("am_obj_items() returns items from list", {
+test_that("am_items() returns items from list", {
   doc <- am_create()
   doc$items <- list("a", "b", "c")
   items_obj <- doc$items
 
-  items <- am_obj_items(doc, items_obj)
+  items <- am_items(doc, items_obj)
   expect_type(items, "list")
   expect_length(items, 3)
 
@@ -1623,8 +1623,8 @@ test_that("am_obj_items() returns items from list", {
   expect_true(all(vapply(items, function(x) "value" %in% names(x), logical(1))))
 })
 
-test_that("am_obj_items() returns empty list for empty object", {
+test_that("am_items() returns empty list for empty object", {
   doc <- am_create()
-  items <- am_obj_items(doc, AM_ROOT)
+  items <- am_items(doc, AM_ROOT)
   expect_length(items, 0)
 })

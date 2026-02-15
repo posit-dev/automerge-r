@@ -177,6 +177,66 @@ am_close(doc6)
 
 **Limitation**: There are cases where insertion order is not perfectly preserved, primarily when inserting elements in reverse order. However, the algorithm performs well in most common scenarios.
 
+### Inspecting Conflicts
+
+Automerge always picks a single winner for concurrent edits to the same key or index, but both values are retained internally. Use `am_map_get_all()` and `am_list_get_all()` to inspect all conflicting values and present them to users or apply application-specific resolution logic.
+
+```{r}
+# Map conflict: two peers edit the same key concurrently
+doc_c1 <- am_create()
+doc_c1[["status"]] <- "draft"
+am_commit(doc_c1)
+
+doc_c2 <- am_fork(doc_c1)
+
+doc_c1[["status"]] <- "published"
+am_commit(doc_c1)
+doc_c2[["status"]] <- "archived"
+am_commit(doc_c2)
+
+am_merge(doc_c1, doc_c2)
+
+# am_get returns the winner
+am_get(doc_c1, AM_ROOT, "status")
+
+# am_map_get_all returns all conflicting values
+all_statuses <- am_map_get_all(doc_c1, AM_ROOT, "status")
+length(all_statuses) # 2
+all_statuses
+```
+
+The same approach works for lists — when two peers concurrently update the same index, `am_list_get_all()` reveals both values:
+
+```{r}
+# List conflict: two peers update the same index
+doc_l1 <- am_create()
+am_put(doc_l1, AM_ROOT, "scores", AM_OBJ_TYPE_LIST)
+scores <- am_get(doc_l1, AM_ROOT, "scores")
+am_insert(doc_l1, scores, 1, 100L)
+am_commit(doc_l1)
+
+doc_l2 <- am_fork(doc_l1)
+scores2 <- am_get(doc_l2, AM_ROOT, "scores")
+
+am_put(doc_l1, scores, 1, 200L)
+am_commit(doc_l1)
+am_put(doc_l2, scores2, 1, 300L)
+am_commit(doc_l2)
+
+am_merge(doc_l1, doc_l2)
+
+# Winner
+am_get(doc_l1, scores, 1)
+
+# All conflicting values
+am_list_get_all(doc_l1, scores, 1)
+
+am_close(doc_c1)
+am_close(doc_c2)
+am_close(doc_l1)
+am_close(doc_l2)
+```
+
 ### Text CRDTs (Collaborative Text Editing)
 
 Text objects are optimized for character-level collaborative editing. They handle concurrent insertions, deletions, and edits gracefully.

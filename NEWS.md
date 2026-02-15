@@ -26,20 +26,20 @@
 
 * Adds range queries: `am_map_range()` for retrieving map entries within a key
   range, `am_list_range()` for retrieving a subrange of list items, and
-  `am_obj_items()` for getting all key-value entries from any object.
+  `am_items()` for getting all key-value entries from any object.
 
 * Adds `am_mark_clear()` for removing marks from text ranges.
 
 * Adds sync state serialization: `am_sync_state_encode()` and
   `am_sync_state_decode()` for persisting sync state across sessions.
 
-* Adds `am_change_load_document()` for decomposing saved document bytes into
+* Adds `am_load_changes()` for decomposing saved document bytes into
   individual changes, and `am_get_missing_deps()` for checking document
   completeness.
 
 * Adds document utilities: `am_clone()` for deep copying (preserving actor
   ID), `am_equal()` for testing document equality, `am_pending_ops()` for
-  counting uncommitted operations, and `am_empty_change()` for creating empty
+  counting uncommitted operations, and `am_commit_empty()` for creating empty
   changes.
 
 * Renames `am_sync_state_new()` to `am_sync_state()`.

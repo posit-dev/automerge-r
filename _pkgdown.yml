@@ -22,7 +22,7 @@ reference:
       - am_clone
       - am_equal
       - am_pending_ops
-      - am_empty_change
+      - am_commit_empty
       - am_save_incremental
       - am_load_incremental
 
@@ -45,7 +45,7 @@ reference:
       - am_keys
       - am_values
       - am_length
-      - am_obj_items
+      - am_items
       - am_list_range
       - am_map_range
       - am_list_get_all
@@ -115,7 +115,7 @@ reference:
       - am_change_seq
       - am_change_deps
       - am_get_missing_deps
-      - am_change_load_document
+      - am_load_changes
 
   - title: "Type Constructors"
     desc: >

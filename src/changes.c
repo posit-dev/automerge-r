@@ -239,7 +239,7 @@ SEXP C_am_change_to_bytes(SEXP change_ptr) {
  * @param data Raw vector containing serialized document
  * @return List of am_change objects
  */
-SEXP C_am_change_load_document(SEXP data) {
+SEXP C_am_load_changes(SEXP data) {
     if (TYPEOF(data) != RAWSXP) {
         Rf_error("data must be a raw vector");
     }

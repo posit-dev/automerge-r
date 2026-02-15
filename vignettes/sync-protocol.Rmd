@@ -244,7 +244,7 @@ am_close(peer_c)
 
 ### Decomposing Saved Documents
 
-If you have a saved document (from `am_save()`) and want to extract its individual changes without loading the full document, use `am_change_load_document()`:
+If you have a saved document (from `am_save()`) and want to extract its individual changes without loading the full document, use `am_load_changes()`:
 
 ```{r}
 # Save a document with multiple commits
@@ -256,7 +256,7 @@ am_commit(doc_decompose, "Add y")
 saved_bytes <- am_save(doc_decompose)
 
 # Extract individual changes from the saved bytes
-extracted_changes <- am_change_load_document(saved_bytes)
+extracted_changes <- am_load_changes(saved_bytes)
 length(extracted_changes)
 
 # Inspect each change

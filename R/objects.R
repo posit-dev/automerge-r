@@ -623,12 +623,12 @@ am_list_range <- function(doc, obj, begin, end, heads = NULL) {
 #' doc$name <- "Alice"
 #' doc$age <- 30L
 #'
-#' items <- am_obj_items(doc, AM_ROOT)
+#' items <- am_items(doc, AM_ROOT)
 #' items[[1]]$key    # "age" (sorted lexicographically)
 #' items[[1]]$value  # 30
 #'
 #' am_close(doc)
 #'
-am_obj_items <- function(doc, obj, heads = NULL) {
-  .Call(C_am_obj_items, doc, obj, heads)
+am_items <- function(doc, obj, heads = NULL) {
+  .Call(C_am_items, doc, obj, heads)
 }

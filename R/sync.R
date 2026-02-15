@@ -574,7 +574,7 @@ am_get_missing_deps <- function(doc, heads = NULL) {
 #' bytes <- am_save(doc)
 #'
 #' # Load as individual changes
-#' changes <- am_change_load_document(bytes)
+#' changes <- am_load_changes(bytes)
 #' length(changes)  # 2
 #' am_change_message(changes[[1]])  # "Add key"
 #' am_change_message(changes[[2]])  # "Add key2"
@@ -588,8 +588,8 @@ am_get_missing_deps <- function(doc, heads = NULL) {
 #' am_close(doc)
 #' am_close(doc2)
 #'
-am_change_load_document <- function(data) {
-  .Call(C_am_change_load_document, data)
+am_load_changes <- function(data) {
+  .Call(C_am_load_changes, data)
 }
 
 #' Serialize a sync state

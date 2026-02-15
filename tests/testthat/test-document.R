@@ -743,36 +743,36 @@ test_that("am_pending_ops() returns to zero after commit", {
   expect_equal(am_pending_ops(doc), 0L)
 })
 
-# am_empty_change tests
+# am_commit_empty tests
 
-test_that("am_empty_change() adds to history", {
+test_that("am_commit_empty() adds to history", {
   doc <- am_create()
   doc$key <- "value"
   am_commit(doc, "First")
   heads_before <- am_get_heads(doc)
 
-  am_empty_change(doc, "Empty change")
+  am_commit_empty(doc, "Empty change")
   heads_after <- am_get_heads(doc)
 
   expect_false(identical(heads_before, heads_after))
 })
 
-test_that("am_empty_change() preserves message", {
+test_that("am_commit_empty() preserves message", {
   doc <- am_create()
   doc$key <- "value"
   am_commit(doc, "Setup")
 
-  am_empty_change(doc, "Checkpoint message")
+  am_commit_empty(doc, "Checkpoint message")
 
   change <- am_get_last_local_change(doc)
   expect_equal(am_change_message(change), "Checkpoint message")
 })
 
-test_that("am_empty_change() returns doc invisibly", {
+test_that("am_commit_empty() returns doc invisibly", {
   doc <- am_create()
   doc$key <- "value"
   am_commit(doc)
-  result <- am_empty_change(doc, "test")
+  result <- am_commit_empty(doc, "test")
   expect_identical(result, doc)
 })
 
