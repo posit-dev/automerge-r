@@ -24,6 +24,13 @@
   [`am_get_changes_added()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes_added.md))
   now return `am_change` objects instead of raw vectors.
 
+- [`am_cursor()`](https://posit-dev.github.io/automerge-r/reference/am_cursor.md),
+  [`am_cursor_position()`](https://posit-dev.github.io/automerge-r/reference/am_cursor_position.md),
+  [`am_marks()`](https://posit-dev.github.io/automerge-r/reference/am_marks.md),
+  and
+  [`am_marks_at()`](https://posit-dev.github.io/automerge-r/reference/am_marks_at.md)
+  gain a `heads` parameter for querying at historical document states.
+
 - Adds cursor serialization and comparison:
   [`am_cursor_to_bytes()`](https://posit-dev.github.io/automerge-r/reference/am_cursor_to_bytes.md),
   [`am_cursor_from_bytes()`](https://posit-dev.github.io/automerge-r/reference/am_cursor_from_bytes.md),
@@ -32,12 +39,52 @@
   and
   [`am_cursor_equal()`](https://posit-dev.github.io/automerge-r/reference/am_cursor_equal.md).
 
-- [`am_cursor()`](https://posit-dev.github.io/automerge-r/reference/am_cursor.md),
-  [`am_cursor_position()`](https://posit-dev.github.io/automerge-r/reference/am_cursor_position.md),
-  [`am_marks()`](https://posit-dev.github.io/automerge-r/reference/am_marks.md),
+- Adds incremental save/load:
+  [`am_save_incremental()`](https://posit-dev.github.io/automerge-r/reference/am_save_incremental.md)
   and
-  [`am_marks_at()`](https://posit-dev.github.io/automerge-r/reference/am_marks_at.md)
-  gain a `heads` parameter for querying at historical document states.
+  [`am_load_incremental()`](https://posit-dev.github.io/automerge-r/reference/am_load_incremental.md)
+  for exchanging only new changes since the last save.
+
+- Adds conflict inspection:
+  [`am_map_get_all()`](https://posit-dev.github.io/automerge-r/reference/am_map_get_all.md)
+  and
+  [`am_list_get_all()`](https://posit-dev.github.io/automerge-r/reference/am_list_get_all.md)
+  for retrieving all conflicting values at a key or index after
+  concurrent edits.
+
+- Adds range queries:
+  [`am_map_range()`](https://posit-dev.github.io/automerge-r/reference/am_map_range.md)
+  for retrieving map entries within a key range,
+  [`am_list_range()`](https://posit-dev.github.io/automerge-r/reference/am_list_range.md)
+  for retrieving a subrange of list items, and
+  [`am_obj_items()`](https://posit-dev.github.io/automerge-r/reference/am_obj_items.md)
+  for getting all key-value entries from any object.
+
+- Adds
+  [`am_mark_clear()`](https://posit-dev.github.io/automerge-r/reference/am_mark_clear.md)
+  for removing marks from text ranges.
+
+- Adds sync state serialization:
+  [`am_sync_state_encode()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state_encode.md)
+  and
+  [`am_sync_state_decode()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state_decode.md)
+  for persisting sync state across sessions.
+
+- Adds
+  [`am_change_load_document()`](https://posit-dev.github.io/automerge-r/reference/am_change_load_document.md)
+  for decomposing saved document bytes into individual changes, and
+  [`am_get_missing_deps()`](https://posit-dev.github.io/automerge-r/reference/am_get_missing_deps.md)
+  for checking document completeness.
+
+- Adds document utilities:
+  [`am_clone()`](https://posit-dev.github.io/automerge-r/reference/am_clone.md)
+  for deep copying (preserving actor ID),
+  [`am_equal()`](https://posit-dev.github.io/automerge-r/reference/am_equal.md)
+  for testing document equality,
+  [`am_pending_ops()`](https://posit-dev.github.io/automerge-r/reference/am_pending_ops.md)
+  for counting uncommitted operations, and
+  [`am_empty_change()`](https://posit-dev.github.io/automerge-r/reference/am_empty_change.md)
+  for creating empty changes.
 
 - Renames `am_sync_state_new()` to
   [`am_sync_state()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state.md).

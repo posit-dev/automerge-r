@@ -215,9 +215,9 @@ API.</p>
 <span><span class="va">round</span></span>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="va">peer3</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer3"</span></span>
+<span><span class="co">#&gt; [1] "peer4"</span></span>
 <span><span class="va">peer4</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer3"</span></span>
+<span><span class="co">#&gt; [1] "peer4"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer4</span><span class="op">)</span></span></code></pre></div>
@@ -444,16 +444,16 @@ document has all its dependencies with
 <span><span class="co"># Extract multiple fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique hash</span></span>
-<span><span class="co">#&gt;  [1] a4 83 e5 40 c8 93 19 ef 51 8d a5 e3 4d 5a 0a a5 28 57 65 56 d5 21</span></span>
-<span><span class="co">#&gt; [23] 3e 5e 39 0d b3 62 e8 be 70 dc</span></span>
+<span><span class="co">#&gt;  [1] 3a f1 c6 1e 45 4b 6d 2f 47 72 d9 d6 b2 7a 52 77 6b d9 ed 5f bc 56</span></span>
+<span><span class="co">#&gt; [23] 58 7b a3 73 c3 2a 14 cc 01 75</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made this change</span></span>
-<span><span class="co">#&gt;  [1] e9 11 94 8a 0d 63 9a 49 b0 72 f9 9b 26 a7 81 47</span></span>
+<span><span class="co">#&gt;  [1] 4e d0 cb 0f 2c d8 1b 88 ec 4e 86 b4 bc e2 0e 61</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># When</span></span>
 <span><span class="co">#&gt; [1] "1970-01-01 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent changes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] 6f 25 39 c9 83 4d 2a cd c6 5c a6 6d b4 dd de fe ef d9 60 f5 86 14</span></span>
-<span><span class="co">#&gt; [23] df e4 b3 f6 e7 08 cb 18 0b 44</span></span>
+<span><span class="co">#&gt;  [1] b3 0c 21 6d 3a 39 7c c6 6a aa 09 bf fb aa 57 3c fc 83 16 30 6c af</span></span>
+<span><span class="co">#&gt; [23] 04 6b eb f6 8a fa de cb 12 8b</span></span>
 <span></span>
 <span><span class="co"># Get changes between two points in history</span></span>
 <span><span class="va">changes_since_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc_main</span>, <span class="va">heads_v1</span><span class="op">)</span></span>
@@ -598,7 +598,7 @@ document has all its dependencies with
 <span></span>
 <span><span class="co"># Status: Deterministic conflict resolution (one value wins)</span></span>
 <span><span class="va">editor1</span><span class="op">[[</span><span class="st">"status"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "published"</span></span>
+<span><span class="co">#&gt; [1] "review"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">base</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">editor1</span><span class="op">)</span></span>
