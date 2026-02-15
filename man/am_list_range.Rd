@@ -13,7 +13,7 @@ am_list_range(doc, obj, begin, end, heads = NULL)
 
 \item{begin}{Start index (1-based, inclusive)}
 
-\item{end}{End index (1-based, exclusive)}
+\item{end}{End index (1-based, inclusive)}
 
 \item{heads}{Optional list of change hashes (raw vectors) for historical
 query. If \code{NULL} (default), uses the current state.}
@@ -22,7 +22,7 @@ query. If \code{NULL} (default), uses the current state.}
 A list of values in the index range.
 }
 \description{
-Returns list elements within the index range \verb{[begin, end)}.
+Returns list elements within the index range \verb{[begin, end]}.
 Uses 1-based indexing consistent with R conventions.
 }
 \examples{
@@ -31,7 +31,7 @@ doc$items <- list("a", "b", "c", "d", "e")
 items <- doc$items
 
 # Get elements 2 through 4 -> "b", "c", "d"
-range <- am_list_range(doc, items, 2, 5)
+range <- am_list_range(doc, items, 2, 4)
 length(range)  # 3
 
 am_close(doc)

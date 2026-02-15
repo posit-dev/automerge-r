@@ -1163,7 +1163,7 @@ SEXP C_am_list_range(SEXP doc_ptr, SEXP obj_ptr, SEXP begin, SEXP end, SEXP head
         Rf_error("end must be >= 1 (R uses 1-based indexing)");
     }
     size_t c_begin = (size_t) (r_begin - 1);
-    size_t c_end = (size_t) (r_end - 1);  // Convert R 1-based exclusive to C 0-based exclusive
+    size_t c_end = (size_t) r_end;  // Convert R 1-based inclusive to C 0-based exclusive
 
     AMitems *heads_ptr = NULL;
     AMitems heads_items;

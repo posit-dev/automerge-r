@@ -572,13 +572,13 @@ am_map_range <- function(doc, obj, begin = "", end = "", heads = NULL) {
 
 #' Get a range of list items
 #'
-#' Returns list elements within the index range `[begin, end)`.
+#' Returns list elements within the index range `[begin, end]`.
 #' Uses 1-based indexing consistent with R conventions.
 #'
 #' @param doc An Automerge document
 #' @param obj An Automerge object ID (must be a list)
 #' @param begin Start index (1-based, inclusive)
-#' @param end End index (1-based, exclusive)
+#' @param end End index (1-based, inclusive)
 #' @param heads Optional list of change hashes (raw vectors) for historical
 #'   query. If `NULL` (default), uses the current state.
 #'
@@ -591,7 +591,7 @@ am_map_range <- function(doc, obj, begin = "", end = "", heads = NULL) {
 #' items <- doc$items
 #'
 #' # Get elements 2 through 4 -> "b", "c", "d"
-#' range <- am_list_range(doc, items, 2, 5)
+#' range <- am_list_range(doc, items, 2, 4)
 #' length(range)  # 3
 #'
 #' am_close(doc)

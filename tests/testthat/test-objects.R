@@ -1570,7 +1570,7 @@ test_that("am_list_range() returns subset of elements", {
   doc$items <- list("a", "b", "c", "d", "e")
   items <- doc$items
 
-  range <- am_list_range(doc, items, 2, 5)
+  range <- am_list_range(doc, items, 2, 4)
   expect_type(range, "list")
   expect_length(range, 3)
   expect_equal(range[[1]], "b")
@@ -1592,6 +1592,7 @@ test_that("am_list_range() errors on invalid end", {
   items <- doc$items
 
   expect_error(am_list_range(doc, items, 1, 0), "end must be >= 1")
+  expect_error(am_list_range(doc, items, 1, -1), "end must be >= 1")
 })
 
 # am_items tests
@@ -1779,7 +1780,7 @@ test_that("am_list_range() full range returns all items", {
   doc$items <- list("a", "b", "c")
   items <- doc$items
 
-  range <- am_list_range(doc, items, 1, 4)
+  range <- am_list_range(doc, items, 1, 3)
   expect_length(range, 3)
   expect_equal(range[[1]], "a")
   expect_equal(range[[3]], "c")
@@ -1790,7 +1791,7 @@ test_that("am_list_range() single element range", {
   doc$items <- list("a", "b", "c")
   items <- doc$items
 
-  range <- am_list_range(doc, items, 2, 3)
+  range <- am_list_range(doc, items, 2, 2)
   expect_length(range, 1)
   expect_equal(range[[1]], "b")
 })
@@ -1800,7 +1801,7 @@ test_that("am_list_range() with nested objects", {
   doc$items <- list(list(name = "Alice"), list(name = "Bob"))
   items <- doc$items
 
-  range <- am_list_range(doc, items, 1, 3)
+  range <- am_list_range(doc, items, 1, 2)
   expect_length(range, 2)
   expect_s3_class(range[[1]], "am_object")
 })
@@ -1815,10 +1816,10 @@ test_that("am_list_range() with historical heads", {
   am_insert(doc, items, "end", "c")
   am_commit(doc)
 
-  range_now <- am_list_range(doc, items, 1, 4)
+  range_now <- am_list_range(doc, items, 1, 3)
   expect_length(range_now, 3)
 
-  range_then <- am_list_range(doc, items, 1, 3, heads_v1)
+  range_then <- am_list_range(doc, items, 1, 2, heads_v1)
   expect_length(range_then, 2)
 })
 
