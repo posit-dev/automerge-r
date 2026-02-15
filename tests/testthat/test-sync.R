@@ -770,3 +770,113 @@ test_that("am_sync_state_encode() on fresh state has consistent output", {
 test_that("am_sync_state_decode() errors on invalid bytes", {
   expect_error(am_sync_state_decode(raw(3)))
 })
+
+# Coverage Tests: Input Validation and Edge Cases =============================
+
+# am_get_missing_deps with multiple heads error
+
+test_that("am_get_missing_deps() errors on multiple heads", {
+  doc <- am_create()
+  doc$x <- 1
+  am_commit(doc)
+
+  doc2 <- am_fork(doc)
+  doc$y <- 2
+  am_commit(doc)
+  doc2$z <- 3
+  am_commit(doc2)
+  am_merge(doc, doc2)
+
+  heads <- am_get_heads(doc)
+  expect_gte(length(heads), 2)
+  expect_error(
+    am_get_missing_deps(doc, heads),
+    "multiple heads"
+  )
+})
+
+# am_sync_encode/decode input validation
+
+test_that("am_sync_decode() errors on non-raw message", {
+  doc <- am_create()
+  sync <- am_sync_state()
+  expect_error(am_sync_decode(doc, sync, "not raw"), "raw vector")
+})
+
+# am_apply_changes input validation
+
+test_that("am_apply_changes() errors on non-list", {
+  doc <- am_create()
+  expect_error(am_apply_changes(doc, "not a list"), "list")
+})
+
+# am_get_changes with empty doc returns empty
+
+test_that("am_get_changes() on empty doc returns empty list", {
+  doc <- am_create()
+  changes <- am_get_changes(doc, NULL)
+  expect_type(changes, "list")
+  expect_length(changes, 0)
+})
+
+# am_get_heads on document with concurrent edits returns multiple heads
+
+test_that("am_get_heads() returns multiple heads after merge without commit", {
+  doc <- am_create()
+  doc$x <- 1
+  am_commit(doc)
+
+  doc2 <- am_fork(doc)
+  doc$y <- 2
+  am_commit(doc)
+  doc2$z <- 3
+  am_commit(doc2)
+
+  am_merge(doc, doc2)
+
+  heads <- am_get_heads(doc)
+  expect_equal(length(heads), 2)
+  expect_type(heads[[1]], "raw")
+  expect_type(heads[[2]], "raw")
+})
+
+# am_get_missing_deps with empty heads list
+
+test_that("am_get_missing_deps() with empty heads list same as NULL", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+
+  missing_null <- am_get_missing_deps(doc, NULL)
+  missing_empty <- am_get_missing_deps(doc, list())
+  expect_equal(missing_null, missing_empty)
+})
+
+# am_get_missing_deps returning actual missing deps
+
+test_that("am_get_missing_deps() detects missing deps from unknown heads", {
+  doc1 <- am_create()
+  doc1$a <- 1
+  am_commit(doc1)
+  heads1 <- am_get_heads(doc1)
+
+  # Empty doc doesn't have the changes
+  doc2 <- am_create()
+  missing <- am_get_missing_deps(doc2, heads1)
+  expect_gte(length(missing), 1)
+  expect_type(missing[[1]], "raw")
+})
+
+# am_get_changes with heads parameter
+
+test_that("am_get_changes() with empty heads list", {
+  doc <- am_create()
+  doc$a <- 1
+  am_commit(doc)
+  doc$b <- 2
+  am_commit(doc)
+
+  # Empty heads list should return all changes
+  changes <- am_get_changes(doc, list())
+  expect_gte(length(changes), 2)
+})

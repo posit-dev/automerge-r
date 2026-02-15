@@ -1021,3 +1021,179 @@ test_that("am_load_incremental() errors on invalid bytes", {
   doc <- am_create()
   expect_error(am_load_incremental(doc, raw(10)))
 })
+
+# Coverage Tests: Input Validation and Edge Cases =============================
+
+# am_fork with empty heads list (covers n_head_results==0 path)
+
+test_that("am_fork() with empty heads list same as NULL", {
+  doc <- am_create()
+  doc$x <- 1
+  am_commit(doc)
+
+  fork1 <- am_fork(doc)
+  fork2 <- am_fork(doc, list())
+
+  expect_true(am_equal(fork1, fork2))
+})
+
+# am_fork with multiple heads errors
+
+test_that("am_fork() errors on multiple heads", {
+  doc <- am_create()
+  doc$x <- 1
+  am_commit(doc)
+
+  doc2 <- am_fork(doc)
+  doc$y <- 2
+  am_commit(doc)
+  doc2$z <- 3
+  am_commit(doc2)
+  am_merge(doc, doc2)
+
+  heads <- am_get_heads(doc)
+  expect_gte(length(heads), 2)
+  expect_error(
+    am_fork(doc, heads),
+    "multiple heads"
+  )
+})
+
+# am_commit_empty input validation
+
+test_that("am_commit_empty() errors on invalid message type", {
+  doc <- am_create()
+  expect_error(am_commit_empty(doc, message = 123), "character string")
+})
+
+test_that("am_commit_empty() errors on invalid time type", {
+  doc <- am_create()
+  expect_error(am_commit_empty(doc, time = "not a time"), "POSIXct")
+})
+
+# am_create with raw actor ID
+
+test_that("am_create() with raw actor ID", {
+  raw_id <- as.raw(1:16)
+  doc <- am_create(raw_id)
+  actor <- am_get_actor(doc)
+  expect_type(actor, "raw")
+  expect_equal(actor, raw_id)
+})
+
+# am_create with invalid actor ID type
+
+test_that("am_create() errors on invalid actor_id type", {
+  expect_error(am_create(123L), "NULL.*character string.*raw bytes")
+})
+
+# am_set_actor with raw bytes
+
+test_that("am_set_actor() with raw bytes", {
+  doc <- am_create()
+  raw_id <- as.raw(1:16)
+  am_set_actor(doc, raw_id)
+  expect_equal(am_get_actor(doc), raw_id)
+})
+
+# am_set_actor with NULL (random)
+
+test_that("am_set_actor() with NULL generates random actor", {
+  doc <- am_create()
+  original <- am_get_actor(doc)
+  am_set_actor(doc, NULL)
+  # New actor should be different from original
+  expect_false(identical(am_get_actor(doc), original))
+})
+
+# am_set_actor with invalid type
+
+test_that("am_set_actor() errors on invalid type", {
+  doc <- am_create()
+  expect_error(am_set_actor(doc, 123L), "NULL.*character string.*raw bytes")
+})
+
+# am_load errors on non-raw
+
+test_that("am_load() errors on non-raw input", {
+  expect_error(am_load("not raw"), "raw vector")
+})
+
+# am_load_incremental errors on non-raw
+
+test_that("am_load_incremental() errors on non-raw input", {
+  doc <- am_create()
+  expect_error(am_load_incremental(doc, "not raw"), "raw vector")
+})
+
+# am_commit with invalid message
+
+test_that("am_commit() errors on invalid message type", {
+  doc <- am_create()
+  doc$x <- 1
+  expect_error(am_commit(doc, message = 123), "character string")
+})
+
+# am_commit with invalid time
+
+test_that("am_commit() errors on invalid time type", {
+  doc <- am_create()
+  doc$x <- 1
+  expect_error(am_commit(doc, time = "not a time"), "POSIXct")
+})
+
+# am_get_changes_added returns empty for identical docs
+
+test_that("am_get_changes_added() returns empty for identical docs", {
+  doc1 <- am_create()
+  doc1$x <- 1
+  am_commit(doc1)
+
+  doc2 <- am_fork(doc1)
+
+  changes <- am_get_changes_added(doc1, doc2)
+  expect_length(changes, 0)
+})
+
+# am_get_changes_added with diverged docs
+
+test_that("am_get_changes_added() returns new changes", {
+  doc1 <- am_create()
+  doc1$x <- 1
+  am_commit(doc1)
+
+  doc2 <- am_fork(doc1)
+  doc2$y <- 2
+  am_commit(doc2)
+
+  changes <- am_get_changes_added(doc1, doc2)
+  expect_length(changes, 1)
+  expect_s3_class(changes[[1]], "am_change")
+})
+
+# am_get_history returns am_change objects
+
+test_that("am_get_history() returns am_change list with metadata", {
+  doc <- am_create()
+  doc$a <- 1
+  am_commit(doc, "First")
+  doc$b <- 2
+  am_commit(doc, "Second")
+
+  history <- am_get_history(doc)
+  expect_length(history, 2)
+  expect_s3_class(history[[1]], "am_change")
+  expect_equal(am_change_message(history[[1]]), "First")
+  expect_equal(am_change_message(history[[2]]), "Second")
+  expect_equal(am_change_seq(history[[1]]), 1L)
+  expect_equal(am_change_seq(history[[2]]), 2L)
+})
+
+# convert_r_heads_to_amresult with non-raw element in list
+
+test_that("am_get_changes() errors on non-raw head in list", {
+  doc <- am_create()
+  doc$x <- 1
+  am_commit(doc)
+  expect_error(am_get_changes(doc, list("not raw")), "raw vectors")
+})

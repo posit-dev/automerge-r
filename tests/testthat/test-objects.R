@@ -1891,3 +1891,505 @@ test_that("am_items() with historical heads", {
   items_then <- am_items(doc, AM_ROOT, heads_v1)
   expect_length(items_then, 1)
 })
+
+# Coverage Tests: Input Validation and Edge Cases =============================
+
+# am_put edge cases for type dispatch
+
+test_that("am_put() with raw bytes into map", {
+  doc <- am_create()
+  raw_data <- as.raw(c(0x01, 0x02, 0x03))
+  am_put(doc, AM_ROOT, "data", raw_data)
+  result <- am_get(doc, AM_ROOT, "data")
+  expect_type(result, "raw")
+  expect_equal(result, raw_data)
+})
+
+test_that("am_put() with raw bytes into list", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, as.raw(c(0xDE, 0xAD)))
+  val <- am_get(doc, items, 1)
+  expect_type(val, "raw")
+  expect_equal(val, as.raw(c(0xDE, 0xAD)))
+})
+
+test_that("am_put() with POSIXct into map and list", {
+  doc <- am_create()
+  ts <- as.POSIXct("2025-06-15 12:00:00", tz = "UTC")
+  am_put(doc, AM_ROOT, "time", ts)
+  result <- am_get(doc, AM_ROOT, "time")
+  expect_s3_class(result, "POSIXct")
+
+  # Into list
+  am_put(doc, AM_ROOT, "times", AM_OBJ_TYPE_LIST)
+  times <- am_get(doc, AM_ROOT, "times")
+  am_insert(doc, times, 1, ts)
+  val <- am_get(doc, times, 1)
+  expect_s3_class(val, "POSIXct")
+})
+
+test_that("am_put() with counter into list", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, am_counter(5))
+  val <- am_get(doc, items, 1)
+  expect_s3_class(val, "am_counter")
+  expect_equal(as.integer(val), 5L)
+})
+
+test_that("am_put() with am_uint64 into list", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, am_uint64(42))
+  val <- am_get(doc, items, 1)
+  expect_s3_class(val, "am_uint64")
+  expect_equal(as.numeric(val), 42)
+})
+
+test_that("am_put() with am_text() into list", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, am_text("hello"))
+  val <- am_get(doc, items, 1)
+  expect_s3_class(val, "am_text")
+  expect_equal(am_text_content(val), "hello")
+})
+
+test_that("am_put() with boolean into list", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, TRUE)
+  val <- am_get(doc, items, 1)
+  expect_true(val)
+})
+
+test_that("am_put() with integer into list", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, 42L)
+  val <- am_get(doc, items, 1)
+  expect_equal(val, 42L)
+})
+
+test_that("am_put() with double into list", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, 3.14)
+  val <- am_get(doc, items, 1)
+  expect_equal(val, 3.14)
+})
+
+test_that("am_put() with string into list", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, "hello")
+  val <- am_get(doc, items, 1)
+  expect_equal(val, "hello")
+})
+
+test_that("am_put() with NULL into list", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, NULL)
+  val <- am_get(doc, items, 1)
+  expect_null(val)
+})
+
+test_that("am_put() with nested list into list (unnamed = list type)", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, list("a", "b"))
+  val <- am_get(doc, items, 1)
+  expect_s3_class(val, "am_object")
+  expect_equal(am_length(doc, val), 2)
+})
+
+test_that("am_put() with nested named list into list (named = map type)", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, list(x = 1))
+  val <- am_get(doc, items, 1)
+  expect_s3_class(val, "am_object")
+  expect_equal(am_get(doc, val, "x"), 1)
+})
+
+test_that("am_put() with AM_OBJ_TYPE_LIST constant into list", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, AM_OBJ_TYPE_LIST)
+  val <- am_get(doc, items, 1)
+  expect_s3_class(val, "am_object")
+})
+
+test_that("am_put() with AM_OBJ_TYPE_MAP constant into list", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, AM_OBJ_TYPE_MAP)
+  val <- am_get(doc, items, 1)
+  expect_s3_class(val, "am_object")
+})
+
+test_that("am_put() with AM_OBJ_TYPE_TEXT constant into list", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, AM_OBJ_TYPE_TEXT)
+  val <- am_get(doc, items, 1)
+  expect_s3_class(val, "am_text")
+})
+
+test_that("am_put() with am_list_type into map", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "lst", am_list("x", "y"))
+  val <- am_get(doc, AM_ROOT, "lst")
+  expect_s3_class(val, "am_object")
+  expect_equal(am_length(doc, val), 2)
+})
+
+test_that("am_put() with am_map_type into map", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "m", am_map(a = 1, b = 2))
+  val <- am_get(doc, AM_ROOT, "m")
+  expect_s3_class(val, "am_object")
+  expect_equal(am_get(doc, val, "a"), 1)
+})
+
+# am_get / am_delete input validation
+
+test_that("am_get() errors on unsupported key type", {
+  doc <- am_create()
+  expect_error(am_get(doc, AM_ROOT, TRUE), "character string.*numeric")
+})
+
+test_that("am_delete() errors on unsupported key type", {
+  doc <- am_create()
+  expect_error(am_delete(doc, AM_ROOT, TRUE), "character string.*numeric")
+})
+
+test_that("am_delete() from list by position", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, "a")
+  am_insert(doc, items, 2, "b")
+  am_delete(doc, items, 1)
+  expect_equal(am_length(doc, items), 1)
+})
+
+test_that("am_delete() errors on non-positive list position", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, "a")
+  expect_error(am_delete(doc, items, 0L), "positive")
+})
+
+# am_values includes nested objects from lists
+
+test_that("am_values() with nested objects in lists", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, "scalar")
+  am_insert(doc, items, 2, AM_OBJ_TYPE_MAP)
+
+  values <- am_values(doc, items)
+  expect_length(values, 2)
+  expect_equal(values[[1]], "scalar")
+  expect_s3_class(values[[2]], "am_object")
+})
+
+# Multiple heads error paths
+
+test_that("am_map_get_all() errors on multiple heads", {
+  doc <- am_create()
+  doc$key <- "v1"
+  am_commit(doc)
+
+  doc2 <- am_fork(doc)
+  doc$key <- "v2"
+  am_commit(doc)
+  doc2$key <- "v3"
+  am_commit(doc2)
+  am_merge(doc, doc2)
+
+  heads <- am_get_heads(doc)
+  expect_gte(length(heads), 2)
+  expect_error(
+    am_map_get_all(doc, AM_ROOT, "key", heads),
+    "multiple heads"
+  )
+})
+
+test_that("am_list_get_all() errors on multiple heads", {
+  doc <- am_create()
+  doc$items <- list("a")
+  am_commit(doc)
+
+  doc2 <- am_fork(doc)
+  items1 <- am_get(doc, AM_ROOT, "items")
+  items2 <- am_get(doc2, AM_ROOT, "items")
+  am_put(doc, items1, 1, "b")
+  am_commit(doc)
+  am_put(doc2, items2, 1, "c")
+  am_commit(doc2)
+  am_merge(doc, doc2)
+
+  heads <- am_get_heads(doc)
+  expect_gte(length(heads), 2)
+  expect_error(
+    am_list_get_all(doc, items1, 1, heads),
+    "multiple heads"
+  )
+})
+
+test_that("am_map_range() errors on multiple heads", {
+  doc <- am_create()
+  doc$a <- 1
+  am_commit(doc)
+
+  doc2 <- am_fork(doc)
+  doc$b <- 2
+  am_commit(doc)
+  doc2$c <- 3
+  am_commit(doc2)
+  am_merge(doc, doc2)
+
+  heads <- am_get_heads(doc)
+  expect_gte(length(heads), 2)
+  expect_error(
+    am_map_range(doc, AM_ROOT, "a", "z", heads),
+    "multiple heads"
+  )
+})
+
+test_that("am_list_range() errors on multiple heads", {
+  doc <- am_create()
+  doc$items <- list("a", "b")
+  am_commit(doc)
+
+  doc2 <- am_fork(doc)
+  items1 <- am_get(doc, AM_ROOT, "items")
+  items2 <- am_get(doc2, AM_ROOT, "items")
+  am_insert(doc, items1, "end", "c")
+  am_commit(doc)
+  am_insert(doc2, items2, "end", "d")
+  am_commit(doc2)
+  am_merge(doc, doc2)
+
+  heads <- am_get_heads(doc)
+  expect_gte(length(heads), 2)
+  expect_error(
+    am_list_range(doc, items1, 1, 5, heads),
+    "multiple heads"
+  )
+})
+
+test_that("am_items() errors on multiple heads", {
+  doc <- am_create()
+  doc$a <- 1
+  am_commit(doc)
+
+  doc2 <- am_fork(doc)
+  doc$b <- 2
+  am_commit(doc)
+  doc2$c <- 3
+  am_commit(doc2)
+  am_merge(doc, doc2)
+
+  heads <- am_get_heads(doc)
+  expect_gte(length(heads), 2)
+  expect_error(
+    am_items(doc, AM_ROOT, heads),
+    "multiple heads"
+  )
+})
+
+# am_list_get_all input validation
+
+test_that("am_list_get_all() errors on non-scalar pos", {
+  doc <- am_create()
+  doc$items <- list("a", "b")
+  items <- doc$items
+  expect_error(am_list_get_all(doc, items, c(1, 2)), "scalar")
+})
+
+# am_list_range input validation
+
+test_that("am_list_range() errors on non-numeric begin", {
+  doc <- am_create()
+  doc$items <- list("a")
+  items <- doc$items
+  expect_error(am_list_range(doc, items, "a", 2), "numeric")
+})
+
+test_that("am_list_range() errors on non-numeric end", {
+  doc <- am_create()
+  doc$items <- list("a")
+  items <- doc$items
+  expect_error(am_list_range(doc, items, 1, "b"), "numeric")
+})
+
+test_that("am_list_range() errors on non-scalar", {
+  doc <- am_create()
+  doc$items <- list("a", "b")
+  items <- doc$items
+  expect_error(am_list_range(doc, items, c(1, 2), 3), "scalar")
+})
+
+# am_insert error
+
+test_that("am_insert() errors on non-list objects", {
+  doc <- am_create()
+  expect_error(am_insert(doc, AM_ROOT, 1, "x"), "list objects")
+})
+
+# am_text_splice validation
+
+test_that("am_text_splice() errors on non-numeric pos", {
+  doc <- am_create()
+  doc$t <- am_text("hello")
+  text_obj <- doc$t
+  expect_error(am_text_splice(text_obj, "a", 0, "x"), "pos must be numeric")
+})
+
+test_that("am_text_splice() errors on negative pos", {
+  doc <- am_create()
+  doc$t <- am_text("hello")
+  text_obj <- doc$t
+  expect_error(am_text_splice(text_obj, -1L, 0, "x"), "non-negative")
+})
+
+test_that("am_text_splice() errors on non-numeric del_count", {
+  doc <- am_create()
+  doc$t <- am_text("hello")
+  text_obj <- doc$t
+  expect_error(am_text_splice(text_obj, 0, "a", "x"), "del_count must be numeric")
+})
+
+test_that("am_text_splice() errors on negative del_count", {
+  doc <- am_create()
+  doc$t <- am_text("hello")
+  text_obj <- doc$t
+  expect_error(am_text_splice(text_obj, 0, -1L, "x"), "non-negative")
+})
+
+test_that("am_text_splice() errors on non-string text", {
+  doc <- am_create()
+  doc$t <- am_text("hello")
+  text_obj <- doc$t
+  expect_error(am_text_splice(text_obj, 0, 0, 123), "single character string")
+})
+
+# am_get with non-scalar list position
+
+test_that("am_get() errors on non-scalar list position", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, "a")
+  expect_error(am_get(doc, items, c(1L, 2L)), "scalar")
+})
+
+# am_get returns NULL for non-positive list position
+
+test_that("am_get() returns NULL for non-positive list position", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, "a")
+  expect_null(am_get(doc, items, 0L))
+})
+
+# am_get returns NULL for out-of-bounds list position
+
+test_that("am_get() returns NULL for out-of-bounds list position", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, "a")
+  expect_null(am_get(doc, items, 100L))
+})
+
+# am_map_get_all with empty heads list
+
+test_that("am_map_get_all() with empty heads list same as NULL", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+
+  vals_null <- am_map_get_all(doc, AM_ROOT, "key")
+  vals_empty <- am_map_get_all(doc, AM_ROOT, "key", list())
+  expect_equal(length(vals_null), length(vals_empty))
+})
+
+# am_list_get_all with non-scalar errors
+
+test_that("am_list_get_all() errors on non-numeric pos", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, "a")
+  expect_error(am_list_get_all(doc, items, "a"), "numeric")
+})
+
+# am_put with invalid list position type (not numeric, not "end")
+
+test_that("am_put() errors on invalid list position type", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  am_insert(doc, items, 1, "a")
+  expect_error(am_put(doc, items, TRUE, "x"), "numeric")
+})
+
+# am_put with invalid string position (not "end")
+
+test_that("am_put() errors on non-'end' string list position", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+  items <- am_get(doc, AM_ROOT, "items")
+  expect_error(am_put(doc, items, "middle", "x"), "numeric.*end")
+})
+
+# am_values with map (tests the key-based iteration path)
+
+test_that("am_values() on map returns named values", {
+  doc <- am_create()
+  doc$a <- 1
+  doc$b <- "hello"
+  doc$c <- TRUE
+
+  values <- am_values(doc, AM_ROOT)
+  expect_length(values, 3)
+})
+
+# am_items() for list items with various types
+
+test_that("am_items() returns items from list with nested objects", {
+  doc <- am_create()
+  doc$items <- list("a", 42L, TRUE)
+  items_obj <- doc$items
+  items <- am_items(doc, items_obj)
+  expect_length(items, 3)
+  expect_equal(items[[1]]$key, 1L)
+  expect_equal(items[[2]]$key, 2L)
+  expect_equal(items[[3]]$key, 3L)
+  expect_equal(items[[1]]$value, "a")
+  expect_equal(items[[2]]$value, 42L)
+  expect_true(items[[3]]$value)
+})
