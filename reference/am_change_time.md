@@ -33,7 +33,7 @@ am_commit(doc, "Add key", Sys.time())
 
 history <- am_get_history(doc)
 am_change_time(history[[1]])
-#> [1] "2026-02-15 12:57:16 UTC"
+#> [1] "2026-02-15 13:25:33 UTC"
 
 am_close(doc)
 ```
