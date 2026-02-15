@@ -41,7 +41,7 @@ head_hash <- heads[[1]]
 # Retrieve the change by its hash
 change <- am_get_change_by_hash(doc, head_hash)
 change
-#> <pointer: 0x5582e8f6c120>
+#> <pointer: 0x562589b96790>
 #> attr(,"class")
 #> [1] "am_change"
 am_change_message(change)  # "Add key"

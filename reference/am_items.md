@@ -48,7 +48,7 @@ doc$age <- 30L
 
 items <- am_items(doc, AM_ROOT)
 items[[1]]$key    # "age" (sorted lexicographically)
-#> NULL
+#> [1] "age"
 items[[1]]$value  # 30
 #> [1] 30
 
