@@ -81,7 +81,12 @@ am_merge(doc1, doc2)
 
 # One value wins (deterministic, all replicas agree)
 doc1[["name"]]
-#> [1] "Alice Smith"
+#> [1] "Alice Johnson"
+
+# To see all conflicting values (not just the winner), use am_map_get_all()
+all_values <- am_map_get_all(doc1, AM_ROOT, "name")
+length(all_values) # 2 - both "Alice Smith" and "Alice Johnson"
+#> [1] 2
 
 am_close(doc1)
 am_close(doc2)
@@ -91,7 +96,11 @@ am_close(doc2)
 acceptable (metadata, settings, labels).
 
 **Trade-off**: One concurrent change is lost, but resolution is
-deterministic and all replicas converge to the same state.
+deterministic and all replicas converge to the same state. Use
+[`am_map_get_all()`](https://posit-dev.github.io/automerge-r/reference/am_map_get_all.md)
+or
+[`am_list_get_all()`](https://posit-dev.github.io/automerge-r/reference/am_list_get_all.md)
+when you need to surface conflicts to users.
 
 ### Maps (Nested Objects)
 
@@ -249,7 +258,7 @@ am_text_splice(text12, 5, 0, " Everyone")
 am_merge(doc11, doc12)
 
 am_text_content(text11)
-#> [1] "Hello World Everyone"
+#> [1] "Hello Everyone World"
 
 am_close(doc11)
 am_close(doc12)
@@ -308,9 +317,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-02-13 14:54:02 UTC"
+#> [1] "2026-02-15 12:09:26 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-02-13 14:54:02 UTC"
+#> [1] "2026-02-15 12:09:27 UTC"
 
 am_close(doc15)
 am_close(doc16)
@@ -406,6 +415,25 @@ str(marks_at_pos)
 #>   ..$ end  : int 5
 
 am_close(doc18)
+```
+
+To remove a mark from a text range, use
+[`am_mark_clear()`](https://posit-dev.github.io/automerge-r/reference/am_mark_clear.md):
+
+``` r
+doc18b <- am_create()
+am_put(doc18b, AM_ROOT, "text", am_text("Hello World"))
+text18b <- am_get(doc18b, AM_ROOT, "text")
+
+am_mark(text18b, 0, 11, "bold", TRUE)
+length(am_marks(text18b)) # 1
+#> [1] 1
+
+am_mark_clear(text18b, 0, 11, "bold")
+length(am_marks(text18b)) # 0
+#> [1] 0
+
+am_close(doc18b)
 ```
 
 **When to use**: Rich text editors, collaborative annotations, syntax
@@ -601,7 +629,12 @@ am_merge(doc26, doc27)
 
 # One will win - application should handle both states sensibly
 doc26[["status"]] # Should be prepared for either 'published' or 'archived'
-#> [1] "archived"
+#> [1] "published"
+
+# Use am_equal() to check if two documents have converged
+am_merge(doc27, doc26)
+am_equal(doc26, doc27) # TRUE - both have the same state now
+#> [1] TRUE
 
 am_close(doc26)
 am_close(doc27)

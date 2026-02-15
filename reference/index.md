@@ -20,6 +20,18 @@ Create, save, load, and manage Automerge documents
   : Roll back pending operations
 - [`am_close()`](https://posit-dev.github.io/automerge-r/reference/am_close.md)
   : Close an Automerge document
+- [`am_clone()`](https://posit-dev.github.io/automerge-r/reference/am_clone.md)
+  : Clone an Automerge document
+- [`am_equal()`](https://posit-dev.github.io/automerge-r/reference/am_equal.md)
+  : Test document equality
+- [`am_pending_ops()`](https://posit-dev.github.io/automerge-r/reference/am_pending_ops.md)
+  : Get the number of pending operations
+- [`am_empty_change()`](https://posit-dev.github.io/automerge-r/reference/am_empty_change.md)
+  : Create an empty change
+- [`am_save_incremental()`](https://posit-dev.github.io/automerge-r/reference/am_save_incremental.md)
+  : Save incremental changes
+- [`am_load_incremental()`](https://posit-dev.github.io/automerge-r/reference/am_load_incremental.md)
+  : Load incremental changes into a document
 
 ## Actor Management
 
@@ -50,6 +62,16 @@ Create and manipulate maps, lists, and nested objects
   : Get all values from a map or list
 - [`am_length()`](https://posit-dev.github.io/automerge-r/reference/am_length.md)
   : Get the length of an Automerge map or list
+- [`am_obj_items()`](https://posit-dev.github.io/automerge-r/reference/am_obj_items.md)
+  : Get full item details from an object
+- [`am_list_range()`](https://posit-dev.github.io/automerge-r/reference/am_list_range.md)
+  : Get a range of list items
+- [`am_map_range()`](https://posit-dev.github.io/automerge-r/reference/am_map_range.md)
+  : Get a range of map items by key
+- [`am_list_get_all()`](https://posit-dev.github.io/automerge-r/reference/am_list_get_all.md)
+  : Get all conflicting values at a list position
+- [`am_map_get_all()`](https://posit-dev.github.io/automerge-r/reference/am_map_get_all.md)
+  : Get all conflicting values at a map key
 
 ## Text Operations
 
@@ -95,6 +117,8 @@ Stable positions, text formatting, and cursor serialization
   : Test equality of two cursors
 - [`am_mark()`](https://posit-dev.github.io/automerge-r/reference/am_mark.md)
   : Create a mark on a text range
+- [`am_mark_clear()`](https://posit-dev.github.io/automerge-r/reference/am_mark_clear.md)
+  : Clear marks from a text range
 - [`am_marks()`](https://posit-dev.github.io/automerge-r/reference/am_marks.md)
   : Get all marks in a text object
 - [`am_marks_at()`](https://posit-dev.github.io/automerge-r/reference/am_marks_at.md)
@@ -112,6 +136,10 @@ Sync documents across peers
   : Generate a sync message
 - [`am_sync_decode()`](https://posit-dev.github.io/automerge-r/reference/am_sync_decode.md)
   : Receive and apply a sync message
+- [`am_sync_state_encode()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state_encode.md)
+  : Serialize a sync state
+- [`am_sync_state_decode()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state_decode.md)
+  : Deserialize a sync state
 
 ## History and Changes
 
@@ -147,6 +175,10 @@ Track document history and inspect changes
   : Get the sequence number of a change
 - [`am_change_deps()`](https://posit-dev.github.io/automerge-r/reference/am_change_deps.md)
   : Get the dependencies of a change
+- [`am_get_missing_deps()`](https://posit-dev.github.io/automerge-r/reference/am_get_missing_deps.md)
+  : Get missing dependencies
+- [`am_change_load_document()`](https://posit-dev.github.io/automerge-r/reference/am_change_load_document.md)
+  : Load a document as individual changes
 
 ## Type Constructors
 

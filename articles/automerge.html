@@ -68,7 +68,7 @@
       <h1>Getting Started with automerge</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/vignettes/automerge.Rmd" class="external-link"><code>vignettes/automerge.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/dev/vignettes/automerge.Rmd" class="external-link"><code>vignettes/automerge.Rmd</code></a></small>
       <div class="d-none name"><code>automerge.Rmd</code></div>
     </div>
 
@@ -127,7 +127,7 @@ applications like shared notebooks or data pipelines</li>
 <code class="sourceCode R"><span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;Automerge Document&gt;</span></span>
-<span><span class="co">#&gt; Actor: 8b7b087f791255ea772d115b9882cd74 </span></span>
+<span><span class="co">#&gt; Actor: edb3b9f43523afc5248814c2dea13ff0 </span></span>
 <span><span class="co">#&gt; Root keys: 0</span></span></code></pre></div>
 <p>Note: When you’re done working with a document, you can explicitly
 free its resources with <code>am_close(doc)</code> if you don’t want to
@@ -382,7 +382,7 @@ without conflicts:</p>
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc9</span>, <span class="va">AM_ROOT</span>, <span class="st">"updated_at"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc9</span><span class="op">[[</span><span class="st">"created_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-02-13 14:53:58 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-02-15 12:09:23 UTC"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc9</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -412,6 +412,38 @@ without conflicts:</p>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_loaded</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_from_file</span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="incremental-save-and-load">Incremental Save and Load<a class="anchor" aria-label="anchor" href="#incremental-save-and-load"></a>
+</h3>
+<p>For long-lived documents, incremental save/load allows exchanging
+only the changes since the last save, rather than the entire
+document:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">doc_inc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">doc_inc</span><span class="op">[[</span><span class="st">"v1"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"first"</span></span>
+<span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc_inc</span>, <span class="st">"Version 1"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Full save (resets incremental tracking)</span></span>
+<span><span class="va">full_bytes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_save.html">am_save</a></span><span class="op">(</span><span class="va">doc_inc</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Make more changes</span></span>
+<span><span class="va">doc_inc</span><span class="op">[[</span><span class="st">"v2"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"second"</span></span>
+<span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc_inc</span>, <span class="st">"Version 2"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Incremental save: only the new changes</span></span>
+<span><span class="va">inc_bytes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_save_incremental.html">am_save_incremental</a></span><span class="op">(</span><span class="va">doc_inc</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">inc_bytes</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">full_bytes</span><span class="op">)</span> <span class="co"># TRUE - much smaller</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span></span>
+<span><span class="co"># Apply incremental changes to another copy</span></span>
+<span><span class="va">doc_inc2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_load.html">am_load</a></span><span class="op">(</span><span class="va">full_bytes</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_load_incremental.html">am_load_incremental</a></span><span class="op">(</span><span class="va">doc_inc2</span>, <span class="va">inc_bytes</span><span class="op">)</span></span>
+<span><span class="va">doc_inc2</span><span class="op">[[</span><span class="st">"v2"</span><span class="op">]</span><span class="op">]</span> <span class="co"># "second"</span></span>
+<span><span class="co">#&gt; [1] "second"</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_inc</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_inc2</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="document-lifecycle">Document Lifecycle<a class="anchor" aria-label="anchor" href="#document-lifecycle"></a>
@@ -419,12 +451,16 @@ without conflicts:</p>
 <div class="section level3">
 <h3 id="committing-changes">Committing Changes<a class="anchor" aria-label="anchor" href="#committing-changes"></a>
 </h3>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc10</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Make changes</span></span>
 <span><span class="va">doc10</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span><span class="va">doc10</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
+<span></span>
+<span><span class="co"># Check how many uncommitted operations exist</span></span>
+<span><span class="fu"><a href="../reference/am_pending_ops.html">am_pending_ops</a></span><span class="op">(</span><span class="va">doc10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 2</span></span>
 <span></span>
 <span><span class="co"># Commit with message</span></span>
 <span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc10</span>, <span class="st">"Add x and y coordinates"</span><span class="op">)</span></span>
@@ -434,10 +470,10 @@ without conflicts:</p>
 <span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc10</span>, <span class="st">"Add z coordinate"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="forking-documents">Forking Documents<a class="anchor" aria-label="anchor" href="#forking-documents"></a>
+<h3 id="forking-and-cloning-documents">Forking and Cloning Documents<a class="anchor" aria-label="anchor" href="#forking-and-cloning-documents"></a>
 </h3>
 <p>Create independent copies:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc11</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_fork.html">am_fork</a></span><span class="op">(</span><span class="va">doc10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Changes to fork don't affect original</span></span>
@@ -445,14 +481,22 @@ without conflicts:</p>
 <span><span class="va">doc10</span><span class="op">[[</span><span class="st">"w"</span><span class="op">]</span><span class="op">]</span> <span class="co"># NULL - not in original</span></span>
 <span><span class="co">#&gt; NULL</span></span>
 <span></span>
+<span><span class="co"># am_clone() is another way to create an independent deep copy</span></span>
+<span><span class="va">doc11b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_clone.html">am_clone</a></span><span class="op">(</span><span class="va">doc10</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Compare documents for equality</span></span>
+<span><span class="fu"><a href="../reference/am_equal.html">am_equal</a></span><span class="op">(</span><span class="va">doc10</span>, <span class="va">doc11b</span><span class="op">)</span> <span class="co"># TRUE - same state</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc10</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc11</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc11</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc11b</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="merging-documents">Merging Documents<a class="anchor" aria-label="anchor" href="#merging-documents"></a>
 </h3>
 <p>Merge changes from one document into another:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create two documents</span></span>
 <span><span class="va">doc12</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">doc12</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"doc12"</span></span>
@@ -482,7 +526,7 @@ without conflicts:</p>
 </h2>
 <p>Automerge’s key feature is automatic synchronization between
 documents:</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create two peers</span></span>
 <span><span class="va">peer1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">peer1</span><span class="op">[[</span><span class="st">"edited_by"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"peer1"</span></span>
@@ -518,7 +562,7 @@ documents:</p>
 <p>Every change in an Automerge document carries metadata: who made it,
 when, what message was attached, and what it depended on. You can
 inspect this with the change introspection functions:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc14</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">doc14</span><span class="op">[[</span><span class="st">"title"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"My Project"</span></span>
 <span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc14</span>, <span class="st">"Initial setup"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
@@ -548,20 +592,20 @@ inspect this with the change introspection functions:</p>
 <span><span class="co"># Extract many fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique 32-byte hash</span></span>
-<span><span class="co">#&gt;  [1] e9 56 11 67 27 de c5 4a 7d 5b 7d 9d ec ac a8 ff e9 00 fa ee 4d 4b</span></span>
-<span><span class="co">#&gt; [23] 0d 63 c3 7c e4 5b 90 60 be b0</span></span>
+<span><span class="co">#&gt;  [1] f7 c8 fa 1b 76 a2 60 47 42 7c be be 11 db ce fa 66 b8 f0 d5 4a 6b</span></span>
+<span><span class="co">#&gt; [23] 98 e1 b0 be 25 8a 85 fc 26 e9</span></span>
 <span><span class="fu"><a href="../reference/am_change_message.html">am_change_message</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>  <span class="co"># Commit message</span></span>
 <span><span class="co">#&gt; [1] "Set version"</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Timestamp</span></span>
-<span><span class="co">#&gt; [1] "2026-02-13 14:53:59 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-02-15 12:09:23 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_seq.html">am_change_seq</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>      <span class="co"># Sequence number</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made the change</span></span>
-<span><span class="co">#&gt;  [1] 5f 27 11 fd 55 36 11 ef 5e c7 03 5d 91 ba 9e 16</span></span>
+<span><span class="co">#&gt;  [1] 42 72 23 e9 63 0a 4e d0 0e a9 c0 ad 32 29 7f 63</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent change hashes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] 1f 57 a1 22 98 fa c9 fa 82 c4 9b 85 1c c6 ad 38 70 67 7f c5 bb 3f</span></span>
-<span><span class="co">#&gt; [23] a8 df 28 40 39 91 7b 77 6a 5b</span></span>
+<span><span class="co">#&gt;  [1] 0c f1 e3 ad 9e a6 17 65 a6 09 b3 e3 e2 92 41 37 92 3b f8 9f ad 9d</span></span>
+<span><span class="co">#&gt; [23] 3c 67 c6 d3 80 29 82 85 13 9d</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc14</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -577,7 +621,7 @@ the document at a specific historical state.</p>
 </h3>
 <p>If you know you might want to undo future changes, save the heads
 before making them:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc_tt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">doc_tt</span><span class="op">[[</span><span class="st">"title"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"My Report"</span></span>
 <span><span class="va">doc_tt</span><span class="op">[[</span><span class="st">"status"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"draft"</span></span>
@@ -609,7 +653,7 @@ before making them:</p>
 </h3>
 <p>When you don’t have a saved checkpoint, browse the history to find
 the change you want to revert to:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc_hist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc_hist</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -652,7 +696,7 @@ the change you want to revert to:</p>
 </h3>
 <p>A forked document is fully independent, so you can make new changes
 from the historical state without affecting the original:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc_branch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">doc_branch</span><span class="op">[[</span><span class="st">"text"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_text.html">am_text</a></span><span class="op">(</span><span class="st">"Hello World"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc_branch</span>, <span class="st">"Initial text"</span><span class="op">)</span></span>
@@ -682,7 +726,7 @@ from the historical state without affecting the original:</p>
 </h2>
 <p>Cursors can be serialized and restored across R sessions, which is
 useful for saving editor state:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc15</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc15</span>, <span class="va">AM_ROOT</span>, <span class="st">"content"</span>, <span class="fu"><a href="../reference/am_text.html">am_text</a></span><span class="op">(</span><span class="st">"Hello World"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">text_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get.html">am_get</a></span><span class="op">(</span><span class="va">doc15</span>, <span class="va">AM_ROOT</span>, <span class="st">"content"</span><span class="op">)</span></span>
@@ -718,7 +762,7 @@ one-page guide to all functions</li>
 <div class="section level2">
 <h2 id="getting-help">Getting Help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
 </h2>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Function help</span></span>
 <span><span class="op">?</span><span class="va">am_create</span></span>
 <span><span class="op">?</span><span class="va">am_put</span></span>

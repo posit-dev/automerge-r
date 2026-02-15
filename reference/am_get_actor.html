@@ -43,7 +43,7 @@ changes in the document."><script src="https://cdn.jsdelivr.net/gh/posit-dev/sup
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Get the actor ID of a document</h1>
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/R/document.R" class="external-link"><code>R/document.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/dev/R/document.R" class="external-link"><code>R/document.R</code></a></small>
       <div class="d-none name"><code>am_get_actor.Rd</code></div>
     </div>
 
@@ -80,12 +80,12 @@ changes in the document.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">actor</span> <span class="op">&lt;-</span> <span class="fu">am_get_actor</span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">actor</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 5e a3 7b c1 51 c8 38 6c 8f a5 99 4d 2c d2 3a de</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 53 bf d7 a6 b0 a3 78 85 7b ba d4 93 c1 4d 34 d4</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Use am_get_actor_hex() for display</span></span></span>
 <span class="r-in"><span><span class="va">actor_hex</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_get_actor_hex.html">am_get_actor_hex</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Actor ID:"</span>, <span class="va">actor_hex</span>, <span class="st">"\n"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Actor ID: 5ea37bc151c8386c8fa5994d2cd23ade </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Actor ID: 53bfd7a6b0a378857bbad493c14d34d4 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

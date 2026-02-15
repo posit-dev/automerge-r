@@ -68,7 +68,7 @@
       <h1>Synchronization Protocol</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/vignettes/sync-protocol.Rmd" class="external-link"><code>vignettes/sync-protocol.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/dev/vignettes/sync-protocol.Rmd" class="external-link"><code>vignettes/sync-protocol.Rmd</code></a></small>
       <div class="d-none name"><code>sync-protocol.Rmd</code></div>
     </div>
 
@@ -215,9 +215,9 @@ API.</p>
 <span><span class="va">round</span></span>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="va">peer3</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer4"</span></span>
+<span><span class="co">#&gt; [1] "peer3"</span></span>
 <span><span class="va">peer4</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer4"</span></span>
+<span><span class="co">#&gt; [1] "peer3"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer4</span><span class="op">)</span></span></code></pre></div>
@@ -322,6 +322,44 @@ changes:</p>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_a</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_b</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_c</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="decomposing-saved-documents">Decomposing Saved Documents<a class="anchor" aria-label="anchor" href="#decomposing-saved-documents"></a>
+</h3>
+<p>If you have a saved document (from <code><a href="../reference/am_save.html">am_save()</a></code>) and want
+to extract its individual changes without loading the full document, use
+<code><a href="../reference/am_change_load_document.html">am_change_load_document()</a></code>:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Save a document with multiple commits</span></span>
+<span><span class="va">doc_decompose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">doc_decompose</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc_decompose</span>, <span class="st">"Add x"</span><span class="op">)</span></span>
+<span><span class="va">doc_decompose</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
+<span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc_decompose</span>, <span class="st">"Add y"</span><span class="op">)</span></span>
+<span><span class="va">saved_bytes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_save.html">am_save</a></span><span class="op">(</span><span class="va">doc_decompose</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Extract individual changes from the saved bytes</span></span>
+<span><span class="va">extracted_changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_load_document.html">am_change_load_document</a></span><span class="op">(</span><span class="va">saved_bytes</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">extracted_changes</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 2</span></span>
+<span></span>
+<span><span class="co"># Inspect each change</span></span>
+<span><span class="kw">for</span> <span class="op">(</span><span class="va">ch</span> <span class="kw">in</span> <span class="va">extracted_changes</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/am_change_message.html">am_change_message</a></span><span class="op">(</span><span class="va">ch</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="co">#&gt; Add x </span></span>
+<span><span class="co">#&gt; Add y</span></span>
+<span></span>
+<span><span class="co"># Apply selectively to a new document</span></span>
+<span><span class="va">doc_selective</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_apply_changes.html">am_apply_changes</a></span><span class="op">(</span><span class="va">doc_selective</span>, <span class="va">extracted_changes</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="co"># Only first change</span></span>
+<span><span class="va">doc_selective</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="va">doc_selective</span><span class="op">[[</span><span class="st">"y"</span><span class="op">]</span><span class="op">]</span> <span class="co"># NULL - second change not applied</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_decompose</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_selective</span><span class="op">)</span></span></code></pre></div>
 <p><strong>When to use</strong>: Git-like workflows, change logs,
 selective sync.</p>
 </div>
@@ -335,7 +373,7 @@ selective sync.</p>
 <p><strong>Heads</strong> are the most recent commits in a document’s
 history. They represent the current state’s frontier in the change
 graph.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create document and make changes</span></span>
 <span><span class="va">doc_main</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">doc_main</span><span class="op">[[</span><span class="st">"version"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"1.0"</span></span>
@@ -365,9 +403,27 @@ graph.</p>
 </ul>
 </div>
 <div class="section level3">
+<h3 id="checking-document-completeness">Checking Document Completeness<a class="anchor" aria-label="anchor" href="#checking-document-completeness"></a>
+</h3>
+<p>After applying changes from external sources, you can verify a
+document has all its dependencies with
+<code><a href="../reference/am_get_missing_deps.html">am_get_missing_deps()</a></code>:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">doc_check</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">doc_check</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"complete"</span></span>
+<span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc_check</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># A complete document has no missing deps</span></span>
+<span><span class="va">missing</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_missing_deps.html">am_get_missing_deps</a></span><span class="op">(</span><span class="va">doc_check</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">missing</span><span class="op">)</span> <span class="co"># 0</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_check</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
 <h3 id="working-with-history">Working with History<a class="anchor" aria-label="anchor" href="#working-with-history"></a>
 </h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get full change history</span></span>
 <span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_history.html">am_get_history</a></span><span class="op">(</span><span class="va">doc_main</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">history</span><span class="op">)</span></span>
@@ -388,16 +444,16 @@ graph.</p>
 <span><span class="co"># Extract multiple fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique hash</span></span>
-<span><span class="co">#&gt;  [1] b9 33 c7 7e 0e 2b ec e7 d6 81 8b f4 f0 bf 20 b8 0d f1 65 42 86 07</span></span>
-<span><span class="co">#&gt; [23] 83 66 16 f6 03 bd 86 83 40 b4</span></span>
+<span><span class="co">#&gt;  [1] a4 83 e5 40 c8 93 19 ef 51 8d a5 e3 4d 5a 0a a5 28 57 65 56 d5 21</span></span>
+<span><span class="co">#&gt; [23] 3e 5e 39 0d b3 62 e8 be 70 dc</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made this change</span></span>
-<span><span class="co">#&gt;  [1] 4d 29 84 2a 48 24 25 bb c8 1b 4d 46 b8 e5 6a 6e</span></span>
+<span><span class="co">#&gt;  [1] e9 11 94 8a 0d 63 9a 49 b0 72 f9 9b 26 a7 81 47</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># When</span></span>
 <span><span class="co">#&gt; [1] "1970-01-01 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent changes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] ad db 79 1c c9 b9 97 e0 c2 ca f6 58 f4 a3 0a 22 c0 ec 28 46 7b d6</span></span>
-<span><span class="co">#&gt; [23] cf 76 76 dc 93 1a af db 21 18</span></span>
+<span><span class="co">#&gt;  [1] 6f 25 39 c9 83 4d 2a cd c6 5c a6 6d b4 dd de fe ef d9 60 f5 86 14</span></span>
+<span><span class="co">#&gt; [23] df e4 b3 f6 e7 08 cb 18 0b 44</span></span>
 <span></span>
 <span><span class="co"># Get changes between two points in history</span></span>
 <span><span class="va">changes_since_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc_main</span>, <span class="va">heads_v1</span><span class="op">)</span></span>
@@ -411,7 +467,7 @@ graph.</p>
 <h3 id="incremental-sync-pattern">Incremental Sync Pattern<a class="anchor" aria-label="anchor" href="#incremental-sync-pattern"></a>
 </h3>
 <p>Common pattern: track last sync point and only send new changes</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Server document that accumulates changes</span></span>
 <span><span class="va">server</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">server</span><span class="op">[[</span><span class="st">"users"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0L</span></span>
@@ -458,7 +514,7 @@ graph.</p>
 <div class="section level3">
 <h3 id="detecting-divergence">Detecting Divergence<a class="anchor" aria-label="anchor" href="#detecting-divergence"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create two peers that will diverge</span></span>
 <span><span class="va">peer_x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">peer_x</span><span class="op">[[</span><span class="st">"id"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"x"</span></span>
@@ -511,7 +567,7 @@ graph.</p>
 <h2 id="concurrent-edits">Concurrent Edits<a class="anchor" aria-label="anchor" href="#concurrent-edits"></a>
 </h2>
 <p>Understanding how concurrent edits merge:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create shared starting point</span></span>
 <span><span class="va">base</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">base</span><span class="op">[[</span><span class="st">"counter"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_counter.html">am_counter</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -556,7 +612,7 @@ graph.</p>
 </h3>
 <p>There’s a fundamental tradeoff between <em>collaboration latency</em>
 and <em>efficiency</em>:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Strategy A: Frequent sync (lower latency, more overhead)</span></span>
 <span><span class="va">doc_frequent</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">peer_frequent</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -625,7 +681,7 @@ and <em>efficiency</em>:</p>
 <li>Changes are logically related (e.g., form submission)</li>
 </ul>
 <p><strong>Hybrid approach</strong> (recommended for most cases):</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Batch related changes, sync periodically</span></span>
 <span><span class="va">doc_hybrid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -652,7 +708,7 @@ and <em>efficiency</em>:</p>
 </h3>
 <p>Sync state tracks what each peer has seen, enabling efficient
 incremental sync:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Without reusing sync state (inefficient)</span></span>
 <span><span class="va">doc_no_reuse</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">doc_no_reuse</span><span class="op">[[</span><span class="st">"v1"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
@@ -706,6 +762,17 @@ incremental sync:</p>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_no_reuse</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_reuse</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_reuse</span><span class="op">)</span></span></code></pre></div>
+<p>To persist sync state across R sessions (or send it over a network),
+serialize and restore it with <code><a href="../reference/am_sync_state_encode.html">am_sync_state_encode()</a></code> /
+<code><a href="../reference/am_sync_state_decode.html">am_sync_state_decode()</a></code>:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># After initial sync, save sync state for later reuse</span></span>
+<span><span class="va">sync_bytes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_sync_state_encode.html">am_sync_state_encode</a></span><span class="op">(</span><span class="va">sync_state_local</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Later (e.g., after restarting R):</span></span>
+<span><span class="va">restored_sync</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_sync_state_decode.html">am_sync_state_decode</a></span><span class="op">(</span><span class="va">sync_bytes</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Continue syncing efficiently with the restored state</span></span></code></pre></div>
 <p><strong>When to persist sync state:</strong></p>
 <ul>
 <li>Long-lived connections (WebSocket servers)</li>
@@ -717,7 +784,7 @@ incremental sync:</p>
 <div class="section level3">
 <h3 id="measuring-performance">Measuring Performance<a class="anchor" aria-label="anchor" href="#measuring-performance"></a>
 </h3>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Compare efficiency of different approaches</span></span>
 <span><span class="va">measure_sync</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n_changes</span>, <span class="va">batch_size</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>

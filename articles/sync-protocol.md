@@ -143,9 +143,9 @@ repeat {
 round
 #> [1] 3
 peer3[["source"]]
-#> [1] "peer4"
+#> [1] "peer3"
 peer4[["source"]]
-#> [1] "peer4"
+#> [1] "peer3"
 
 am_close(peer3)
 am_close(peer4)
@@ -247,6 +247,47 @@ am_close(peer_b)
 am_close(peer_c)
 ```
 
+### Decomposing Saved Documents
+
+If you have a saved document (from
+[`am_save()`](https://posit-dev.github.io/automerge-r/reference/am_save.md))
+and want to extract its individual changes without loading the full
+document, use
+[`am_change_load_document()`](https://posit-dev.github.io/automerge-r/reference/am_change_load_document.md):
+
+``` r
+# Save a document with multiple commits
+doc_decompose <- am_create()
+doc_decompose[["x"]] <- 1
+am_commit(doc_decompose, "Add x")
+doc_decompose[["y"]] <- 2
+am_commit(doc_decompose, "Add y")
+saved_bytes <- am_save(doc_decompose)
+
+# Extract individual changes from the saved bytes
+extracted_changes <- am_change_load_document(saved_bytes)
+length(extracted_changes)
+#> [1] 2
+
+# Inspect each change
+for (ch in extracted_changes) {
+  cat(am_change_message(ch), "\n")
+}
+#> Add x 
+#> Add y
+
+# Apply selectively to a new document
+doc_selective <- am_create()
+am_apply_changes(doc_selective, extracted_changes[1]) # Only first change
+doc_selective[["x"]]
+#> [1] 1
+doc_selective[["y"]] # NULL - second change not applied
+#> NULL
+
+am_close(doc_decompose)
+am_close(doc_selective)
+```
+
 **When to use**: Git-like workflows, change logs, selective sync.
 
 ## Document Heads and History
@@ -289,6 +330,25 @@ Heads are useful for:
   or
   [`am_marks_at()`](https://posit-dev.github.io/automerge-r/reference/am_marks_at.md))
 
+### Checking Document Completeness
+
+After applying changes from external sources, you can verify a document
+has all its dependencies with
+[`am_get_missing_deps()`](https://posit-dev.github.io/automerge-r/reference/am_get_missing_deps.md):
+
+``` r
+doc_check <- am_create()
+doc_check[["data"]] <- "complete"
+am_commit(doc_check)
+
+# A complete document has no missing deps
+missing <- am_get_missing_deps(doc_check)
+length(missing) # 0
+#> [1] 0
+
+am_close(doc_check)
+```
+
 ### Working with History
 
 ``` r
@@ -312,16 +372,16 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] b9 33 c7 7e 0e 2b ec e7 d6 81 8b f4 f0 bf 20 b8 0d f1 65 42 86 07
-#> [23] 83 66 16 f6 03 bd 86 83 40 b4
+#>  [1] a4 83 e5 40 c8 93 19 ef 51 8d a5 e3 4d 5a 0a a5 28 57 65 56 d5 21
+#> [23] 3e 5e 39 0d b3 62 e8 be 70 dc
 am_change_actor_id(change) # Who made this change
-#>  [1] 4d 29 84 2a 48 24 25 bb c8 1b 4d 46 b8 e5 6a 6e
+#>  [1] e9 11 94 8a 0d 63 9a 49 b0 72 f9 9b 26 a7 81 47
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] ad db 79 1c c9 b9 97 e0 c2 ca f6 58 f4 a3 0a 22 c0 ec 28 46 7b d6
-#> [23] cf 76 76 dc 93 1a af db 21 18
+#>  [1] 6f 25 39 c9 83 4d 2a cd c6 5c a6 6d b4 dd de fe ef d9 60 f5 86 14
+#> [23] df e4 b3 f6 e7 08 cb 18 0b 44
 
 # Get changes between two points in history
 changes_since_v1 <- am_get_changes(doc_main, heads_v1)
@@ -633,6 +693,22 @@ am_close(doc_no_reuse)
 am_close(peer_no_reuse)
 am_close(doc_reuse)
 am_close(peer_reuse)
+```
+
+To persist sync state across R sessions (or send it over a network),
+serialize and restore it with
+[`am_sync_state_encode()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state_encode.md)
+/
+[`am_sync_state_decode()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state_decode.md):
+
+``` r
+# After initial sync, save sync state for later reuse
+sync_bytes <- am_sync_state_encode(sync_state_local)
+
+# Later (e.g., after restarting R):
+restored_sync <- am_sync_state_decode(sync_bytes)
+
+# Continue syncing efficiently with the restored state
 ```
 
 **When to persist sync state:**

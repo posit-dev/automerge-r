@@ -43,7 +43,7 @@ library(automerge)
 doc <- am_create()
 print(doc)
 #> <Automerge Document>
-#> Actor: 8b7b087f791255ea772d115b9882cd74 
+#> Actor: edb3b9f43523afc5248814c2dea13ff0 
 #> Root keys: 0
 ```
 
@@ -302,7 +302,7 @@ am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
-#> [1] "2026-02-13 14:53:58 UTC"
+#> [1] "2026-02-15 12:09:23 UTC"
 
 am_close(doc9)
 ```
@@ -334,6 +334,38 @@ am_close(doc_loaded)
 am_close(doc_from_file)
 ```
 
+### Incremental Save and Load
+
+For long-lived documents, incremental save/load allows exchanging only
+the changes since the last save, rather than the entire document:
+
+``` r
+doc_inc <- am_create()
+doc_inc[["v1"]] <- "first"
+am_commit(doc_inc, "Version 1")
+
+# Full save (resets incremental tracking)
+full_bytes <- am_save(doc_inc)
+
+# Make more changes
+doc_inc[["v2"]] <- "second"
+am_commit(doc_inc, "Version 2")
+
+# Incremental save: only the new changes
+inc_bytes <- am_save_incremental(doc_inc)
+length(inc_bytes) < length(full_bytes) # TRUE - much smaller
+#> [1] TRUE
+
+# Apply incremental changes to another copy
+doc_inc2 <- am_load(full_bytes)
+am_load_incremental(doc_inc2, inc_bytes)
+doc_inc2[["v2"]] # "second"
+#> [1] "second"
+
+am_close(doc_inc)
+am_close(doc_inc2)
+```
+
 ## Document Lifecycle
 
 ### Committing Changes
@@ -345,6 +377,10 @@ doc10 <- am_create()
 doc10[["x"]] <- 1
 doc10[["y"]] <- 2
 
+# Check how many uncommitted operations exist
+am_pending_ops(doc10)
+#> [1] 2
+
 # Commit with message
 am_commit(doc10, "Add x and y coordinates")
 
@@ -353,7 +389,7 @@ doc10[["z"]] <- 3
 am_commit(doc10, "Add z coordinate")
 ```
 
-### Forking Documents
+### Forking and Cloning Documents
 
 Create independent copies:
 
@@ -365,8 +401,16 @@ doc11[["w"]] <- 4
 doc10[["w"]] # NULL - not in original
 #> NULL
 
+# am_clone() is another way to create an independent deep copy
+doc11b <- am_clone(doc10)
+
+# Compare documents for equality
+am_equal(doc10, doc11b) # TRUE - same state
+#> [1] TRUE
+
 am_close(doc10)
 am_close(doc11)
+am_close(doc11b)
 ```
 
 ### Merging Documents
@@ -469,20 +513,20 @@ for (i in seq_along(history)) {
 # Extract many fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique 32-byte hash
-#>  [1] e9 56 11 67 27 de c5 4a 7d 5b 7d 9d ec ac a8 ff e9 00 fa ee 4d 4b
-#> [23] 0d 63 c3 7c e4 5b 90 60 be b0
+#>  [1] f7 c8 fa 1b 76 a2 60 47 42 7c be be 11 db ce fa 66 b8 f0 d5 4a 6b
+#> [23] 98 e1 b0 be 25 8a 85 fc 26 e9
 am_change_message(change)  # Commit message
 #> [1] "Set version"
 am_change_time(change)     # Timestamp
-#> [1] "2026-02-13 14:53:59 UTC"
+#> [1] "2026-02-15 12:09:23 UTC"
 am_change_seq(change)      # Sequence number
 #> [1] 2
 am_change_actor_id(change) # Who made the change
-#>  [1] 5f 27 11 fd 55 36 11 ef 5e c7 03 5d 91 ba 9e 16
+#>  [1] 42 72 23 e9 63 0a 4e d0 0e a9 c0 ad 32 29 7f 63
 am_change_deps(change)     # Parent change hashes
 #> [[1]]
-#>  [1] 1f 57 a1 22 98 fa c9 fa 82 c4 9b 85 1c c6 ad 38 70 67 7f c5 bb 3f
-#> [23] a8 df 28 40 39 91 7b 77 6a 5b
+#>  [1] 0c f1 e3 ad 9e a6 17 65 a6 09 b3 e3 e2 92 41 37 92 3b f8 9f ad 9d
+#> [23] 3c 67 c6 d3 80 29 82 85 13 9d
 
 am_close(doc14)
 ```

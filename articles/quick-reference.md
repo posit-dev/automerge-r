@@ -33,13 +33,23 @@ actor <- am_get_actor(doc) # Get actor ID (raw bytes)
 actor_hex <- am_get_actor_hex(doc) # Get actor ID as hex string
 am_set_actor(doc, actor_hex) # Set actor ID (raw, hex, or NULL)
 
-# Fork/Merge
+# Fork/Merge/Clone
 doc2 <- am_fork(doc) # Create independent copy
+doc3 <- am_clone(doc) # Deep copy (independent document)
 am_merge(doc, doc2) # Merge doc2 into doc1
+
+# Compare documents
+am_equal(doc, doc2) # TRUE if same state
 
 # Transactions
 am_commit(doc, "message") # Commit changes
 am_rollback(doc) # Cancel pending changes
+am_pending_ops(doc) # Number of uncommitted operations
+am_empty_change(doc, "checkpoint") # Create empty change (bookkeeping)
+
+# Incremental save/load
+inc <- am_save_incremental(doc) # Only changes since last save
+am_load_incremental(doc, inc) # Apply incremental changes
 
 # Cleanup
 am_close(doc) # Explicitly free resources (optional)
@@ -65,6 +75,13 @@ keys <- am_keys(doc, AM_ROOT) # Functional version
 values <- am_values(doc, AM_ROOT) # Get all values
 n <- length(doc) # Number of keys
 n <- am_length(doc, AM_ROOT) # Functional version
+items <- am_obj_items(doc, AM_ROOT) # All key-value entries
+
+# All conflicting values for a key (after concurrent edits)
+conflicts <- am_map_get_all(doc, AM_ROOT, "key")
+
+# Range of entries by key (alphabetical)
+entries <- am_map_range(doc, AM_ROOT, "a", "m")
 ```
 
 ### Nested Objects
@@ -109,6 +126,13 @@ am_delete(doc, items, 1) # Delete index 1
 
 # Introspection
 n <- am_length(doc, items) # List length
+items_entries <- am_obj_items(doc, items) # All index-value entries
+
+# All conflicting values at index (after concurrent edits)
+conflicts <- am_list_get_all(doc, items, 1)
+
+# Subrange (1-based indexing)
+sub <- am_list_range(doc, items, 2, 4)
 ```
 
 ### Text Objects
@@ -150,6 +174,7 @@ marks <- am_marks(text_obj) # Get all marks
 marks <- am_marks(text_obj, heads) # Marks at historical state
 marks_at <- am_marks_at(text_obj, 2) # Marks at position 2
 marks_at <- am_marks_at(text_obj, 2, heads) # At position, historical state
+am_mark_clear(text_obj, 0, 5, "bold") # Remove a mark from range
 ```
 
 ### Value Types
@@ -212,6 +237,10 @@ sync_state <- am_sync_state()
 msg <- am_sync_encode(doc, sync_state)
 am_sync_decode(doc, sync_state, msg)
 
+# Serialize/restore sync state (for persistent connections)
+sync_bytes <- am_sync_state_encode(sync_state)
+sync_state <- am_sync_state_decode(sync_bytes)
+
 # Manual sync loop
 repeat {
   msg1 <- am_sync_encode(doc1, sync1)
@@ -262,6 +291,13 @@ bytes <- am_change_to_bytes(change) # Serialize to raw
 
 # Deserialize from raw bytes (for stored changes)
 change <- am_change_from_bytes(bytes)
+
+# Decompose saved document into individual changes
+changes <- am_change_load_document(bytes) # From am_save() output
+
+# Check document completeness
+missing <- am_get_missing_deps(doc)
+missing <- am_get_missing_deps(doc, heads) # With specific heads
 ```
 
 ### Conversion
