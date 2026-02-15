@@ -538,12 +538,12 @@ am_list_get_all <- function(doc, obj, pos, heads = NULL) {
 #' Get a range of map items by key
 #'
 #' Returns map entries whose keys fall within the lexicographic range
-#' `[begin, end)`.
+#' `[begin, end]` (inclusive on both sides).
 #'
 #' @param doc An Automerge document
 #' @param obj An Automerge object ID (must be a map), or `AM_ROOT`
-#' @param begin Start key (inclusive).
-#' @param end End key (exclusive).
+#' @param begin Start key (inclusive). Use `""` (default) for unbounded start.
+#' @param end End key (inclusive). Use `""` (default) for unbounded end.
 #' @param heads Optional list of change hashes (raw vectors) for historical
 #'   query. If `NULL` (default), uses the current state.
 #'
@@ -557,8 +557,8 @@ am_list_get_all <- function(doc, obj, pos, heads = NULL) {
 #' doc$c <- 3
 #' doc$d <- 4
 #'
-#' # Get entries with keys in [b, d) -> b and c
-#' range <- am_map_range(doc, AM_ROOT, "b", "d")
+#' # Get entries with keys in [b, c] -> b and c
+#' range <- am_map_range(doc, AM_ROOT, "b", "c")
 #' names(range)  # "b" "c"
 #'
 #' # Get all entries

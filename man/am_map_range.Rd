@@ -11,9 +11,9 @@ am_map_range(doc, obj, begin = "", end = "", heads = NULL)
 
 \item{obj}{An Automerge object ID (must be a map), or \code{AM_ROOT}}
 
-\item{begin}{Start key (inclusive).}
+\item{begin}{Start key (inclusive). Use \code{""} (default) for unbounded start.}
 
-\item{end}{End key (exclusive).}
+\item{end}{End key (inclusive). Use \code{""} (default) for unbounded end.}
 
 \item{heads}{Optional list of change hashes (raw vectors) for historical
 query. If \code{NULL} (default), uses the current state.}
@@ -23,7 +23,7 @@ A named list of values in the key range.
 }
 \description{
 Returns map entries whose keys fall within the lexicographic range
-\verb{[begin, end)}.
+\verb{[begin, end]} (inclusive on both sides).
 }
 \examples{
 doc <- am_create()
@@ -32,8 +32,8 @@ doc$b <- 2
 doc$c <- 3
 doc$d <- 4
 
-# Get entries with keys in [b, d) -> b and c
-range <- am_map_range(doc, AM_ROOT, "b", "d")
+# Get entries with keys in [b, c] -> b and c
+range <- am_map_range(doc, AM_ROOT, "b", "c")
 names(range)  # "b" "c"
 
 # Get all entries

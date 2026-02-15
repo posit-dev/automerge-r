@@ -1529,8 +1529,9 @@ test_that("am_map_range() returns subset of keys", {
   doc$c <- 3
   doc$d <- 4
 
-  range <- am_map_range(doc, AM_ROOT, "b", "d")
+  range <- am_map_range(doc, AM_ROOT, "b", "c")
   expect_type(range, "list")
+  expect_length(range, 2)
   expect_true("b" %in% names(range))
   expect_true("c" %in% names(range))
   expect_false("a" %in% names(range))
@@ -1548,13 +1549,19 @@ test_that("am_map_range() with wide strings returns all", {
   expect_length(range, 3)
 })
 
-test_that("am_map_range() with same begin/end returns empty", {
+test_that("am_map_range() with same begin/end returns single key", {
   doc <- am_create()
   doc$a <- 1
   doc$b <- 2
 
-  range <- am_map_range(doc, AM_ROOT, "c", "c")
-  expect_length(range, 0)
+  # Same begin and end selects just that key (inclusive)
+  range <- am_map_range(doc, AM_ROOT, "a", "a")
+  expect_length(range, 1)
+  expect_true("a" %in% names(range))
+
+  # Key that doesn't exist still returns empty
+  range2 <- am_map_range(doc, AM_ROOT, "c", "c")
+  expect_length(range2, 0)
 })
 
 test_that("am_map_range() errors on non-string args", {
@@ -1749,7 +1756,8 @@ test_that("am_map_range() with nested objects", {
   doc$data <- list(value = 42)
   doc$meta <- list(version = "1.0")
 
-  range <- am_map_range(doc, AM_ROOT, "c", "e")
+  range <- am_map_range(doc, AM_ROOT, "config", "data")
+  expect_length(range, 2)
   expect_true("config" %in% names(range))
   expect_true("data" %in% names(range))
   expect_false("meta" %in% names(range))

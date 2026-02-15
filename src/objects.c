@@ -1050,7 +1050,7 @@ SEXP C_am_list_get_all(SEXP doc_ptr, SEXP obj_ptr, SEXP pos, SEXP heads) {
  * @param doc_ptr External pointer to am_doc
  * @param obj_ptr External pointer to AMobjId (or NULL for root)
  * @param begin Character string start key (inclusive), "" for unbounded start
- * @param end Character string end key (exclusive), "" for unbounded end
+ * @param end Character string end key (inclusive), "" for unbounded end
  * @param heads Optional list of change hashes (or NULL)
  * @return Named list of values in the key range
  */
@@ -1067,8 +1067,24 @@ SEXP C_am_map_range(SEXP doc_ptr, SEXP obj_ptr, SEXP begin, SEXP end, SEXP heads
 
     const char *begin_str = CHAR(STRING_ELT(begin, 0));
     const char *end_str = CHAR(STRING_ELT(end, 0));
-    AMbyteSpan begin_span = {.src = (uint8_t const *) begin_str, .count = strlen(begin_str)};
-    AMbyteSpan end_span = {.src = (uint8_t const *) end_str, .count = strlen(end_str)};
+    size_t begin_len = strlen(begin_str);
+    size_t end_len = strlen(end_str);
+
+    AMbyteSpan begin_span;
+    if (begin_len == 0) {
+        begin_span = (AMbyteSpan){.src = NULL, .count = 0};
+    } else {
+        begin_span = (AMbyteSpan){.src = (uint8_t const *) begin_str, .count = begin_len};
+    }
+
+    AMbyteSpan end_span;
+    if (end_len == 0) {
+        end_span = (AMbyteSpan){.src = NULL, .count = 0};
+    } else {
+        // Inclusive end: extend span by 1 to include the existing null terminator
+        // as a successor byte ("key\0" > "key" but "key\0" < "keyA")
+        end_span = (AMbyteSpan){.src = (uint8_t const *) end_str, .count = end_len + 1};
+    }
 
     AMitems *heads_ptr = NULL;
     AMitems heads_items;
