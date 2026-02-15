@@ -50,7 +50,7 @@ history <- am_get_history(doc)
 bytes <- am_change_to_bytes(history[[1]])
 change <- am_change_from_bytes(bytes)
 change
-#> <pointer: 0x559fee1f7320>
+#> <pointer: 0x557e352d44b0>
 #> attr(,"class")
 #> [1] "am_change"
 am_change_message(change)  # "Add key"

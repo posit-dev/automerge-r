@@ -1,7 +1,7 @@
 # Get a range of map items by key
 
 Returns map entries whose keys fall within the lexicographic range
-`[begin, end)`.
+`[begin, end]` (inclusive on both sides).
 
 ## Usage
 
@@ -21,11 +21,11 @@ am_map_range(doc, obj, begin = "", end = "", heads = NULL)
 
 - begin:
 
-  Start key (inclusive).
+  Start key (inclusive). Use `""` (default) for unbounded start.
 
 - end:
 
-  End key (exclusive).
+  End key (inclusive). Use `""` (default) for unbounded end.
 
 - heads:
 
@@ -45,8 +45,8 @@ doc$b <- 2
 doc$c <- 3
 doc$d <- 4
 
-# Get entries with keys in [b, d) -> b and c
-range <- am_map_range(doc, AM_ROOT, "b", "d")
+# Get entries with keys in [b, c] -> b and c
+range <- am_map_range(doc, AM_ROOT, "b", "c")
 names(range)  # "b" "c"
 #> [1] "b" "c"
 

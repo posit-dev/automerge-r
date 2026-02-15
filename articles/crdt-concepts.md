@@ -81,7 +81,7 @@ am_merge(doc1, doc2)
 
 # One value wins (deterministic, all replicas agree)
 doc1[["name"]]
-#> [1] "Alice Smith"
+#> [1] "Alice Johnson"
 
 # To see all conflicting values (not just the winner), use am_map_get_all()
 all_values <- am_map_get_all(doc1, AM_ROOT, "name")
@@ -216,7 +216,7 @@ am_merge(doc_c1, doc_c2)
 
 # am_get returns the winner
 am_get(doc_c1, AM_ROOT, "status")
-#> [1] "archived"
+#> [1] "published"
 
 # am_map_get_all returns all conflicting values
 all_statuses <- am_map_get_all(doc_c1, AM_ROOT, "status")
@@ -224,10 +224,10 @@ length(all_statuses) # 2
 #> [1] 2
 all_statuses
 #> [[1]]
-#> [1] "published"
+#> [1] "archived"
 #> 
 #> [[2]]
-#> [1] "archived"
+#> [1] "published"
 ```
 
 The same approach works for lists — when two peers concurrently update
@@ -340,7 +340,7 @@ am_text_splice(text12, 5, 0, " Everyone")
 am_merge(doc11, doc12)
 
 am_text_content(text11)
-#> [1] "Hello Everyone World"
+#> [1] "Hello World Everyone"
 
 am_close(doc11)
 am_close(doc12)
@@ -399,9 +399,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-02-15 13:57:56 UTC"
+#> [1] "2026-02-15 14:16:54 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-02-15 13:57:56 UTC"
+#> [1] "2026-02-15 14:16:55 UTC"
 
 am_close(doc15)
 am_close(doc16)

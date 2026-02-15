@@ -372,16 +372,16 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] d7 99 75 08 df 6f 41 95 02 73 84 06 91 47 f4 24 33 3b 2f 94 b6 69
-#> [23] 70 c1 5d fe 9a 62 9d 2d 91 73
+#>  [1] ff 57 6b eb 9c d2 dc 92 44 14 88 17 43 fa 17 44 c7 c7 20 68 00 51
+#> [23] 59 72 e8 5e ba 35 f8 bd ee fc
 am_change_actor_id(change) # Who made this change
-#>  [1] da b1 94 a0 f3 c3 8e 86 e4 57 1a c4 65 db 11 0a
+#>  [1] 96 2d a3 25 38 1a 93 28 c0 cc 73 5e 5f 54 f9 e2
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] 91 65 e8 ba bd d3 ad cf 62 9a 15 f4 55 4b b4 30 a8 96 34 b3 4e 22
-#> [23] 9c 33 7c 67 fe 1e 4d a0 62 e6
+#>  [1] 59 b3 b3 64 5c fa 8b 4c f7 d9 15 66 c0 94 0b 34 33 08 dd 44 13 58
+#> [23] 2d ee dd 8d 2e 98 96 46 ab 28
 
 # Get changes between two points in history
 changes_since_v1 <- am_get_changes(doc_main, heads_v1)
@@ -527,7 +527,7 @@ editor1[["counter"]]
 
 # Status: Deterministic conflict resolution (one value wins)
 editor1[["status"]]
-#> [1] "published"
+#> [1] "review"
 
 am_close(base)
 am_close(editor1)
