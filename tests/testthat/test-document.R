@@ -642,3 +642,200 @@ test_that("am_fork() with empty list works like NULL", {
     am_get(fork_empty, AM_ROOT, "key")
   )
 })
+
+# v1.2 Document Operations Tests ----------------------------------------------
+
+# am_clone tests
+
+test_that("am_clone() creates an independent deep copy", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+
+  clone <- am_clone(doc)
+  expect_s3_class(clone, "am_doc")
+  expect_s3_class(clone, "automerge")
+  expect_equal(am_get(clone, AM_ROOT, "key"), "value")
+})
+
+test_that("am_clone() produces independent document", {
+  doc <- am_create()
+  doc$key <- "original"
+  am_commit(doc)
+
+  clone <- am_clone(doc)
+
+  clone$key <- "changed"
+  am_commit(clone)
+
+  expect_equal(am_get(doc, AM_ROOT, "key"), "original")
+  expect_equal(am_get(clone, AM_ROOT, "key"), "changed")
+})
+
+test_that("am_clone() of empty document works", {
+  doc <- am_create()
+  clone <- am_clone(doc)
+  expect_s3_class(clone, "am_doc")
+  expect_equal(am_length(clone, AM_ROOT), 0)
+})
+
+# am_equal tests
+
+test_that("am_equal() returns TRUE for equal docs", {
+  doc1 <- am_create()
+  doc1$key <- "value"
+  am_commit(doc1)
+
+  doc2 <- am_clone(doc1)
+  expect_true(am_equal(doc1, doc2))
+})
+
+test_that("am_equal() returns FALSE for unequal docs", {
+  doc1 <- am_create()
+  doc1$key <- "value1"
+  am_commit(doc1)
+
+  doc2 <- am_clone(doc1)
+  doc2$key <- "value2"
+  am_commit(doc2)
+
+  expect_false(am_equal(doc1, doc2))
+})
+
+test_that("am_equal() for empty documents", {
+  doc1 <- am_create()
+  doc2 <- am_create()
+  expect_true(am_equal(doc1, doc2))
+})
+
+test_that("am_equal() after merge", {
+  doc1 <- am_create()
+  doc1$x <- 1
+  am_commit(doc1)
+
+  doc2 <- am_clone(doc1)
+  doc2$y <- 2
+  am_commit(doc2)
+
+  am_merge(doc1, doc2)
+  am_merge(doc2, doc1)
+
+  expect_true(am_equal(doc1, doc2))
+})
+
+# am_pending_ops tests
+
+test_that("am_pending_ops() is zero on fresh doc", {
+  doc <- am_create()
+  expect_equal(am_pending_ops(doc), 0L)
+})
+
+test_that("am_pending_ops() is non-zero after put", {
+  doc <- am_create()
+  doc$key <- "value"
+  expect_gt(am_pending_ops(doc), 0L)
+})
+
+test_that("am_pending_ops() returns to zero after commit", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+  expect_equal(am_pending_ops(doc), 0L)
+})
+
+# am_empty_change tests
+
+test_that("am_empty_change() adds to history", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc, "First")
+  heads_before <- am_get_heads(doc)
+
+  am_empty_change(doc, "Empty change")
+  heads_after <- am_get_heads(doc)
+
+  expect_false(identical(heads_before, heads_after))
+})
+
+test_that("am_empty_change() preserves message", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc, "Setup")
+
+  am_empty_change(doc, "Checkpoint message")
+
+  change <- am_get_last_local_change(doc)
+  expect_equal(am_change_message(change), "Checkpoint message")
+})
+
+test_that("am_empty_change() returns doc invisibly", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+  result <- am_empty_change(doc, "test")
+  expect_identical(result, doc)
+})
+
+# am_save_incremental / am_load_incremental tests
+
+test_that("am_save_incremental() returns raw bytes", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+  bytes <- am_save_incremental(doc)
+  expect_type(bytes, "raw")
+})
+
+test_that("incremental save/load round-trip works", {
+  doc1 <- am_create()
+  doc1$key1 <- "value1"
+  am_commit(doc1)
+  full_bytes <- am_save(doc1)
+
+  doc1$key2 <- "value2"
+  am_commit(doc1)
+  incremental <- am_save_incremental(doc1)
+
+  doc2 <- am_load(full_bytes)
+  am_load_incremental(doc2, incremental)
+  expect_equal(am_get(doc2, AM_ROOT, "key2"), "value2")
+})
+
+test_that("am_save_incremental() after no changes returns empty or small bytes", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+  am_save(doc)
+
+  # Second incremental save with no new changes
+  incremental <- am_save_incremental(doc)
+  expect_type(incremental, "raw")
+})
+
+test_that("am_load_incremental() errors on non-raw input", {
+  doc <- am_create()
+  expect_error(am_load_incremental(doc, "not raw"), "data must be a raw vector")
+})
+
+test_that("multiple incremental saves accumulate correctly", {
+  doc1 <- am_create()
+  doc1$a <- 1
+  am_commit(doc1)
+  full <- am_save(doc1)
+
+  doc1$b <- 2
+  am_commit(doc1)
+  inc1 <- am_save_incremental(doc1)
+
+  doc1$c <- 3
+  am_commit(doc1)
+  inc2 <- am_save_incremental(doc1)
+
+  doc2 <- am_load(full)
+  am_load_incremental(doc2, inc1)
+  am_load_incremental(doc2, inc2)
+
+  expect_equal(am_get(doc2, AM_ROOT, "a"), 1)
+  expect_equal(am_get(doc2, AM_ROOT, "b"), 2)
+  expect_equal(am_get(doc2, AM_ROOT, "c"), 3)
+})

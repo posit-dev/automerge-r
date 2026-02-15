@@ -93,13 +93,17 @@ am_merge(doc1, doc2)
 # One value wins (deterministic, all replicas agree)
 doc1[["name"]]
 
+# To see all conflicting values (not just the winner), use am_map_get_all()
+all_values <- am_map_get_all(doc1, AM_ROOT, "name")
+length(all_values) # 2 - both "Alice Smith" and "Alice Johnson"
+
 am_close(doc1)
 am_close(doc2)
 ```
 
 **When to use**: Simple values where automatic conflict resolution is acceptable (metadata, settings, labels).
 
-**Trade-off**: One concurrent change is lost, but resolution is deterministic and all replicas converge to the same state.
+**Trade-off**: One concurrent change is lost, but resolution is deterministic and all replicas converge to the same state. Use `am_map_get_all()` or `am_list_get_all()` when you need to surface conflicts to users.
 
 ### Maps (Nested Objects)
 
@@ -362,6 +366,22 @@ str(marks_at_pos)
 am_close(doc18)
 ```
 
+To remove a mark from a text range, use `am_mark_clear()`:
+
+```{r}
+doc18b <- am_create()
+am_put(doc18b, AM_ROOT, "text", am_text("Hello World"))
+text18b <- am_get(doc18b, AM_ROOT, "text")
+
+am_mark(text18b, 0, 11, "bold", TRUE)
+length(am_marks(text18b)) # 1
+
+am_mark_clear(text18b, 0, 11, "bold")
+length(am_marks(text18b)) # 0
+
+am_close(doc18b)
+```
+
 **When to use**: Rich text editors, collaborative annotations, syntax highlighting.
 
 **Mark expansion**: Controls how marks behave when text is inserted at boundaries:
@@ -538,6 +558,10 @@ am_merge(doc26, doc27)
 
 # One will win - application should handle both states sensibly
 doc26[["status"]] # Should be prepared for either 'published' or 'archived'
+
+# Use am_equal() to check if two documents have converged
+am_merge(doc27, doc26)
+am_equal(doc26, doc27) # TRUE - both have the same state now
 
 am_close(doc26)
 am_close(doc27)

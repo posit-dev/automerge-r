@@ -445,3 +445,68 @@ test_that("am_marks_at warns for uint64 exceeding 2^53", {
     am_marks_at(text_obj, 2)
   })
 })
+
+# v1.2 Mark Operations Tests --------------------------------------------------
+
+# am_mark_clear tests
+
+test_that("am_mark_clear() removes a mark", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello World"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  am_mark(text_obj, 0, 11, "bold", TRUE)
+  expect_length(am_marks(text_obj), 1)
+
+  am_mark_clear(text_obj, 0, 11, "bold")
+  expect_length(am_marks(text_obj), 0)
+})
+
+test_that("am_mark_clear() only clears specified mark", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello World"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  am_mark(text_obj, 0, 11, "bold", TRUE)
+  am_mark(text_obj, 0, 11, "italic", TRUE)
+  expect_length(am_marks(text_obj), 2)
+
+  am_mark_clear(text_obj, 0, 11, "bold")
+
+  marks <- am_marks(text_obj)
+  expect_length(marks, 1)
+  expect_equal(marks[[1]]$name, "italic")
+})
+
+test_that("am_mark_clear() returns text_obj invisibly", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  am_mark(text_obj, 0, 5, "bold", TRUE)
+
+  result <- withVisible(am_mark_clear(text_obj, 0, 5, "bold"))
+  expect_identical(result$value, text_obj)
+  expect_false(result$visible)
+})
+
+test_that("am_mark_clear() errors on invalid range", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  expect_error(am_mark_clear(text_obj, 5, 3, "bold"), "end must be greater than start")
+})
+
+test_that("am_mark_clear() partial range", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello World"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  am_mark(text_obj, 0, 11, "bold", TRUE)
+  am_mark_clear(text_obj, 0, 5, "bold")
+
+  marks <- am_marks(text_obj)
+  # After clearing first half, mark should remain on second half
+  expect_gte(length(marks), 1)
+})

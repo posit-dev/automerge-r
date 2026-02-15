@@ -19,6 +19,12 @@ reference:
       - am_commit
       - am_rollback
       - am_close
+      - am_clone
+      - am_equal
+      - am_pending_ops
+      - am_empty_change
+      - am_save_incremental
+      - am_load_incremental
 
   - title: "Actor Management"
     desc: >
@@ -39,6 +45,11 @@ reference:
       - am_keys
       - am_values
       - am_length
+      - am_obj_items
+      - am_list_range
+      - am_map_range
+      - am_list_get_all
+      - am_map_get_all
 
   - title: "Text Operations"
     desc: >
@@ -69,6 +80,7 @@ reference:
       - am_cursor_from_string
       - am_cursor_equal
       - am_mark
+      - am_mark_clear
       - am_marks
       - am_marks_at
 
@@ -80,6 +92,8 @@ reference:
       - am_sync_state
       - am_sync_encode
       - am_sync_decode
+      - am_sync_state_encode
+      - am_sync_state_decode
 
   - title: "History and Changes"
     desc: >
@@ -100,6 +114,8 @@ reference:
       - am_change_actor_id
       - am_change_seq
       - am_change_deps
+      - am_get_missing_deps
+      - am_change_load_document
 
   - title: "Type Constructors"
     desc: >

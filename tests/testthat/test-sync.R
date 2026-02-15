@@ -475,3 +475,116 @@ test_that("am_get_changes_added returns added changes", {
   expect_type(added, "list")
   expect_equal(length(added), 2) # Two commits in doc2
 })
+
+# v1.2 Sync/Change Operations Tests -------------------------------------------
+
+# am_get_missing_deps tests
+
+test_that("am_get_missing_deps() returns empty for complete doc", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+
+  missing <- am_get_missing_deps(doc)
+  expect_type(missing, "list")
+  expect_length(missing, 0)
+})
+
+test_that("am_get_missing_deps() with specific heads", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+
+  heads <- am_get_heads(doc)
+  missing <- am_get_missing_deps(doc, heads)
+  expect_type(missing, "list")
+  expect_length(missing, 0)
+})
+
+# am_change_load_document tests
+
+test_that("am_change_load_document() decomposes document", {
+  doc <- am_create()
+  doc$key1 <- "value1"
+  am_commit(doc, "First")
+  doc$key2 <- "value2"
+  am_commit(doc, "Second")
+  bytes <- am_save(doc)
+
+  changes <- am_change_load_document(bytes)
+  expect_type(changes, "list")
+  expect_length(changes, 2)
+  expect_s3_class(changes[[1]], "am_change")
+  expect_s3_class(changes[[2]], "am_change")
+  expect_equal(am_change_message(changes[[1]]), "First")
+  expect_equal(am_change_message(changes[[2]]), "Second")
+})
+
+test_that("am_change_load_document() changes can be applied", {
+  doc1 <- am_create()
+  doc1$x <- 1
+  am_commit(doc1, "Add x")
+  doc1$y <- 2
+  am_commit(doc1, "Add y")
+  bytes <- am_save(doc1)
+
+  changes <- am_change_load_document(bytes)
+
+  doc2 <- am_create()
+  am_apply_changes(doc2, changes)
+  expect_equal(am_get(doc2, AM_ROOT, "x"), 1)
+  expect_equal(am_get(doc2, AM_ROOT, "y"), 2)
+})
+
+test_that("am_change_load_document() errors on non-raw", {
+  expect_error(am_change_load_document("not raw"), "data must be a raw vector")
+})
+
+test_that("am_change_load_document() on empty doc", {
+  doc <- am_create()
+  bytes <- am_save(doc)
+
+  changes <- am_change_load_document(bytes)
+  expect_type(changes, "list")
+  expect_length(changes, 0)
+})
+
+# am_sync_state_encode / am_sync_state_decode tests
+
+test_that("am_sync_state_encode() returns raw bytes", {
+  sync <- am_sync_state()
+  bytes <- am_sync_state_encode(sync)
+  expect_type(bytes, "raw")
+  expect_gt(length(bytes), 0)
+})
+
+test_that("am_sync_state_decode() restores sync state", {
+  sync <- am_sync_state()
+  bytes <- am_sync_state_encode(sync)
+
+  restored <- am_sync_state_decode(bytes)
+  expect_s3_class(restored, "am_syncstate")
+})
+
+test_that("sync state round-trip works with active sync", {
+  doc1 <- am_create()
+  doc1$key <- "value"
+  am_commit(doc1)
+
+  doc2 <- am_create()
+
+  sync1 <- am_sync_state()
+  sync2 <- am_sync_state()
+
+  msg <- am_sync_encode(doc1, sync1)
+  am_sync_decode(doc2, sync2, msg)
+
+  # Encode and restore sync1
+  bytes <- am_sync_state_encode(sync1)
+  sync1_restored <- am_sync_state_decode(bytes)
+  expect_s3_class(sync1_restored, "am_syncstate")
+})
+
+test_that("am_sync_state_decode() errors on non-raw", {
+  expect_error(am_sync_state_decode("not raw"), "data must be a raw vector")
+})

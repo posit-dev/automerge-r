@@ -520,3 +520,129 @@ am_change_seq <- function(change) {
 am_change_deps <- function(change) {
   .Call(C_am_change_deps, change)
 }
+
+# v1.2 Sync and Change Operations --------------------------------------------
+
+#' Get missing dependencies
+#'
+#' Returns the change hashes of dependencies that are referenced by the
+#' document but not present in its change history. This can happen when
+#' changes are applied out of order or when a document is partially synced.
+#'
+#' @param doc An Automerge document
+#' @param heads Optional list of change hashes (raw vectors) to check for
+#'   missing dependencies. If `NULL` (default), checks the current heads.
+#'
+#' @return A list of raw vectors (change hashes of missing dependencies).
+#'   Returns an empty list if no dependencies are missing.
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' doc$key <- "value"
+#' am_commit(doc)
+#'
+#' # Complete document has no missing deps
+#' missing <- am_get_missing_deps(doc)
+#' length(missing)  # 0
+#'
+#' am_close(doc)
+#'
+am_get_missing_deps <- function(doc, heads = NULL) {
+  .Call(C_am_get_missing_deps, doc, heads)
+}
+
+#' Load a document as individual changes
+#'
+#' Decomposes a serialized document into its individual changes. This is
+#' useful for inspecting the full change history or for selectively applying
+#' changes to another document.
+#'
+#' @param data A raw vector containing a serialized Automerge document
+#'   (from [am_save()])
+#'
+#' @return A list of `am_change` objects. Returns an empty list for an
+#'   empty document.
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' doc$key <- "value"
+#' am_commit(doc, "Add key")
+#' doc$key2 <- "value2"
+#' am_commit(doc, "Add key2")
+#' bytes <- am_save(doc)
+#'
+#' # Load as individual changes
+#' changes <- am_change_load_document(bytes)
+#' length(changes)  # 2
+#' am_change_message(changes[[1]])  # "Add key"
+#' am_change_message(changes[[2]])  # "Add key2"
+#'
+#' # Apply to a new document
+#' doc2 <- am_create()
+#' am_apply_changes(doc2, changes)
+#' doc2$key   # "value"
+#' doc2$key2  # "value2"
+#'
+#' am_close(doc)
+#' am_close(doc2)
+#'
+am_change_load_document <- function(data) {
+  .Call(C_am_change_load_document, data)
+}
+
+#' Serialize a sync state
+#'
+#' Encodes a sync state to a raw vector for persistence or transmission.
+#' The encoded state can later be restored with [am_sync_state_decode()].
+#'
+#' This is useful for persisting sync progress across sessions, avoiding
+#' the need to re-sync from scratch.
+#'
+#' @param sync_state A sync state object (created with [am_sync_state()])
+#'
+#' @return A raw vector containing the serialized sync state.
+#'
+#' @seealso [am_sync_state_decode()], [am_sync_state()]
+#'
+#' @export
+#' @examples
+#' sync_state <- am_sync_state()
+#'
+#' # Encode for storage
+#' bytes <- am_sync_state_encode(sync_state)
+#' bytes
+#'
+#' # Restore later
+#' restored <- am_sync_state_decode(bytes)
+#' restored
+#'
+am_sync_state_encode <- function(sync_state) {
+  .Call(C_am_sync_state_encode, sync_state)
+}
+
+#' Deserialize a sync state
+#'
+#' Restores a sync state from a raw vector previously created by
+#' [am_sync_state_encode()]. This allows continuing a sync session
+#' from where it left off.
+#'
+#' @param data A raw vector containing a serialized sync state
+#'
+#' @return An `am_syncstate` object.
+#'
+#' @seealso [am_sync_state_encode()], [am_sync_state()]
+#'
+#' @export
+#' @examples
+#' sync_state <- am_sync_state()
+#' bytes <- am_sync_state_encode(sync_state)
+#'
+#' # Restore sync state
+#' restored <- am_sync_state_decode(bytes)
+#' restored
+#'
+am_sync_state_decode <- function(data) {
+  .Call(C_am_sync_state_decode, data)
+}

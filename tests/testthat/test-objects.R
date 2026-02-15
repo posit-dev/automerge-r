@@ -1459,3 +1459,172 @@ test_that("am_values warns for uint64 exceeding 2^53", {
     am_values(doc, AM_ROOT)
   })
 })
+
+# v1.2 Object Operations Tests ------------------------------------------------
+
+# am_map_get_all tests
+
+test_that("am_map_get_all() returns single value when no conflict", {
+  doc <- am_create()
+  doc$key <- "value"
+
+  values <- am_map_get_all(doc, AM_ROOT, "key")
+  expect_type(values, "list")
+  expect_length(values, 1)
+  expect_equal(values[[1]], "value")
+})
+
+test_that("am_map_get_all() returns multiple values with conflict", {
+  doc1 <- am_create()
+  doc1$key <- "original"
+  am_commit(doc1)
+
+  doc2 <- am_fork(doc1)
+
+  doc1$key <- "from_doc1"
+  am_commit(doc1)
+
+  doc2$key <- "from_doc2"
+  am_commit(doc2)
+
+  am_merge(doc1, doc2)
+
+  values <- am_map_get_all(doc1, AM_ROOT, "key")
+  expect_type(values, "list")
+  expect_gte(length(values), 1)
+})
+
+test_that("am_map_get_all() errors on non-string key", {
+  doc <- am_create()
+  expect_error(am_map_get_all(doc, AM_ROOT, 123), "character string")
+})
+
+# am_list_get_all tests
+
+test_that("am_list_get_all() returns single value when no conflict", {
+  doc <- am_create()
+  doc$items <- list("a", "b", "c")
+  items <- doc$items
+
+  values <- am_list_get_all(doc, items, 1)
+  expect_type(values, "list")
+  expect_length(values, 1)
+  expect_equal(values[[1]], "a")
+})
+
+test_that("am_list_get_all() errors on invalid position", {
+  doc <- am_create()
+  doc$items <- list("a")
+  items <- doc$items
+
+  expect_error(am_list_get_all(doc, items, 0), "pos must be >= 1")
+})
+
+# am_map_range tests
+
+test_that("am_map_range() returns subset of keys", {
+  doc <- am_create()
+  doc$a <- 1
+  doc$b <- 2
+  doc$c <- 3
+  doc$d <- 4
+
+  range <- am_map_range(doc, AM_ROOT, "b", "d")
+  expect_type(range, "list")
+  expect_true("b" %in% names(range))
+  expect_true("c" %in% names(range))
+  expect_false("a" %in% names(range))
+  expect_false("d" %in% names(range))
+})
+
+test_that("am_map_range() with wide strings returns all", {
+  doc <- am_create()
+  doc$a <- 1
+  doc$b <- 2
+  doc$c <- 3
+
+  # Use a range that brackets all possible keys
+  range <- am_map_range(doc, AM_ROOT, "a", "z")
+  expect_length(range, 3)
+})
+
+test_that("am_map_range() with same begin/end returns empty", {
+  doc <- am_create()
+  doc$a <- 1
+  doc$b <- 2
+
+  range <- am_map_range(doc, AM_ROOT, "c", "c")
+  expect_length(range, 0)
+})
+
+test_that("am_map_range() errors on non-string args", {
+  doc <- am_create()
+  expect_error(am_map_range(doc, AM_ROOT, 1, "z"), "character string")
+  expect_error(am_map_range(doc, AM_ROOT, "a", 2), "character string")
+})
+
+# am_list_range tests
+
+test_that("am_list_range() returns subset of elements", {
+  doc <- am_create()
+  doc$items <- list("a", "b", "c", "d", "e")
+  items <- doc$items
+
+  range <- am_list_range(doc, items, 2, 5)
+  expect_type(range, "list")
+  expect_length(range, 3)
+  expect_equal(range[[1]], "b")
+  expect_equal(range[[2]], "c")
+  expect_equal(range[[3]], "d")
+})
+
+test_that("am_list_range() errors on invalid begin", {
+  doc <- am_create()
+  doc$items <- list("a", "b")
+  items <- doc$items
+
+  expect_error(am_list_range(doc, items, 0, 2), "begin must be >= 1")
+})
+
+test_that("am_list_range() errors on invalid end", {
+  doc <- am_create()
+  doc$items <- list("a", "b")
+  items <- doc$items
+
+  expect_error(am_list_range(doc, items, 1, 0), "end must be >= 1")
+})
+
+# am_obj_items tests
+
+test_that("am_obj_items() returns items from map", {
+  doc <- am_create()
+  doc$name <- "Alice"
+  doc$age <- 30L
+
+  items <- am_obj_items(doc, AM_ROOT)
+  expect_type(items, "list")
+  expect_length(items, 2)
+
+  # Items should have key and value fields
+  expect_true(all(vapply(items, function(x) "key" %in% names(x), logical(1))))
+  expect_true(all(vapply(items, function(x) "value" %in% names(x), logical(1))))
+})
+
+test_that("am_obj_items() returns items from list", {
+  doc <- am_create()
+  doc$items <- list("a", "b", "c")
+  items_obj <- doc$items
+
+  items <- am_obj_items(doc, items_obj)
+  expect_type(items, "list")
+  expect_length(items, 3)
+
+  expect_true(all(vapply(items, function(x) "key" %in% names(x), logical(1))))
+  expect_true(all(vapply(items, function(x) "value" %in% names(x), logical(1))))
+})
+
+test_that("am_obj_items() returns empty list for empty object", {
+  doc <- am_create()
+  items <- am_obj_items(doc, AM_ROOT)
+  expect_length(items, 0)
+})

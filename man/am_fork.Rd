@@ -20,14 +20,28 @@ A new Automerge document (fork of the original)
 Creates a fork of an Automerge document at the current heads or
 at a specific point in history. The forked document shares history
 with the original up to the fork point but can diverge afterwards.
+The fork is assigned a new actor ID, so changes made on the fork
+are distinguishable from the original when merged or synced.
+}
+\details{
+Use \code{am_fork()} when creating independent branches of a document
+that may later be merged or synced. Use \code{\link[=am_clone]{am_clone()}} instead if you
+need an exact copy that preserves the original actor ID (e.g. for
+archival or snapshotting purposes).
 }
 \examples{
 doc1 <- am_create()
 doc2 <- am_fork(doc1)
 doc2
 
+# Fork has a different actor ID
+am_get_actor_hex(doc1) != am_get_actor_hex(doc2) # TRUE
+
 # Now doc1 and doc2 can diverge independently
 am_close(doc1)
 am_close(doc2)
 
+}
+\seealso{
+\code{\link[=am_clone]{am_clone()}} for an exact copy preserving the actor ID
 }

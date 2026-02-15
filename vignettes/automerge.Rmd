@@ -314,6 +314,35 @@ am_close(doc_loaded)
 am_close(doc_from_file)
 ```
 
+### Incremental Save and Load
+
+For long-lived documents, incremental save/load allows exchanging only the changes since the last save, rather than the entire document:
+
+```{r}
+doc_inc <- am_create()
+doc_inc[["v1"]] <- "first"
+am_commit(doc_inc, "Version 1")
+
+# Full save (resets incremental tracking)
+full_bytes <- am_save(doc_inc)
+
+# Make more changes
+doc_inc[["v2"]] <- "second"
+am_commit(doc_inc, "Version 2")
+
+# Incremental save: only the new changes
+inc_bytes <- am_save_incremental(doc_inc)
+length(inc_bytes) < length(full_bytes) # TRUE - much smaller
+
+# Apply incremental changes to another copy
+doc_inc2 <- am_load(full_bytes)
+am_load_incremental(doc_inc2, inc_bytes)
+doc_inc2[["v2"]] # "second"
+
+am_close(doc_inc)
+am_close(doc_inc2)
+```
+
 ## Document Lifecycle
 
 ### Committing Changes
@@ -325,6 +354,9 @@ doc10 <- am_create()
 doc10[["x"]] <- 1
 doc10[["y"]] <- 2
 
+# Check how many uncommitted operations exist
+am_pending_ops(doc10)
+
 # Commit with message
 am_commit(doc10, "Add x and y coordinates")
 
@@ -333,7 +365,7 @@ doc10[["z"]] <- 3
 am_commit(doc10, "Add z coordinate")
 ```
 
-### Forking Documents
+### Forking and Cloning Documents
 
 Create independent copies:
 
@@ -344,8 +376,15 @@ doc11 <- am_fork(doc10)
 doc11[["w"]] <- 4
 doc10[["w"]] # NULL - not in original
 
+# am_clone() is another way to create an independent deep copy
+doc11b <- am_clone(doc10)
+
+# Compare documents for equality
+am_equal(doc10, doc11b) # TRUE - same state
+
 am_close(doc10)
 am_close(doc11)
+am_close(doc11b)
 ```
 
 ### Merging Documents

@@ -891,3 +891,411 @@ SEXP C_am_counter_increment(SEXP doc_ptr, SEXP obj_ptr, SEXP key_or_pos, SEXP de
 
     return doc_ptr;
 }
+
+// v1.2 Object Operations -----------------------------------------------------
+
+/**
+ * Get all conflicting values at a map key.
+ *
+ * @param doc_ptr External pointer to am_doc
+ * @param obj_ptr External pointer to AMobjId (or NULL for root)
+ * @param key Character string key
+ * @param heads Optional list of change hashes (or NULL)
+ * @return List of all values at the key (including conflicts)
+ */
+SEXP C_am_map_get_all(SEXP doc_ptr, SEXP obj_ptr, SEXP key, SEXP heads) {
+    AMdoc *doc = get_doc(doc_ptr);
+    const AMobjId *obj_id = get_objid(obj_ptr);
+
+    if (TYPEOF(key) != STRSXP || XLENGTH(key) != 1) {
+        Rf_error("key must be a single character string");
+    }
+    const char *key_str = CHAR(STRING_ELT(key, 0));
+    AMbyteSpan key_span = {.src = (uint8_t const *) key_str, .count = strlen(key_str)};
+
+    AMitems *heads_ptr = NULL;
+    AMitems heads_items;
+    AMresult *heads_result = NULL;
+    if (heads != R_NilValue) {
+        AMresult **head_results = NULL;
+        size_t n_head_results = 0;
+        heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
+        if (n_head_results == 0) {
+            heads_ptr = NULL;
+        } else if (n_head_results == 1) {
+            heads_items = AMresultItems(heads_result);
+            heads_ptr = &heads_items;
+            free(head_results);
+        } else {
+            for (size_t i = 0; i < n_head_results; i++) {
+                AMresultFree(head_results[i]);
+            }
+            free(head_results);
+            Rf_error("multiple heads are not supported; commit first to produce a single head");
+        }
+    }
+
+    AMresult *result = AMmapGetAll(doc, obj_id, key_span, heads_ptr);
+    if (heads_result) AMresultFree(heads_result);
+
+    if (AMresultStatus(result) != AM_STATUS_OK) {
+        CHECK_RESULT(result, AM_VAL_TYPE_VOID);
+    }
+
+    AMitems items = AMresultItems(result);
+    size_t count = AMitemsSize(&items);
+
+    SEXP result_sexp = PROTECT(wrap_am_result(result, doc_ptr));
+    SEXP list = PROTECT(Rf_allocVector(VECSXP, count));
+
+    for (size_t i = 0; i < count; i++) {
+        AMitem *item = AMitemsNext(&items, 1);
+        if (!item) break;
+
+        AMvalType val_type = AMitemValType(item);
+        if (val_type == AM_VAL_TYPE_VOID || val_type == 0 || val_type == 1) {
+            continue;
+        }
+
+        SEXP r_value = PROTECT(am_item_to_r(item, doc_ptr, result_sexp));
+        SET_VECTOR_ELT(list, i, r_value);
+        UNPROTECT(1);
+    }
+
+    UNPROTECT(2);
+    return list;
+}
+
+/**
+ * Get all conflicting values at a list position.
+ *
+ * @param doc_ptr External pointer to am_doc
+ * @param obj_ptr External pointer to AMobjId
+ * @param pos Numeric position (1-based)
+ * @param heads Optional list of change hashes (or NULL)
+ * @return List of all values at the position (including conflicts)
+ */
+SEXP C_am_list_get_all(SEXP doc_ptr, SEXP obj_ptr, SEXP pos, SEXP heads) {
+    AMdoc *doc = get_doc(doc_ptr);
+    const AMobjId *obj_id = get_objid(obj_ptr);
+
+    if (TYPEOF(pos) != INTSXP && TYPEOF(pos) != REALSXP) {
+        Rf_error("pos must be numeric");
+    }
+    if (XLENGTH(pos) != 1) {
+        Rf_error("pos must be a scalar");
+    }
+    int r_pos = Rf_asInteger(pos);
+    if (r_pos < 1) {
+        Rf_error("pos must be >= 1 (R uses 1-based indexing)");
+    }
+    size_t c_pos = (size_t) (r_pos - 1);
+
+    AMitems *heads_ptr = NULL;
+    AMitems heads_items;
+    AMresult *heads_result = NULL;
+    if (heads != R_NilValue) {
+        AMresult **head_results = NULL;
+        size_t n_head_results = 0;
+        heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
+        if (n_head_results == 0) {
+            heads_ptr = NULL;
+        } else if (n_head_results == 1) {
+            heads_items = AMresultItems(heads_result);
+            heads_ptr = &heads_items;
+            free(head_results);
+        } else {
+            for (size_t i = 0; i < n_head_results; i++) {
+                AMresultFree(head_results[i]);
+            }
+            free(head_results);
+            Rf_error("multiple heads are not supported; commit first to produce a single head");
+        }
+    }
+
+    AMresult *result = AMlistGetAll(doc, obj_id, c_pos, heads_ptr);
+    if (heads_result) AMresultFree(heads_result);
+
+    if (AMresultStatus(result) != AM_STATUS_OK) {
+        CHECK_RESULT(result, AM_VAL_TYPE_VOID);
+    }
+
+    AMitems items = AMresultItems(result);
+    size_t count = AMitemsSize(&items);
+
+    SEXP result_sexp = PROTECT(wrap_am_result(result, doc_ptr));
+    SEXP list = PROTECT(Rf_allocVector(VECSXP, count));
+
+    for (size_t i = 0; i < count; i++) {
+        AMitem *item = AMitemsNext(&items, 1);
+        if (!item) break;
+
+        AMvalType val_type = AMitemValType(item);
+        if (val_type == AM_VAL_TYPE_VOID || val_type == 0 || val_type == 1) {
+            continue;
+        }
+
+        SEXP r_value = PROTECT(am_item_to_r(item, doc_ptr, result_sexp));
+        SET_VECTOR_ELT(list, i, r_value);
+        UNPROTECT(1);
+    }
+
+    UNPROTECT(2);
+    return list;
+}
+
+/**
+ * Get a range of map items by key.
+ *
+ * @param doc_ptr External pointer to am_doc
+ * @param obj_ptr External pointer to AMobjId (or NULL for root)
+ * @param begin Character string start key (inclusive), "" for unbounded start
+ * @param end Character string end key (exclusive), "" for unbounded end
+ * @param heads Optional list of change hashes (or NULL)
+ * @return Named list of values in the key range
+ */
+SEXP C_am_map_range(SEXP doc_ptr, SEXP obj_ptr, SEXP begin, SEXP end, SEXP heads) {
+    AMdoc *doc = get_doc(doc_ptr);
+    const AMobjId *obj_id = get_objid(obj_ptr);
+
+    if (TYPEOF(begin) != STRSXP || XLENGTH(begin) != 1) {
+        Rf_error("begin must be a single character string");
+    }
+    if (TYPEOF(end) != STRSXP || XLENGTH(end) != 1) {
+        Rf_error("end must be a single character string");
+    }
+
+    const char *begin_str = CHAR(STRING_ELT(begin, 0));
+    const char *end_str = CHAR(STRING_ELT(end, 0));
+    AMbyteSpan begin_span = {.src = (uint8_t const *) begin_str, .count = strlen(begin_str)};
+    AMbyteSpan end_span = {.src = (uint8_t const *) end_str, .count = strlen(end_str)};
+
+    AMitems *heads_ptr = NULL;
+    AMitems heads_items;
+    AMresult *heads_result = NULL;
+    if (heads != R_NilValue) {
+        AMresult **head_results = NULL;
+        size_t n_head_results = 0;
+        heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
+        if (n_head_results == 0) {
+            heads_ptr = NULL;
+        } else if (n_head_results == 1) {
+            heads_items = AMresultItems(heads_result);
+            heads_ptr = &heads_items;
+            free(head_results);
+        } else {
+            for (size_t i = 0; i < n_head_results; i++) {
+                AMresultFree(head_results[i]);
+            }
+            free(head_results);
+            Rf_error("multiple heads are not supported; commit first to produce a single head");
+        }
+    }
+
+    AMresult *result = AMmapRange(doc, obj_id, begin_span, end_span, heads_ptr);
+    if (heads_result) AMresultFree(heads_result);
+
+    if (AMresultStatus(result) != AM_STATUS_OK) {
+        CHECK_RESULT(result, AM_VAL_TYPE_VOID);
+    }
+
+    AMitems items = AMresultItems(result);
+    size_t count = AMitemsSize(&items);
+
+    SEXP result_sexp = PROTECT(wrap_am_result(result, doc_ptr));
+    SEXP list = PROTECT(Rf_allocVector(VECSXP, count));
+    SEXP names = PROTECT(Rf_allocVector(STRSXP, count));
+
+    for (size_t i = 0; i < count; i++) {
+        AMitem *item = AMitemsNext(&items, 1);
+        if (!item) break;
+
+        // Extract key
+        AMbyteSpan key_span;
+        if (AMitemKey(item, &key_span)) {
+            SET_STRING_ELT(names, i, Rf_mkCharLen((const char *) key_span.src, key_span.count));
+        }
+
+        // Extract value
+        AMvalType val_type = AMitemValType(item);
+        if (val_type != AM_VAL_TYPE_VOID && val_type != 0 && val_type != 1) {
+            SEXP r_value = PROTECT(am_item_to_r(item, doc_ptr, result_sexp));
+            SET_VECTOR_ELT(list, i, r_value);
+            UNPROTECT(1);
+        }
+    }
+
+    Rf_setAttrib(list, R_NamesSymbol, names);
+    UNPROTECT(3);
+    return list;
+}
+
+/**
+ * Get a range of list items.
+ *
+ * @param doc_ptr External pointer to am_doc
+ * @param obj_ptr External pointer to AMobjId
+ * @param begin Numeric start position (1-based, inclusive)
+ * @param end Numeric end position (1-based, exclusive after conversion)
+ * @param heads Optional list of change hashes (or NULL)
+ * @return List of values in the range
+ */
+SEXP C_am_list_range(SEXP doc_ptr, SEXP obj_ptr, SEXP begin, SEXP end, SEXP heads) {
+    AMdoc *doc = get_doc(doc_ptr);
+    const AMobjId *obj_id = get_objid(obj_ptr);
+
+    if (TYPEOF(begin) != INTSXP && TYPEOF(begin) != REALSXP) {
+        Rf_error("begin must be numeric");
+    }
+    if (TYPEOF(end) != INTSXP && TYPEOF(end) != REALSXP) {
+        Rf_error("end must be numeric");
+    }
+    if (XLENGTH(begin) != 1 || XLENGTH(end) != 1) {
+        Rf_error("begin and end must be scalars");
+    }
+
+    int r_begin = Rf_asInteger(begin);
+    int r_end = Rf_asInteger(end);
+    if (r_begin < 1) {
+        Rf_error("begin must be >= 1 (R uses 1-based indexing)");
+    }
+    if (r_end < 1) {
+        Rf_error("end must be >= 1 (R uses 1-based indexing)");
+    }
+    size_t c_begin = (size_t) (r_begin - 1);
+    size_t c_end = (size_t) (r_end - 1);  // Convert R 1-based exclusive to C 0-based exclusive
+
+    AMitems *heads_ptr = NULL;
+    AMitems heads_items;
+    AMresult *heads_result = NULL;
+    if (heads != R_NilValue) {
+        AMresult **head_results = NULL;
+        size_t n_head_results = 0;
+        heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
+        if (n_head_results == 0) {
+            heads_ptr = NULL;
+        } else if (n_head_results == 1) {
+            heads_items = AMresultItems(heads_result);
+            heads_ptr = &heads_items;
+            free(head_results);
+        } else {
+            for (size_t i = 0; i < n_head_results; i++) {
+                AMresultFree(head_results[i]);
+            }
+            free(head_results);
+            Rf_error("multiple heads are not supported; commit first to produce a single head");
+        }
+    }
+
+    AMresult *result = AMlistRange(doc, obj_id, c_begin, c_end, heads_ptr);
+    if (heads_result) AMresultFree(heads_result);
+
+    if (AMresultStatus(result) != AM_STATUS_OK) {
+        CHECK_RESULT(result, AM_VAL_TYPE_VOID);
+    }
+
+    AMitems items = AMresultItems(result);
+    size_t count = AMitemsSize(&items);
+
+    SEXP result_sexp = PROTECT(wrap_am_result(result, doc_ptr));
+    SEXP list = PROTECT(Rf_allocVector(VECSXP, count));
+
+    for (size_t i = 0; i < count; i++) {
+        AMitem *item = AMitemsNext(&items, 1);
+        if (!item) break;
+
+        AMvalType val_type = AMitemValType(item);
+        if (val_type != AM_VAL_TYPE_VOID && val_type != 0 && val_type != 1) {
+            SEXP r_value = PROTECT(am_item_to_r(item, doc_ptr, result_sexp));
+            SET_VECTOR_ELT(list, i, r_value);
+            UNPROTECT(1);
+        }
+    }
+
+    UNPROTECT(2);
+    return list;
+}
+
+/**
+ * Get full item details from an object.
+ *
+ * @param doc_ptr External pointer to am_doc
+ * @param obj_ptr External pointer to AMobjId (or NULL for root)
+ * @param heads Optional list of change hashes (or NULL)
+ * @return List of lists, each with key (or index), value, and obj_id fields
+ */
+SEXP C_am_obj_items(SEXP doc_ptr, SEXP obj_ptr, SEXP heads) {
+    AMdoc *doc = get_doc(doc_ptr);
+    const AMobjId *obj_id = get_objid(obj_ptr);
+
+    AMitems *heads_ptr = NULL;
+    AMitems heads_items;
+    AMresult *heads_result = NULL;
+    if (heads != R_NilValue) {
+        AMresult **head_results = NULL;
+        size_t n_head_results = 0;
+        heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
+        if (n_head_results == 0) {
+            heads_ptr = NULL;
+        } else if (n_head_results == 1) {
+            heads_items = AMresultItems(heads_result);
+            heads_ptr = &heads_items;
+            free(head_results);
+        } else {
+            for (size_t i = 0; i < n_head_results; i++) {
+                AMresultFree(head_results[i]);
+            }
+            free(head_results);
+            Rf_error("multiple heads are not supported; commit first to produce a single head");
+        }
+    }
+
+    AMresult *result = AMobjItems(doc, obj_id, heads_ptr);
+    if (heads_result) AMresultFree(heads_result);
+
+    if (AMresultStatus(result) != AM_STATUS_OK) {
+        CHECK_RESULT(result, AM_VAL_TYPE_VOID);
+    }
+
+    AMitems items = AMresultItems(result);
+    size_t count = AMitemsSize(&items);
+
+    AMobjType obj_type = obj_id ? AMobjObjType(doc, obj_id) : AM_OBJ_TYPE_MAP;
+    bool is_map = (obj_type == AM_OBJ_TYPE_MAP);
+
+    SEXP result_sexp = PROTECT(wrap_am_result(result, doc_ptr));
+    SEXP list = PROTECT(Rf_allocVector(VECSXP, count));
+
+    for (size_t i = 0; i < count; i++) {
+        AMitem *item = AMitemsNext(&items, 1);
+        if (!item) break;
+
+        const char *entry_names[] = {"key", "value", ""};
+        SEXP entry = PROTECT(Rf_mkNamed(VECSXP, entry_names));
+
+        // Key or index
+        if (is_map) {
+            AMbyteSpan key_span;
+            if (AMitemKey(item, &key_span)) {
+                SET_VECTOR_ELT(entry, 0, Rf_ScalarString(
+                    Rf_mkCharLen((const char *) key_span.src, key_span.count)));
+            }
+        } else {
+            SET_VECTOR_ELT(entry, 0, Rf_ScalarInteger((int)(i + 1)));
+        }
+
+        // Value
+        AMvalType val_type = AMitemValType(item);
+        if (val_type != AM_VAL_TYPE_VOID && val_type != 0 && val_type != 1) {
+            SEXP r_value = PROTECT(am_item_to_r(item, doc_ptr, result_sexp));
+            SET_VECTOR_ELT(entry, 1, r_value);
+            UNPROTECT(1);
+        }
+
+        SET_VECTOR_ELT(list, i, entry);
+        UNPROTECT(1);
+    }
+
+    UNPROTECT(2);
+    return list;
+}

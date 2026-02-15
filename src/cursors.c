@@ -687,3 +687,65 @@ SEXP C_am_marks_at(SEXP obj_ptr, SEXP position, SEXP heads) {
 
     return C_am_marks_impl(obj_ptr, r_pos, heads);
 }
+
+// v1.2 Mark Operations -------------------------------------------------------
+
+/**
+ * Clear/remove marks from a text range.
+ *
+ * @param obj_ptr External pointer to AMobjId (must be text object)
+ * @param start R integer (0-based start position)
+ * @param end R integer (0-based end position)
+ * @param name R character string (mark name)
+ * @param expand R character string (expand mode)
+ * @return The text object (invisibly)
+ */
+SEXP C_am_mark_clear(SEXP obj_ptr, SEXP start, SEXP end,
+                      SEXP name, SEXP expand) {
+    SEXP doc_ptr = get_doc_from_objid(obj_ptr);
+    AMdoc *doc = get_doc(doc_ptr);
+
+    const AMobjId *obj_id = get_objid(obj_ptr);
+
+    if (TYPEOF(start) != INTSXP && TYPEOF(start) != REALSXP) {
+        Rf_error("start must be numeric");
+    }
+    if (Rf_xlength(start) != 1) {
+        Rf_error("start must be a scalar");
+    }
+    int r_start = Rf_asInteger(start);
+    if (r_start < 0) {
+        Rf_error("start must be non-negative (uses 0-based indexing)");
+    }
+    size_t c_start = (size_t) r_start;
+
+    if (TYPEOF(end) != INTSXP && TYPEOF(end) != REALSXP) {
+        Rf_error("end must be numeric");
+    }
+    if (Rf_xlength(end) != 1) {
+        Rf_error("end must be a scalar");
+    }
+    int r_end = Rf_asInteger(end);
+    if (r_end < 0) {
+        Rf_error("end must be non-negative (uses 0-based indexing)");
+    }
+    size_t c_end = (size_t) r_end;
+
+    if (c_end <= c_start) {
+        Rf_error("end must be greater than start");
+    }
+
+    if (TYPEOF(name) != STRSXP || Rf_xlength(name) != 1) {
+        Rf_error("name must be a single character string");
+    }
+    const char *name_str = CHAR(STRING_ELT(name, 0));
+    AMbyteSpan name_span = {.src = (uint8_t const *) name_str, .count = strlen(name_str)};
+
+    AMmarkExpand expand_mode = r_expand_to_c(expand);
+
+    AMresult *result = AMmarkClear(doc, obj_id, c_start, c_end, expand_mode, name_span);
+    CHECK_RESULT(result, AM_VAL_TYPE_VOID);
+    AMresultFree(result);
+
+    return obj_ptr;
+}
