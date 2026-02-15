@@ -143,9 +143,9 @@ repeat {
 round
 #> [1] 3
 peer3[["source"]]
-#> [1] "peer3"
+#> [1] "peer4"
 peer4[["source"]]
-#> [1] "peer3"
+#> [1] "peer4"
 
 am_close(peer3)
 am_close(peer4)
@@ -372,16 +372,16 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] 25 0b 53 6c b3 1a c6 46 b7 e7 a8 aa 4a 88 3e f9 bb c9 dc f7 49 11
-#> [23] 7a cf a0 56 4a f7 99 42 65 41
+#>  [1] d7 99 75 08 df 6f 41 95 02 73 84 06 91 47 f4 24 33 3b 2f 94 b6 69
+#> [23] 70 c1 5d fe 9a 62 9d 2d 91 73
 am_change_actor_id(change) # Who made this change
-#>  [1] f4 f3 95 9a a2 a0 1d ea 90 3e 4d c1 70 a4 09 71
+#>  [1] da b1 94 a0 f3 c3 8e 86 e4 57 1a c4 65 db 11 0a
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] 72 6e 1a e0 83 55 a4 63 49 b5 bf f0 92 be 3d e9 24 59 6f a5 8f bd
-#> [23] 19 34 d6 7c f5 91 43 a3 88 da
+#>  [1] 91 65 e8 ba bd d3 ad cf 62 9a 15 f4 55 4b b4 30 a8 96 34 b3 4e 22
+#> [23] 9c 33 7c 67 fe 1e 4d a0 62 e6
 
 # Get changes between two points in history
 changes_since_v1 <- am_get_changes(doc_main, heads_v1)
