@@ -81,7 +81,7 @@ am_merge(doc1, doc2)
 
 # One value wins (deterministic, all replicas agree)
 doc1[["name"]]
-#> [1] "Alice Johnson"
+#> [1] "Alice Smith"
 
 # To see all conflicting values (not just the winner), use am_map_get_all()
 all_values <- am_map_get_all(doc1, AM_ROOT, "name")
@@ -216,7 +216,7 @@ am_merge(doc_c1, doc_c2)
 
 # am_get returns the winner
 am_get(doc_c1, AM_ROOT, "status")
-#> [1] "archived"
+#> [1] "published"
 
 # am_map_get_all returns all conflicting values
 all_statuses <- am_map_get_all(doc_c1, AM_ROOT, "status")
@@ -224,10 +224,10 @@ length(all_statuses) # 2
 #> [1] 2
 all_statuses
 #> [[1]]
-#> [1] "published"
+#> [1] "archived"
 #> 
 #> [[2]]
-#> [1] "archived"
+#> [1] "published"
 ```
 
 The same approach works for lists — when two peers concurrently update
@@ -255,15 +255,15 @@ am_merge(doc_l1, doc_l2)
 
 # Winner
 am_get(doc_l1, scores, 1)
-#> [1] 200
+#> [1] 300
 
 # All conflicting values
 am_list_get_all(doc_l1, scores, 1)
 #> [[1]]
-#> [1] 300
+#> [1] 200
 #> 
 #> [[2]]
-#> [1] 200
+#> [1] 300
 
 am_close(doc_c1)
 am_close(doc_c2)
@@ -322,7 +322,7 @@ doc9[["title"]] <- "My Document"
 doc10[["title"]] <- "Our Document"
 am_merge(doc9, doc10)
 doc9[["title"]] # One value wins deterministically
-#> [1] "My Document"
+#> [1] "Our Document"
 
 am_close(doc9)
 am_close(doc10)
@@ -399,9 +399,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-02-16 16:38:16 UTC"
+#> [1] "2026-02-16 16:53:55 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-02-16 16:38:16 UTC"
+#> [1] "2026-02-16 16:53:55 UTC"
 
 am_close(doc15)
 am_close(doc16)
@@ -711,7 +711,7 @@ am_merge(doc26, doc27)
 
 # One will win - application should handle both states sensibly
 doc26[["status"]] # Should be prepared for either 'published' or 'archived'
-#> [1] "archived"
+#> [1] "published"
 
 # Use am_equal() to check if two documents have converged
 am_merge(doc27, doc26)

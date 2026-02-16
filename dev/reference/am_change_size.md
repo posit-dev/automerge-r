@@ -1,13 +1,12 @@
-# Get the timestamp of a change
+# Get the number of operations in a change
 
-Returns the timestamp recorded when the change was committed. Note that
-timestamps are set by the committing peer and may not be accurate if the
-peer's clock is wrong.
+Returns the number of operations contained in the change. Useful for
+estimating the size of changes before syncing or storing them.
 
 ## Usage
 
 ``` r
-am_change_time(change)
+am_change_size(change)
 ```
 
 ## Arguments
@@ -22,18 +21,20 @@ am_change_time(change)
 
 ## Value
 
-A `POSIXct` timestamp
+An integer (or double for very large values exceeding R's 32-bit integer
+range)
 
 ## Examples
 
 ``` r
 doc <- am_create()
-am_put(doc, AM_ROOT, "key", "value")
-am_commit(doc, "Add key", Sys.time())
+am_put(doc, AM_ROOT, "x", 1)
+am_put(doc, AM_ROOT, "y", 2)
+am_commit(doc, "Add keys")
 
 history <- am_get_history(doc)
-am_change_time(history[[1]])
-#> [1] "2026-02-16 16:53:32 UTC"
+am_change_size(history[[1]])  # 2
+#> [1] 2
 
 am_close(doc)
 ```

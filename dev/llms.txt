@@ -297,6 +297,8 @@ Track document history and inspect changes
   : Get the sequence number of a change
 - [`am_change_deps()`](https://posit-dev.github.io/automerge-r/dev/reference/am_change_deps.md)
   : Get the dependencies of a change
+- [`am_change_size()`](https://posit-dev.github.io/automerge-r/dev/reference/am_change_size.md)
+  : Get the number of operations in a change
 - [`am_get_missing_deps()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_missing_deps.md)
   : Get missing dependencies
 - [`am_load_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_load_changes.md)

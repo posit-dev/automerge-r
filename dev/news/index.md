@@ -8,8 +8,9 @@
   [`am_change_time()`](https://posit-dev.github.io/automerge-r/dev/reference/am_change_time.md),
   [`am_change_actor_id()`](https://posit-dev.github.io/automerge-r/dev/reference/am_change_actor_id.md),
   [`am_change_seq()`](https://posit-dev.github.io/automerge-r/dev/reference/am_change_seq.md),
+  [`am_change_deps()`](https://posit-dev.github.io/automerge-r/dev/reference/am_change_deps.md),
   and
-  [`am_change_deps()`](https://posit-dev.github.io/automerge-r/dev/reference/am_change_deps.md)
+  [`am_change_size()`](https://posit-dev.github.io/automerge-r/dev/reference/am_change_size.md)
   for extracting metadata from changes.
   [`am_change_to_bytes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_change_to_bytes.md)
   and

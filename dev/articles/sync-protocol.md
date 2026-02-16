@@ -372,16 +372,18 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] e0 a2 4f 70 ec 07 5b 9d 16 61 8d ed 3c da 88 4f f9 92 25 64 75 4c
-#> [23] 0b 80 80 99 87 04 73 ba cc cd
+#>  [1] 46 5f 76 ae f0 a0 e5 7f e1 b1 92 a5 d2 00 84 c0 70 0f 71 9a 00 6a
+#> [23] ed e7 24 4d a2 0c 56 05 f5 e1
 am_change_actor_id(change) # Who made this change
-#>  [1] ce 59 54 e0 21 ff 02 c1 85 6f 16 3f ec a0 a0 80
+#>  [1] 25 18 6d 43 e6 bf 63 a3 86 43 1e 27 d7 fe 1d f1
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] 4b 9b 82 7a 53 6a 40 f9 f8 5c 2c 7c 8e 6f 72 a2 ab b8 c3 f2 63 16
-#> [23] 1c 6f e6 ff fd 24 e4 60 8f 9c
+#>  [1] 19 7f 59 87 f0 5c 30 ca b1 1d 9d 1a 02 f1 b5 e8 51 27 3f bf 66 86
+#> [23] 31 13 c3 86 0f 51 27 33 ca 30
+am_change_size(change)     # Number of operations
+#> [1] 2
 
 # Get changes between two points in history
 changes_since_v1 <- am_get_changes(doc_main, heads_v1)
