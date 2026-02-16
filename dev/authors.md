@@ -1,0 +1,91 @@
+# Authors and Citation
+
+## Authors
+
+- **[Charlie Gao](https://github.com/shikokuchuo)**. Author, maintainer.
+  [](https://orcid.org/0000-0002-0750-061X)
+
+- **[![Posit](https://www.tidyverse.org/posit-logo.svg)](https://www.posit.co)**.
+  Copyright holder, funder.
+  [![ROR](https://raw.githubusercontent.com/ror-community/ror-logos/main/ror-icon-rgb.svg)](https://ror.org/03wc8by49)
+
+- **Authors of the dependency Rust crates**. Copyright holder.  
+  see inst/AUTHORS file
+
+## Citation
+
+Source:
+[`DESCRIPTION`](https://github.com/posit-dev/automerge-r/blob/main/DESCRIPTION)
+
+Gao C (2026). *automerge: R Bindings for 'Automerge' 'CRDT' Library*. R
+package version 0.2.1.9000, <https://github.com/posit-dev/automerge-r>.
+
+    @Manual{,
+      title = {automerge: R Bindings for 'Automerge' 'CRDT' Library},
+      author = {Charlie Gao},
+      year = {2026},
+      note = {R package version 0.2.1.9000},
+      url = {https://github.com/posit-dev/automerge-r},
+    }
+
+## Additional details
+
+    Authors of bundled Rust crates:
+
+     - adler2 2.0.1: Jonas Schievink, oyvindln
+     - bitflags 1.3.2: The Rust Project Developers
+     - block-buffer 0.11.0: RustCrypto Developers
+     - cbindgen 0.29.2: Emilio Cobos Álvarez, Jeff Muizelaar, Kartikaya Gupta, Ryan Hunt
+     - cfg-if 1.0.4: Alex Crichton
+     - cpufeatures 0.2.17: RustCrypto Developers
+     - crc32fast 1.5.0: Sam Rijs, Alex Crichton
+     - crypto-common 0.2.0: RustCrypto Developers
+     - digest 0.11.0-rc.12: RustCrypto Developers
+     - either 1.15.0: bluss
+     - fastrand 1.9.0: Stjepan Glavina
+     - flate2 1.1.9: Alex Crichton, Josh Triplett
+     - getrandom 0.3.4: The Rand Project Developers
+     - hashbrown 0.16.1: Amanieu d'Antras
+     - hex 0.4.3: KokaKiwi
+     - hybrid-array 0.4.7: RustCrypto Developers
+     - instant 0.1.13: sebcrozet
+     - itertools 0.14.0: bluss
+     - itoa 1.0.17: David Tolnay
+     - leb128 0.2.5: Nick Fitzgerald, Philip Craig
+     - libc 0.2.181: The Rust Project Developers
+     - log 0.4.29: The Rust Project Developers
+     - memchr 2.8.0: Andrew Gallant, bluss
+     - miniz_oxide 0.8.9: Frommi, oyvindln, Rich Geldreich richgel99@gmail.com
+     - once_cell 1.21.3: Aleksey Kladov
+     - proc-macro2 1.0.106: David Tolnay, Alex Crichton
+     - quote 1.0.44: David Tolnay
+     - rand 0.9.2: The Rand Project Developers, The Rust Project Developers
+     - rand_core 0.9.5: The Rand Project Developers, The Rust Project Developers
+     - redox_syscall 0.2.16: Jeremy Soller
+     - remove_dir_all 0.5.3: Aaronepower
+     - rustc-hash 2.1.1: The Rust Project Developers
+     - serde 1.0.228: Erick Tryzelaar, David Tolnay
+     - serde_core 1.0.228: Erick Tryzelaar, David Tolnay
+     - serde_derive 1.0.228: Erick Tryzelaar, David Tolnay
+     - serde_json 1.0.149: Erick Tryzelaar, David Tolnay
+     - sha2 0.11.0-rc.5: RustCrypto Developers
+     - simd-adler32 0.3.8: Marvin Countryman
+     - smol_str 0.2.2: Aleksey Kladov
+     - syn 2.0.115: David Tolnay
+     - tempfile 3.3.0: Steven Allen, The Rust Project Developers, Ashley Mannix, Jason White
+     - thiserror 2.0.18: David Tolnay
+     - thiserror-impl 2.0.18: David Tolnay
+     - tinyvec 1.10.0: Lokathor
+     - tinyvec_macros 0.1.1: Soveu
+     - tracing 0.1.44: Eliza Weisman, Tokio Contributors
+     - tracing-attributes 0.1.31: Tokio Contributors, Eliza Weisman, David Barsky
+     - tracing-core 0.1.36: Tokio Contributors
+     - typenum 1.19.0: Paho Lurie-Gregg, Andre Bogus
+     - unicode-ident 1.0.23: David Tolnay
+     - unicode-segmentation 1.12.0: kwantam, Manish Goregaokar
+     - winapi 0.3.9: Peter Atashian
+     - winapi-i686-pc-windows-gnu 0.4.0: Peter Atashian
+     - winapi-x86_64-pc-windows-gnu 0.4.0: Peter Atashian
+     - zmij 1.0.21: David Tolnay
+
+    (Generated from Cargo.toml files on 2026-02-12)

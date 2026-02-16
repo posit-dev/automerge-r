@@ -1,0 +1,387 @@
+# Quick Reference
+
+## Automerge R Package Quick Reference
+
+One-page reference for the `automerge` package. See full documentation
+with `?function_name`.
+
+### Installation
+
+``` r
+# From R-universe
+install.packages("automerge", repos = "https://posit-dev.r-universe.dev")
+
+# From GitHub
+pak::pak("posit-dev/automerge-r")
+```
+
+### Document Lifecycle
+
+``` r
+library(automerge)
+
+# Create
+doc <- am_create() # New document
+doc <- am_create("fd3ca50687f13477f1f9ea2b216b958a") # With custom actor ID
+
+# Load/Save
+bytes <- am_save(doc) # Save to bytes
+doc <- am_load(bytes) # Load from bytes
+
+# Actor ID (document-bound)
+actor <- am_get_actor(doc) # Get actor ID (raw bytes)
+actor_hex <- am_get_actor_hex(doc) # Get actor ID as hex string
+am_set_actor(doc, actor_hex) # Set actor ID (raw, hex, or NULL)
+
+# Fork/Merge/Clone
+doc2 <- am_fork(doc) # Create independent copy
+doc3 <- am_clone(doc) # Deep copy (independent document)
+am_merge(doc, doc2) # Merge doc2 into doc1
+
+# Compare documents
+am_equal(doc, doc2) # TRUE if same state
+
+# Transactions
+am_commit(doc, "message") # Commit changes
+am_rollback(doc) # Cancel pending changes
+am_pending_ops(doc) # Number of uncommitted operations
+am_commit_empty(doc, "checkpoint") # Create empty change (bookkeeping)
+
+# Incremental save/load
+inc <- am_save_incremental(doc) # Only changes since last save
+am_load_incremental(doc, inc) # Apply incremental changes
+
+# Cleanup
+am_close(doc) # Explicitly free resources (optional)
+```
+
+### Basic Access (Maps)
+
+``` r
+# S3 operators
+doc[["key"]] <- "value" # Set value
+value <- doc[["key"]] # Get value
+doc$key <- value # Alternative syntax
+value <- doc$key # Alternative syntax
+
+# Functional API
+am_delete(doc, AM_ROOT, "key") # Delete key
+am_put(doc, AM_ROOT, "key", value) # Set value
+value <- am_get(doc, AM_ROOT, "key") # Get value
+
+# Introspection
+keys <- names(doc) # Get all keys
+keys <- am_keys(doc, AM_ROOT) # Functional version
+values <- am_values(doc, AM_ROOT) # Get all values
+n <- length(doc) # Number of keys
+n <- am_length(doc, AM_ROOT) # Functional version
+items <- am_items(doc, AM_ROOT) # All key-value entries
+
+# All conflicting values for a key (after concurrent edits)
+conflicts <- am_map_get_all(doc, AM_ROOT, "key")
+
+# Range of entries by key (alphabetical)
+entries <- am_map_range(doc, AM_ROOT, "a", "m")
+```
+
+### Nested Objects
+
+``` r
+# Automatic recursive conversion (recommended)
+am_put(
+  doc,
+  AM_ROOT,
+  "user",
+  list(
+    name = "Alice",
+    age = 30L,
+    address = list(city = "NYC", zip = 10001L)
+  )
+)
+
+# Path-based access (simple for deep structures)
+am_put_path(doc, c("user", "address", "city"), "Boston")
+city <- am_get_path(doc, c("user", "address", "city"))
+am_delete_path(doc, c("user", "address"))
+
+# Manual access
+user_obj <- am_get(doc, AM_ROOT, "user")
+am_put(doc, user_obj, "name", "Bob")
+name <- am_get(doc, user_obj, "name")
+```
+
+### Lists
+
+``` r
+# Create list
+am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
+items <- am_get(doc, AM_ROOT, "items")
+
+# Operations (1-based indexing)
+am_insert(doc, items, 1, "first") # Insert at index 1
+am_put(doc, items, 1, "FIRST") # Replace at index 1
+am_put(doc, items, "end", "append") # Append to end
+value <- am_get(doc, items, 1) # Get index 1
+am_delete(doc, items, 1) # Delete index 1
+
+# Introspection
+n <- am_length(doc, items) # List length
+items_entries <- am_items(doc, items) # All index-value entries
+
+# All conflicting values at index (after concurrent edits)
+conflicts <- am_list_get_all(doc, items, 1)
+
+# Subrange (1-based indexing)
+sub <- am_list_range(doc, items, 2, 4)
+```
+
+### Text Objects
+
+``` r
+# Text objects use 0-based inter-character positions
+# For the text "Hello":
+#  H e l l o
+# 0 1 2 3 4 5  <- positions (0-based, between characters)
+
+# Create text object
+am_put(doc, AM_ROOT, "content", am_text("Hello"))
+text_obj <- am_get(doc, AM_ROOT, "content")
+
+# Operations
+am_text_splice(text_obj, 5, 0, " World") # Insert at position 5
+content <- am_text_content(text_obj) # Get full text
+
+# Update text (ideal for collaborative editing)
+old_text <- am_text_content(text_obj)
+am_text_update(text_obj, old_text, "Hello Universe") # Computes and applies diff
+
+# Cursors (stable positions)
+cursor <- am_cursor(text_obj, 5) # Create at position 5
+pos <- am_cursor_position(cursor) # Get current position
+cursor <- am_cursor(text_obj, 5, heads) # Create at historical state
+pos <- am_cursor_position(cursor, heads) # Position at historical state
+
+# Cursor serialization (persistence across sessions)
+bytes <- am_cursor_to_bytes(cursor) # Serialize to raw
+cursor <- am_cursor_from_bytes(bytes, text_obj) # Restore from raw
+str <- am_cursor_to_string(cursor) # Serialize to string
+cursor <- am_cursor_from_string(str, text_obj) # Restore from string
+am_cursor_equal(cursor1, cursor2) # Compare cursors
+
+# Marks (formatting)
+am_mark(text_obj, 0, 5, "bold", TRUE, expand = "none")
+marks <- am_marks(text_obj) # Get all marks
+marks <- am_marks(text_obj, heads) # Marks at historical state
+marks_at <- am_marks_at(text_obj, 2) # Marks at position 2
+marks_at <- am_marks_at(text_obj, 2, heads) # At position, historical state
+am_mark_clear(text_obj, 0, 5, "bold") # Remove a mark from range
+```
+
+### Value Types
+
+``` r
+# NULL
+am_put(doc, AM_ROOT, "null", NULL)
+
+# Boolean
+am_put(doc, AM_ROOT, "bool", TRUE)
+
+# Integer
+am_put(doc, AM_ROOT, "int", 42L)
+
+# Double
+am_put(doc, AM_ROOT, "float", 3.14)
+
+# String
+am_put(doc, AM_ROOT, "str", "text")
+
+# Raw bytes
+am_put(doc, AM_ROOT, "bytes", raw(10))
+
+# Timestamp
+am_put(doc, AM_ROOT, "time", Sys.time())
+
+# Counter
+am_put(doc, AM_ROOT, "score", am_counter(0))
+am_counter_increment(doc, AM_ROOT, "score", 10)
+value <- am_get(doc, AM_ROOT, "score")
+
+# Unsigned 64-bit integer (for cross-platform interop)
+am_put(doc, AM_ROOT, "id", am_uint64(12345))
+
+# Explicit type constructors
+am_put(doc, AM_ROOT, "items", am_list()) # Empty list
+am_put(doc, AM_ROOT, "config", am_map()) # Empty map
+am_put(doc, AM_ROOT, "notes", am_text()) # Text object
+```
+
+### Synchronization (High-Level)
+
+``` r
+# Bidirectional sync (auto-converge)
+# Documents are modified in place
+rounds <- am_sync(doc1, doc2)
+cat("Converged in", rounds, "rounds\n")
+
+# One-way merge
+am_merge(doc1, doc2) # Merge doc2 into doc1
+```
+
+### Synchronization (Low-Level)
+
+``` r
+# Create sync state
+sync_state <- am_sync_state()
+
+# Encode/decode messages
+msg <- am_sync_encode(doc, sync_state)
+am_sync_decode(doc, sync_state, msg)
+
+# Serialize/restore sync state (for persistent connections)
+sync_bytes <- am_sync_state_encode(sync_state)
+sync_state <- am_sync_state_decode(sync_bytes)
+
+# Manual sync loop
+repeat {
+  msg1 <- am_sync_encode(doc1, sync1)
+  if (is.null(msg1)) {
+    break
+  }
+  am_sync_decode(doc2, sync2, msg1)
+
+  msg2 <- am_sync_encode(doc2, sync2)
+  if (is.null(msg2)) {
+    break
+  }
+  am_sync_decode(doc1, sync1, msg2)
+}
+```
+
+### History & Changes
+
+``` r
+# Get heads (fingerprint of current state)
+heads <- am_get_heads(doc)
+
+# Get changes (returns am_change objects)
+changes <- am_get_changes(doc, NULL)  # All changes
+changes <- am_get_changes(doc, heads) # Changes since heads (i.e. none)
+
+# Typical pattern: remember a checkpoint, then get new changes later
+checkpoint <- am_get_heads(doc)
+am_put(doc, AM_ROOT, "new_key", "new_value")
+am_commit(doc, "Add new_key")
+new_changes <- am_get_changes(doc, checkpoint) # Only the new commit
+
+# Apply changes
+am_apply_changes(doc, changes)
+
+# Full history (returns am_change objects)
+history <- am_get_history(doc)
+
+# Change introspection
+change <- history[[1]]
+hash <- am_change_hash(change) # 32-byte hash
+msg <- am_change_message(change) # Commit message or NULL
+time <- am_change_time(change) # POSIXct timestamp
+actor <- am_change_actor_id(change) # Actor ID (raw bytes)
+seq <- am_change_seq(change) # Sequence number (double)
+deps <- am_change_deps(change) # List of parent hashes
+bytes <- am_change_to_bytes(change) # Serialize to raw
+
+# Deserialize from raw bytes (for stored changes)
+change <- am_change_from_bytes(bytes)
+
+# Decompose saved document into individual changes
+changes <- am_load_changes(bytes) # From am_save() output
+
+# Check document completeness
+missing <- am_get_missing_deps(doc)
+missing <- am_get_missing_deps(doc, heads) # With specific heads
+```
+
+### Conversion
+
+``` r
+# R → Automerge
+doc <- as_automerge(list(name = "Alice", age = 30L))
+
+# Automerge → R
+r_list <- from_automerge(doc)
+
+r_list <- as.list(doc) # S3 method for documents
+text_str <- as.character(text_obj) # S3 method for text objects
+```
+
+### Pipe-Friendly Style
+
+``` r
+doc <- am_create() |>
+  am_put(AM_ROOT, "name", "Alice") |>
+  am_put(AM_ROOT, "age", 30L) |>
+  am_commit("Initial data")
+```
+
+### File Operations
+
+``` r
+# Save to file
+writeBin(am_save(doc), "document.automerge")
+
+# Load from file
+doc <- am_load(readBin("document.automerge", "raw", 1e6))
+```
+
+### Constants
+
+``` r
+AM_ROOT # Root object (NULL)
+AM_OBJ_TYPE_LIST # "list"
+AM_OBJ_TYPE_MAP # "map"
+AM_OBJ_TYPE_TEXT # "text"
+
+AM_MARK_EXPAND_NONE # "none" (mark doesn't expand at boundaries)
+AM_MARK_EXPAND_BEFORE # "before" (expands when text inserted before start)
+AM_MARK_EXPAND_AFTER # "after" (expands when text inserted after end)
+AM_MARK_EXPAND_BOTH # "both" (expands at both boundaries)
+```
+
+### Getting Help
+
+``` r
+# Function help
+?am_create
+?am_put
+?am_sync
+
+# Package help
+?automerge
+help(package = "automerge")
+
+# Vignettes
+vignette("automerge", "automerge")
+vignette("crdt-concepts", "automerge")
+vignette("sync-protocol", "automerge")
+vignette(package = "automerge") # List all
+```
+
+### System Requirements
+
+- R \>= 4.2
+- For building from source:
+  - Rust \>= 1.89.0 (<https://rustup.rs/>)
+  - CMake \>= 3.25 (included in Rtools43+ on Windows)
+- Or: Install automerge-c (with UTF-32 character indexing) system-wide
+  to skip build
+
+### Resources
+
+- Package site: <https://posit-dev.github.io/automerge-r/>
+- Automerge docs: <https://automerge.org/>
+- Binary format: <https://automerge.org/automerge-binary-format-spec/>
+- CRDT research: <https://crdt.tech/>
+
+------------------------------------------------------------------------
+
+**Note**: This is a quick reference. See full vignettes for detailed
+examples and explanations.

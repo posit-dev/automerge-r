@@ -1,0 +1,91 @@
+# Get all marks in a text object
+
+Retrieves all marks (formatting/metadata annotations) present in a text
+object at a specific document state.
+
+## Usage
+
+``` r
+am_marks(obj, heads = NULL)
+```
+
+## Arguments
+
+- obj:
+
+  An Automerge object ID (must be a text object)
+
+- heads:
+
+  Optional list of change hashes (raw vectors) to query marks at a
+  historical document state. If `NULL` (default), uses the current
+  state.
+
+## Value
+
+A list of marks, where each mark is a list with fields:
+
+- name:
+
+  Character string identifying the mark
+
+- value:
+
+  The mark's value (various types supported)
+
+- start:
+
+  Integer start position (0-based inter-character position, inclusive)
+
+- end:
+
+  Integer end position (0-based inter-character position, exclusive)
+
+Returns an empty list if no marks are present. See
+[`am_mark()`](https://posit-dev.github.io/automerge-r/dev/reference/am_mark.md)
+for indexing details.
+
+## Examples
+
+``` r
+doc <- am_create()
+am_put(doc, AM_ROOT, "text", am_text("Hello World"))
+text_obj <- am_get(doc, AM_ROOT, "text")
+
+am_mark(text_obj, 0, 5, "bold", TRUE)
+am_mark(text_obj, 6, 11, "italic", TRUE)
+
+marks <- am_marks(text_obj)
+marks
+#> [[1]]
+#> [[1]]$name
+#> [1] "bold"
+#> 
+#> [[1]]$value
+#> [1] TRUE
+#> 
+#> [[1]]$start
+#> [1] 0
+#> 
+#> [[1]]$end
+#> [1] 5
+#> 
+#> 
+#> [[2]]
+#> [[2]]$name
+#> [1] "italic"
+#> 
+#> [[2]]$value
+#> [1] TRUE
+#> 
+#> [[2]]$start
+#> [1] 6
+#> 
+#> [[2]]$end
+#> [1] 11
+#> 
+#> 
+# List of 2 marks with name, value, start, end
+
+am_close(doc)
+```

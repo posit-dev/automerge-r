@@ -1,0 +1,36 @@
+# automerge: R Bindings for 'Automerge' 'CRDT' Library
+
+Provides R bindings to the 'Automerge' Conflict-free Replicated Data
+Type ('CRDT') library. 'Automerge' enables automatic merging of
+concurrent changes without conflicts, making it ideal for distributed
+systems, collaborative applications, and offline-first architectures.
+The approach of local-first software was proposed in Kleppmann, M.,
+Wiggins, A., van Hardenberg, P., McGranaghan, M. (2019)
+[doi:10.1145/3359591.3359737](https://doi.org/10.1145/3359591.3359737) .
+This package supports all 'Automerge' data types (maps, lists, text,
+counters) and provides both low-level and high-level synchronization
+protocols for seamless interoperability with 'JavaScript' and other
+'Automerge' implementations.
+
+## See also
+
+Useful links:
+
+- <https://github.com/posit-dev/automerge-r>
+
+- <https://posit-dev.github.io/automerge-r/>
+
+- Report bugs at <https://github.com/posit-dev/automerge-r/issues>
+
+## Author
+
+**Maintainer**: Charlie Gao <charlie.gao@posit.co>
+([ORCID](https://orcid.org/0000-0002-0750-061X))
+
+Other contributors:
+
+- Posit Software, PBC ([ROR](https://ror.org/03wc8by49)) \[copyright
+  holder, funder\]
+
+- Authors of the dependency Rust crates (see inst/AUTHORS file)
+  \[copyright holder\]

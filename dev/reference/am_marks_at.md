@@ -1,0 +1,80 @@
+# Get marks at a specific position
+
+Retrieves marks that include a specific position in a text object. This
+function efficiently filters marks at the C level, avoiding the overhead
+of converting all marks to R objects.
+
+## Usage
+
+``` r
+am_marks_at(obj, position, heads = NULL)
+```
+
+## Arguments
+
+- obj:
+
+  An Automerge object ID (must be a text object)
+
+- position:
+
+  Integer position (0-based inter-character position) to query. See
+  [`am_mark()`](https://posit-dev.github.io/automerge-r/dev/reference/am_mark.md)
+  for indexing details.
+
+- heads:
+
+  Optional list of change hashes (raw vectors) to query marks at a
+  historical document state. If `NULL` (default), uses the current
+  state.
+
+## Value
+
+A list of marks that include the specified position. Returns an empty
+list if no marks cover that position.
+
+## Examples
+
+``` r
+doc <- am_create()
+am_put(doc, AM_ROOT, "text", am_text("Hello World"))
+text_obj <- am_get(doc, AM_ROOT, "text")
+
+am_mark(text_obj, 0, 5, "bold", TRUE)
+am_mark(text_obj, 2, 7, "underline", TRUE)
+
+# Get marks at position 3 (inside "Hello")
+marks_at_3 <- am_marks_at(text_obj, 3)
+marks_at_3
+#> [[1]]
+#> [[1]]$name
+#> [1] "bold"
+#> 
+#> [[1]]$value
+#> [1] TRUE
+#> 
+#> [[1]]$start
+#> [1] 0
+#> 
+#> [[1]]$end
+#> [1] 5
+#> 
+#> 
+#> [[2]]
+#> [[2]]$name
+#> [1] "underline"
+#> 
+#> [[2]]$value
+#> [1] TRUE
+#> 
+#> [[2]]$start
+#> [1] 2
+#> 
+#> [[2]]$end
+#> [1] 7
+#> 
+#> 
+# List of 2 marks (both "bold" and "underline" include position 3)
+
+am_close(doc)
+```

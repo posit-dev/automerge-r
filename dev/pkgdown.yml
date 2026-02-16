@@ -1,0 +1,13 @@
+pandoc: 3.1.11
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  automerge: automerge.html
+  crdt-concepts: crdt-concepts.html
+  cross-platform: cross-platform.html
+  quick-reference: quick-reference.html
+  sync-protocol: sync-protocol.html
+last_built: 2026-02-16T15:55Z
+urls:
+  reference: https://posit-dev.github.io/automerge-r/reference
+  article: https://posit-dev.github.io/automerge-r/articles

@@ -1,0 +1,29 @@
+# Create an unsigned 64-bit integer value
+
+Creates an `am_uint64` object for storing unsigned 64-bit integers in
+Automerge documents. This preserves type fidelity when syncing with
+other language bindings (JavaScript BigInt, Python int, etc.).
+
+## Usage
+
+``` r
+am_uint64(value = 0)
+```
+
+## Arguments
+
+- value:
+
+  Numeric value (default 0). Values beyond 2^53 may lose precision.
+
+## Value
+
+An `am_uint64` object
+
+## Examples
+
+``` r
+doc <- am_create()
+am_put(doc, AM_ROOT, "id", am_uint64(12345))
+am_close(doc)
+```
