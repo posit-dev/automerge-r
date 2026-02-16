@@ -302,6 +302,14 @@
       Error in `am_load()`:
       ! Automerge error at document.c:LINE: unable to parse chunk: failed to parse header: Invalid magic bytes
 
+# Invalidated sync state is detected
+
+    Code
+      am_sync_state_encode(invalid_sync)
+    Condition
+      Error in `am_sync_state_encode()`:
+      ! Invalid sync state pointer (NULL or freed)
+
 # am_sync_decode validates message type
 
     Code
