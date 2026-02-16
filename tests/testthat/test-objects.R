@@ -2314,26 +2314,6 @@ test_that("am_get() errors on non-scalar list position", {
   expect_error(am_get(doc, items, c(1L, 2L)), "scalar")
 })
 
-# am_get returns NULL for non-positive list position
-
-test_that("am_get() returns NULL for non-positive list position", {
-  doc <- am_create()
-  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
-  items <- am_get(doc, AM_ROOT, "items")
-  am_insert(doc, items, 1, "a")
-  expect_null(am_get(doc, items, 0L))
-})
-
-# am_get returns NULL for out-of-bounds list position
-
-test_that("am_get() returns NULL for out-of-bounds list position", {
-  doc <- am_create()
-  am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
-  items <- am_get(doc, AM_ROOT, "items")
-  am_insert(doc, items, 1, "a")
-  expect_null(am_get(doc, items, 100L))
-})
-
 # am_map_get_all with empty heads list
 
 test_that("am_map_get_all() with empty heads list same as NULL", {

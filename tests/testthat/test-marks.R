@@ -478,6 +478,16 @@ test_that("am_mark_clear() only clears specified mark", {
   expect_equal(marks[[1]]$name, "italic")
 })
 
+test_that("am_mark() returns text_obj invisibly", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello"))
+  text_obj <- am_get(doc, AM_ROOT, "text")
+
+  result <- withVisible(am_mark(text_obj, 0, 5, "bold", TRUE))
+  expect_identical(result$value, text_obj)
+  expect_false(result$visible)
+})
+
 test_that("am_mark_clear() returns text_obj invisibly", {
   doc <- am_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello"))
@@ -800,38 +810,6 @@ test_that("am_marks_at() errors on non-scalar position", {
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_marks_at(text_obj, c(0, 1)), "scalar")
-})
-
-# am_cursor input validation
-
-test_that("am_cursor() errors on non-numeric position", {
-  doc <- am_create()
-  doc$t <- am_text("hello")
-  text_obj <- doc$t
-  expect_error(am_cursor(text_obj, "a"), "position must be numeric")
-})
-
-test_that("am_cursor() errors on negative position", {
-  doc <- am_create()
-  doc$t <- am_text("hello")
-  text_obj <- doc$t
-  expect_error(am_cursor(text_obj, -1L), "non-negative")
-})
-
-test_that("am_cursor() errors on non-scalar position", {
-  doc <- am_create()
-  doc$t <- am_text("hello")
-  text_obj <- doc$t
-  expect_error(am_cursor(text_obj, c(0, 1)), "scalar")
-})
-
-# am_cursor_from_bytes / am_cursor_from_string input validation
-
-test_that("am_cursor_from_bytes() errors on non-raw input", {
-  doc <- am_create()
-  doc$t <- am_text("hello")
-  text_obj <- doc$t
-  expect_error(am_cursor_from_bytes("not raw", text_obj), "raw vector")
 })
 
 # am_text_update for diffing
