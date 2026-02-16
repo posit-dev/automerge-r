@@ -171,8 +171,8 @@ for (i in seq_len(am_length(doc5, items5))) {
   print(am_get(doc5, items5, i))
 }
 #> [1] "A"
-#> [1] "B1"
 #> [1] "B2"
+#> [1] "B1"
 #> [1] "C"
 
 am_close(doc5)
@@ -340,7 +340,7 @@ am_text_splice(text12, 5, 0, " Everyone")
 am_merge(doc11, doc12)
 
 am_text_content(text11)
-#> [1] "Hello World Everyone"
+#> [1] "Hello Everyone World"
 
 am_close(doc11)
 am_close(doc12)
@@ -399,9 +399,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-02-16 16:53:55 UTC"
+#> [1] "2026-02-16 19:01:42 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-02-16 16:53:55 UTC"
+#> [1] "2026-02-16 19:01:42 UTC"
 
 am_close(doc15)
 am_close(doc16)

@@ -60,7 +60,7 @@ estimating the size of changes before syncing or storing them.</p>
 
 
 <dl><dt id="arg-change">change<a class="anchor" aria-label="anchor" href="#arg-change"></a></dt>
-<dd><p>An <code>am_change</code> object (from <code><a href="am_get_history.html">am_get_history()</a></code>,
+<dd><p>An <code>am_change</code> object (from <code><a href="am_get_changes.html">am_get_changes()</a></code>,
 <code><a href="am_get_changes.html">am_get_changes()</a></code>, or <code><a href="am_change_from_bytes.html">am_change_from_bytes()</a></code>)</p></dd>
 
 </dl></div>
@@ -77,7 +77,7 @@ integer range)</p>
 <span class="r-in"><span><span class="fu"><a href="am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"y"</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc</span>, <span class="st">"Add keys"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_get_history.html">am_get_history</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">am_change_size</span><span class="op">(</span><span class="va">history</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>  <span class="co"># 2</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
 <span class="r-in"><span></span></span>

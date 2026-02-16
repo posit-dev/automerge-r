@@ -63,7 +63,7 @@ to reference specific points in document history (e.g., with
 
 
 <dl><dt id="arg-change">change<a class="anchor" aria-label="anchor" href="#arg-change"></a></dt>
-<dd><p>An <code>am_change</code> object (from <code><a href="am_get_history.html">am_get_history()</a></code>,
+<dd><p>An <code>am_change</code> object (from <code><a href="am_get_changes.html">am_get_changes()</a></code>,
 <code><a href="am_get_changes.html">am_get_changes()</a></code>, or <code><a href="am_change_from_bytes.html">am_change_from_bytes()</a></code>)</p></dd>
 
 </dl></div>
@@ -78,11 +78,11 @@ to reference specific points in document history (e.g., with
 <span class="r-in"><span><span class="fu"><a href="am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"key"</span>, <span class="st">"value"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc</span>, <span class="st">"Add key"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_get_history.html">am_get_history</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">hash</span> <span class="op">&lt;-</span> <span class="fu">am_change_hash</span><span class="op">(</span><span class="va">history</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">hash</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] b5 8d a8 07 93 45 53 52 88 67 ef c2 db 75 d3 0c f9 30 66 76 13 ae</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23] 62 86 e5 4a 98 50 5f ce d3 ae</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 58 35 ec 3d 68 98 72 76 94 b4 e7 cf 60 8a e3 e2 7c 83 1f 23 40 50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] 49 9e 17 94 e3 04 a0 db 11 f3</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">hash</span><span class="op">)</span>  <span class="co"># 32 bytes</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 32</span>
 <span class="r-in"><span></span></span>

@@ -14,7 +14,7 @@ am_change_size(change)
 - change:
 
   An `am_change` object (from
-  [`am_get_history()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_history.md),
+  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_changes.md),
   [`am_get_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_changes.md),
   or
   [`am_change_from_bytes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_change_from_bytes.md))
@@ -32,7 +32,7 @@ am_put(doc, AM_ROOT, "x", 1)
 am_put(doc, AM_ROOT, "y", 2)
 am_commit(doc, "Add keys")
 
-history <- am_get_history(doc)
+history <- am_get_changes(doc)
 am_change_size(history[[1]])  # 2
 #> [1] 2
 

@@ -15,7 +15,7 @@ am_change_deps(change)
 - change:
 
   An `am_change` object (from
-  [`am_get_history()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_history.md),
+  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_changes.md),
   [`am_get_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_changes.md),
   or
   [`am_change_from_bytes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_change_from_bytes.md))
@@ -34,7 +34,7 @@ am_commit(doc, "First")
 am_put(doc, AM_ROOT, "y", 2)
 am_commit(doc, "Second")
 
-history <- am_get_history(doc)
+history <- am_get_changes(doc)
 deps1 <- am_change_deps(history[[1]])
 length(deps1)  # 0 (first change has no deps)
 #> [1] 0

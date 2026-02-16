@@ -149,8 +149,6 @@ Track document history and inspect changes
   : Get the current heads of a document
 - [`am_get_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_changes.md)
   : Get changes since specified heads
-- [`am_get_history()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_history.md)
-  : Get document history
 - [`am_apply_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_apply_changes.md)
   : Apply changes to a document
 - [`am_get_last_local_change()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_last_local_change.md)

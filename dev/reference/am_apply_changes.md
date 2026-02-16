@@ -21,7 +21,7 @@ am_apply_changes(doc, changes)
 
   A list of `am_change` objects (from
   [`am_get_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_changes.md),
-  [`am_get_history()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_history.md),
+  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_changes.md),
   or
   [`am_change_from_bytes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_change_from_bytes.md))
 

@@ -57,7 +57,7 @@
 
 
 <dl><dt id="arg-change">change<a class="anchor" aria-label="anchor" href="#arg-change"></a></dt>
-<dd><p>An <code>am_change</code> object (from <code><a href="am_get_history.html">am_get_history()</a></code>,
+<dd><p>An <code>am_change</code> object (from <code><a href="am_get_changes.html">am_get_changes()</a></code>,
 <code><a href="am_get_changes.html">am_get_changes()</a></code>, or <code><a href="am_change_from_bytes.html">am_change_from_bytes()</a></code>)</p></dd>
 
 </dl></div>
@@ -72,11 +72,11 @@
 <span class="r-in"><span><span class="fu"><a href="am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"key"</span>, <span class="st">"value"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc</span>, <span class="st">"Add key"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_get_history.html">am_get_history</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">bytes</span> <span class="op">&lt;-</span> <span class="fu">am_change_to_bytes</span><span class="op">(</span><span class="va">history</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">bytes</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 85 6f 4a 83 76 68 35 44 01 3c 00 10 32 72 7e de d9 f0 db 8f 95 e9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23] a3 df 6a 35 76 63 01 01 00 07 41 64 64 20 6b 65 79 00 06 15 05 34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 85 6f 4a 83 26 8c 85 d0 01 3c 00 10 18 90 86 77 a9 4e be 30 17 d8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] dc 3b ce 90 96 8e 01 01 00 07 41 64 64 20 6b 65 79 00 06 15 05 34</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [45] 01 42 02 56 02 57 05 70 02 7f 03 6b 65 79 01 7f 01 7f 56 76 61 6c</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [67] 75 65 7f 00</span>
 <span class="r-in"><span></span></span>
