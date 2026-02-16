@@ -46,7 +46,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"C_am_change_from_bytes", (DL_FUNC) &C_am_change_from_bytes, 1},
     {"C_am_change_to_bytes", (DL_FUNC) &C_am_change_to_bytes, 1},
     {"C_am_change_size", (DL_FUNC) &C_am_change_size, 1},
-    {"C_am_change_is_empty", (DL_FUNC) &C_am_change_is_empty, 1},
     // Cursor and mark operations
     {"C_am_cursor", (DL_FUNC) &C_am_cursor, 3},
     {"C_am_cursor_position", (DL_FUNC) &C_am_cursor_position, 2},

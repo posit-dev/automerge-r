@@ -302,6 +302,7 @@ time <- am_change_time(change) # POSIXct timestamp
 actor <- am_change_actor_id(change) # Actor ID (raw bytes)
 seq <- am_change_seq(change) # Sequence number (double)
 deps <- am_change_deps(change) # List of parent hashes
+size <- am_change_size(change) # Number of operations
 bytes <- am_change_to_bytes(change) # Serialize to raw
 
 # Deserialize from raw bytes (for stored changes)

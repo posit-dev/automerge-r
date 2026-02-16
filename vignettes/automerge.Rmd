@@ -479,6 +479,7 @@ am_change_time(change)     # Timestamp
 am_change_seq(change)      # Sequence number
 am_change_actor_id(change) # Who made the change
 am_change_deps(change)     # Parent change hashes
+am_change_size(change)     # Number of operations
 
 am_close(doc14)
 ```

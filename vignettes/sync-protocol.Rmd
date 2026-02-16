@@ -347,6 +347,7 @@ am_change_hash(change)     # Unique hash
 am_change_actor_id(change) # Who made this change
 am_change_time(change)     # When
 am_change_deps(change)     # Parent changes
+am_change_size(change)     # Number of operations
 
 # Get changes between two points in history
 changes_since_v1 <- am_get_changes(doc_main, heads_v1)

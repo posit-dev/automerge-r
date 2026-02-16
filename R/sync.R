@@ -548,31 +548,6 @@ am_change_size <- function(change) {
   .Call(C_am_change_size, change)
 }
 
-#' Test if a change is empty
-#'
-#' Returns `TRUE` if the change contains no operations. Useful for filtering
-#' out no-op changes before syncing.
-#'
-#' @param change An `am_change` object (from [am_get_history()],
-#'   [am_get_changes()], or [am_change_from_bytes()])
-#'
-#' @return A logical value
-#'
-#' @export
-#' @examples
-#' doc <- am_create()
-#' am_put(doc, AM_ROOT, "x", 1)
-#' am_commit(doc, "Add key")
-#'
-#' history <- am_get_history(doc)
-#' am_change_is_empty(history[[1]])  # FALSE
-#'
-#' am_close(doc)
-#'
-am_change_is_empty <- function(change) {
-  .Call(C_am_change_is_empty, change)
-}
-
 # v1.2 Sync and Change Operations --------------------------------------------
 
 #' Get missing dependencies
