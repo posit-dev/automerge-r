@@ -32,20 +32,11 @@ void am_result_finalizer(SEXP ext_ptr) {
 }
 
 /**
- * Finalizer for am_change_data external pointer.
- * Frees the owning AMresult* if present (owned change).
- * For borrowed changes, result is NULL and only the wrapper struct is freed.
+ * Finalizer for am_change external pointer.
+ * The AMchange* is borrowed; the owning AMresult is kept alive
+ * via the ext_ptr protection chain and freed by its own finalizer.
  */
 void am_change_finalizer(SEXP ext_ptr) {
-    am_change_data *data = (am_change_data *) R_ExternalPtrAddr(ext_ptr);
-    if (data) {
-        if (data->result) {
-            AMresultFree(data->result);
-            data->result = NULL;
-        }
-        data->change = NULL;
-        free(data);
-    }
     R_ClearExternalPtr(ext_ptr);
 }
 

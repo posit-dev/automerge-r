@@ -244,7 +244,7 @@ SEXP C_am_get_changes(SEXP doc_ptr, SEXP heads) {
         AMchange *change = NULL;
         AMitemToChange(item, &change);
 
-        SEXP change_sexp = PROTECT(wrap_am_change_borrowed(change, parent_ptr));
+        SEXP change_sexp = PROTECT(wrap_am_change(change, parent_ptr));
         SET_VECTOR_ELT(changes_list, i, change_sexp);
         UNPROTECT(1);
     }
@@ -282,12 +282,12 @@ SEXP C_am_apply_changes(SEXP doc_ptr, SEXP changes) {
                      TYPEOF(element), (long long) i);
         }
 
-        am_change_data *data = (am_change_data *) R_ExternalPtrAddr(element);
-        if (!data || !data->change) {
+        AMchange *change = (AMchange *) R_ExternalPtrAddr(element);
+        if (!change) {
             Rf_error("Invalid am_change object at index %lld", (long long) i);
         }
 
-        AMbyteSpan span = AMchangeRawBytes(data->change);
+        AMbyteSpan span = AMchangeRawBytes(change);
 
         AMresult *result = AMloadIncremental(doc, span.src, span.count);
 

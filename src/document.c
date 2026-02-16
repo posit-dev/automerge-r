@@ -528,7 +528,12 @@ SEXP C_am_get_last_local_change(SEXP doc_ptr) {
         return R_NilValue;
     }
 
-    return wrap_am_change_owned(result);
+    SEXP parent_ptr = PROTECT(R_MakeExternalPtr(result, R_NilValue, R_NilValue));
+    R_RegisterCFinalizer(parent_ptr, am_result_finalizer);
+
+    SEXP change_sexp = wrap_am_change(change, parent_ptr);
+    UNPROTECT(1);
+    return change_sexp;
 }
 
 /**
@@ -578,7 +583,12 @@ SEXP C_am_get_change_by_hash(SEXP doc_ptr, SEXP hash) {
         return R_NilValue;
     }
 
-    return wrap_am_change_owned(result);
+    SEXP parent_ptr = PROTECT(R_MakeExternalPtr(result, R_NilValue, R_NilValue));
+    R_RegisterCFinalizer(parent_ptr, am_result_finalizer);
+
+    SEXP change_sexp = wrap_am_change(change, parent_ptr);
+    UNPROTECT(1);
+    return change_sexp;
 }
 
 /**
@@ -623,7 +633,7 @@ SEXP C_am_get_changes_added(SEXP doc1_ptr, SEXP doc2_ptr) {
         AMchange *change = NULL;
         AMitemToChange(item, &change);
 
-        SEXP change_sexp = PROTECT(wrap_am_change_borrowed(change, parent_ptr));
+        SEXP change_sexp = PROTECT(wrap_am_change(change, parent_ptr));
         SET_VECTOR_ELT(changes_list, i, change_sexp);
         UNPROTECT(1);
     }

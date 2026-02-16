@@ -1,53 +1,18 @@
 #include "automerge.h"
 
-// Change Wrapping Helpers -----------------------------------------------------
+// Change Wrapping Helper ------------------------------------------------------
 
 /**
- * Wrap an owned AMresult* containing a single change as an am_change object.
- * Used by am_change_from_bytes, am_get_last_local_change, am_get_change_by_hash.
- *
- * @param result AMresult* containing a single AM_VAL_TYPE_CHANGE (ownership transferred)
- * @return SEXP external pointer with class "am_change"
- */
-SEXP wrap_am_change_owned(AMresult *result) {
-    AMitem *item = AMresultItem(result);
-    AMchange *ch = NULL;
-    AMitemToChange(item, &ch);
-
-    am_change_data *data = malloc(sizeof(am_change_data));
-    if (!data) {
-        AMresultFree(result);
-        Rf_error("Failed to allocate memory for am_change wrapper");
-    }
-    data->result = result;
-    data->change = ch;
-
-    SEXP ext_ptr = PROTECT(R_MakeExternalPtr(data, R_NilValue, R_NilValue));
-    R_RegisterCFinalizer(ext_ptr, am_change_finalizer);
-    Rf_classgets(ext_ptr, Rf_mkString("am_change"));
-
-    UNPROTECT(1);
-    return ext_ptr;
-}
-
-/**
- * Wrap a borrowed AMchange* as an am_change object.
- * The parent AMresult is kept alive via the external pointer protection chain.
- * Used by am_get_changes, am_get_changes_added.
+ * Wrap an AMchange* as an am_change object.
+ * The AMchange* is stored directly as the ext_ptr address.
+ * The parent ext_ptr (owning the AMresult) is kept alive via the protection slot.
  *
  * @param ch Borrowed AMchange* pointer
- * @param parent_result_ptr External pointer to the parent AMresult (keeps it alive)
+ * @param parent_ptr External pointer keeping the owning AMresult alive
  * @return SEXP external pointer with class "am_change"
  */
-SEXP wrap_am_change_borrowed(AMchange *ch, SEXP parent_result_ptr) {
-    am_change_data *data = malloc(sizeof(am_change_data));
-    if (!data) {
-        Rf_error("Failed to allocate memory for am_change wrapper");
-    }
-    data->result = NULL;  // Borrowed, not owned
-    data->change = ch;
-
-    SEXP ext_ptr = PROTECT(R_MakeExternalPtr(data, R_NilValue, parent_result_ptr));
+SEXP wrap_am_change(AMchange *ch, SEXP parent_ptr) {
+    SEXP ext_ptr = PROTECT(R_MakeExternalPtr(ch, R_NilValue, parent_ptr));
     R_RegisterCFinalizer(ext_ptr, am_change_finalizer);
     Rf_classgets(ext_ptr, Rf_mkString("am_change"));
 
@@ -61,11 +26,11 @@ static AMchange *get_change(SEXP change_ptr) {
     if (TYPEOF(change_ptr) != EXTPTRSXP) {
         Rf_error("change must be an am_change object (use am_change_from_bytes() first)");
     }
-    am_change_data *data = (am_change_data *) R_ExternalPtrAddr(change_ptr);
-    if (!data || !data->change) {
+    AMchange *ch = (AMchange *) R_ExternalPtrAddr(change_ptr);
+    if (!ch) {
         Rf_error("Invalid am_change pointer (NULL or freed)");
     }
-    return data->change;
+    return ch;
 }
 
 /**
@@ -211,7 +176,16 @@ SEXP C_am_change_from_bytes(SEXP bytes) {
     AMresult *result = AMchangeFromBytes(RAW(bytes), (size_t) XLENGTH(bytes));
     CHECK_RESULT(result, AM_VAL_TYPE_CHANGE);
 
-    return wrap_am_change_owned(result);
+    AMitem *item = AMresultItem(result);
+    AMchange *ch = NULL;
+    AMitemToChange(item, &ch);
+
+    SEXP parent_ptr = PROTECT(R_MakeExternalPtr(result, R_NilValue, R_NilValue));
+    R_RegisterCFinalizer(parent_ptr, am_result_finalizer);
+
+    SEXP change_sexp = wrap_am_change(ch, parent_ptr);
+    UNPROTECT(1);
+    return change_sexp;
 }
 
 /**
@@ -270,7 +244,7 @@ SEXP C_am_load_changes(SEXP data) {
         AMchange *change = NULL;
         AMitemToChange(item, &change);
 
-        SEXP change_sexp = PROTECT(wrap_am_change_borrowed(change, parent_ptr));
+        SEXP change_sexp = PROTECT(wrap_am_change(change, parent_ptr));
         SET_VECTOR_ELT(changes_list, i, change_sexp);
         UNPROTECT(1);
     }
