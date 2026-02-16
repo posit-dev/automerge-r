@@ -39,6 +39,13 @@ A list of lists, where each inner list has fields:
 
   The value at this entry.
 
+## Note
+
+When called on a text object, this iterates individual characters as
+list items. Use
+[`am_text_content()`](https://posit-dev.github.io/automerge-r/reference/am_text_content.md)
+to retrieve text as a string instead.
+
 ## Examples
 
 ``` r

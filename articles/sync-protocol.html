@@ -444,16 +444,16 @@ document has all its dependencies with
 <span><span class="co"># Extract multiple fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique hash</span></span>
-<span><span class="co">#&gt;  [1] ff 57 6b eb 9c d2 dc 92 44 14 88 17 43 fa 17 44 c7 c7 20 68 00 51</span></span>
-<span><span class="co">#&gt; [23] 59 72 e8 5e ba 35 f8 bd ee fc</span></span>
+<span><span class="co">#&gt;  [1] 60 40 3d d5 f6 2c 44 9b b4 32 dd a4 a8 f7 7a 61 74 90 cf 02 e3 38</span></span>
+<span><span class="co">#&gt; [23] 12 8b c2 9d 48 93 f7 bc 68 12</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made this change</span></span>
-<span><span class="co">#&gt;  [1] 96 2d a3 25 38 1a 93 28 c0 cc 73 5e 5f 54 f9 e2</span></span>
+<span><span class="co">#&gt;  [1] c6 e6 c7 7a 02 16 d8 3b d2 57 eb 95 10 74 fd 87</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># When</span></span>
 <span><span class="co">#&gt; [1] "1970-01-01 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent changes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] 59 b3 b3 64 5c fa 8b 4c f7 d9 15 66 c0 94 0b 34 33 08 dd 44 13 58</span></span>
-<span><span class="co">#&gt; [23] 2d ee dd 8d 2e 98 96 46 ab 28</span></span>
+<span><span class="co">#&gt;  [1] 7c d5 dc d9 7f 4a ca b3 8f 46 53 79 da 32 78 40 e9 d4 72 c3 f4 73</span></span>
+<span><span class="co">#&gt; [23] 31 8d 97 4d 74 1e d7 3e 3f 43</span></span>
 <span></span>
 <span><span class="co"># Get changes between two points in history</span></span>
 <span><span class="va">changes_since_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc_main</span>, <span class="va">heads_v1</span><span class="op">)</span></span>

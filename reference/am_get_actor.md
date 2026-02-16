@@ -31,12 +31,12 @@ For a hex string representation, use
 doc <- am_create()
 actor <- am_get_actor(doc)
 actor
-#>  [1] c5 99 5e 88 f0 8f 86 8e 84 66 7c e0 87 8b fa 55
+#>  [1] 9c dc 5e 6d 32 cd 93 ca c9 77 af 4c 2a fe 44 d9
 
 # Use am_get_actor_hex() for display
 actor_hex <- am_get_actor_hex(doc)
 cat("Actor ID:", actor_hex, "\n")
-#> Actor ID: c5995e88f08f868e84667ce0878bfa55 
+#> Actor ID: 9cdc5e6d32cd93cac977af4c2afe44d9 
 
 am_close(doc)
 ```
