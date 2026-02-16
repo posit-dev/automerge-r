@@ -67,6 +67,7 @@ SEXP C_am_change_seq(SEXP change);
 SEXP C_am_change_deps(SEXP change);
 SEXP C_am_change_from_bytes(SEXP bytes);
 SEXP C_am_change_to_bytes(SEXP change);
+SEXP C_am_change_size(SEXP change);
 
 // v1.2 Document operations (document.c)
 SEXP C_am_clone(SEXP doc_ptr);

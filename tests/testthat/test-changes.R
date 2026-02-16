@@ -208,6 +208,24 @@ test_that("am_apply_changes() errors on invalid am_change external pointer", {
   )
 })
 
+# Change Size and Empty Tests --------------------------------------------------
+
+test_that("am_change_size() returns number of operations", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "x", 1)
+  am_put(doc, AM_ROOT, "y", 2)
+  am_commit(doc, "Two ops")
+  am_commit_empty(doc, "Empty")
+
+  history <- am_get_history(doc)
+  expect_equal(am_change_size(history[[1]]), 2L)
+  expect_equal(am_change_size(history[[2]]), 0L)
+})
+
+test_that("am_change_size() errors on invalid input", {
+  expect_error(am_change_size(123), "am_change object")
+})
+
 # Change Metadata Round-Trip Tests ---------------------------------------------
 
 test_that("am_change_from_bytes() preserves all metadata through round-trip", {

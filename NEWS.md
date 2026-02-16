@@ -2,9 +2,10 @@
 
 * Adds change introspection functions: `am_change_hash()`,
   `am_change_message()`, `am_change_time()`, `am_change_actor_id()`,
-  `am_change_seq()`, and `am_change_deps()` for extracting metadata from
-  changes. `am_change_to_bytes()` and `am_change_from_bytes()` enable
-  serialization round-trips.
+  `am_change_seq()`, `am_change_deps()`, and `am_change_size()` for
+  extracting metadata from changes.
+  `am_change_to_bytes()` and `am_change_from_bytes()` enable serialization
+  round-trips.
 
 * Change-returning functions (`am_get_changes()`, `am_get_history()`,
   `am_get_last_local_change()`, `am_get_change_by_hash()`,

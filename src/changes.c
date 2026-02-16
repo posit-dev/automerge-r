@@ -236,6 +236,20 @@ SEXP C_am_change_to_bytes(SEXP change_ptr) {
     return r_bytes;
 }
 
+/**
+ * Get the number of operations in a change.
+ *
+ * @param change_ptr External pointer (am_change)
+ * @return Integer (number of operations)
+ */
+SEXP C_am_change_size(SEXP change_ptr) {
+    AMchange *ch = get_change(change_ptr);
+    size_t size = AMchangeSize(ch);
+    return size > INT_MAX ?
+        Rf_ScalarReal((double) size) :
+        Rf_ScalarInteger((int) size);
+}
+
 // v1.2 Change Operations -----------------------------------------------------
 
 /**

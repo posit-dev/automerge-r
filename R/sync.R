@@ -521,6 +521,33 @@ am_change_deps <- function(change) {
   .Call(C_am_change_deps, change)
 }
 
+#' Get the number of operations in a change
+#'
+#' Returns the number of operations contained in the change. Useful for
+#' estimating the size of changes before syncing or storing them.
+#'
+#' @param change An `am_change` object (from [am_get_history()],
+#'   [am_get_changes()], or [am_change_from_bytes()])
+#'
+#' @return An integer (or double for very large values exceeding R's 32-bit
+#'   integer range)
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "x", 1)
+#' am_put(doc, AM_ROOT, "y", 2)
+#' am_commit(doc, "Add keys")
+#'
+#' history <- am_get_history(doc)
+#' am_change_size(history[[1]])  # 2
+#'
+#' am_close(doc)
+#'
+am_change_size <- function(change) {
+  .Call(C_am_change_size, change)
+}
+
 # v1.2 Sync and Change Operations --------------------------------------------
 
 #' Get missing dependencies
