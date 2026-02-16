@@ -218,6 +218,45 @@ AMresult* convert_r_heads_to_amresult(SEXP heads_list, AMresult ***results_out, 
 }
 
 /**
+ * Resolve an R heads list to an AMitems pointer for C API calls.
+ *
+ * Converts an R list of change hashes to the AMitems* pointer expected by
+ * automerge-c API functions. The caller must free *heads_result_out after
+ * the API call completes.
+ *
+ * @param heads R list of raw vectors, or R_NilValue for current heads
+ * @param heads_items_out Caller-allocated AMitems storage (populated on success)
+ * @param heads_result_out Set to AMresult* that caller must free, or NULL
+ * @return Pointer to heads_items_out if heads provided, or NULL for current heads
+ */
+AMitems* resolve_heads(SEXP heads, AMitems *heads_items_out, AMresult **heads_result_out) {
+    *heads_result_out = NULL;
+
+    if (heads == R_NilValue) {
+        return NULL;
+    }
+
+    AMresult **head_results = NULL;
+    size_t n_head_results = 0;
+    AMresult *heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
+
+    if (n_head_results == 0) {
+        return NULL;
+    } else if (n_head_results == 1) {
+        *heads_items_out = AMresultItems(heads_result);
+        *heads_result_out = heads_result;
+        free(head_results);
+        return heads_items_out;
+    } else {
+        for (size_t i = 0; i < n_head_results; i++) {
+            AMresultFree(head_results[i]);
+        }
+        free(head_results);
+        Rf_error("multiple heads are not supported; commit first to produce a single head");
+    }
+}
+
+/**
  * Fork an Automerge document at current or specified heads.
  *
  * @param doc_ptr External pointer to am_doc

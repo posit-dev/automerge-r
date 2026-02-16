@@ -80,6 +80,7 @@ SEXP C_am_load_incremental(SEXP doc_ptr, SEXP data);
 
 // Shared helpers
 AMresult* convert_r_heads_to_amresult(SEXP heads_list, AMresult ***results_out, size_t *n_results);
+AMitems* resolve_heads(SEXP heads, AMitems *heads_items_out, AMresult **heads_result_out);
 
 // Object operations (objects.c)
 SEXP C_am_put(SEXP doc_ptr, SEXP obj_ptr, SEXP key_or_pos, SEXP value);

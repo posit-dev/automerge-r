@@ -617,6 +617,9 @@ am_list_range <- function(doc, obj, begin, end, heads = NULL) {
 #'     \item{value}{The value at this entry.}
 #'   }
 #'
+#' @note When called on a text object, this iterates individual characters as
+#'   list items. Use [am_text_content()] to retrieve text as a string instead.
+#'
 #' @export
 #' @examples
 #' doc <- am_create()

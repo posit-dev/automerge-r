@@ -321,27 +321,9 @@ SEXP C_am_apply_changes(SEXP doc_ptr, SEXP changes) {
 SEXP C_am_get_missing_deps(SEXP doc_ptr, SEXP heads) {
     AMdoc *doc = get_doc(doc_ptr);
 
-    AMitems *heads_ptr = NULL;
     AMitems heads_items;
     AMresult *heads_result = NULL;
-    if (heads != R_NilValue) {
-        AMresult **head_results = NULL;
-        size_t n_head_results = 0;
-        heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
-        if (n_head_results == 0) {
-            heads_ptr = NULL;
-        } else if (n_head_results == 1) {
-            heads_items = AMresultItems(heads_result);
-            heads_ptr = &heads_items;
-            free(head_results);
-        } else {
-            for (size_t i = 0; i < n_head_results; i++) {
-                AMresultFree(head_results[i]);
-            }
-            free(head_results);
-            Rf_error("multiple heads are not supported; commit first to produce a single head");
-        }
-    }
+    AMitems *heads_ptr = resolve_heads(heads, &heads_items, &heads_result);
 
     AMresult *result = AMgetMissingDeps(doc, heads_ptr);
     if (heads_result) AMresultFree(heads_result);

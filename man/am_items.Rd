@@ -26,6 +26,10 @@ Returns detailed information about each entry in a map or list, including
 the key (or index) and value for each item. This provides more information
 than \code{\link[=am_values]{am_values()}} alone.
 }
+\note{
+When called on a text object, this iterates individual characters as
+list items. Use \code{\link[=am_text_content]{am_text_content()}} to retrieve text as a string instead.
+}
 \examples{
 doc <- am_create()
 doc$name <- "Alice"

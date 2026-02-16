@@ -412,7 +412,7 @@ SEXP C_am_get(SEXP doc_ptr, SEXP obj_ptr, SEXP key_or_pos) {
 
     // VOID type means key/position doesn't exist
     AMvalType val_type = AMitemValType(item);
-    if (val_type == AM_VAL_TYPE_VOID || val_type == 0 || val_type == 1) {
+    if (val_type == AM_VAL_TYPE_DEFAULT || val_type == AM_VAL_TYPE_VOID) {
         AMresultFree(result);
         return R_NilValue;
     }
@@ -913,27 +913,9 @@ SEXP C_am_map_get_all(SEXP doc_ptr, SEXP obj_ptr, SEXP key, SEXP heads) {
     const char *key_str = CHAR(STRING_ELT(key, 0));
     AMbyteSpan key_span = {.src = (uint8_t const *) key_str, .count = strlen(key_str)};
 
-    AMitems *heads_ptr = NULL;
     AMitems heads_items;
     AMresult *heads_result = NULL;
-    if (heads != R_NilValue) {
-        AMresult **head_results = NULL;
-        size_t n_head_results = 0;
-        heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
-        if (n_head_results == 0) {
-            heads_ptr = NULL;
-        } else if (n_head_results == 1) {
-            heads_items = AMresultItems(heads_result);
-            heads_ptr = &heads_items;
-            free(head_results);
-        } else {
-            for (size_t i = 0; i < n_head_results; i++) {
-                AMresultFree(head_results[i]);
-            }
-            free(head_results);
-            Rf_error("multiple heads are not supported; commit first to produce a single head");
-        }
-    }
+    AMitems *heads_ptr = resolve_heads(heads, &heads_items, &heads_result);
 
     AMresult *result = AMmapGetAll(doc, obj_id, key_span, heads_ptr);
     if (heads_result) AMresultFree(heads_result);
@@ -953,7 +935,7 @@ SEXP C_am_map_get_all(SEXP doc_ptr, SEXP obj_ptr, SEXP key, SEXP heads) {
         if (!item) break;
 
         AMvalType val_type = AMitemValType(item);
-        if (val_type == AM_VAL_TYPE_VOID || val_type == 0 || val_type == 1) {
+        if (val_type == AM_VAL_TYPE_DEFAULT || val_type == AM_VAL_TYPE_VOID) {
             continue;
         }
 
@@ -991,27 +973,9 @@ SEXP C_am_list_get_all(SEXP doc_ptr, SEXP obj_ptr, SEXP pos, SEXP heads) {
     }
     size_t c_pos = (size_t) (r_pos - 1);
 
-    AMitems *heads_ptr = NULL;
     AMitems heads_items;
     AMresult *heads_result = NULL;
-    if (heads != R_NilValue) {
-        AMresult **head_results = NULL;
-        size_t n_head_results = 0;
-        heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
-        if (n_head_results == 0) {
-            heads_ptr = NULL;
-        } else if (n_head_results == 1) {
-            heads_items = AMresultItems(heads_result);
-            heads_ptr = &heads_items;
-            free(head_results);
-        } else {
-            for (size_t i = 0; i < n_head_results; i++) {
-                AMresultFree(head_results[i]);
-            }
-            free(head_results);
-            Rf_error("multiple heads are not supported; commit first to produce a single head");
-        }
-    }
+    AMitems *heads_ptr = resolve_heads(heads, &heads_items, &heads_result);
 
     AMresult *result = AMlistGetAll(doc, obj_id, c_pos, heads_ptr);
     if (heads_result) AMresultFree(heads_result);
@@ -1031,7 +995,7 @@ SEXP C_am_list_get_all(SEXP doc_ptr, SEXP obj_ptr, SEXP pos, SEXP heads) {
         if (!item) break;
 
         AMvalType val_type = AMitemValType(item);
-        if (val_type == AM_VAL_TYPE_VOID || val_type == 0 || val_type == 1) {
+        if (val_type == AM_VAL_TYPE_DEFAULT || val_type == AM_VAL_TYPE_VOID) {
             continue;
         }
 
@@ -1081,32 +1045,17 @@ SEXP C_am_map_range(SEXP doc_ptr, SEXP obj_ptr, SEXP begin, SEXP end, SEXP heads
     if (end_len == 0) {
         end_span = (AMbyteSpan){.src = NULL, .count = 0};
     } else {
-        // Inclusive end: extend span by 1 to include the existing null terminator
-        // as a successor byte ("key\0" > "key" but "key\0" < "keyA")
+        // AMmapRange uses exclusive end, but R API exposes inclusive end.
+        // Extend span by 1 byte to include the C string's null terminator,
+        // which sorts after the key itself but before any key with a suffix
+        // (e.g., "key\0" > "key" but "key\0" < "keyA"), making the range
+        // effectively inclusive of the end key.
         end_span = (AMbyteSpan){.src = (uint8_t const *) end_str, .count = end_len + 1};
     }
 
-    AMitems *heads_ptr = NULL;
     AMitems heads_items;
     AMresult *heads_result = NULL;
-    if (heads != R_NilValue) {
-        AMresult **head_results = NULL;
-        size_t n_head_results = 0;
-        heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
-        if (n_head_results == 0) {
-            heads_ptr = NULL;
-        } else if (n_head_results == 1) {
-            heads_items = AMresultItems(heads_result);
-            heads_ptr = &heads_items;
-            free(head_results);
-        } else {
-            for (size_t i = 0; i < n_head_results; i++) {
-                AMresultFree(head_results[i]);
-            }
-            free(head_results);
-            Rf_error("multiple heads are not supported; commit first to produce a single head");
-        }
-    }
+    AMitems *heads_ptr = resolve_heads(heads, &heads_items, &heads_result);
 
     AMresult *result = AMmapRange(doc, obj_id, begin_span, end_span, heads_ptr);
     if (heads_result) AMresultFree(heads_result);
@@ -1134,7 +1083,7 @@ SEXP C_am_map_range(SEXP doc_ptr, SEXP obj_ptr, SEXP begin, SEXP end, SEXP heads
 
         // Extract value
         AMvalType val_type = AMitemValType(item);
-        if (val_type != AM_VAL_TYPE_VOID && val_type != 0 && val_type != 1) {
+        if (val_type != AM_VAL_TYPE_DEFAULT && val_type != AM_VAL_TYPE_VOID) {
             SEXP r_value = PROTECT(am_item_to_r(item, doc_ptr, result_sexp));
             SET_VECTOR_ELT(list, i, r_value);
             UNPROTECT(1);
@@ -1181,27 +1130,9 @@ SEXP C_am_list_range(SEXP doc_ptr, SEXP obj_ptr, SEXP begin, SEXP end, SEXP head
     size_t c_begin = (size_t) (r_begin - 1);
     size_t c_end = (size_t) r_end;  // Convert R 1-based inclusive to C 0-based exclusive
 
-    AMitems *heads_ptr = NULL;
     AMitems heads_items;
     AMresult *heads_result = NULL;
-    if (heads != R_NilValue) {
-        AMresult **head_results = NULL;
-        size_t n_head_results = 0;
-        heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
-        if (n_head_results == 0) {
-            heads_ptr = NULL;
-        } else if (n_head_results == 1) {
-            heads_items = AMresultItems(heads_result);
-            heads_ptr = &heads_items;
-            free(head_results);
-        } else {
-            for (size_t i = 0; i < n_head_results; i++) {
-                AMresultFree(head_results[i]);
-            }
-            free(head_results);
-            Rf_error("multiple heads are not supported; commit first to produce a single head");
-        }
-    }
+    AMitems *heads_ptr = resolve_heads(heads, &heads_items, &heads_result);
 
     AMresult *result = AMlistRange(doc, obj_id, c_begin, c_end, heads_ptr);
     if (heads_result) AMresultFree(heads_result);
@@ -1221,7 +1152,7 @@ SEXP C_am_list_range(SEXP doc_ptr, SEXP obj_ptr, SEXP begin, SEXP end, SEXP head
         if (!item) break;
 
         AMvalType val_type = AMitemValType(item);
-        if (val_type != AM_VAL_TYPE_VOID && val_type != 0 && val_type != 1) {
+        if (val_type != AM_VAL_TYPE_DEFAULT && val_type != AM_VAL_TYPE_VOID) {
             SEXP r_value = PROTECT(am_item_to_r(item, doc_ptr, result_sexp));
             SET_VECTOR_ELT(list, i, r_value);
             UNPROTECT(1);
@@ -1244,27 +1175,9 @@ SEXP C_am_items(SEXP doc_ptr, SEXP obj_ptr, SEXP heads) {
     AMdoc *doc = get_doc(doc_ptr);
     const AMobjId *obj_id = get_objid(obj_ptr);
 
-    AMitems *heads_ptr = NULL;
     AMitems heads_items;
     AMresult *heads_result = NULL;
-    if (heads != R_NilValue) {
-        AMresult **head_results = NULL;
-        size_t n_head_results = 0;
-        heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
-        if (n_head_results == 0) {
-            heads_ptr = NULL;
-        } else if (n_head_results == 1) {
-            heads_items = AMresultItems(heads_result);
-            heads_ptr = &heads_items;
-            free(head_results);
-        } else {
-            for (size_t i = 0; i < n_head_results; i++) {
-                AMresultFree(head_results[i]);
-            }
-            free(head_results);
-            Rf_error("multiple heads are not supported; commit first to produce a single head");
-        }
-    }
+    AMitems *heads_ptr = resolve_heads(heads, &heads_items, &heads_result);
 
     AMobjType obj_type = obj_id ? AMobjObjType(doc, obj_id) : AM_OBJ_TYPE_MAP;
     bool is_map = (obj_type == AM_OBJ_TYPE_MAP);
@@ -1309,7 +1222,7 @@ SEXP C_am_items(SEXP doc_ptr, SEXP obj_ptr, SEXP heads) {
 
         // Value
         AMvalType val_type = AMitemValType(item);
-        if (val_type != AM_VAL_TYPE_VOID && val_type != 0 && val_type != 1) {
+        if (val_type != AM_VAL_TYPE_DEFAULT && val_type != AM_VAL_TYPE_VOID) {
             SEXP r_value = PROTECT(am_item_to_r(item, doc_ptr, result_sexp));
             SET_VECTOR_ELT(entry, 1, r_value);
             UNPROTECT(1);
