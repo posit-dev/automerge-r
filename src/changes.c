@@ -236,6 +236,31 @@ SEXP C_am_change_to_bytes(SEXP change_ptr) {
     return r_bytes;
 }
 
+/**
+ * Get the number of operations in a change.
+ *
+ * @param change_ptr External pointer (am_change)
+ * @return Integer (number of operations)
+ */
+SEXP C_am_change_size(SEXP change_ptr) {
+    AMchange *ch = get_change(change_ptr);
+    size_t size = AMchangeSize(ch);
+    return size > INT_MAX ?
+        Rf_ScalarReal((double) size) :
+        Rf_ScalarInteger((int) size);
+}
+
+/**
+ * Test if a change contains no operations.
+ *
+ * @param change_ptr External pointer (am_change)
+ * @return Logical scalar
+ */
+SEXP C_am_change_is_empty(SEXP change_ptr) {
+    AMchange *ch = get_change(change_ptr);
+    return Rf_ScalarLogical(AMchangeIsEmpty(ch));
+}
+
 // v1.2 Change Operations -----------------------------------------------------
 
 /**
