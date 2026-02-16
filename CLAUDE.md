@@ -60,22 +60,26 @@ The package uses a two-phase build approach:
 ## Code Structure
 
 ### R Layer (`R/`)
-- `document.R`: Document lifecycle (create, save, load, fork, merge, commit)
+- `document.R`: Document lifecycle (create, save, load, fork, merge, commit, rollback, clone)
 - `objects.R`: Object operations (put, get, delete, insert) and type constructors
 - `methods.R`: S3 methods for `am_doc`, `am_object`, and subtypes
 - `sync.R`: Synchronization (am_sync, am_sync_encode/decode, change tracking)
 - `cursors.R`: Cursor and mark operations for text
+- `convenience.R`: High-level convenience functions
 - `constants.R`: Exported constants (`AM_ROOT`, `AM_OBJ_TYPE_*`, `AM_MARK_EXPAND_*`)
+
+All R functions are thin `.Call()` wrappers (e.g., `am_put <- function(doc, obj, key, value) invisible(.Call(C_am_put, doc, obj, key, value))`). All logic lives in C.
 
 ### C Layer (`src/`)
 - `automerge.h`: Data structures, function declarations, CHECK_RESULT macro
-- `document.c`: Document operations
-- `objects.c`: Map/list/text operations
+- `document.c`: Document lifecycle operations
+- `objects.c`: Map/list/text operations and R↔Automerge type conversion
+- `changes.c`: Change wrapping (owned vs borrowed) and introspection
 - `sync.c`: Sync protocol implementation
 - `cursors.c`: Cursor and mark operations
 - `memory.c`: External pointer wrappers and finalizers
 - `errors.c`: Error handling with file/line context
-- `init.c`: R package registration
+- `init.c`: R package registration (83 C functions)
 
 ## Code Style
 
@@ -101,6 +105,13 @@ Text positions use Unicode code points, not bytes. The emoji "😀" counts as 1 
 
 ### Memory Management
 
-- `am_doc` and `am_syncstate` structs wrap AMresult* (owns memory) and borrowed pointers
+- `am_doc` and `am_syncstate` structs wrap AMresult* (owns memory) and borrowed pointers (AMdoc*, AMsyncState*)
 - External pointers use finalizers to prevent memory leaks
-- `get_doc_from_objid()` extracts parent document from nested object protection chain
+- **Protection chain**: Nested objects form a chain `obj_id_ptr → result_ptr → doc_ptr` via `R_ExternalPtrProtected()`. This keeps the parent document alive while nested objects exist, and enables `get_doc_from_objid()` to traverse back to the doc — which is how `user$nested$key <- value` works without passing the doc explicitly
+- **Owned vs borrowed changes**: `changes.c` uses a dual finalizer pattern — owned changes (`am_change_data` struct with `AMresult*`) are freed by the finalizer, while borrowed changes (raw `AMchange*` with parent protection) are no-ops. Distinguished by checking `R_ExternalPtrProtected() == R_NilValue`
+
+### Error Handling
+
+- `CHECK_RESULT(result, expected_type)` macro validates AMresult* status and value type
+- Automatically frees AMresult* on error before calling `Rf_error()` — caller must not use the result after CHECK_RESULT
+- Includes file/line context for debugging (`__FILE__`, `__LINE__`)
