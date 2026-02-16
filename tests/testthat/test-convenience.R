@@ -511,6 +511,14 @@ test_that("from_automerge preserves POSIXct timestamps", {
   expect_equal(as.numeric(result$time), as.numeric(timestamp))
 })
 
+test_that("from_automerge converts text objects to character strings", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "content", am_text("hello world"))
+
+  result <- from_automerge(doc)
+  expect_equal(result$content, "hello world")
+})
+
 test_that("am_get_path with single element path", {
   doc <- am_create()
   am_put(doc, AM_ROOT, "key", "value")
