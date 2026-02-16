@@ -117,6 +117,7 @@ reference:
       - am_change_actor_id
       - am_change_seq
       - am_change_deps
+      - am_change_size
       - am_get_missing_deps
       - am_load_changes
 
