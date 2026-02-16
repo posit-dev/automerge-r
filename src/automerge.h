@@ -33,6 +33,14 @@ typedef struct {
     AMsyncState *state;     // Borrowed pointer extracted from result
 } am_syncstate;
 
+// Change wrapper (owned changes only)
+// Stores the owning AMresult* and the borrowed AMchange* pointer.
+// Borrowed changes store AMchange* directly in the ext_ptr (no struct).
+typedef struct {
+    AMresult *result;   // Owns the change (freed in finalizer)
+    AMchange *change;   // Borrowed pointer extracted from result
+} am_change_data;
+
 // Function Declarations -------------------------------------------------------
 
 // Document operations (document.c)
@@ -124,8 +132,10 @@ void am_result_finalizer(SEXP ext_ptr);
 void am_syncstate_finalizer(SEXP ext_ptr);
 void am_change_finalizer(SEXP ext_ptr);
 
-// Change wrapping helper (changes.c)
-SEXP wrap_am_change(AMchange *ch, SEXP parent_ptr);
+// Change wrapping helpers (changes.c)
+SEXP wrap_am_change_owned(AMresult *result);
+SEXP wrap_am_change_borrowed(AMchange *ch, SEXP parent_result_ptr);
+AMchange *get_change(SEXP change_ptr);
 
 // Helper functions (memory.c)
 AMdoc *get_doc(SEXP doc_ptr);  // Returns borrowed AMdoc* pointer

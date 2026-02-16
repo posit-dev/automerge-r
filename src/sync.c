@@ -244,7 +244,7 @@ SEXP C_am_get_changes(SEXP doc_ptr, SEXP heads) {
         AMchange *change = NULL;
         AMitemToChange(item, &change);
 
-        SEXP change_sexp = PROTECT(wrap_am_change(change, parent_ptr));
+        SEXP change_sexp = PROTECT(wrap_am_change_borrowed(change, parent_ptr));
         SET_VECTOR_ELT(changes_list, i, change_sexp);
         UNPROTECT(1);
     }
@@ -276,16 +276,7 @@ SEXP C_am_apply_changes(SEXP doc_ptr, SEXP changes) {
 
     for (R_xlen_t i = 0; i < n_changes; i++) {
         SEXP element = VECTOR_ELT(changes, i);
-
-        if (TYPEOF(element) != EXTPTRSXP) {
-            Rf_error("Each change must be an am_change object (got type %d at index %lld)",
-                     TYPEOF(element), (long long) i);
-        }
-
-        AMchange *change = (AMchange *) R_ExternalPtrAddr(element);
-        if (!change) {
-            Rf_error("Invalid am_change object at index %lld", (long long) i);
-        }
+        AMchange *change = get_change(element);
 
         AMbyteSpan span = AMchangeRawBytes(change);
 

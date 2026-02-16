@@ -204,7 +204,7 @@ test_that("am_apply_changes() errors on invalid am_change external pointer", {
 
   expect_error(
     am_apply_changes(doc, list(closed_doc)),
-    "Invalid am_change object at index"
+    "Invalid am_change pointer"
   )
 })
 

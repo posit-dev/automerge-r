@@ -76,7 +76,7 @@
       am_apply_changes(doc, list(123))
     Condition
       Error in `am_apply_changes()`:
-      ! Each change must be an am_change object (got type 14 at index 0)
+      ! change must be an am_change object (use am_change_from_bytes() first)
 
 ---
 
@@ -84,7 +84,7 @@
       am_apply_changes(doc, list("not raw"))
     Condition
       Error in `am_apply_changes()`:
-      ! Each change must be an am_change object (got type 16 at index 0)
+      ! change must be an am_change object (use am_change_from_bytes() first)
 
 # am_apply_changes rejects raw vectors
 
@@ -92,7 +92,7 @@
       am_apply_changes(doc, list(raw(10)))
     Condition
       Error in `am_apply_changes()`:
-      ! Each change must be an am_change object (got type 24 at index 0)
+      ! change must be an am_change object (use am_change_from_bytes() first)
 
 # am_get_change_by_hash with wrong size hash
 
