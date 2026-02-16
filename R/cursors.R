@@ -399,3 +399,52 @@ am_marks <- function(obj, heads = NULL) {
 am_marks_at <- function(obj, position, heads = NULL) {
   .Call(C_am_marks_at, obj, position, heads)
 }
+
+# v1.2 Mark Operations -------------------------------------------------------
+
+#' Clear marks from a text range
+#'
+#' Removes marks matching the given name from a range of text. This is the
+#' inverse of [am_mark()].
+#'
+#' @param obj An Automerge object ID (must be a text object)
+#' @param start Integer start position (0-based inter-character position, inclusive)
+#' @param end Integer end position (0-based inter-character position, exclusive)
+#' @param name Character string identifying the mark to clear (e.g., "bold")
+#' @param expand Character string controlling mark clearing behavior at
+#'   boundaries. Options: `"none"` (default), `"before"`, `"after"`, `"both"`.
+#'   Use the constants [AM_MARK_EXPAND_NONE], [AM_MARK_EXPAND_BEFORE],
+#'   [AM_MARK_EXPAND_AFTER], or [AM_MARK_EXPAND_BOTH].
+#'
+#' @return The text object `obj` (invisibly)
+#'
+#' @section Indexing Convention:
+#' Uses the same 0-based inter-character position indexing as [am_mark()].
+#'
+#' @seealso [am_mark()], [am_marks()]
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' am_put(doc, AM_ROOT, "text", am_text("Hello World"))
+#' text_obj <- am_get(doc, AM_ROOT, "text")
+#'
+#' # Add a mark
+#' am_mark(text_obj, 0, 11, "bold", TRUE)
+#' length(am_marks(text_obj))  # 1
+#'
+#' # Clear the mark
+#' am_mark_clear(text_obj, 0, 11, "bold")
+#' length(am_marks(text_obj))  # 0
+#'
+#' am_close(doc)
+#'
+am_mark_clear <- function(
+  obj,
+  start,
+  end,
+  name,
+  expand = AM_MARK_EXPAND_NONE
+) {
+  invisible(.Call(C_am_mark_clear, obj, start, end, name, expand))
+}

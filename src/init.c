@@ -57,6 +57,27 @@ static const R_CallMethodDef CallEntries[] = {
     {"C_am_cursor_to_string", (DL_FUNC) &C_am_cursor_to_string, 1},
     {"C_am_cursor_from_string", (DL_FUNC) &C_am_cursor_from_string, 2},
     {"C_am_cursor_equal", (DL_FUNC) &C_am_cursor_equal, 2},
+    // v1.2 Document operations
+    {"C_am_clone", (DL_FUNC) &C_am_clone, 1},
+    {"C_am_equal", (DL_FUNC) &C_am_equal, 2},
+    {"C_am_pending_ops", (DL_FUNC) &C_am_pending_ops, 1},
+    {"C_am_commit_empty", (DL_FUNC) &C_am_commit_empty, 3},
+    {"C_am_save_incremental", (DL_FUNC) &C_am_save_incremental, 1},
+    {"C_am_load_incremental", (DL_FUNC) &C_am_load_incremental, 2},
+    // v1.2 Object operations
+    {"C_am_map_get_all", (DL_FUNC) &C_am_map_get_all, 4},
+    {"C_am_list_get_all", (DL_FUNC) &C_am_list_get_all, 4},
+    {"C_am_map_range", (DL_FUNC) &C_am_map_range, 5},
+    {"C_am_list_range", (DL_FUNC) &C_am_list_range, 5},
+    {"C_am_items", (DL_FUNC) &C_am_items, 3},
+    // v1.2 Change/sync operations
+    {"C_am_get_missing_deps", (DL_FUNC) &C_am_get_missing_deps, 2},
+    {"C_am_load_changes", (DL_FUNC) &C_am_load_changes, 1},
+    // v1.2 Mark operations
+    {"C_am_mark_clear", (DL_FUNC) &C_am_mark_clear, 5},
+    // v1.2 Sync serialization
+    {"C_am_sync_state_encode", (DL_FUNC) &C_am_sync_state_encode, 1},
+    {"C_am_sync_state_decode", (DL_FUNC) &C_am_sync_state_decode, 1},
     // Helper functions
     {"C_get_doc_from_objid", (DL_FUNC) &C_get_doc_from_objid, 1},
     {NULL, NULL, 0}

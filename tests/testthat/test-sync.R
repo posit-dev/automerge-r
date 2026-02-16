@@ -475,3 +475,408 @@ test_that("am_get_changes_added returns added changes", {
   expect_type(added, "list")
   expect_equal(length(added), 2) # Two commits in doc2
 })
+
+# v1.2 Sync/Change Operations Tests -------------------------------------------
+
+# am_get_missing_deps tests
+
+test_that("am_get_missing_deps() returns empty for complete doc", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+
+  missing <- am_get_missing_deps(doc)
+  expect_type(missing, "list")
+  expect_length(missing, 0)
+})
+
+test_that("am_get_missing_deps() with specific heads", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+
+  heads <- am_get_heads(doc)
+  missing <- am_get_missing_deps(doc, heads)
+  expect_type(missing, "list")
+  expect_length(missing, 0)
+})
+
+# am_load_changes tests
+
+test_that("am_load_changes() decomposes document", {
+  doc <- am_create()
+  doc$key1 <- "value1"
+  am_commit(doc, "First")
+  doc$key2 <- "value2"
+  am_commit(doc, "Second")
+  bytes <- am_save(doc)
+
+  changes <- am_load_changes(bytes)
+  expect_type(changes, "list")
+  expect_length(changes, 2)
+  expect_s3_class(changes[[1]], "am_change")
+  expect_s3_class(changes[[2]], "am_change")
+  expect_equal(am_change_message(changes[[1]]), "First")
+  expect_equal(am_change_message(changes[[2]]), "Second")
+})
+
+test_that("am_load_changes() changes can be applied", {
+  doc1 <- am_create()
+  doc1$x <- 1
+  am_commit(doc1, "Add x")
+  doc1$y <- 2
+  am_commit(doc1, "Add y")
+  bytes <- am_save(doc1)
+
+  changes <- am_load_changes(bytes)
+
+  doc2 <- am_create()
+  am_apply_changes(doc2, changes)
+  expect_equal(am_get(doc2, AM_ROOT, "x"), 1)
+  expect_equal(am_get(doc2, AM_ROOT, "y"), 2)
+})
+
+test_that("am_load_changes() errors on non-raw", {
+  expect_error(am_load_changes("not raw"), "data must be a raw vector")
+})
+
+test_that("am_load_changes() on empty doc", {
+  doc <- am_create()
+  bytes <- am_save(doc)
+
+  changes <- am_load_changes(bytes)
+  expect_type(changes, "list")
+  expect_length(changes, 0)
+})
+
+# am_sync_state_encode / am_sync_state_decode tests
+
+test_that("am_sync_state_encode() returns raw bytes", {
+  sync <- am_sync_state()
+  bytes <- am_sync_state_encode(sync)
+  expect_type(bytes, "raw")
+  expect_gt(length(bytes), 0)
+})
+
+test_that("am_sync_state_decode() restores sync state", {
+  sync <- am_sync_state()
+  bytes <- am_sync_state_encode(sync)
+
+  restored <- am_sync_state_decode(bytes)
+  expect_s3_class(restored, "am_syncstate")
+})
+
+test_that("sync state round-trip works with active sync", {
+  doc1 <- am_create()
+  doc1$key <- "value"
+  am_commit(doc1)
+
+  doc2 <- am_create()
+
+  sync1 <- am_sync_state()
+  sync2 <- am_sync_state()
+
+  msg <- am_sync_encode(doc1, sync1)
+  am_sync_decode(doc2, sync2, msg)
+
+  # Encode and restore sync1
+  bytes <- am_sync_state_encode(sync1)
+  sync1_restored <- am_sync_state_decode(bytes)
+  expect_s3_class(sync1_restored, "am_syncstate")
+})
+
+test_that("am_sync_state_decode() errors on non-raw", {
+  expect_error(am_sync_state_decode("not raw"), "data must be a raw vector")
+})
+
+# Additional am_get_missing_deps tests
+
+test_that("am_get_missing_deps() on empty doc returns empty", {
+  doc <- am_create()
+  missing <- am_get_missing_deps(doc)
+  expect_type(missing, "list")
+  expect_length(missing, 0)
+})
+
+test_that("am_get_missing_deps() with NULL heads same as default", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+
+  missing_default <- am_get_missing_deps(doc)
+  missing_null <- am_get_missing_deps(doc, NULL)
+  expect_equal(missing_default, missing_null)
+})
+
+test_that("am_get_missing_deps() after sync returns empty", {
+  doc1 <- am_create()
+  doc1$x <- 1
+  am_commit(doc1)
+
+  doc2 <- am_fork(doc1)
+  doc2$y <- 2
+  am_commit(doc2)
+
+  am_merge(doc1, doc2)
+
+  missing <- am_get_missing_deps(doc1)
+  expect_length(missing, 0)
+})
+
+# Additional am_load_changes tests
+
+test_that("am_load_changes() preserves change metadata", {
+  doc <- am_create()
+  doc$key <- "value"
+  ts <- as.POSIXct("2025-06-15 12:00:00", tz = "UTC")
+  am_commit(doc, "Test message", ts)
+  bytes <- am_save(doc)
+
+  changes <- am_load_changes(bytes)
+  expect_length(changes, 1)
+  expect_equal(am_change_message(changes[[1]]), "Test message")
+  expect_equal(am_change_actor_id(changes[[1]]), am_get_actor(doc))
+  expect_equal(am_change_seq(changes[[1]]), 1L)
+})
+
+test_that("am_load_changes() with nested structures", {
+  doc <- am_create()
+  doc$config <- list(host = "localhost", port = 8080L)
+  doc$items <- am_list("a", "b", "c")
+  am_commit(doc, "Add nested")
+  bytes <- am_save(doc)
+
+  changes <- am_load_changes(bytes)
+  expect_length(changes, 1)
+
+  # Apply to new doc and verify structure
+  doc2 <- am_create()
+  am_apply_changes(doc2, changes)
+  config <- am_get(doc2, AM_ROOT, "config")
+  expect_equal(am_get(doc2, config, "host"), "localhost")
+  items <- am_get(doc2, AM_ROOT, "items")
+  expect_equal(am_length(doc2, items), 3)
+})
+
+test_that("am_load_changes() errors on invalid bytes", {
+  expect_error(am_load_changes(raw(10)))
+})
+
+test_that("am_load_changes() preserves change dependencies", {
+  doc <- am_create()
+  doc$a <- 1
+  am_commit(doc, "First")
+  doc$b <- 2
+  am_commit(doc, "Second")
+  doc$c <- 3
+  am_commit(doc, "Third")
+  bytes <- am_save(doc)
+
+  changes <- am_load_changes(bytes)
+  expect_length(changes, 3)
+
+  # First change has no deps, subsequent changes have deps
+  deps1 <- am_change_deps(changes[[1]])
+  expect_length(deps1, 0)
+
+  deps2 <- am_change_deps(changes[[2]])
+  expect_length(deps2, 1)
+  expect_equal(deps2[[1]], am_change_hash(changes[[1]]))
+})
+
+test_that("am_load_changes() selective apply works", {
+  doc <- am_create()
+  doc$a <- 1
+  am_commit(doc, "First")
+  doc$b <- 2
+  am_commit(doc, "Second")
+  doc$c <- 3
+  am_commit(doc, "Third")
+  bytes <- am_save(doc)
+
+  changes <- am_load_changes(bytes)
+
+  # Apply only the first change
+  doc2 <- am_create()
+  am_apply_changes(doc2, changes[1])
+  expect_equal(am_get(doc2, AM_ROOT, "a"), 1)
+  expect_null(am_get(doc2, AM_ROOT, "b"))
+})
+
+# Additional am_sync_state_encode/decode tests
+
+test_that("sync state round-trip preserves sync progress", {
+  doc1 <- am_create()
+  doc1$x <- 1
+  am_commit(doc1)
+
+  doc2 <- am_create()
+
+  sync1 <- am_sync_state()
+  sync2 <- am_sync_state()
+
+  # Complete a sync
+  am_sync(doc1, doc2)
+
+  # Now make a new change in doc1
+  doc1$y <- 2
+  am_commit(doc1)
+
+  # Start syncing with fresh states
+
+  sync1 <- am_sync_state()
+  sync2 <- am_sync_state()
+
+  # Do first round of sync
+  msg1 <- am_sync_encode(doc1, sync1)
+  am_sync_decode(doc2, sync2, msg1)
+
+  # Serialize and restore sync states
+  bytes1 <- am_sync_state_encode(sync1)
+  bytes2 <- am_sync_state_encode(sync2)
+  sync1_restored <- am_sync_state_decode(bytes1)
+  sync2_restored <- am_sync_state_decode(bytes2)
+
+  # Continue syncing with restored states
+  msg2 <- am_sync_encode(doc2, sync2_restored)
+  if (!is.null(msg2)) {
+    am_sync_decode(doc1, sync1_restored, msg2)
+  }
+
+  # Complete the sync
+  for (i in 1:10) {
+    msg_a <- am_sync_encode(doc1, sync1_restored)
+    msg_b <- am_sync_encode(doc2, sync2_restored)
+    if (is.null(msg_a) && is.null(msg_b)) break
+    if (!is.null(msg_a)) am_sync_decode(doc2, sync2_restored, msg_a)
+    if (!is.null(msg_b)) am_sync_decode(doc1, sync1_restored, msg_b)
+  }
+
+  expect_equal(am_get(doc2, AM_ROOT, "x"), 1)
+  expect_equal(am_get(doc2, AM_ROOT, "y"), 2)
+})
+
+test_that("am_sync_state_encode() on fresh state has consistent output", {
+  sync1 <- am_sync_state()
+  sync2 <- am_sync_state()
+
+  bytes1 <- am_sync_state_encode(sync1)
+  bytes2 <- am_sync_state_encode(sync2)
+
+  # Fresh sync states should produce identical encodings
+  expect_equal(bytes1, bytes2)
+})
+
+test_that("am_sync_state_decode() errors on invalid bytes", {
+  expect_error(am_sync_state_decode(raw(3)))
+})
+
+# Coverage Tests: Input Validation and Edge Cases =============================
+
+# am_get_missing_deps with multiple heads error
+
+test_that("am_get_missing_deps() errors on multiple heads", {
+  doc <- am_create()
+  doc$x <- 1
+  am_commit(doc)
+
+  doc2 <- am_fork(doc)
+  doc$y <- 2
+  am_commit(doc)
+  doc2$z <- 3
+  am_commit(doc2)
+  am_merge(doc, doc2)
+
+  heads <- am_get_heads(doc)
+  expect_gte(length(heads), 2)
+  expect_error(
+    am_get_missing_deps(doc, heads),
+    "multiple heads"
+  )
+})
+
+# am_sync_encode/decode input validation
+
+test_that("am_sync_decode() errors on non-raw message", {
+  doc <- am_create()
+  sync <- am_sync_state()
+  expect_error(am_sync_decode(doc, sync, "not raw"), "raw vector")
+})
+
+# am_apply_changes input validation
+
+test_that("am_apply_changes() errors on non-list", {
+  doc <- am_create()
+  expect_error(am_apply_changes(doc, "not a list"), "list")
+})
+
+# am_get_changes with empty doc returns empty
+
+test_that("am_get_changes() on empty doc returns empty list", {
+  doc <- am_create()
+  changes <- am_get_changes(doc, NULL)
+  expect_type(changes, "list")
+  expect_length(changes, 0)
+})
+
+# am_get_heads on document with concurrent edits returns multiple heads
+
+test_that("am_get_heads() returns multiple heads after merge without commit", {
+  doc <- am_create()
+  doc$x <- 1
+  am_commit(doc)
+
+  doc2 <- am_fork(doc)
+  doc$y <- 2
+  am_commit(doc)
+  doc2$z <- 3
+  am_commit(doc2)
+
+  am_merge(doc, doc2)
+
+  heads <- am_get_heads(doc)
+  expect_equal(length(heads), 2)
+  expect_type(heads[[1]], "raw")
+  expect_type(heads[[2]], "raw")
+})
+
+# am_get_missing_deps with empty heads list
+
+test_that("am_get_missing_deps() with empty heads list same as NULL", {
+  doc <- am_create()
+  doc$key <- "value"
+  am_commit(doc)
+
+  missing_null <- am_get_missing_deps(doc, NULL)
+  missing_empty <- am_get_missing_deps(doc, list())
+  expect_equal(missing_null, missing_empty)
+})
+
+# am_get_missing_deps returning actual missing deps
+
+test_that("am_get_missing_deps() detects missing deps from unknown heads", {
+  doc1 <- am_create()
+  doc1$a <- 1
+  am_commit(doc1)
+  heads1 <- am_get_heads(doc1)
+
+  # Empty doc doesn't have the changes
+  doc2 <- am_create()
+  missing <- am_get_missing_deps(doc2, heads1)
+  expect_gte(length(missing), 1)
+  expect_type(missing[[1]], "raw")
+})
+
+# am_get_changes with heads parameter
+
+test_that("am_get_changes() with empty heads list", {
+  doc <- am_create()
+  doc$a <- 1
+  am_commit(doc)
+  doc$b <- 2
+  am_commit(doc)
+
+  # Empty heads list should return all changes
+  changes <- am_get_changes(doc, list())
+  expect_gte(length(changes), 2)
+})

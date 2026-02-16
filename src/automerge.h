@@ -70,8 +70,17 @@ SEXP C_am_change_deps(SEXP change);
 SEXP C_am_change_from_bytes(SEXP bytes);
 SEXP C_am_change_to_bytes(SEXP change);
 
+// v1.2 Document operations (document.c)
+SEXP C_am_clone(SEXP doc_ptr);
+SEXP C_am_equal(SEXP doc1_ptr, SEXP doc2_ptr);
+SEXP C_am_pending_ops(SEXP doc_ptr);
+SEXP C_am_commit_empty(SEXP doc_ptr, SEXP message, SEXP time);
+SEXP C_am_save_incremental(SEXP doc_ptr);
+SEXP C_am_load_incremental(SEXP doc_ptr, SEXP data);
+
 // Shared helpers
 AMresult* convert_r_heads_to_amresult(SEXP heads_list, AMresult ***results_out, size_t *n_results);
+AMitems* resolve_heads(SEXP heads, AMitems *heads_items_out, AMresult **heads_result_out);
 
 // Object operations (objects.c)
 SEXP C_am_put(SEXP doc_ptr, SEXP obj_ptr, SEXP key_or_pos, SEXP value);
@@ -85,6 +94,12 @@ SEXP C_am_text_content(SEXP text_ptr);
 SEXP C_am_text_update(SEXP text_ptr, SEXP old_str, SEXP new_str);
 SEXP C_am_values(SEXP doc_ptr, SEXP obj_ptr);
 SEXP C_am_counter_increment(SEXP doc_ptr, SEXP obj_ptr, SEXP key_or_pos, SEXP delta);
+// v1.2 Object operations (objects.c)
+SEXP C_am_map_get_all(SEXP doc_ptr, SEXP obj_ptr, SEXP key, SEXP heads);
+SEXP C_am_list_get_all(SEXP doc_ptr, SEXP obj_ptr, SEXP pos, SEXP heads);
+SEXP C_am_map_range(SEXP doc_ptr, SEXP obj_ptr, SEXP begin, SEXP end, SEXP heads);
+SEXP C_am_list_range(SEXP doc_ptr, SEXP obj_ptr, SEXP begin, SEXP end, SEXP heads);
+SEXP C_am_items(SEXP doc_ptr, SEXP obj_ptr, SEXP heads);
 
 // Synchronization operations (sync.c)
 SEXP C_am_sync_state(void);
@@ -93,6 +108,11 @@ SEXP C_am_sync_decode(SEXP doc_ptr, SEXP sync_state_ptr, SEXP message);
 SEXP C_am_get_heads(SEXP doc_ptr);
 SEXP C_am_get_changes(SEXP doc_ptr, SEXP heads);
 SEXP C_am_apply_changes(SEXP doc_ptr, SEXP changes);
+// v1.2 Sync/change operations (sync.c, changes.c)
+SEXP C_am_get_missing_deps(SEXP doc_ptr, SEXP heads);
+SEXP C_am_load_changes(SEXP data);
+SEXP C_am_sync_state_encode(SEXP sync_state_ptr);
+SEXP C_am_sync_state_decode(SEXP data);
 
 // Cursor and mark operations (cursors.c)
 SEXP C_am_cursor(SEXP obj_ptr, SEXP position, SEXP heads);
@@ -105,6 +125,8 @@ SEXP C_am_cursor_from_bytes(SEXP bytes, SEXP obj_ptr);
 SEXP C_am_cursor_to_string(SEXP cursor_ptr);
 SEXP C_am_cursor_from_string(SEXP str, SEXP obj_ptr);
 SEXP C_am_cursor_equal(SEXP cursor1_ptr, SEXP cursor2_ptr);
+// v1.2 Mark operations (cursors.c)
+SEXP C_am_mark_clear(SEXP obj_ptr, SEXP start, SEXP end, SEXP name, SEXP expand);
 
 // Finalizers (memory.c)
 void am_doc_finalizer(SEXP ext_ptr);

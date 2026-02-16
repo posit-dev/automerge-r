@@ -230,3 +230,51 @@ SEXP C_am_change_to_bytes(SEXP change_ptr) {
     UNPROTECT(1);
     return r_bytes;
 }
+
+// v1.2 Change Operations -----------------------------------------------------
+
+/**
+ * Load a document as a sequence of individual changes.
+ *
+ * @param data Raw vector containing serialized document
+ * @return List of am_change objects
+ */
+SEXP C_am_load_changes(SEXP data) {
+    if (TYPEOF(data) != RAWSXP) {
+        Rf_error("data must be a raw vector");
+    }
+
+    AMresult *result = AMchangeLoadDocument(RAW(data), (size_t) XLENGTH(data));
+
+    if (AMresultStatus(result) != AM_STATUS_OK) {
+        CHECK_RESULT(result, AM_VAL_TYPE_CHANGE);
+    }
+
+    AMitems items = AMresultItems(result);
+    size_t count = AMitemsSize(&items);
+
+    if (count == 0) {
+        AMresultFree(result);
+        return Rf_allocVector(VECSXP, 0);
+    }
+
+    SEXP parent_ptr = PROTECT(R_MakeExternalPtr(result, R_NilValue, R_NilValue));
+    R_RegisterCFinalizer(parent_ptr, am_result_finalizer);
+
+    SEXP changes_list = PROTECT(Rf_allocVector(VECSXP, count));
+
+    for (size_t i = 0; i < count; i++) {
+        AMitem *item = AMitemsNext(&items, 1);
+        if (!item) break;
+
+        AMchange *change = NULL;
+        AMitemToChange(item, &change);
+
+        SEXP change_sexp = PROTECT(wrap_am_change_borrowed(change, parent_ptr));
+        SET_VECTOR_ELT(changes_list, i, change_sexp);
+        UNPROTECT(1);
+    }
+
+    UNPROTECT(2);
+    return changes_list;
+}

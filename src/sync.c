@@ -308,3 +308,118 @@ SEXP C_am_apply_changes(SEXP doc_ptr, SEXP changes) {
 
     return doc_ptr;
 }
+
+// v1.2 Sync Operations -------------------------------------------------------
+
+/**
+ * Get missing dependencies for specified heads.
+ *
+ * @param doc_ptr External pointer to am_doc
+ * @param heads List of change hashes (raw vectors), or NULL
+ * @return List of raw vectors (change hashes of missing dependencies)
+ */
+SEXP C_am_get_missing_deps(SEXP doc_ptr, SEXP heads) {
+    AMdoc *doc = get_doc(doc_ptr);
+
+    AMitems heads_items;
+    AMresult *heads_result = NULL;
+    AMitems *heads_ptr = resolve_heads(heads, &heads_items, &heads_result);
+
+    AMresult *result = AMgetMissingDeps(doc, heads_ptr);
+    if (heads_result) AMresultFree(heads_result);
+
+    if (AMresultStatus(result) != AM_STATUS_OK) {
+        CHECK_RESULT(result, AM_VAL_TYPE_CHANGE_HASH);
+    }
+
+    AMitems items = AMresultItems(result);
+    size_t count = AMitemsSize(&items);
+
+    if (count == 0) {
+        AMresultFree(result);
+        return Rf_allocVector(VECSXP, 0);
+    }
+
+    SEXP deps_list = PROTECT(Rf_allocVector(VECSXP, count));
+
+    for (size_t i = 0; i < count; i++) {
+        AMitem *item = AMitemsNext(&items, 1);
+        if (!item) break;
+
+        AMbyteSpan hash;
+        AMitemToChangeHash(item, &hash);
+
+        SEXP r_hash = Rf_allocVector(RAWSXP, hash.count);
+        memcpy(RAW(r_hash), hash.src, hash.count);
+        SET_VECTOR_ELT(deps_list, i, r_hash);
+    }
+
+    AMresultFree(result);
+    UNPROTECT(1);
+    return deps_list;
+}
+
+/**
+ * Encode a sync state to bytes.
+ *
+ * @param sync_state_ptr External pointer to am_syncstate
+ * @return Raw vector containing the serialized sync state
+ */
+SEXP C_am_sync_state_encode(SEXP sync_state_ptr) {
+    if (TYPEOF(sync_state_ptr) != EXTPTRSXP) {
+        Rf_error("Expected external pointer for sync state");
+    }
+    am_syncstate *state_wrapper = (am_syncstate *) R_ExternalPtrAddr(sync_state_ptr);
+    if (!state_wrapper || !state_wrapper->state) {
+        Rf_error("Invalid sync state pointer (NULL or freed)");
+    }
+
+    AMresult *result = AMsyncStateEncode(state_wrapper->state);
+    CHECK_RESULT(result, AM_VAL_TYPE_BYTES);
+
+    AMitem *item = AMresultItem(result);
+    AMbyteSpan bytes;
+    AMitemToBytes(item, &bytes);
+
+    SEXP r_bytes = PROTECT(Rf_allocVector(RAWSXP, bytes.count));
+    memcpy(RAW(r_bytes), bytes.src, bytes.count);
+
+    AMresultFree(result);
+    UNPROTECT(1);
+    return r_bytes;
+}
+
+/**
+ * Decode a sync state from bytes.
+ *
+ * @param data Raw vector containing serialized sync state
+ * @return External pointer to am_syncstate
+ */
+SEXP C_am_sync_state_decode(SEXP data) {
+    if (TYPEOF(data) != RAWSXP) {
+        Rf_error("data must be a raw vector");
+    }
+
+    AMresult *result = AMsyncStateDecode(RAW(data), (size_t) XLENGTH(data));
+    CHECK_RESULT(result, AM_VAL_TYPE_SYNC_STATE);
+
+    AMitem *item = AMresultItem(result);
+    AMsyncState *state = NULL;
+    AMitemToSyncState(item, &state);
+
+    am_syncstate *state_wrapper = malloc(sizeof(am_syncstate));
+    if (!state_wrapper) {
+        AMresultFree(result);
+        Rf_error("Failed to allocate memory for sync state wrapper");
+    }
+    state_wrapper->result = result;
+    state_wrapper->state = state;
+
+    SEXP ext_ptr = PROTECT(R_MakeExternalPtr(state_wrapper, R_NilValue, R_NilValue));
+    R_RegisterCFinalizer(ext_ptr, am_syncstate_finalizer);
+
+    Rf_classgets(ext_ptr, Rf_mkString("am_syncstate"));
+
+    UNPROTECT(1);
+    return ext_ptr;
+}

@@ -242,6 +242,38 @@ am_close(peer_b)
 am_close(peer_c)
 ```
 
+### Decomposing Saved Documents
+
+If you have a saved document (from `am_save()`) and want to extract its individual changes without loading the full document, use `am_load_changes()`:
+
+```{r}
+# Save a document with multiple commits
+doc_decompose <- am_create()
+doc_decompose[["x"]] <- 1
+am_commit(doc_decompose, "Add x")
+doc_decompose[["y"]] <- 2
+am_commit(doc_decompose, "Add y")
+saved_bytes <- am_save(doc_decompose)
+
+# Extract individual changes from the saved bytes
+extracted_changes <- am_load_changes(saved_bytes)
+length(extracted_changes)
+
+# Inspect each change
+for (ch in extracted_changes) {
+  cat(am_change_message(ch), "\n")
+}
+
+# Apply selectively to a new document
+doc_selective <- am_create()
+am_apply_changes(doc_selective, extracted_changes[1]) # Only first change
+doc_selective[["x"]]
+doc_selective[["y"]] # NULL - second change not applied
+
+am_close(doc_decompose)
+am_close(doc_selective)
+```
+
 **When to use**: Git-like workflows, change logs, selective sync.
 
 ## Document Heads and History
@@ -275,6 +307,22 @@ Heads are useful for:
 - Computing incremental updates
 - Detecting whether documents have diverged
 - Querying historical document states (pass `heads` to `am_cursor()`, `am_cursor_position()`, `am_marks()`, or `am_marks_at()`)
+
+### Checking Document Completeness
+
+After applying changes from external sources, you can verify a document has all its dependencies with `am_get_missing_deps()`:
+
+```{r}
+doc_check <- am_create()
+doc_check[["data"]] <- "complete"
+am_commit(doc_check)
+
+# A complete document has no missing deps
+missing <- am_get_missing_deps(doc_check)
+length(missing) # 0
+
+am_close(doc_check)
+```
 
 ### Working with History
 
@@ -588,6 +636,18 @@ am_close(doc_no_reuse)
 am_close(peer_no_reuse)
 am_close(doc_reuse)
 am_close(peer_reuse)
+```
+
+To persist sync state across R sessions (or send it over a network), serialize and restore it with `am_sync_state_encode()` / `am_sync_state_decode()`:
+
+```{r}
+# After initial sync, save sync state for later reuse
+sync_bytes <- am_sync_state_encode(sync_state_local)
+
+# Later (e.g., after restarting R):
+restored_sync <- am_sync_state_decode(sync_bytes)
+
+# Continue syncing efficiently with the restored state
 ```
 
 **When to persist sync state:**

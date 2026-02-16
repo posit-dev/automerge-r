@@ -218,6 +218,45 @@ AMresult* convert_r_heads_to_amresult(SEXP heads_list, AMresult ***results_out, 
 }
 
 /**
+ * Resolve an R heads list to an AMitems pointer for C API calls.
+ *
+ * Converts an R list of change hashes to the AMitems* pointer expected by
+ * automerge-c API functions. The caller must free *heads_result_out after
+ * the API call completes.
+ *
+ * @param heads R list of raw vectors, or R_NilValue for current heads
+ * @param heads_items_out Caller-allocated AMitems storage (populated on success)
+ * @param heads_result_out Set to AMresult* that caller must free, or NULL
+ * @return Pointer to heads_items_out if heads provided, or NULL for current heads
+ */
+AMitems* resolve_heads(SEXP heads, AMitems *heads_items_out, AMresult **heads_result_out) {
+    *heads_result_out = NULL;
+
+    if (heads == R_NilValue) {
+        return NULL;
+    }
+
+    AMresult **head_results = NULL;
+    size_t n_head_results = 0;
+    AMresult *heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
+
+    if (n_head_results == 0) {
+        return NULL;
+    } else if (n_head_results == 1) {
+        *heads_items_out = AMresultItems(heads_result);
+        *heads_result_out = heads_result;
+        free(head_results);
+        return heads_items_out;
+    } else {
+        for (size_t i = 0; i < n_head_results; i++) {
+            AMresultFree(head_results[i]);
+        }
+        free(head_results);
+        Rf_error("multiple heads are not supported; commit first to produce a single head");
+    }
+}
+
+/**
  * Fork an Automerge document at current or specified heads.
  *
  * @param doc_ptr External pointer to am_doc
@@ -591,4 +630,161 @@ SEXP C_am_get_changes_added(SEXP doc1_ptr, SEXP doc2_ptr) {
 
     UNPROTECT(2);
     return changes_list;
+}
+
+// v1.2 Document Operations ---------------------------------------------------
+
+/**
+ * Clone an Automerge document (deep copy).
+ *
+ * @param doc_ptr External pointer to am_doc
+ * @return External pointer to new independent am_doc
+ */
+SEXP C_am_clone(SEXP doc_ptr) {
+    AMdoc *doc = get_doc(doc_ptr);
+
+    AMresult *result = AMclone(doc);
+    CHECK_RESULT(result, AM_VAL_TYPE_DOC);
+
+    AMitem *item = AMresultItem(result);
+    AMdoc *cloned_doc = NULL;
+    AMitemToDoc(item, &cloned_doc);
+
+    am_doc *doc_wrapper = malloc(sizeof(am_doc));
+    if (!doc_wrapper) {
+        AMresultFree(result);
+        Rf_error("Failed to allocate memory for cloned document wrapper");
+    }
+    doc_wrapper->result = result;
+    doc_wrapper->doc = cloned_doc;
+
+    SEXP ext_ptr = PROTECT(R_MakeExternalPtr(doc_wrapper, R_NilValue, R_NilValue));
+    R_RegisterCFinalizer(ext_ptr, am_doc_finalizer);
+
+    SEXP class = Rf_allocVector(STRSXP, 2);
+    Rf_classgets(ext_ptr, class);
+    SET_STRING_ELT(class, 0, Rf_mkChar("am_doc"));
+    SET_STRING_ELT(class, 1, Rf_mkChar("automerge"));
+
+    UNPROTECT(1);
+    return ext_ptr;
+}
+
+/**
+ * Test if two documents are equal.
+ *
+ * @param doc1_ptr External pointer to am_doc
+ * @param doc2_ptr External pointer to am_doc
+ * @return Logical scalar (TRUE/FALSE)
+ */
+SEXP C_am_equal(SEXP doc1_ptr, SEXP doc2_ptr) {
+    AMdoc *doc1 = get_doc(doc1_ptr);
+    AMdoc *doc2 = get_doc(doc2_ptr);
+
+    bool equal = AMequal(doc1, doc2);
+
+    return Rf_ScalarLogical(equal);
+}
+
+/**
+ * Get the number of pending operations.
+ *
+ * @param doc_ptr External pointer to am_doc
+ * @return Integer scalar
+ */
+SEXP C_am_pending_ops(SEXP doc_ptr) {
+    AMdoc *doc = get_doc(doc_ptr);
+
+    size_t count = AMpendingOps(doc);
+
+    if (count > INT_MAX) {
+        return Rf_ScalarReal((double) count);
+    }
+    return Rf_ScalarInteger((int) count);
+}
+
+/**
+ * Create an empty change (merge commit).
+ *
+ * @param doc_ptr External pointer to am_doc
+ * @param message Character string commit message (or NULL)
+ * @param time POSIXct timestamp (or NULL)
+ * @return The document pointer (invisibly)
+ */
+SEXP C_am_commit_empty(SEXP doc_ptr, SEXP message, SEXP time) {
+    AMdoc *doc = get_doc(doc_ptr);
+
+    AMbyteSpan msg_span = {.src = NULL, .count = 0};
+    if (message != R_NilValue) {
+        if (TYPEOF(message) != STRSXP || XLENGTH(message) != 1) {
+            Rf_error("message must be NULL or a single character string");
+        }
+        const char *msg_str = CHAR(STRING_ELT(message, 0));
+        msg_span.src = (uint8_t const *) msg_str;
+        msg_span.count = strlen(msg_str);
+    }
+
+    int64_t timestamp = 0;
+    if (time != R_NilValue) {
+        if (!Rf_inherits(time, "POSIXct") || Rf_xlength(time) != 1) {
+            Rf_error("time must be NULL or a scalar POSIXct object");
+        }
+        double seconds = REAL(time)[0];
+        timestamp = (int64_t) (seconds * 1000.0);
+    }
+
+    AMresult *result = AMemptyChange(doc, msg_span, time == R_NilValue ? NULL : &timestamp);
+    CHECK_RESULT(result, AM_VAL_TYPE_CHANGE_HASH);
+
+    AMresultFree(result);
+    return doc_ptr;
+}
+
+/**
+ * Save incremental changes since last save.
+ *
+ * @param doc_ptr External pointer to am_doc
+ * @return Raw vector of incremental changes
+ */
+SEXP C_am_save_incremental(SEXP doc_ptr) {
+    AMdoc *doc = get_doc(doc_ptr);
+
+    AMresult *result = AMsaveIncremental(doc);
+    CHECK_RESULT(result, AM_VAL_TYPE_BYTES);
+
+    AMitem *item = AMresultItem(result);
+    AMbyteSpan bytes;
+    AMitemToBytes(item, &bytes);
+
+    SEXP r_bytes = PROTECT(Rf_allocVector(RAWSXP, bytes.count));
+    memcpy(RAW(r_bytes), bytes.src, bytes.count);
+
+    AMresultFree(result);
+    UNPROTECT(1);
+    return r_bytes;
+}
+
+/**
+ * Load incremental changes into a document.
+ *
+ * @param doc_ptr External pointer to am_doc
+ * @param data Raw vector of incremental changes
+ * @return Number of operations applied (numeric scalar)
+ */
+SEXP C_am_load_incremental(SEXP doc_ptr, SEXP data) {
+    AMdoc *doc = get_doc(doc_ptr);
+
+    if (TYPEOF(data) != RAWSXP) {
+        Rf_error("data must be a raw vector");
+    }
+
+    AMresult *result = AMloadIncremental(doc, RAW(data), (size_t) XLENGTH(data));
+    CHECK_RESULT(result, AM_VAL_TYPE_UINT);
+
+    AMitem *item = AMresultItem(result);
+    uint64_t count;
+    AMitemToUint(item, &count);
+
+    AMresultFree(result);
+    return Rf_ScalarReal((double) count);
 }

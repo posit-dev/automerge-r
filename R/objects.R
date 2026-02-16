@@ -471,3 +471,167 @@ am_values <- function(doc, obj) {
 am_counter_increment <- function(doc, obj, key, delta) {
   invisible(.Call(C_am_counter_increment, doc, obj, key, delta))
 }
+
+# v1.2 Object Operations -----------------------------------------------------
+
+#' Get all conflicting values at a map key
+#'
+#' Returns all values stored at a map key, including conflicts from concurrent
+#' edits by different actors. When there are no conflicts, the list contains
+#' a single element (the winning value).
+#'
+#' @param doc An Automerge document
+#' @param obj An Automerge object ID (must be a map), or `AM_ROOT`
+#' @param key Character string key
+#' @param heads Optional list of change hashes (raw vectors) for historical
+#'   query. If `NULL` (default), uses the current state.
+#'
+#' @return A list of all values at the key. Returns an empty list if the key
+#'   does not exist.
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' doc$key <- "value"
+#'
+#' # Single value (no conflict)
+#' values <- am_map_get_all(doc, AM_ROOT, "key")
+#' length(values)  # 1
+#'
+#' am_close(doc)
+#'
+am_map_get_all <- function(doc, obj, key, heads = NULL) {
+  .Call(C_am_map_get_all, doc, obj, key, heads)
+}
+
+#' Get all conflicting values at a list position
+#'
+#' Returns all values stored at a list position, including conflicts from
+#' concurrent edits. When there are no conflicts, the list contains
+#' a single element (the winning value).
+#'
+#' @param doc An Automerge document
+#' @param obj An Automerge object ID (must be a list)
+#' @param pos Numeric index (1-based, like R vectors)
+#' @param heads Optional list of change hashes (raw vectors) for historical
+#'   query. If `NULL` (default), uses the current state.
+#'
+#' @return A list of all values at the position. Returns an empty list if the
+#'   position does not exist.
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' doc$items <- list("a", "b", "c")
+#' items <- doc$items
+#'
+#' # Single value (no conflict)
+#' values <- am_list_get_all(doc, items, 1)
+#' length(values)  # 1
+#'
+#' am_close(doc)
+#'
+am_list_get_all <- function(doc, obj, pos, heads = NULL) {
+  .Call(C_am_list_get_all, doc, obj, pos, heads)
+}
+
+#' Get a range of map items by key
+#'
+#' Returns map entries whose keys fall within the lexicographic range
+#' `[begin, end]` (inclusive on both sides).
+#'
+#' @param doc An Automerge document
+#' @param obj An Automerge object ID (must be a map), or `AM_ROOT`
+#' @param begin Start key (inclusive). Use `""` (default) for unbounded start.
+#' @param end End key (inclusive). Use `""` (default) for unbounded end.
+#' @param heads Optional list of change hashes (raw vectors) for historical
+#'   query. If `NULL` (default), uses the current state.
+#'
+#' @return A named list of values in the key range.
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' doc$a <- 1
+#' doc$b <- 2
+#' doc$c <- 3
+#' doc$d <- 4
+#'
+#' # Get entries with keys in [b, c] -> b and c
+#' range <- am_map_range(doc, AM_ROOT, "b", "c")
+#' names(range)  # "b" "c"
+#'
+#' # Get all entries
+#' all <- am_map_range(doc, AM_ROOT, "", "")
+#'
+#' am_close(doc)
+#'
+am_map_range <- function(doc, obj, begin = "", end = "", heads = NULL) {
+  .Call(C_am_map_range, doc, obj, begin, end, heads)
+}
+
+#' Get a range of list items
+#'
+#' Returns list elements within the index range `[begin, end]`.
+#' Uses 1-based indexing consistent with R conventions.
+#'
+#' @param doc An Automerge document
+#' @param obj An Automerge object ID (must be a list)
+#' @param begin Start index (1-based, inclusive)
+#' @param end End index (1-based, inclusive)
+#' @param heads Optional list of change hashes (raw vectors) for historical
+#'   query. If `NULL` (default), uses the current state.
+#'
+#' @return A list of values in the index range.
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' doc$items <- list("a", "b", "c", "d", "e")
+#' items <- doc$items
+#'
+#' # Get elements 2 through 4 -> "b", "c", "d"
+#' range <- am_list_range(doc, items, 2, 4)
+#' length(range)  # 3
+#'
+#' am_close(doc)
+#'
+am_list_range <- function(doc, obj, begin, end, heads = NULL) {
+  .Call(C_am_list_range, doc, obj, begin, end, heads)
+}
+
+#' Get full item details from an object
+#'
+#' Returns detailed information about each entry in a map or list, including
+#' the key (or index) and value for each item. This provides more information
+#' than [am_values()] alone.
+#'
+#' @param doc An Automerge document
+#' @param obj An Automerge object ID, or `AM_ROOT` for the document root
+#' @param heads Optional list of change hashes (raw vectors) for historical
+#'   query. If `NULL` (default), uses the current state.
+#'
+#' @return A list of lists, where each inner list has fields:
+#'   \describe{
+#'     \item{key}{For maps: the character key. For lists: the 1-based integer index.}
+#'     \item{value}{The value at this entry.}
+#'   }
+#'
+#' @note When called on a text object, this iterates individual characters as
+#'   list items. Use [am_text_content()] to retrieve text as a string instead.
+#'
+#' @export
+#' @examples
+#' doc <- am_create()
+#' doc$name <- "Alice"
+#' doc$age <- 30L
+#'
+#' items <- am_items(doc, AM_ROOT)
+#' items[[1]]$key    # "age" (sorted lexicographically)
+#' items[[1]]$value  # 30
+#'
+#' am_close(doc)
+#'
+am_items <- function(doc, obj, heads = NULL) {
+  .Call(C_am_items, doc, obj, heads)
+}
