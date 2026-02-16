@@ -33,14 +33,12 @@ typedef struct {
     AMsyncState *state;     // Borrowed pointer extracted from result
 } am_syncstate;
 
-// Change wrapper
-// For owned changes (from am_change_from_bytes, am_get_last_local_change, etc.):
-//   result is non-NULL and freed by finalizer
-// For borrowed changes (from am_get_changes, am_get_changes_added):
-//   result is NULL; parent AMresult kept alive via ext_ptr protection chain
+// Change wrapper (owned changes only)
+// Stores the owning AMresult* and the borrowed AMchange* pointer.
+// Borrowed changes store AMchange* directly in the ext_ptr (no struct).
 typedef struct {
-    AMresult *result;   // Owning result (NULL if borrowed from parent)
-    AMchange *change;   // Borrowed pointer to the change
+    AMresult *result;   // Owns the change (freed in finalizer)
+    AMchange *change;   // Borrowed pointer extracted from result
 } am_change_data;
 
 // Function Declarations -------------------------------------------------------
@@ -137,9 +135,11 @@ void am_change_finalizer(SEXP ext_ptr);
 // Change wrapping helpers (changes.c)
 SEXP wrap_am_change_owned(AMresult *result);
 SEXP wrap_am_change_borrowed(AMchange *ch, SEXP parent_result_ptr);
+AMchange *get_change(SEXP change_ptr);
 
 // Helper functions (memory.c)
-AMdoc *get_doc(SEXP doc_ptr);  // Returns borrowed AMdoc* pointer
+AMdoc *get_doc(SEXP doc_ptr);
+AMsyncState *get_syncstate(SEXP sync_state_ptr);
 const AMobjId *get_objid(SEXP obj_ptr);
 SEXP get_doc_from_objid(SEXP obj_ptr);  // Extract doc from am_object protection chain
 SEXP C_get_doc_from_objid(SEXP obj_ptr);  // Exported for R .Call() interface

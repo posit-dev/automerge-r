@@ -32,19 +32,19 @@ void am_result_finalizer(SEXP ext_ptr) {
 }
 
 /**
- * Finalizer for am_change_data external pointer.
- * Frees the owning AMresult* if present (owned change).
- * For borrowed changes, result is NULL and only the wrapper struct is freed.
+ * Finalizer for am_change external pointer.
+ * Owned changes (prot == R_NilValue): address is am_change_data*, free result and struct.
+ * Borrowed changes (prot != R_NilValue): address is AMchange* directly, nothing to free.
  */
 void am_change_finalizer(SEXP ext_ptr) {
-    am_change_data *data = (am_change_data *) R_ExternalPtrAddr(ext_ptr);
-    if (data) {
-        if (data->result) {
-            AMresultFree(data->result);
-            data->result = NULL;
+    if (R_ExternalPtrProtected(ext_ptr) == R_NilValue) {
+        am_change_data *data = (am_change_data *) R_ExternalPtrAddr(ext_ptr);
+        if (data) {
+            if (data->result) {
+                AMresultFree(data->result);
+            }
+            free(data);
         }
-        data->change = NULL;
-        free(data);
     }
     R_ClearExternalPtr(ext_ptr);
 }
@@ -81,6 +81,21 @@ AMdoc *get_doc(SEXP doc_ptr) {
         Rf_error("Invalid document pointer (NULL or freed)");
     }
     return doc_wrapper->doc;
+}
+
+/**
+ * Get AMsyncState* from external pointer with validation.
+ * Returns the borrowed AMsyncState* pointer, not the wrapper.
+ */
+AMsyncState *get_syncstate(SEXP sync_state_ptr) {
+    if (TYPEOF(sync_state_ptr) != EXTPTRSXP) {
+        Rf_error("Expected external pointer for sync state");
+    }
+    am_syncstate *state_wrapper = (am_syncstate *) R_ExternalPtrAddr(sync_state_ptr);
+    if (!state_wrapper || !state_wrapper->state) {
+        Rf_error("Invalid sync state pointer (NULL or freed)");
+    }
+    return state_wrapper->state;
 }
 
 /**
