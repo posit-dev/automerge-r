@@ -1,16 +1,20 @@
 # automerge (development version)
 
+* Change-returning functions (`am_get_changes()`, `am_get_last_local_change()`, 
+  `am_get_change_by_hash()`, `am_get_changes_added()`) now return `am_change`
+  objects instead of raw vectors.
+
+* Removes `am_get_history()`. Use `am_get_changes()` instead, which
+  returns the full change history when called without `heads`.
+
+* Renames `am_sync_state_new()` to `am_sync_state()`.
+
 * Adds change introspection functions: `am_change_hash()`,
   `am_change_message()`, `am_change_time()`, `am_change_actor_id()`,
   `am_change_seq()`, `am_change_deps()`, and `am_change_size()` for
   extracting metadata from changes.
   `am_change_to_bytes()` and `am_change_from_bytes()` enable serialization
   round-trips.
-
-* Change-returning functions (`am_get_changes()`, `am_get_history()`,
-  `am_get_last_local_change()`, `am_get_change_by_hash()`,
-  `am_get_changes_added()`) now return `am_change` objects instead of raw
-  vectors.
 
 * `am_cursor()`, `am_cursor_position()`, `am_marks()`, and `am_marks_at()`
   gain a `heads` parameter for querying at historical document states.
@@ -42,8 +46,6 @@
   ID), `am_equal()` for testing document equality, `am_pending_ops()` for
   counting uncommitted operations, and `am_commit_empty()` for creating empty
   changes.
-
-* Renames `am_sync_state_new()` to `am_sync_state()`.
 
 * Updates MSRV to 1.85.
 

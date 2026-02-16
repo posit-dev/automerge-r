@@ -227,7 +227,7 @@ am_get_changes <- function(doc, heads = NULL) {
 #'
 #' @param doc An Automerge document
 #' @param changes A list of `am_change` objects (from [am_get_changes()],
-#'   [am_get_history()], or [am_change_from_bytes()])
+#'   [am_get_changes()], or [am_change_from_bytes()])
 #'
 #' @return The document `doc` (invisibly, for chaining)
 #'
@@ -254,36 +254,6 @@ am_apply_changes <- function(doc, changes) {
   invisible(.Call(C_am_apply_changes, doc, changes))
 }
 
-#' Get document history
-#'
-#' Returns the full change history of the document as a list of `am_change`
-#' objects. Use the change introspection functions ([am_change_hash()],
-#' [am_change_message()], [am_change_time()], [am_change_actor_id()],
-#' [am_change_seq()], [am_change_deps()]) to extract metadata from each
-#' change.
-#'
-#' @param doc An Automerge document
-#'
-#' @return A list of `am_change` objects, one for each change
-#'   in the document's history, in chronological order.
-#'
-#' @export
-#' @examples
-#' doc <- am_create()
-#' am_put(doc, AM_ROOT, "x", 1)
-#' am_commit(doc, "Initial")
-#' am_put(doc, AM_ROOT, "x", 2)
-#' am_commit(doc, "Update")
-#'
-#' history <- am_get_history(doc)
-#' cat("Document history contains", length(history), "change(s)\n")
-#'
-#' am_close(doc)
-#'
-am_get_history <- function(doc) {
-  am_get_changes(doc, NULL)
-}
-
 # Change Introspection Functions -----------------------------------------------
 
 #' Parse a serialized change from raw bytes
@@ -292,7 +262,7 @@ am_get_history <- function(doc) {
 #' useful for restoring changes that were previously serialized with
 #' [am_change_to_bytes()] or saved to disk.
 #'
-#' Note: [am_get_changes()], [am_get_history()], and other change-returning
+#' Note: [am_get_changes()], [am_get_changes()], and other change-returning
 #' functions already return `am_change` objects directly, so this function
 #' is only needed when working with raw byte representations.
 #'
@@ -310,7 +280,7 @@ am_get_history <- function(doc) {
 #' am_commit(doc, "Add key")
 #'
 #' # Serialize a change and restore it
-#' history <- am_get_history(doc)
+#' history <- am_get_changes(doc)
 #' bytes <- am_change_to_bytes(history[[1]])
 #' change <- am_change_from_bytes(bytes)
 #' change
@@ -326,7 +296,7 @@ am_change_from_bytes <- function(bytes) {
 #'
 #' Converts an `am_change` object back to its serialized raw vector form.
 #'
-#' @param change An `am_change` object (from [am_get_history()],
+#' @param change An `am_change` object (from [am_get_changes()],
 #'   [am_get_changes()], or [am_change_from_bytes()])
 #'
 #' @return A raw vector containing the serialized change
@@ -337,7 +307,7 @@ am_change_from_bytes <- function(bytes) {
 #' am_put(doc, AM_ROOT, "key", "value")
 #' am_commit(doc, "Add key")
 #'
-#' history <- am_get_history(doc)
+#' history <- am_get_changes(doc)
 #' bytes <- am_change_to_bytes(history[[1]])
 #' bytes
 #'
@@ -357,7 +327,7 @@ am_change_to_bytes <- function(change) {
 #' to reference specific points in document history (e.g., with
 #' [am_get_change_by_hash()] or [am_fork()]).
 #'
-#' @param change An `am_change` object (from [am_get_history()],
+#' @param change An `am_change` object (from [am_get_changes()],
 #'   [am_get_changes()], or [am_change_from_bytes()])
 #'
 #' @return A raw vector (32 bytes) containing the change hash
@@ -368,7 +338,7 @@ am_change_to_bytes <- function(change) {
 #' am_put(doc, AM_ROOT, "key", "value")
 #' am_commit(doc, "Add key")
 #'
-#' history <- am_get_history(doc)
+#' history <- am_get_changes(doc)
 #' hash <- am_change_hash(history[[1]])
 #' hash
 #' length(hash)  # 32 bytes
@@ -384,7 +354,7 @@ am_change_hash <- function(change) {
 #' Returns the commit message attached to a change, or `NULL` if no message
 #' was provided when the change was committed.
 #'
-#' @param change An `am_change` object (from [am_get_history()],
+#' @param change An `am_change` object (from [am_get_changes()],
 #'   [am_get_changes()], or [am_change_from_bytes()])
 #'
 #' @return A character string containing the commit message, or `NULL`
@@ -395,7 +365,7 @@ am_change_hash <- function(change) {
 #' am_put(doc, AM_ROOT, "key", "value")
 #' am_commit(doc, "Add key")
 #'
-#' history <- am_get_history(doc)
+#' history <- am_get_changes(doc)
 #' am_change_message(history[[1]])  # "Add key"
 #'
 #' am_close(doc)
@@ -410,7 +380,7 @@ am_change_message <- function(change) {
 #' Note that timestamps are set by the committing peer and may not be
 #' accurate if the peer's clock is wrong.
 #'
-#' @param change An `am_change` object (from [am_get_history()],
+#' @param change An `am_change` object (from [am_get_changes()],
 #'   [am_get_changes()], or [am_change_from_bytes()])
 #'
 #' @return A `POSIXct` timestamp
@@ -421,7 +391,7 @@ am_change_message <- function(change) {
 #' am_put(doc, AM_ROOT, "key", "value")
 #' am_commit(doc, "Add key", Sys.time())
 #'
-#' history <- am_get_history(doc)
+#' history <- am_get_changes(doc)
 #' am_change_time(history[[1]])
 #'
 #' am_close(doc)
@@ -434,7 +404,7 @@ am_change_time <- function(change) {
 #'
 #' Returns the actor ID of the peer that created the change.
 #'
-#' @param change An `am_change` object (from [am_get_history()],
+#' @param change An `am_change` object (from [am_get_changes()],
 #'   [am_get_changes()], or [am_change_from_bytes()])
 #'
 #' @return A raw vector containing the actor ID bytes
@@ -445,7 +415,7 @@ am_change_time <- function(change) {
 #' am_put(doc, AM_ROOT, "key", "value")
 #' am_commit(doc, "Add key")
 #'
-#' history <- am_get_history(doc)
+#' history <- am_get_changes(doc)
 #' actor <- am_change_actor_id(history[[1]])
 #' actor
 #'
@@ -464,7 +434,7 @@ am_change_actor_id <- function(change) {
 #' Sequence numbers start at 1 and increment with each change by the
 #' same actor.
 #'
-#' @param change An `am_change` object (from [am_get_history()],
+#' @param change An `am_change` object (from [am_get_changes()],
 #'   [am_get_changes()], or [am_change_from_bytes()])
 #'
 #' @return A numeric value (double, since sequence numbers can exceed R's
@@ -478,7 +448,7 @@ am_change_actor_id <- function(change) {
 #' am_put(doc, AM_ROOT, "y", 2)
 #' am_commit(doc, "Second")
 #'
-#' history <- am_get_history(doc)
+#' history <- am_get_changes(doc)
 #' am_change_seq(history[[1]])  # 1
 #' am_change_seq(history[[2]])  # 2
 #'
@@ -494,7 +464,7 @@ am_change_seq <- function(change) {
 #' its parent changes in the causal graph). The first change in a document
 #' has no dependencies.
 #'
-#' @param change An `am_change` object (from [am_get_history()],
+#' @param change An `am_change` object (from [am_get_changes()],
 #'   [am_get_changes()], or [am_change_from_bytes()])
 #'
 #' @return A list of raw vectors (change hashes), each 32 bytes. Returns
@@ -508,7 +478,7 @@ am_change_seq <- function(change) {
 #' am_put(doc, AM_ROOT, "y", 2)
 #' am_commit(doc, "Second")
 #'
-#' history <- am_get_history(doc)
+#' history <- am_get_changes(doc)
 #' deps1 <- am_change_deps(history[[1]])
 #' length(deps1)  # 0 (first change has no deps)
 #'
@@ -526,7 +496,7 @@ am_change_deps <- function(change) {
 #' Returns the number of operations contained in the change. Useful for
 #' estimating the size of changes before syncing or storing them.
 #'
-#' @param change An `am_change` object (from [am_get_history()],
+#' @param change An `am_change` object (from [am_get_changes()],
 #'   [am_get_changes()], or [am_change_from_bytes()])
 #'
 #' @return An integer (or double for very large values exceeding R's 32-bit
@@ -539,7 +509,7 @@ am_change_deps <- function(change) {
 #' am_put(doc, AM_ROOT, "y", 2)
 #' am_commit(doc, "Add keys")
 #'
-#' history <- am_get_history(doc)
+#' history <- am_get_changes(doc)
 #' am_change_size(history[[1]])  # 2
 #'
 #' am_close(doc)

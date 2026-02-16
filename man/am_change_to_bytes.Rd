@@ -7,7 +7,7 @@
 am_change_to_bytes(change)
 }
 \arguments{
-\item{change}{An \code{am_change} object (from \code{\link[=am_get_history]{am_get_history()}},
+\item{change}{An \code{am_change} object (from \code{\link[=am_get_changes]{am_get_changes()}},
 \code{\link[=am_get_changes]{am_get_changes()}}, or \code{\link[=am_change_from_bytes]{am_change_from_bytes()}})}
 }
 \value{
@@ -21,7 +21,7 @@ doc <- am_create()
 am_put(doc, AM_ROOT, "key", "value")
 am_commit(doc, "Add key")
 
-history <- am_get_history(doc)
+history <- am_get_changes(doc)
 bytes <- am_change_to_bytes(history[[1]])
 bytes
 

@@ -238,7 +238,7 @@ test_that("am_apply_changes applies changes to a document", {
   expect_equal(am_get(doc2, AM_ROOT, "c"), 3)
 })
 
-test_that("am_get_history returns full change history", {
+test_that("am_get_changes returns full change history", {
   doc <- am_create()
 
   am_put(doc, AM_ROOT, "v1", "first")
@@ -250,7 +250,7 @@ test_that("am_get_history returns full change history", {
   am_put(doc, AM_ROOT, "v3", "third")
   am_commit(doc, "Version 3")
 
-  history <- am_get_history(doc)
+  history <- am_get_changes(doc)
   expect_type(history, "list")
   expect_equal(length(history), 3)
 
@@ -411,7 +411,7 @@ test_that("am_get_changes with multiple explicit heads errors", {
   am_commit(doc, "Second")
 
   # Construct a list of 2 heads from history hashes
-  history <- am_get_history(doc)
+  history <- am_get_changes(doc)
   two_heads <- list(am_change_hash(history[[1]]), am_change_hash(history[[2]]))
 
   expect_error(

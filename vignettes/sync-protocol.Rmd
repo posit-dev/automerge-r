@@ -328,7 +328,7 @@ am_close(doc_check)
 
 ```{r}
 # Get full change history
-history <- am_get_history(doc_main)
+history <- am_get_changes(doc_main)
 length(history)
 
 # Inspect individual changes (am_change objects returned directly)

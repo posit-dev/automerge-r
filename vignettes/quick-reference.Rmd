@@ -292,7 +292,7 @@ new_changes <- am_get_changes(doc, checkpoint) # Only the new commit
 am_apply_changes(doc, changes)
 
 # Full history (returns am_change objects)
-history <- am_get_history(doc)
+history <- am_get_changes(doc)
 
 # Change introspection
 change <- history[[1]]

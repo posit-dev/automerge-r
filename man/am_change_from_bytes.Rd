@@ -21,7 +21,7 @@ useful for restoring changes that were previously serialized with
 \code{\link[=am_change_to_bytes]{am_change_to_bytes()}} or saved to disk.
 }
 \details{
-Note: \code{\link[=am_get_changes]{am_get_changes()}}, \code{\link[=am_get_history]{am_get_history()}}, and other change-returning
+Note: \code{\link[=am_get_changes]{am_get_changes()}}, \code{\link[=am_get_changes]{am_get_changes()}}, and other change-returning
 functions already return \code{am_change} objects directly, so this function
 is only needed when working with raw byte representations.
 }
@@ -31,7 +31,7 @@ am_put(doc, AM_ROOT, "key", "value")
 am_commit(doc, "Add key")
 
 # Serialize a change and restore it
-history <- am_get_history(doc)
+history <- am_get_changes(doc)
 bytes <- am_change_to_bytes(history[[1]])
 change <- am_change_from_bytes(bytes)
 change

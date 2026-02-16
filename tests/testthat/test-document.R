@@ -874,7 +874,7 @@ test_that("am_clone() preserves history", {
   am_commit(doc, "Second")
 
   clone <- am_clone(doc)
-  history <- am_get_history(clone)
+  history <- am_get_changes(clone)
   expect_length(history, 2)
   expect_equal(am_change_message(history[[1]]), "First")
   expect_equal(am_change_message(history[[2]]), "Second")

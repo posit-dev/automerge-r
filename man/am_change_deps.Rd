@@ -7,7 +7,7 @@
 am_change_deps(change)
 }
 \arguments{
-\item{change}{An \code{am_change} object (from \code{\link[=am_get_history]{am_get_history()}},
+\item{change}{An \code{am_change} object (from \code{\link[=am_get_changes]{am_get_changes()}},
 \code{\link[=am_get_changes]{am_get_changes()}}, or \code{\link[=am_change_from_bytes]{am_change_from_bytes()}})}
 }
 \value{
@@ -26,7 +26,7 @@ am_commit(doc, "First")
 am_put(doc, AM_ROOT, "y", 2)
 am_commit(doc, "Second")
 
-history <- am_get_history(doc)
+history <- am_get_changes(doc)
 deps1 <- am_change_deps(history[[1]])
 length(deps1)  # 0 (first change has no deps)
 

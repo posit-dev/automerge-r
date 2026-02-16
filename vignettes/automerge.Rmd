@@ -456,7 +456,7 @@ doc14[["version"]] <- "1.0"
 am_commit(doc14, "Set version", Sys.time())
 
 # Get the full history (returns am_change objects directly)
-history <- am_get_history(doc14)
+history <- am_get_changes(doc14)
 cat("Document has", length(history), "change(s)\n")
 
 # Inspect each change - no parsing needed
@@ -538,7 +538,7 @@ doc_hist[["data"]] <- list(x = 10, y = 20, z = 30)
 am_commit(doc_hist, "Scale all values by 10")
 
 # Review the history
-history <- am_get_history(doc_hist)
+history <- am_get_changes(doc_hist)
 for (i in seq_along(history)) {
   cat(sprintf("  [%d] %s\n", i, am_change_message(history[[i]])))
 }

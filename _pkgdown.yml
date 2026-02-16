@@ -104,7 +104,6 @@ reference:
     contents:
       - am_get_heads
       - am_get_changes
-      - am_get_history
       - am_apply_changes
       - am_get_last_local_change
       - am_get_change_by_hash
