@@ -84,6 +84,21 @@ AMdoc *get_doc(SEXP doc_ptr) {
 }
 
 /**
+ * Get AMsyncState* from external pointer with validation.
+ * Returns the borrowed AMsyncState* pointer, not the wrapper.
+ */
+AMsyncState *get_syncstate(SEXP sync_state_ptr) {
+    if (TYPEOF(sync_state_ptr) != EXTPTRSXP) {
+        Rf_error("Expected external pointer for sync state");
+    }
+    am_syncstate *state_wrapper = (am_syncstate *) R_ExternalPtrAddr(sync_state_ptr);
+    if (!state_wrapper || !state_wrapper->state) {
+        Rf_error("Invalid sync state pointer (NULL or freed)");
+    }
+    return state_wrapper->state;
+}
+
+/**
  * Get AMobjId* from external pointer.
  * Handles NULL (which represents AM_ROOT).
  */

@@ -48,15 +48,9 @@ SEXP C_am_sync_state(void) {
 SEXP C_am_sync_encode(SEXP doc_ptr, SEXP sync_state_ptr) {
     AMdoc *doc = get_doc(doc_ptr);
 
-    if (TYPEOF(sync_state_ptr) != EXTPTRSXP) {
-        Rf_error("Expected external pointer for sync state");
-    }
-    am_syncstate *state_wrapper = (am_syncstate *) R_ExternalPtrAddr(sync_state_ptr);
-    if (!state_wrapper || !state_wrapper->state) {
-        Rf_error("Invalid sync state pointer (NULL or freed)");
-    }
+    AMsyncState *state = get_syncstate(sync_state_ptr);
 
-    AMresult *result = AMgenerateSyncMessage(doc, state_wrapper->state);
+    AMresult *result = AMgenerateSyncMessage(doc, state);
     CHECK_RESULT(result, AM_VAL_TYPE_VOID);
 
     AMitem *item = AMresultItem(result);
@@ -110,13 +104,7 @@ SEXP C_am_sync_encode(SEXP doc_ptr, SEXP sync_state_ptr) {
 SEXP C_am_sync_decode(SEXP doc_ptr, SEXP sync_state_ptr, SEXP message) {
     AMdoc *doc = get_doc(doc_ptr);
 
-    if (TYPEOF(sync_state_ptr) != EXTPTRSXP) {
-        Rf_error("Expected external pointer for sync state");
-    }
-    am_syncstate *state_wrapper = (am_syncstate *) R_ExternalPtrAddr(sync_state_ptr);
-    if (!state_wrapper || !state_wrapper->state) {
-        Rf_error("Invalid sync state pointer (NULL or freed)");
-    }
+    AMsyncState *state = get_syncstate(sync_state_ptr);
 
     if (TYPEOF(message) != RAWSXP) {
         Rf_error("message must be a raw vector");
@@ -129,7 +117,7 @@ SEXP C_am_sync_decode(SEXP doc_ptr, SEXP sync_state_ptr, SEXP message) {
     AMsyncMessage const *msg = NULL;
     AMitemToSyncMessage(decode_item, &msg);
 
-    AMresult *result = AMreceiveSyncMessage(doc, state_wrapper->state, msg);
+    AMresult *result = AMreceiveSyncMessage(doc, state, msg);
     CHECK_RESULT(result, AM_VAL_TYPE_VOID);
 
     AMresultFree(result);
@@ -357,15 +345,9 @@ SEXP C_am_get_missing_deps(SEXP doc_ptr, SEXP heads) {
  * @return Raw vector containing the serialized sync state
  */
 SEXP C_am_sync_state_encode(SEXP sync_state_ptr) {
-    if (TYPEOF(sync_state_ptr) != EXTPTRSXP) {
-        Rf_error("Expected external pointer for sync state");
-    }
-    am_syncstate *state_wrapper = (am_syncstate *) R_ExternalPtrAddr(sync_state_ptr);
-    if (!state_wrapper || !state_wrapper->state) {
-        Rf_error("Invalid sync state pointer (NULL or freed)");
-    }
+    AMsyncState *state = get_syncstate(sync_state_ptr);
 
-    AMresult *result = AMsyncStateEncode(state_wrapper->state);
+    AMresult *result = AMsyncStateEncode(state);
     CHECK_RESULT(result, AM_VAL_TYPE_BYTES);
 
     AMitem *item = AMresultItem(result);

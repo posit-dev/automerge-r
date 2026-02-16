@@ -138,7 +138,8 @@ SEXP wrap_am_change_borrowed(AMchange *ch, SEXP parent_result_ptr);
 AMchange *get_change(SEXP change_ptr);
 
 // Helper functions (memory.c)
-AMdoc *get_doc(SEXP doc_ptr);  // Returns borrowed AMdoc* pointer
+AMdoc *get_doc(SEXP doc_ptr);
+AMsyncState *get_syncstate(SEXP sync_state_ptr);
 const AMobjId *get_objid(SEXP obj_ptr);
 SEXP get_doc_from_objid(SEXP obj_ptr);  // Extract doc from am_object protection chain
 SEXP C_get_doc_from_objid(SEXP obj_ptr);  // Exported for R .Call() interface
