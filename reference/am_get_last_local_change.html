@@ -41,7 +41,7 @@ Useful for tracking local changes or implementing undo/redo functionality."><scr
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Get the last change made by the local actor</h1>
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/R/document.R" class="external-link"><code>R/document.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/v0.3.0/R/document.R" class="external-link"><code>R/document.R</code></a></small>
       <div class="d-none name"><code>am_get_last_local_change.Rd</code></div>
     </div>
 
@@ -83,7 +83,7 @@ Useful for tracking local changes or implementing undo/redo functionality.</p>
 <span class="r-in"><span><span class="co"># Now we have a local change</span></span></span>
 <span class="r-in"><span><span class="va">change</span> <span class="op">&lt;-</span> <span class="fu">am_get_last_local_change</span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">change</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;pointer: 0x564cec786bf0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;pointer: 0x557350e0a130&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "am_change"</span>
 <span class="r-in"><span><span class="fu"><a href="am_change_message.html">am_change_message</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>  <span class="co"># "Add key"</span></span></span>

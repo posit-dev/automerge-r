@@ -43,7 +43,7 @@ am_commit(doc2, "Add y")
 changes <- am_get_changes_added(doc1, doc2)
 changes
 #> [[1]]
-#> <pointer: 0x564cef0e3090>
+#> <pointer: 0x55735361f6e0>
 #> attr(,"class")
 #> [1] "am_change"
 #> 
