@@ -10,9 +10,18 @@ am_put_path(doc, path, value, create_intermediate = TRUE)
 \item{doc}{An Automerge document}
 
 \item{path}{Character vector, numeric vector, or list of mixed types
-specifying the path to the value}
+specifying the path to navigate}
 
-\item{value}{Value to set at the path}
+\item{value}{The value to store. Supported types:
+\itemize{
+\item \code{NULL} - stores null
+\item Logical - stores boolean (must be scalar)
+\item Integer - stores integer (must be scalar)
+\item Numeric - stores double (must be scalar)
+\item Character - stores string (must be scalar)
+\item Raw - stores bytes
+\item \code{AM_OBJ_TYPE_LIST/MAP/TEXT} - creates nested object
+}}
 
 \item{create_intermediate}{Logical. If TRUE, creates intermediate maps
 as needed. Default TRUE.}

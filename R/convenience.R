@@ -8,7 +8,7 @@
 #' contain character keys (for maps), numeric indices (for lists, 1-based),
 #' or a mix of both.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #' @param path Character vector, numeric vector, or list of mixed types
 #'   specifying the path to navigate
 #' @return The value at the path, or NULL if not found
@@ -65,10 +65,8 @@ am_get_path <- function(doc, path) {
 #' Set a value in an Automerge document using a path vector. Can optionally
 #' create intermediate objects automatically.
 #'
-#' @param doc An Automerge document
-#' @param path Character vector, numeric vector, or list of mixed types
-#'   specifying the path to the value
-#' @param value Value to set at the path
+#' @inheritParams am_put
+#' @inheritParams am_get_path
 #' @param create_intermediate Logical. If TRUE, creates intermediate maps
 #'   as needed. Default TRUE.
 #' @return The document (invisibly)
@@ -142,9 +140,8 @@ am_put_path <- function(doc, path, value, create_intermediate = TRUE) {
 #'
 #' Delete a value from an Automerge document using a path vector.
 #'
-#' @param doc An Automerge document
-#' @param path Character vector, numeric vector, or list of mixed types
-#'   specifying the path to the value to delete
+#' @inheritParams am_put
+#' @inheritParams am_get_path
 #' @return The document (invisibly)
 #' @export
 #' @examples
@@ -211,7 +208,7 @@ am_delete_path <- function(doc, path) {
 #'
 #' @param x R list, vector, or scalar value to convert
 #' @param doc Optional existing Automerge document. If NULL, creates a new one.
-#' @param actor_id Optional actor ID for new documents (raw bytes or hex string)
+#' @inheritParams am_create
 #' @return An Automerge document
 #' @export
 #' @examples
@@ -261,7 +258,7 @@ as_automerge <- function(x, doc = NULL, actor_id = NULL) {
 #' Converts an Automerge document to a standard R list. This is equivalent to
 #' `as.list.am_doc()`.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #' @return Named list with document contents
 #' @export
 #' @examples

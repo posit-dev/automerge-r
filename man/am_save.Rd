@@ -7,7 +7,7 @@
 am_save(doc)
 }
 \arguments{
-\item{doc}{An Automerge document (created with \code{am_create()} or \code{am_load()})}
+\item{doc}{An Automerge document}
 }
 \value{
 A raw vector containing the serialized document

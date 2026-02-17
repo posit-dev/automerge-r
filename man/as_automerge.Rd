@@ -11,7 +11,12 @@ as_automerge(x, doc = NULL, actor_id = NULL)
 
 \item{doc}{Optional existing Automerge document. If NULL, creates a new one.}
 
-\item{actor_id}{Optional actor ID for new documents (raw bytes or hex string)}
+\item{actor_id}{Optional actor ID. Can be:
+\itemize{
+\item \code{NULL} (default) - Generate random actor ID
+\item Character string - Hex-encoded actor ID
+\item Raw vector - Binary actor ID bytes
+}}
 }
 \value{
 An Automerge document

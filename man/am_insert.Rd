@@ -14,7 +14,16 @@ am_insert(doc, obj, pos, value)
 \item{pos}{Numeric index (1-based, like R vectors) where to insert, or \code{"end"}
 to append}
 
-\item{value}{The value to insert}
+\item{value}{The value to store. Supported types:
+\itemize{
+\item \code{NULL} - stores null
+\item Logical - stores boolean (must be scalar)
+\item Integer - stores integer (must be scalar)
+\item Numeric - stores double (must be scalar)
+\item Character - stores string (must be scalar)
+\item Raw - stores bytes
+\item \code{AM_OBJ_TYPE_LIST/MAP/TEXT} - creates nested object
+}}
 }
 \value{
 The document \code{doc} (invisibly)

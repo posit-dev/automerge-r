@@ -40,7 +40,7 @@ am_sync_state <- function() {
 #' If the function returns `NULL`, it means there are no more messages to send
 #' (synchronization is complete from this side).
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #' @param sync_state A sync state object (created with `am_sync_state()`)
 #'
 #' @return A raw vector containing the encoded sync message, or `NULL` if no
@@ -69,8 +69,8 @@ am_sync_encode <- function(doc, sync_state) {
 #' to the local document. This updates both the document and the sync state
 #' to reflect the received changes.
 #'
-#' @param doc An Automerge document
-#' @param sync_state A sync state object (created with `am_sync_state()`)
+#' @inheritParams am_put
+#' @inheritParams am_sync_encode
 #' @param message A raw vector containing an encoded sync message
 #'
 #' @return The document `doc` (invisibly, for chaining)
@@ -166,7 +166,7 @@ am_sync <- function(doc1, doc2) {
 #' changes. These identify the current state of the document and can be used
 #' for history operations.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #'
 #' @return A list of raw vectors, each containing a change hash. Usually there
 #'   is only one head, but after concurrent edits there may be multiple heads
@@ -197,7 +197,7 @@ am_get_heads <- function(doc) {
 #' [am_change_to_bytes()], or applied to other documents using
 #' [am_apply_changes()].
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #' @param heads A list of raw vectors (change hashes) returned by `am_get_heads()`,
 #'   or `NULL` to get all changes.
 #'
@@ -225,7 +225,7 @@ am_get_changes <- function(doc, heads = NULL) {
 #' This is useful for manually syncing changes or for applying changes received
 #' over a custom network protocol.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #' @param changes A list of `am_change` objects (from [am_get_changes()] or
 #'   [am_change_from_bytes()])
 #'
@@ -327,8 +327,7 @@ am_change_to_bytes <- function(change) {
 #' to reference specific points in document history (e.g., with
 #' [am_get_change_by_hash()] or [am_fork()]).
 #'
-#' @param change An `am_change` object (from [am_get_changes()] or
-#'   [am_change_from_bytes()])
+#' @inheritParams am_change_to_bytes
 #'
 #' @return A raw vector (32 bytes) containing the change hash
 #'
@@ -354,8 +353,7 @@ am_change_hash <- function(change) {
 #' Returns the commit message attached to a change, or `NULL` if no message
 #' was provided when the change was committed.
 #'
-#' @param change An `am_change` object (from [am_get_changes()],
-#'   [am_get_changes()], or [am_change_from_bytes()])
+#' @inheritParams am_change_to_bytes
 #'
 #' @return A character string containing the commit message, or `NULL`
 #'
@@ -380,8 +378,7 @@ am_change_message <- function(change) {
 #' Note that timestamps are set by the committing peer and may not be
 #' accurate if the peer's clock is wrong.
 #'
-#' @param change An `am_change` object (from [am_get_changes()] or
-#'   [am_change_from_bytes()])
+#' @inheritParams am_change_to_bytes
 #'
 #' @return A `POSIXct` timestamp
 #'
@@ -404,8 +401,7 @@ am_change_time <- function(change) {
 #'
 #' Returns the actor ID of the peer that created the change.
 #'
-#' @param change An `am_change` object (from [am_get_changes()],
-#'   [am_get_changes()], or [am_change_from_bytes()])
+#' @inheritParams am_change_to_bytes
 #'
 #' @return A raw vector containing the actor ID bytes
 #'
@@ -434,8 +430,7 @@ am_change_actor_id <- function(change) {
 #' Sequence numbers start at 1 and increment with each change by the
 #' same actor.
 #'
-#' @param change An `am_change` object (from [am_get_changes()],
-#'   [am_get_changes()], or [am_change_from_bytes()])
+#' @inheritParams am_change_to_bytes
 #'
 #' @return A numeric value (double, since sequence numbers can exceed R's
 #'   32-bit integer range)
@@ -464,8 +459,7 @@ am_change_seq <- function(change) {
 #' its parent changes in the causal graph). The first change in a document
 #' has no dependencies.
 #'
-#' @param change An `am_change` object (from [am_get_changes()] or
-#'   [am_change_from_bytes()])
+#' @inheritParams am_change_to_bytes
 #'
 #' @return A list of raw vectors (change hashes), each 32 bytes. Returns
 #'   an empty list for the first change in a document.
@@ -496,8 +490,7 @@ am_change_deps <- function(change) {
 #' Returns the number of operations contained in the change. Useful for
 #' estimating the size of changes before syncing or storing them.
 #'
-#' @param change An `am_change` object (from [am_get_changes()] or
-#'   [am_change_from_bytes()])
+#' @inheritParams am_change_to_bytes
 #'
 #' @return An integer (or double for very large values exceeding R's 32-bit
 #'   integer range)
@@ -526,7 +519,7 @@ am_change_size <- function(change) {
 #' document but not present in its change history. This can happen when
 #' changes are applied out of order or when a document is partially synced.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #' @param heads Optional list of change hashes (raw vectors) to check for
 #'   missing dependencies. If `NULL` (default), checks the current heads.
 #'
@@ -597,7 +590,7 @@ am_load_changes <- function(data) {
 #' This is useful for persisting sync progress across sessions, avoiding
 #' the need to re-sync from scratch.
 #'
-#' @param sync_state A sync state object (created with [am_sync_state()])
+#' @inheritParams am_sync_encode
 #'
 #' @return A raw vector containing the serialized sync state.
 #'
