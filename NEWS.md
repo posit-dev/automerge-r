@@ -1,4 +1,4 @@
-# automerge (development version)
+# automerge 0.3.0
 
 * Change-returning functions (`am_get_changes()`, `am_get_last_local_change()`, 
   `am_get_change_by_hash()`, `am_get_changes_added()`) now return `am_change`
