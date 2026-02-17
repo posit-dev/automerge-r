@@ -15,7 +15,7 @@ am_change_seq(change)
 - change:
 
   An `am_change` object (from
-  [`am_get_history()`](https://posit-dev.github.io/automerge-r/reference/am_get_history.md),
+  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md),
   [`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md),
   or
   [`am_change_from_bytes()`](https://posit-dev.github.io/automerge-r/reference/am_change_from_bytes.md))
@@ -34,7 +34,7 @@ am_commit(doc, "First")
 am_put(doc, AM_ROOT, "y", 2)
 am_commit(doc, "Second")
 
-history <- am_get_history(doc)
+history <- am_get_changes(doc)
 am_change_seq(history[[1]])  # 1
 #> [1] 1
 am_change_seq(history[[2]])  # 2

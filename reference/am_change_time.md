@@ -15,7 +15,7 @@ am_change_time(change)
 - change:
 
   An `am_change` object (from
-  [`am_get_history()`](https://posit-dev.github.io/automerge-r/reference/am_get_history.md),
+  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md),
   [`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md),
   or
   [`am_change_from_bytes()`](https://posit-dev.github.io/automerge-r/reference/am_change_from_bytes.md))
@@ -31,9 +31,9 @@ doc <- am_create()
 am_put(doc, AM_ROOT, "key", "value")
 am_commit(doc, "Add key", Sys.time())
 
-history <- am_get_history(doc)
+history <- am_get_changes(doc)
 am_change_time(history[[1]])
-#> [1] "2026-02-16 14:51:04 UTC"
+#> [1] "2026-02-17 09:06:26 UTC"
 
 am_close(doc)
 ```

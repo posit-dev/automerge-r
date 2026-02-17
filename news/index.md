@@ -1,6 +1,23 @@
 # Changelog
 
-## automerge (development version)
+## automerge 0.3.0
+
+CRAN release: 2026-02-17
+
+- Change-returning functions
+  ([`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md),
+  [`am_get_last_local_change()`](https://posit-dev.github.io/automerge-r/reference/am_get_last_local_change.md),
+  [`am_get_change_by_hash()`](https://posit-dev.github.io/automerge-r/reference/am_get_change_by_hash.md),
+  [`am_get_changes_added()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes_added.md))
+  now return `am_change` objects instead of raw vectors.
+
+- Removes `am_get_history()`. Use
+  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md)
+  instead, which returns the full change history when called without
+  `heads`.
+
+- Renames `am_sync_state_new()` to
+  [`am_sync_state()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state.md).
 
 - Adds change introspection functions:
   [`am_change_hash()`](https://posit-dev.github.io/automerge-r/reference/am_change_hash.md),
@@ -8,21 +25,14 @@
   [`am_change_time()`](https://posit-dev.github.io/automerge-r/reference/am_change_time.md),
   [`am_change_actor_id()`](https://posit-dev.github.io/automerge-r/reference/am_change_actor_id.md),
   [`am_change_seq()`](https://posit-dev.github.io/automerge-r/reference/am_change_seq.md),
+  [`am_change_deps()`](https://posit-dev.github.io/automerge-r/reference/am_change_deps.md),
   and
-  [`am_change_deps()`](https://posit-dev.github.io/automerge-r/reference/am_change_deps.md)
+  [`am_change_size()`](https://posit-dev.github.io/automerge-r/reference/am_change_size.md)
   for extracting metadata from changes.
   [`am_change_to_bytes()`](https://posit-dev.github.io/automerge-r/reference/am_change_to_bytes.md)
   and
   [`am_change_from_bytes()`](https://posit-dev.github.io/automerge-r/reference/am_change_from_bytes.md)
   enable serialization round-trips.
-
-- Change-returning functions
-  ([`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md),
-  [`am_get_history()`](https://posit-dev.github.io/automerge-r/reference/am_get_history.md),
-  [`am_get_last_local_change()`](https://posit-dev.github.io/automerge-r/reference/am_get_last_local_change.md),
-  [`am_get_change_by_hash()`](https://posit-dev.github.io/automerge-r/reference/am_get_change_by_hash.md),
-  [`am_get_changes_added()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes_added.md))
-  now return `am_change` objects instead of raw vectors.
 
 - [`am_cursor()`](https://posit-dev.github.io/automerge-r/reference/am_cursor.md),
   [`am_cursor_position()`](https://posit-dev.github.io/automerge-r/reference/am_cursor_position.md),
@@ -85,9 +95,6 @@
   for counting uncommitted operations, and
   [`am_commit_empty()`](https://posit-dev.github.io/automerge-r/reference/am_commit_empty.md)
   for creating empty changes.
-
-- Renames `am_sync_state_new()` to
-  [`am_sync_state()`](https://posit-dev.github.io/automerge-r/reference/am_sync_state.md).
 
 - Updates MSRV to 1.85.
 

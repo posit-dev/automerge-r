@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -352,7 +352,7 @@ documentation with <code>?function_name</code>.</p>
 <span><span class="fu"><a href="../reference/am_apply_changes.html">am_apply_changes</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">changes</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Full history (returns am_change objects)</span></span>
-<span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_history.html">am_get_history</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
+<span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Change introspection</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
@@ -362,6 +362,7 @@ documentation with <code>?function_name</code>.</p>
 <span><span class="va">actor</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Actor ID (raw bytes)</span></span>
 <span><span class="va">seq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_seq.html">am_change_seq</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Sequence number (double)</span></span>
 <span><span class="va">deps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># List of parent hashes</span></span>
+<span><span class="va">size</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_size.html">am_change_size</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Number of operations</span></span>
 <span><span class="va">bytes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_change_to_bytes.html">am_change_to_bytes</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Serialize to raw</span></span>
 <span></span>
 <span><span class="co"># Deserialize from raw bytes (for stored changes)</span></span>

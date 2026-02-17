@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,7 +100,7 @@
 <div class="section level3">
 <h3 id="r-layer-r">R Layer (<code>R/</code>)<a class="anchor" aria-label="anchor" href="#r-layer-r"></a></h3>
 <ul><li>
-<code>document.R</code>: Document lifecycle (create, save, load, fork, merge, commit)</li>
+<code>document.R</code>: Document lifecycle (create, save, load, fork, merge, commit, rollback, clone)</li>
 <li>
 <code>objects.R</code>: Object operations (put, get, delete, insert) and type constructors</li>
 <li>
@@ -110,16 +110,21 @@
 <li>
 <code>cursors.R</code>: Cursor and mark operations for text</li>
 <li>
+<code>convenience.R</code>: High-level convenience functions</li>
+<li>
 <code>constants.R</code>: Exported constants (<code>AM_ROOT</code>, <code>AM_OBJ_TYPE_*</code>, <code>AM_MARK_EXPAND_*</code>)</li>
-</ul></div>
+</ul><p>All R functions are thin <code><a href="https://rdrr.io/r/base/CallExternal.html" class="external-link">.Call()</a></code> wrappers (e.g., <code>am_put &lt;- function(doc, obj, key, value) invisible(.Call(C_am_put, doc, obj, key, value))</code>). All logic lives in C.</p>
+</div>
 <div class="section level3">
 <h3 id="c-layer-src">C Layer (<code>src/</code>)<a class="anchor" aria-label="anchor" href="#c-layer-src"></a></h3>
 <ul><li>
 <code>automerge.h</code>: Data structures, function declarations, CHECK_RESULT macro</li>
 <li>
-<code>document.c</code>: Document operations</li>
+<code>document.c</code>: Document lifecycle operations</li>
 <li>
-<code>objects.c</code>: Map/list/text operations</li>
+<code>objects.c</code>: Map/list/text operations and R↔︎Automerge type conversion</li>
+<li>
+<code>changes.c</code>: Change wrapping (owned vs borrowed) and introspection</li>
 <li>
 <code>sync.c</code>: Sync protocol implementation</li>
 <li>
@@ -129,7 +134,7 @@
 <li>
 <code>errors.c</code>: Error handling with file/line context</li>
 <li>
-<code>init.c</code>: R package registration</li>
+<code>init.c</code>: R package registration (83 C functions)</li>
 </ul></div>
 </div>
 <div class="section level2">
@@ -150,10 +155,20 @@
 <div class="section level3">
 <h3 id="memory-management">Memory Management<a class="anchor" aria-label="anchor" href="#memory-management"></a></h3>
 <ul><li>
-<code>am_doc</code> and <code>am_syncstate</code> structs wrap AMresult* (owns memory) and borrowed pointers</li>
+<code>am_doc</code> and <code>am_syncstate</code> structs wrap AMresult* (owns memory) and borrowed pointers (AMdoc<em>, AMsyncState</em>)</li>
 <li>External pointers use finalizers to prevent memory leaks</li>
 <li>
-<code>get_doc_from_objid()</code> extracts parent document from nested object protection chain</li>
+<strong>Protection chain</strong>: Nested objects form a chain <code>obj_id_ptr → result_ptr → doc_ptr</code> via <code>R_ExternalPtrProtected()</code>. This keeps the parent document alive while nested objects exist, and enables <code>get_doc_from_objid()</code> to traverse back to the doc — which is how <code>user$nested$key &lt;- value</code> works without passing the doc explicitly</li>
+<li>
+<strong>Owned vs borrowed changes</strong>: <code>changes.c</code> uses a dual finalizer pattern — owned changes (<code>am_change_data</code> struct with <code>AMresult*</code>) are freed by the finalizer, while borrowed changes (raw <code>AMchange*</code> with parent protection) are no-ops. Distinguished by checking <code>R_ExternalPtrProtected() == R_NilValue</code>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="error-handling">Error Handling<a class="anchor" aria-label="anchor" href="#error-handling"></a></h3>
+<ul><li>
+<code>CHECK_RESULT(result, expected_type)</code> macro validates AMresult* status and value type</li>
+<li>Automatically frees AMresult* on error before calling <code>Rf_error()</code> — caller must not use the result after CHECK_RESULT</li>
+<li>Includes file/line context for debugging (<code>__FILE__</code>, <code>__LINE__</code>)</li>
 </ul></div>
 </div>
 </div>

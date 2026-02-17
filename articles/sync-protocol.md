@@ -353,7 +353,7 @@ am_close(doc_check)
 
 ``` r
 # Get full change history
-history <- am_get_history(doc_main)
+history <- am_get_changes(doc_main)
 length(history)
 #> [1] 2
 
@@ -372,16 +372,18 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] 1d 9d ae 95 27 1e 0f 47 14 71 c6 08 58 a3 8c 81 1e d9 cf 76 5c 34
-#> [23] b7 90 5f 79 33 c3 29 5a 85 8c
+#>  [1] d5 4a df eb 0d c7 44 da c6 fb e7 52 15 72 08 2d a5 bf a7 86 67 f2
+#> [23] 64 84 2d 91 bf 1d 3b 0a 48 7a
 am_change_actor_id(change) # Who made this change
-#>  [1] 30 8d a7 0c a6 16 6d 7a f9 bc 92 f8 ee cf e3 a7
+#>  [1] f1 22 10 7a 4a 90 25 97 b0 5a 9a 39 27 27 24 bf
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] be 57 ed 73 8b e0 2e 6d 23 35 69 2c a3 78 0d ad 0b 15 24 be 0e 99
-#> [23] ce 97 80 be 3f fa dd 84 3f 16
+#>  [1] 07 76 a9 3d f1 73 24 ca 6c 05 e1 d0 65 06 1b d2 ce 28 f1 28 22 ed
+#> [23] 5f 49 56 9c a0 cf ec 22 ba de
+am_change_size(change)     # Number of operations
+#> [1] 2
 
 # Get changes between two points in history
 changes_since_v1 <- am_get_changes(doc_main, heads_v1)

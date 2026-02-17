@@ -277,7 +277,7 @@ new_changes <- am_get_changes(doc, checkpoint) # Only the new commit
 am_apply_changes(doc, changes)
 
 # Full history (returns am_change objects)
-history <- am_get_history(doc)
+history <- am_get_changes(doc)
 
 # Change introspection
 change <- history[[1]]
@@ -287,6 +287,7 @@ time <- am_change_time(change) # POSIXct timestamp
 actor <- am_change_actor_id(change) # Actor ID (raw bytes)
 seq <- am_change_seq(change) # Sequence number (double)
 deps <- am_change_deps(change) # List of parent hashes
+size <- am_change_size(change) # Number of operations
 bytes <- am_change_to_bytes(change) # Serialize to raw
 
 # Deserialize from raw bytes (for stored changes)

@@ -33,7 +33,7 @@ and
 
 Note:
 [`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md),
-[`am_get_history()`](https://posit-dev.github.io/automerge-r/reference/am_get_history.md),
+[`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md),
 and other change-returning functions already return `am_change` objects
 directly, so this function is only needed when working with raw byte
 representations.
@@ -46,11 +46,11 @@ am_put(doc, AM_ROOT, "key", "value")
 am_commit(doc, "Add key")
 
 # Serialize a change and restore it
-history <- am_get_history(doc)
+history <- am_get_changes(doc)
 bytes <- am_change_to_bytes(history[[1]])
 change <- am_change_from_bytes(bytes)
 change
-#> <pointer: 0x556346fc1fe0>
+#> <pointer: 0x564cecb327e0>
 #> attr(,"class")
 #> [1] "am_change"
 am_change_message(change)  # "Add key"

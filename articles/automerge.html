@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -127,7 +127,7 @@ applications like shared notebooks or data pipelines</li>
 <code class="sourceCode R"><span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;Automerge Document&gt;</span></span>
-<span><span class="co">#&gt; Actor: 1dc628c5573329122891d22849f0bec5 </span></span>
+<span><span class="co">#&gt; Actor: 3a5ea1bc7c4321a6c0d3ff3a944b3c3f </span></span>
 <span><span class="co">#&gt; Root keys: 0</span></span></code></pre></div>
 <p>Note: When you’re done working with a document, you can explicitly
 free its resources with <code>am_close(doc)</code> if you don’t want to
@@ -382,7 +382,7 @@ without conflicts:</p>
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc9</span>, <span class="va">AM_ROOT</span>, <span class="st">"updated_at"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc9</span><span class="op">[[</span><span class="st">"created_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-02-16 14:51:23 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-02-17 09:06:45 UTC"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc9</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -541,7 +541,7 @@ documents:</p>
 <span><span class="co"># Bidirectional sync (documents modified in place)</span></span>
 <span><span class="va">rounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_sync.html">am_sync</a></span><span class="op">(</span><span class="va">peer1</span>, <span class="va">peer2</span><span class="op">)</span></span>
 <span><span class="va">rounds</span></span>
-<span><span class="co">#&gt; [1] 5</span></span>
+<span><span class="co">#&gt; [1] 4</span></span>
 <span></span>
 <span><span class="co"># Both documents now have all data</span></span>
 <span><span class="va">peer1</span><span class="op">[[</span><span class="st">"data1"</span><span class="op">]</span><span class="op">]</span></span>
@@ -571,7 +571,7 @@ inspect this with the change introspection functions:</p>
 <span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc14</span>, <span class="st">"Set version"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Get the full history (returns am_change objects directly)</span></span>
-<span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_history.html">am_get_history</a></span><span class="op">(</span><span class="va">doc14</span><span class="op">)</span></span>
+<span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc14</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Document has"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">history</span><span class="op">)</span>, <span class="st">"change(s)\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Document has 2 change(s)</span></span>
 <span></span>
@@ -592,20 +592,22 @@ inspect this with the change introspection functions:</p>
 <span><span class="co"># Extract many fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique 32-byte hash</span></span>
-<span><span class="co">#&gt;  [1] f7 2c a4 fd 12 50 d9 4a a6 ca 11 c5 0f b6 ce 48 11 38 43 e8 03 92</span></span>
-<span><span class="co">#&gt; [23] c8 10 6a af 89 a7 a9 1a 06 ce</span></span>
+<span><span class="co">#&gt;  [1] 9a 9c 5a 56 e3 78 ff 9f e0 e1 1c 7c ab cb ae 47 11 ab f5 3d b7 1f</span></span>
+<span><span class="co">#&gt; [23] 08 0b 15 a9 97 e3 6e 18 44 3f</span></span>
 <span><span class="fu"><a href="../reference/am_change_message.html">am_change_message</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>  <span class="co"># Commit message</span></span>
 <span><span class="co">#&gt; [1] "Set version"</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Timestamp</span></span>
-<span><span class="co">#&gt; [1] "2026-02-16 14:51:23 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-02-17 09:06:46 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_seq.html">am_change_seq</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>      <span class="co"># Sequence number</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made the change</span></span>
-<span><span class="co">#&gt;  [1] bd 94 0a 5b 1e 9b c5 5e cc 55 17 ba a8 90 db 34</span></span>
+<span><span class="co">#&gt;  [1] 8b f0 46 81 14 c1 1f e5 fc 88 e1 6d 24 4b 0e 6d</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent change hashes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] 2d e1 21 a9 42 aa 4d 03 c7 a0 a4 72 86 e1 bd 67 19 fb 2f 57 03 3a</span></span>
-<span><span class="co">#&gt; [23] ea 25 3d 3a 51 ec 05 5b 70 18</span></span>
+<span><span class="co">#&gt;  [1] d0 6a 38 62 ae 29 64 22 61 fe 62 98 35 5d e2 aa 3f 17 05 22 a3 8b</span></span>
+<span><span class="co">#&gt; [23] 65 78 fe 46 0e cd 10 6e 7a 62</span></span>
+<span><span class="fu"><a href="../reference/am_change_size.html">am_change_size</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Number of operations</span></span>
+<span><span class="co">#&gt; [1] 1</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc14</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -666,7 +668,7 @@ the change you want to revert to:</p>
 <span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc_hist</span>, <span class="st">"Scale all values by 10"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Review the history</span></span>
-<span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_history.html">am_get_history</a></span><span class="op">(</span><span class="va">doc_hist</span><span class="op">)</span></span>
+<span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc_hist</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">history</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"  [%d] %s\n"</span>, <span class="va">i</span>, <span class="fu"><a href="../reference/am_change_message.html">am_change_message</a></span><span class="op">(</span><span class="va">history</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>

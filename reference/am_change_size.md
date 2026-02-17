@@ -1,12 +1,12 @@
-# Get the commit message of a change
+# Get the number of operations in a change
 
-Returns the commit message attached to a change, or `NULL` if no message
-was provided when the change was committed.
+Returns the number of operations contained in the change. Useful for
+estimating the size of changes before syncing or storing them.
 
 ## Usage
 
 ``` r
-am_change_message(change)
+am_change_size(change)
 ```
 
 ## Arguments
@@ -21,18 +21,20 @@ am_change_message(change)
 
 ## Value
 
-A character string containing the commit message, or `NULL`
+An integer (or double for very large values exceeding R's 32-bit integer
+range)
 
 ## Examples
 
 ``` r
 doc <- am_create()
-am_put(doc, AM_ROOT, "key", "value")
-am_commit(doc, "Add key")
+am_put(doc, AM_ROOT, "x", 1)
+am_put(doc, AM_ROOT, "y", 2)
+am_commit(doc, "Add keys")
 
 history <- am_get_changes(doc)
-am_change_message(history[[1]])  # "Add key"
-#> [1] "Add key"
+am_change_size(history[[1]])  # 2
+#> [1] 2
 
 am_close(doc)
 ```

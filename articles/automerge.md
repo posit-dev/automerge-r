@@ -43,7 +43,7 @@ library(automerge)
 doc <- am_create()
 print(doc)
 #> <Automerge Document>
-#> Actor: 1dc628c5573329122891d22849f0bec5 
+#> Actor: 3a5ea1bc7c4321a6c0d3ff3a944b3c3f 
 #> Root keys: 0
 ```
 
@@ -302,7 +302,7 @@ am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
-#> [1] "2026-02-16 14:51:23 UTC"
+#> [1] "2026-02-17 09:06:45 UTC"
 
 am_close(doc9)
 ```
@@ -461,7 +461,7 @@ am_commit(peer2)
 # Bidirectional sync (documents modified in place)
 rounds <- am_sync(peer1, peer2)
 rounds
-#> [1] 5
+#> [1] 4
 
 # Both documents now have all data
 peer1[["data1"]]
@@ -492,7 +492,7 @@ doc14[["version"]] <- "1.0"
 am_commit(doc14, "Set version", Sys.time())
 
 # Get the full history (returns am_change objects directly)
-history <- am_get_history(doc14)
+history <- am_get_changes(doc14)
 cat("Document has", length(history), "change(s)\n")
 #> Document has 2 change(s)
 
@@ -513,20 +513,22 @@ for (i in seq_along(history)) {
 # Extract many fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique 32-byte hash
-#>  [1] f7 2c a4 fd 12 50 d9 4a a6 ca 11 c5 0f b6 ce 48 11 38 43 e8 03 92
-#> [23] c8 10 6a af 89 a7 a9 1a 06 ce
+#>  [1] 9a 9c 5a 56 e3 78 ff 9f e0 e1 1c 7c ab cb ae 47 11 ab f5 3d b7 1f
+#> [23] 08 0b 15 a9 97 e3 6e 18 44 3f
 am_change_message(change)  # Commit message
 #> [1] "Set version"
 am_change_time(change)     # Timestamp
-#> [1] "2026-02-16 14:51:23 UTC"
+#> [1] "2026-02-17 09:06:46 UTC"
 am_change_seq(change)      # Sequence number
 #> [1] 2
 am_change_actor_id(change) # Who made the change
-#>  [1] bd 94 0a 5b 1e 9b c5 5e cc 55 17 ba a8 90 db 34
+#>  [1] 8b f0 46 81 14 c1 1f e5 fc 88 e1 6d 24 4b 0e 6d
 am_change_deps(change)     # Parent change hashes
 #> [[1]]
-#>  [1] 2d e1 21 a9 42 aa 4d 03 c7 a0 a4 72 86 e1 bd 67 19 fb 2f 57 03 3a
-#> [23] ea 25 3d 3a 51 ec 05 5b 70 18
+#>  [1] d0 6a 38 62 ae 29 64 22 61 fe 62 98 35 5d e2 aa 3f 17 05 22 a3 8b
+#> [23] 65 78 fe 46 0e cd 10 6e 7a 62
+am_change_size(change)     # Number of operations
+#> [1] 1
 
 am_close(doc14)
 ```
@@ -589,7 +591,7 @@ doc_hist[["data"]] <- list(x = 10, y = 20, z = 30)
 am_commit(doc_hist, "Scale all values by 10")
 
 # Review the history
-history <- am_get_history(doc_hist)
+history <- am_get_changes(doc_hist)
 for (i in seq_along(history)) {
   cat(sprintf("  [%d] %s\n", i, am_change_message(history[[i]])))
 }

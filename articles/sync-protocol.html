@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -425,7 +425,7 @@ document has all its dependencies with
 </h3>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get full change history</span></span>
-<span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_history.html">am_get_history</a></span><span class="op">(</span><span class="va">doc_main</span><span class="op">)</span></span>
+<span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc_main</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">history</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span></span>
@@ -444,16 +444,18 @@ document has all its dependencies with
 <span><span class="co"># Extract multiple fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique hash</span></span>
-<span><span class="co">#&gt;  [1] 1d 9d ae 95 27 1e 0f 47 14 71 c6 08 58 a3 8c 81 1e d9 cf 76 5c 34</span></span>
-<span><span class="co">#&gt; [23] b7 90 5f 79 33 c3 29 5a 85 8c</span></span>
+<span><span class="co">#&gt;  [1] d5 4a df eb 0d c7 44 da c6 fb e7 52 15 72 08 2d a5 bf a7 86 67 f2</span></span>
+<span><span class="co">#&gt; [23] 64 84 2d 91 bf 1d 3b 0a 48 7a</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made this change</span></span>
-<span><span class="co">#&gt;  [1] 30 8d a7 0c a6 16 6d 7a f9 bc 92 f8 ee cf e3 a7</span></span>
+<span><span class="co">#&gt;  [1] f1 22 10 7a 4a 90 25 97 b0 5a 9a 39 27 27 24 bf</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># When</span></span>
 <span><span class="co">#&gt; [1] "1970-01-01 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent changes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] be 57 ed 73 8b e0 2e 6d 23 35 69 2c a3 78 0d ad 0b 15 24 be 0e 99</span></span>
-<span><span class="co">#&gt; [23] ce 97 80 be 3f fa dd 84 3f 16</span></span>
+<span><span class="co">#&gt;  [1] 07 76 a9 3d f1 73 24 ca 6c 05 e1 d0 65 06 1b d2 ce 28 f1 28 22 ed</span></span>
+<span><span class="co">#&gt; [23] 5f 49 56 9c a0 cf ec 22 ba de</span></span>
+<span><span class="fu"><a href="../reference/am_change_size.html">am_change_size</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Number of operations</span></span>
+<span><span class="co">#&gt; [1] 2</span></span>
 <span></span>
 <span><span class="co"># Get changes between two points in history</span></span>
 <span><span class="va">changes_since_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc_main</span>, <span class="va">heads_v1</span><span class="op">)</span></span>
