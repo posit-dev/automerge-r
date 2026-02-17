@@ -828,3 +828,18 @@ test_that("print.am_syncstate displays sync state info", {
 
   expect_snapshot(print(sync_state))
 })
+
+test_that("print.am_change displays change info", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "x", 1)
+  am_commit(doc, "Add x")
+
+  change <- am_get_changes(doc)[[1]]
+
+  out <- capture.output(print(change))
+  expect_equal(out[1], "<Automerge Change>")
+  expect_match(out[2], "^Hash:")
+  expect_equal(out[3], "Message: Add x ")
+  expect_equal(out[4], "Seq: 1 ")
+  expect_equal(out[5], "Ops: 1 ")
+})
