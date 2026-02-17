@@ -89,9 +89,11 @@ in the document.</p>
 <span class="r-in"><span><span class="co"># Retrieve the change by its hash</span></span></span>
 <span class="r-in"><span><span class="va">change</span> <span class="op">&lt;-</span> <span class="fu">am_get_change_by_hash</span><span class="op">(</span><span class="va">doc</span>, <span class="va">head_hash</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">change</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;pointer: 0x5610251b9cc0&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "am_change"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;Automerge Change&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Hash: c4 2c a2 e3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Message: Add key </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Seq: 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ops: 1 </span>
 <span class="r-in"><span><span class="fu"><a href="am_change_message.html">am_change_message</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>  <span class="co"># "Add key"</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Add key"</span>
 <span class="r-in"><span></span></span>

@@ -57,8 +57,8 @@
 
 
 <dl><dt id="arg-change">change<a class="anchor" aria-label="anchor" href="#arg-change"></a></dt>
-<dd><p>An <code>am_change</code> object (from <code><a href="am_get_changes.html">am_get_changes()</a></code>,
-<code><a href="am_get_changes.html">am_get_changes()</a></code>, or <code><a href="am_change_from_bytes.html">am_change_from_bytes()</a></code>)</p></dd>
+<dd><p>An <code>am_change</code> object (from <code><a href="am_get_changes.html">am_get_changes()</a></code> or
+<code><a href="am_change_from_bytes.html">am_change_from_bytes()</a></code>)</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -75,7 +75,7 @@
 <span class="r-in"><span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">actor</span> <span class="op">&lt;-</span> <span class="fu">am_change_actor_id</span><span class="op">(</span><span class="va">history</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">actor</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] bd 54 47 a5 d2 23 25 5c 6b dd f9 15 38 f3 20 85</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 27 c6 aa 54 ba c8 e1 36 10 12 45 fa 15 dd 4d 84</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Should match the document's actor</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">actor</span>, <span class="fu"><a href="am_get_actor.html">am_get_actor</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span><span class="op">)</span>  <span class="co"># TRUE</span></span></span>

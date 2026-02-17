@@ -13,8 +13,7 @@ am_change_actor_id(change)
 - change:
 
   An `am_change` object (from
-  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_changes.md),
-  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_changes.md),
+  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_changes.md)
   or
   [`am_change_from_bytes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_change_from_bytes.md))
 
@@ -32,7 +31,7 @@ am_commit(doc, "Add key")
 history <- am_get_changes(doc)
 actor <- am_change_actor_id(history[[1]])
 actor
-#>  [1] bd 54 47 a5 d2 23 25 5c 6b dd f9 15 38 f3 20 85
+#>  [1] 27 c6 aa 54 ba c8 e1 36 10 12 45 fa 15 dd 4d 84
 
 # Should match the document's actor
 identical(actor, am_get_actor(doc))  # TRUE

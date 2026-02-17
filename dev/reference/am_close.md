@@ -14,10 +14,7 @@ am_close(doc)
 
 - doc:
 
-  An Automerge document (created with
-  [`am_create()`](https://posit-dev.github.io/automerge-r/dev/reference/am_create.md)
-  or
-  [`am_load()`](https://posit-dev.github.io/automerge-r/dev/reference/am_load.md))
+  An Automerge document
 
 ## Value
 

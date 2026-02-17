@@ -75,9 +75,9 @@ useful for restoring changes that were previously serialized with
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Note: <code><a href="am_get_changes.html">am_get_changes()</a></code>, <code><a href="am_get_changes.html">am_get_changes()</a></code>, and other change-returning
-functions already return <code>am_change</code> objects directly, so this function
-is only needed when working with raw byte representations.</p>
+    <p>Note: <code><a href="am_get_changes.html">am_get_changes()</a></code> and other change-returning functions already return
+<code>am_change</code> objects directly, so this function is only needed when working
+with raw byte representations.</p>
     </div>
 
     <div class="section level2">
@@ -91,9 +91,11 @@ is only needed when working with raw byte representations.</p>
 <span class="r-in"><span><span class="va">bytes</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_change_to_bytes.html">am_change_to_bytes</a></span><span class="op">(</span><span class="va">history</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">change</span> <span class="op">&lt;-</span> <span class="fu">am_change_from_bytes</span><span class="op">(</span><span class="va">bytes</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">change</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;pointer: 0x5610248ec050&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "am_change"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;Automerge Change&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Hash: 7a 15 a8 b8 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Message: Add key </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Seq: 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Ops: 1 </span>
 <span class="r-in"><span><span class="fu"><a href="am_change_message.html">am_change_message</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>  <span class="co"># "Add key"</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Add key"</span>
 <span class="r-in"><span></span></span>

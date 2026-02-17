@@ -13,8 +13,7 @@ am_change_to_bytes(change)
 - change:
 
   An `am_change` object (from
-  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_changes.md),
-  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_changes.md),
+  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_changes.md)
   or
   [`am_change_from_bytes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_change_from_bytes.md))
 
@@ -32,8 +31,8 @@ am_commit(doc, "Add key")
 history <- am_get_changes(doc)
 bytes <- am_change_to_bytes(history[[1]])
 bytes
-#>  [1] 85 6f 4a 83 55 c2 a9 fe 01 3c 00 10 7f 8e 87 56 5e d9 cf 97 64 c1
-#> [23] 6c 39 3f 31 bb d5 01 01 00 07 41 64 64 20 6b 65 79 00 06 15 05 34
+#>  [1] 85 6f 4a 83 02 be 6d ba 01 3c 00 10 b6 7e ba 98 cb c4 e5 bf 6c c1
+#> [23] 88 a2 4c 06 9d 25 01 01 00 07 41 64 64 20 6b 65 79 00 06 15 05 34
 #> [45] 01 42 02 56 02 57 05 70 02 7f 03 6b 65 79 01 7f 01 7f 56 76 61 6c
 #> [67] 75 65 7f 00
 

@@ -167,7 +167,7 @@ IDs) to ensure all replicas converge to the same value.</p>
 <span></span>
 <span><span class="co"># One value wins (deterministic, all replicas agree)</span></span>
 <span><span class="va">doc1</span><span class="op">[[</span><span class="st">"name"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "Alice Johnson"</span></span>
+<span><span class="co">#&gt; [1] "Alice Smith"</span></span>
 <span></span>
 <span><span class="co"># To see all conflicting values (not just the winner), use am_map_get_all()</span></span>
 <span><span class="va">all_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_map_get_all.html">am_map_get_all</a></span><span class="op">(</span><span class="va">doc1</span>, <span class="va">AM_ROOT</span>, <span class="st">"name"</span><span class="op">)</span></span>
@@ -291,7 +291,7 @@ application-specific resolution logic.</p>
 <span></span>
 <span><span class="co"># am_get returns the winner</span></span>
 <span><span class="fu"><a href="../reference/am_get.html">am_get</a></span><span class="op">(</span><span class="va">doc_c1</span>, <span class="va">AM_ROOT</span>, <span class="st">"status"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "archived"</span></span>
+<span><span class="co">#&gt; [1] "published"</span></span>
 <span></span>
 <span><span class="co"># am_map_get_all returns all conflicting values</span></span>
 <span><span class="va">all_statuses</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_map_get_all.html">am_map_get_all</a></span><span class="op">(</span><span class="va">doc_c1</span>, <span class="va">AM_ROOT</span>, <span class="st">"status"</span><span class="op">)</span></span>
@@ -299,10 +299,10 @@ application-specific resolution logic.</p>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="va">all_statuses</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [1] "published"</span></span>
+<span><span class="co">#&gt; [1] "archived"</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [1] "archived"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "published"</span></span></code></pre></div>
 <p>The same approach works for lists — when two peers concurrently
 update the same index, <code><a href="../reference/am_list_get_all.html">am_list_get_all()</a></code> reveals both
 values:</p>
@@ -326,15 +326,15 @@ values:</p>
 <span></span>
 <span><span class="co"># Winner</span></span>
 <span><span class="fu"><a href="../reference/am_get.html">am_get</a></span><span class="op">(</span><span class="va">doc_l1</span>, <span class="va">scores</span>, <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 300</span></span>
+<span><span class="co">#&gt; [1] 200</span></span>
 <span></span>
 <span><span class="co"># All conflicting values</span></span>
 <span><span class="fu"><a href="../reference/am_list_get_all.html">am_list_get_all</a></span><span class="op">(</span><span class="va">doc_l1</span>, <span class="va">scores</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [1] 200</span></span>
+<span><span class="co">#&gt; [1] 300</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [1] 300</span></span>
+<span><span class="co">#&gt; [1] 200</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_c1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_c2</span><span class="op">)</span></span>
@@ -406,7 +406,7 @@ provide character-level CRDT merging.</p>
 <span><span class="fu"><a href="../reference/am_merge.html">am_merge</a></span><span class="op">(</span><span class="va">doc11</span>, <span class="va">doc12</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_text_content.html">am_text_content</a></span><span class="op">(</span><span class="va">text11</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Hello Everyone World"</span></span>
+<span><span class="co">#&gt; [1] "Hello World Everyone"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc11</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc12</span><span class="op">)</span></span></code></pre></div>
@@ -462,9 +462,9 @@ conflict resolution semantics (one value wins).</p>
 <span><span class="fu"><a href="../reference/am_merge.html">am_merge</a></span><span class="op">(</span><span class="va">doc15</span>, <span class="va">doc16</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc15</span><span class="op">[[</span><span class="st">"created_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-02-17 09:15:03 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-02-17 11:44:24 UTC"</span></span>
 <span><span class="va">doc15</span><span class="op">[[</span><span class="st">"updated_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-02-17 09:15:03 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-02-17 11:44:24 UTC"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc15</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc16</span><span class="op">)</span></span></code></pre></div>

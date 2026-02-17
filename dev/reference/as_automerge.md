@@ -23,7 +23,13 @@ as_automerge(x, doc = NULL, actor_id = NULL)
 
 - actor_id:
 
-  Optional actor ID for new documents (raw bytes or hex string)
+  Optional actor ID. Can be:
+
+  - `NULL` (default) - Generate random actor ID
+
+  - Character string - Hex-encoded actor ID
+
+  - Raw vector - Binary actor ID bytes
 
 ## Value
 
@@ -46,7 +52,7 @@ data <- list(
 doc <- as_automerge(data)
 doc
 #> <Automerge Document>
-#> Actor: d097d3de82359cac3664a71934c4dfe5 
+#> Actor: 758f60e7a6d0db396907d010d41a0935 
 #> Root keys: 4 
 #> Keys: age, metadata, name, scores 
 doc[["name"]]  # "Alice"

@@ -18,11 +18,25 @@ am_put_path(doc, path, value, create_intermediate = TRUE)
 - path:
 
   Character vector, numeric vector, or list of mixed types specifying
-  the path to the value
+  the path to navigate
 
 - value:
 
-  Value to set at the path
+  The value to store. Supported types:
+
+  - `NULL` - stores null
+
+  - Logical - stores boolean (must be scalar)
+
+  - Integer - stores integer (must be scalar)
+
+  - Numeric - stores double (must be scalar)
+
+  - Character - stores string (must be scalar)
+
+  - Raw - stores bytes
+
+  - `AM_OBJ_TYPE_LIST/MAP/TEXT` - creates nested object
 
 - create_intermediate:
 

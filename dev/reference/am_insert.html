@@ -76,7 +76,14 @@ to append</p></dd>
 
 
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
-<dd><p>The value to insert</p></dd>
+<dd><p>The value to store. Supported types:</p><ul><li><p><code>NULL</code> - stores null</p></li>
+<li><p>Logical - stores boolean (must be scalar)</p></li>
+<li><p>Integer - stores integer (must be scalar)</p></li>
+<li><p>Numeric - stores double (must be scalar)</p></li>
+<li><p>Character - stores string (must be scalar)</p></li>
+<li><p>Raw - stores bytes</p></li>
+<li><p><code>AM_OBJ_TYPE_LIST/MAP/TEXT</code> - creates nested object</p></li>
+</ul></dd>
 
 </dl></div>
     <div class="section level2">
