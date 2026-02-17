@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.1.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,6 +44,9 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="automerge-development-version">automerge (development version)<a class="anchor" aria-label="anchor" href="#automerge-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="automerge-030">automerge 0.3.0<a class="anchor" aria-label="anchor" href="#automerge-030"></a></h2><p class="text-muted">CRAN release: 2026-02-17</p>
 <ul><li><p>Change-returning functions (<code><a href="../reference/am_get_changes.html">am_get_changes()</a></code>, <code><a href="../reference/am_get_last_local_change.html">am_get_last_local_change()</a></code>, <code><a href="../reference/am_get_change_by_hash.html">am_get_change_by_hash()</a></code>, <code><a href="../reference/am_get_changes_added.html">am_get_changes_added()</a></code>) now return <code>am_change</code> objects instead of raw vectors.</p></li>
 <li><p>Removes <code>am_get_history()</code>. Use <code><a href="../reference/am_get_changes.html">am_get_changes()</a></code> instead, which returns the full change history when called without <code>heads</code>.</p></li>
 <li><p>Renames <code>am_sync_state_new()</code> to <code><a href="../reference/am_sync_state.html">am_sync_state()</a></code>.</p></li>

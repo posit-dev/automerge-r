@@ -2,6 +2,10 @@
 
 ## automerge (development version)
 
+## automerge 0.3.0
+
+CRAN release: 2026-02-17
+
 - Change-returning functions
   ([`am_get_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_changes.md),
   [`am_get_last_local_change()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_last_local_change.md),

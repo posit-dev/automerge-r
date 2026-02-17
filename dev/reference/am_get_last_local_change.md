@@ -35,7 +35,7 @@ am_commit(doc, "Add key")
 # Now we have a local change
 change <- am_get_last_local_change(doc)
 change
-#> <pointer: 0x55e5e49c9ec0>
+#> <pointer: 0x561027d9c8e0>
 #> attr(,"class")
 #> [1] "am_change"
 am_change_message(change)  # "Add key"
