@@ -10,7 +10,7 @@
 #' waiting for garbage collection. It is safe to call on a document that
 #' has already been closed.
 #'
-#' @param doc An Automerge document (created with `am_create()` or `am_load()`)
+#' @inheritParams am_put
 #'
 #' @return `NULL` (invisibly)
 #'
@@ -77,7 +77,7 @@ am_create <- function(actor_id = NULL) {
 #' The binary format is compatible across all Automerge implementations
 #' (JavaScript, Rust, etc.).
 #'
-#' @param doc An Automerge document (created with `am_create()` or `am_load()`)
+#' @inheritParams am_put
 #'
 #' @return A raw vector containing the serialized document
 #'
@@ -147,7 +147,7 @@ am_load <- function(data) {
 #' need an exact copy that preserves the original actor ID (e.g. for
 #' archival or snapshotting purposes).
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #' @param heads Optional list of change hashes to fork at a specific point in
 #'   the document's history. If `NULL` (default) or an empty list, forks at
 #'   current heads. Each hash should be a raw vector (32 bytes).
@@ -212,7 +212,7 @@ am_merge <- function(doc, other) {
 #'
 #' For a hex string representation, use [am_get_actor_hex()].
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #'
 #' @return A raw vector containing the actor ID bytes
 #'
@@ -238,7 +238,7 @@ am_get_actor <- function(doc) {
 #' This is more efficient than converting the raw bytes returned by
 #' [am_get_actor()] using R-level string operations.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #'
 #' @return A character string containing the hex-encoded actor ID
 #'
@@ -260,7 +260,7 @@ am_get_actor_hex <- function(doc) {
 #' be done before making any changes. Changing the actor ID mid-session
 #' is not recommended as it can complicate change attribution.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #' @param actor_id The new actor ID. Can be:
 #'   \itemize{
 #'     \item `NULL` - Generate new random actor ID
@@ -293,7 +293,7 @@ am_set_actor <- function(doc, actor_id) {
 #' include an optional message (like a git commit message) and
 #' timestamp.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #' @param message Optional commit message (character string)
 #' @param time Optional timestamp (POSIXct). If `NULL`, uses current time.
 #'
@@ -320,7 +320,7 @@ am_commit <- function(doc, message = NULL, time = NULL) {
 #' committing them. This allows you to discard changes since the last
 #' commit.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #'
 #' @return The document `doc` (invisibly)
 #'
@@ -345,7 +345,7 @@ am_rollback <- function(doc) {
 #' Returns the most recent change created by this document's actor.
 #' Useful for tracking local changes or implementing undo/redo functionality.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #'
 #' @return An `am_change` object, or `NULL` if no local changes have been made.
 #'
@@ -377,7 +377,7 @@ am_get_last_local_change <- function(doc) {
 #' The hash is typically obtained from `am_get_heads()` or
 #' `am_change_hash()`.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #' @param hash A raw vector containing the change hash (must be exactly 32 bytes)
 #'
 #' @return An `am_change` object, or `NULL` if the change hash is not found
@@ -462,7 +462,7 @@ am_get_changes_added <- function(doc1, doc2) {
 #' will make independent edits and later be merged — use [am_fork()]
 #' for that, as two documents sharing an actor ID can cause conflicts.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #'
 #' @return A new Automerge document (independent copy with same actor ID)
 #'
@@ -527,7 +527,7 @@ am_equal <- function(doc1, doc2) {
 #' but not yet committed. This is useful for determining whether a commit
 #' is needed.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #'
 #' @return An integer indicating the number of pending operations. Returns 0
 #'   if there are no uncommitted changes.
@@ -555,9 +555,8 @@ am_pending_ops <- function(doc) {
 #' This is useful for creating merge commits or recording metadata
 #' (message, timestamp) without making data changes.
 #'
-#' @param doc An Automerge document
-#' @param message Optional commit message (character string)
-#' @param time Optional timestamp (POSIXct). If `NULL`, uses current time.
+#' @inheritParams am_put
+#' @inheritParams am_commit
 #'
 #' @return The document `doc` (invisibly)
 #'
@@ -584,7 +583,7 @@ am_commit_empty <- function(doc, message = NULL, time = NULL) {
 #'
 #' Use [am_load_incremental()] to apply these changes to another document.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #'
 #' @return A raw vector containing the incremental changes. May be empty
 #'   (zero-length) if no new changes have been made since the last save.
@@ -620,7 +619,7 @@ am_save_incremental <- function(doc) {
 #' This is more efficient than loading a full document when only a few
 #' changes need to be applied.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #' @param data A raw vector containing incremental changes (from
 #'   [am_save_incremental()])
 #'

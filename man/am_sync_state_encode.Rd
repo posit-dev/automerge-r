@@ -7,7 +7,7 @@
 am_sync_state_encode(sync_state)
 }
 \arguments{
-\item{sync_state}{A sync state object (created with \code{\link[=am_sync_state]{am_sync_state()}})}
+\item{sync_state}{A sync state object (created with \code{am_sync_state()})}
 }
 \value{
 A raw vector containing the serialized sync state.

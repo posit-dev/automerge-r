@@ -7,8 +7,8 @@
 am_change_size(change)
 }
 \arguments{
-\item{change}{An \code{am_change} object (from \code{\link[=am_get_changes]{am_get_changes()}},
-\code{\link[=am_get_changes]{am_get_changes()}}, or \code{\link[=am_change_from_bytes]{am_change_from_bytes()}})}
+\item{change}{An \code{am_change} object (from \code{\link[=am_get_changes]{am_get_changes()}} or
+\code{\link[=am_change_from_bytes]{am_change_from_bytes()}})}
 }
 \value{
 An integer (or double for very large values exceeding R's 32-bit

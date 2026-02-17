@@ -97,7 +97,7 @@ am_cursor_position <- function(cursor, heads = NULL) {
 #' and later restored with [am_cursor_from_bytes()]. This enables saving
 #' cursor positions across R sessions.
 #'
-#' @param cursor An `am_cursor` object created by [am_cursor()]
+#' @inheritParams am_cursor_position
 #'
 #' @return A raw vector containing the serialized cursor
 #'
@@ -160,7 +160,7 @@ am_cursor_from_bytes <- function(bytes, obj) {
 #' Converts a cursor to a string representation that can be persisted
 #' and later restored with [am_cursor_from_string()].
 #'
-#' @param cursor An `am_cursor` object created by [am_cursor()]
+#' @inheritParams am_cursor_position
 #'
 #' @return A character string containing the serialized cursor
 #'
@@ -371,11 +371,9 @@ am_marks <- function(obj, heads = NULL) {
 #' function efficiently filters marks at the C level, avoiding the overhead
 #' of converting all marks to R objects.
 #'
-#' @param obj An Automerge object ID (must be a text object)
+#' @inheritParams am_marks
 #' @param position Integer position (0-based inter-character position) to query.
 #'   See [am_mark()] for indexing details.
-#' @param heads Optional list of change hashes (raw vectors) to query marks at
-#'   a historical document state. If `NULL` (default), uses the current state.
 #'
 #' @return A list of marks that include the specified position. Returns an empty
 #'   list if no marks cover that position.
@@ -407,9 +405,7 @@ am_marks_at <- function(obj, position, heads = NULL) {
 #' Removes marks matching the given name from a range of text. This is the
 #' inverse of [am_mark()].
 #'
-#' @param obj An Automerge object ID (must be a text object)
-#' @param start Integer start position (0-based inter-character position, inclusive)
-#' @param end Integer end position (0-based inter-character position, exclusive)
+#' @inheritParams am_mark
 #' @param name Character string identifying the mark to clear (e.g., "bold")
 #' @param expand Character string controlling mark clearing behavior at
 #'   boundaries. Options: `"none"` (default), `"before"`, `"after"`, `"both"`.

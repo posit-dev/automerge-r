@@ -49,9 +49,7 @@ am_put <- function(doc, obj, key, value) {
 #' Retrieves a value from an Automerge map or list. Returns `NULL`
 #' if the key or index doesn't exist.
 #'
-#' @param doc An Automerge document
-#' @param obj An Automerge object ID (from nested object), or `AM_ROOT`
-#'   for the document root
+#' @inheritParams am_put
 #' @param key For maps: character string key. For lists: numeric index
 #'   (1-based). Returns `NULL` for indices `<= 0` or beyond list length.
 #'
@@ -76,9 +74,7 @@ am_get <- function(doc, obj, key) {
 #'
 #' Removes a key-value pair from a map or an element from a list.
 #'
-#' @param doc An Automerge document
-#' @param obj An Automerge object ID (from nested object), or `AM_ROOT`
-#'   for the document root
+#' @inheritParams am_put
 #' @param key For maps: character string key to delete. For lists: numeric
 #'   index (1-based, like R vectors) to delete
 #'
@@ -99,7 +95,7 @@ am_delete <- function(doc, obj, key) {
 #'
 #' Returns a character vector of all keys in a map.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #' @param obj An Automerge object ID (must be a map), or `AM_ROOT`
 #'   for the document root
 #'
@@ -125,8 +121,7 @@ am_keys <- function(doc, obj) {
 #'
 #' Returns the number of key-value pairs in a map or elements in a list.
 #'
-#' @param doc An Automerge document
-#' @param obj An Automerge object ID, or `AM_ROOT` for the document root
+#' @inheritParams am_put
 #'
 #' @return Integer length/size
 #'
@@ -152,11 +147,10 @@ am_length <- function(doc, obj) {
 #' For lists, `am_put()` with a numeric index replaces the element
 #' at that index, while `am_insert()` shifts elements to make room.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #' @param obj An Automerge object ID (must be a list)
 #' @param pos Numeric index (1-based, like R vectors) where to insert, or `"end"`
 #'   to append
-#' @param value The value to insert
 #'
 #' @return The document `doc` (invisibly)
 #'
@@ -351,7 +345,7 @@ am_text_splice <- function(text_obj, pos, del_count, text) {
 #'
 #' Retrieve the full text content from a text object as a string.
 #'
-#' @param text_obj An Automerge text object ID
+#' @inheritParams am_text_splice
 #' @return Character string with the full text
 #' @export
 #' @examples
@@ -379,7 +373,7 @@ am_text_content <- function(text_obj) {
 #' Positions use Unicode code points (matching R's `nchar()` behavior), not
 #' bytes. This means multibyte characters like emoji count as single characters.
 #'
-#' @param text_obj An Automerge text object ID
+#' @inheritParams am_text_splice
 #' @param old_text The previous text content (single string)
 #' @param new_text The new text content (single string)
 #' @return Invisible NULL (called for side effect)
@@ -408,8 +402,7 @@ am_text_update <- function(text_obj, old_text, new_text) {
 #'
 #' Returns all values from an Automerge map or list as an R list.
 #'
-#' @param doc An Automerge document
-#' @param obj An Automerge object ID, or `AM_ROOT` for the document root
+#' @inheritParams am_put
 #' @return R list of values
 #' @export
 #' @examples
@@ -435,7 +428,7 @@ am_values <- function(doc, obj) {
 #'
 #' The delta can be negative to decrement the counter.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #' @param obj An Automerge object ID (map or list), or `AM_ROOT` for the document root
 #' @param key For maps: a character string key. For lists: an integer index (1-based)
 #' @param delta Integer value to add to the counter (can be negative)
@@ -480,7 +473,7 @@ am_counter_increment <- function(doc, obj, key, delta) {
 #' edits by different actors. When there are no conflicts, the list contains
 #' a single element (the winning value).
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
 #' @param obj An Automerge object ID (must be a map), or `AM_ROOT`
 #' @param key Character string key
 #' @param heads Optional list of change hashes (raw vectors) for historical
@@ -510,11 +503,10 @@ am_map_get_all <- function(doc, obj, key, heads = NULL) {
 #' concurrent edits. When there are no conflicts, the list contains
 #' a single element (the winning value).
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
+#' @inheritParams am_map_get_all
 #' @param obj An Automerge object ID (must be a list)
 #' @param pos Numeric index (1-based, like R vectors)
-#' @param heads Optional list of change hashes (raw vectors) for historical
-#'   query. If `NULL` (default), uses the current state.
 #'
 #' @return A list of all values at the position. Returns an empty list if the
 #'   position does not exist.
@@ -540,12 +532,11 @@ am_list_get_all <- function(doc, obj, pos, heads = NULL) {
 #' Returns map entries whose keys fall within the lexicographic range
 #' `[begin, end]` (inclusive on both sides).
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
+#' @inheritParams am_map_get_all
 #' @param obj An Automerge object ID (must be a map), or `AM_ROOT`
 #' @param begin Start key (inclusive). Use `""` (default) for unbounded start.
 #' @param end End key (inclusive). Use `""` (default) for unbounded end.
-#' @param heads Optional list of change hashes (raw vectors) for historical
-#'   query. If `NULL` (default), uses the current state.
 #'
 #' @return A named list of values in the key range.
 #'
@@ -575,12 +566,11 @@ am_map_range <- function(doc, obj, begin = "", end = "", heads = NULL) {
 #' Returns list elements within the index range `[begin, end]`.
 #' Uses 1-based indexing consistent with R conventions.
 #'
-#' @param doc An Automerge document
+#' @inheritParams am_put
+#' @inheritParams am_map_get_all
 #' @param obj An Automerge object ID (must be a list)
 #' @param begin Start index (1-based, inclusive)
 #' @param end End index (1-based, inclusive)
-#' @param heads Optional list of change hashes (raw vectors) for historical
-#'   query. If `NULL` (default), uses the current state.
 #'
 #' @return A list of values in the index range.
 #'
@@ -606,10 +596,8 @@ am_list_range <- function(doc, obj, begin, end, heads = NULL) {
 #' the key (or index) and value for each item. This provides more information
 #' than [am_values()] alone.
 #'
-#' @param doc An Automerge document
-#' @param obj An Automerge object ID, or `AM_ROOT` for the document root
-#' @param heads Optional list of change hashes (raw vectors) for historical
-#'   query. If `NULL` (default), uses the current state.
+#' @inheritParams am_put
+#' @inheritParams am_map_get_all
 #'
 #' @return A list of lists, where each inner list has fields:
 #'   \describe{

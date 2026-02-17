@@ -10,7 +10,7 @@ am_delete_path(doc, path)
 \item{doc}{An Automerge document}
 
 \item{path}{Character vector, numeric vector, or list of mixed types
-specifying the path to the value to delete}
+specifying the path to navigate}
 }
 \value{
 The document (invisibly)

@@ -9,7 +9,8 @@ am_values(doc, obj)
 \arguments{
 \item{doc}{An Automerge document}
 
-\item{obj}{An Automerge object ID, or \code{AM_ROOT} for the document root}
+\item{obj}{An Automerge object ID (from nested object), or \code{AM_ROOT}
+for the document root}
 }
 \value{
 R list of values

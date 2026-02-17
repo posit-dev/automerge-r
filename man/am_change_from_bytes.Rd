@@ -21,9 +21,9 @@ useful for restoring changes that were previously serialized with
 \code{\link[=am_change_to_bytes]{am_change_to_bytes()}} or saved to disk.
 }
 \details{
-Note: \code{\link[=am_get_changes]{am_get_changes()}}, \code{\link[=am_get_changes]{am_get_changes()}}, and other change-returning
-functions already return \code{am_change} objects directly, so this function
-is only needed when working with raw byte representations.
+Note: \code{\link[=am_get_changes]{am_get_changes()}} and other change-returning functions already return
+\code{am_change} objects directly, so this function is only needed when working
+with raw byte representations.
 }
 \examples{
 doc <- am_create()
