@@ -226,8 +226,8 @@ am_get_changes <- function(doc, heads = NULL) {
 #' over a custom network protocol.
 #'
 #' @param doc An Automerge document
-#' @param changes A list of `am_change` objects (from [am_get_changes()],
-#'   [am_get_changes()], or [am_change_from_bytes()])
+#' @param changes A list of `am_change` objects (from [am_get_changes()] or
+#'   [am_change_from_bytes()])
 #'
 #' @return The document `doc` (invisibly, for chaining)
 #'
@@ -262,9 +262,9 @@ am_apply_changes <- function(doc, changes) {
 #' useful for restoring changes that were previously serialized with
 #' [am_change_to_bytes()] or saved to disk.
 #'
-#' Note: [am_get_changes()], [am_get_changes()], and other change-returning
-#' functions already return `am_change` objects directly, so this function
-#' is only needed when working with raw byte representations.
+#' Note: [am_get_changes()] and other change-returning functions already return
+#' `am_change` objects directly, so this function is only needed when working
+#' with raw byte representations.
 #'
 #' @param bytes A raw vector containing a serialized change (from
 #'   [am_change_to_bytes()])
@@ -296,8 +296,8 @@ am_change_from_bytes <- function(bytes) {
 #'
 #' Converts an `am_change` object back to its serialized raw vector form.
 #'
-#' @param change An `am_change` object (from [am_get_changes()],
-#'   [am_get_changes()], or [am_change_from_bytes()])
+#' @param change An `am_change` object (from [am_get_changes()] or
+#'   [am_change_from_bytes()])
 #'
 #' @return A raw vector containing the serialized change
 #'
@@ -327,8 +327,8 @@ am_change_to_bytes <- function(change) {
 #' to reference specific points in document history (e.g., with
 #' [am_get_change_by_hash()] or [am_fork()]).
 #'
-#' @param change An `am_change` object (from [am_get_changes()],
-#'   [am_get_changes()], or [am_change_from_bytes()])
+#' @param change An `am_change` object (from [am_get_changes()] or
+#'   [am_change_from_bytes()])
 #'
 #' @return A raw vector (32 bytes) containing the change hash
 #'
@@ -380,8 +380,8 @@ am_change_message <- function(change) {
 #' Note that timestamps are set by the committing peer and may not be
 #' accurate if the peer's clock is wrong.
 #'
-#' @param change An `am_change` object (from [am_get_changes()],
-#'   [am_get_changes()], or [am_change_from_bytes()])
+#' @param change An `am_change` object (from [am_get_changes()] or
+#'   [am_change_from_bytes()])
 #'
 #' @return A `POSIXct` timestamp
 #'
@@ -464,8 +464,8 @@ am_change_seq <- function(change) {
 #' its parent changes in the causal graph). The first change in a document
 #' has no dependencies.
 #'
-#' @param change An `am_change` object (from [am_get_changes()],
-#'   [am_get_changes()], or [am_change_from_bytes()])
+#' @param change An `am_change` object (from [am_get_changes()] or
+#'   [am_change_from_bytes()])
 #'
 #' @return A list of raw vectors (change hashes), each 32 bytes. Returns
 #'   an empty list for the first change in a document.
@@ -496,8 +496,8 @@ am_change_deps <- function(change) {
 #' Returns the number of operations contained in the change. Useful for
 #' estimating the size of changes before syncing or storing them.
 #'
-#' @param change An `am_change` object (from [am_get_changes()],
-#'   [am_get_changes()], or [am_change_from_bytes()])
+#' @param change An `am_change` object (from [am_get_changes()] or
+#'   [am_change_from_bytes()])
 #'
 #' @return An integer (or double for very large values exceeding R's 32-bit
 #'   integer range)
