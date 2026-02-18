@@ -556,6 +556,5 @@ test_that("print.am_cursor outputs expected text", {
   text_obj <- am_get(doc, AM_ROOT, "text")
 
   cursor <- am_cursor(text_obj, 5)
-  output <- capture.output(print(cursor))
-  expect_match(output, "Automerge Cursor")
+  expect_snapshot(print(cursor))
 })

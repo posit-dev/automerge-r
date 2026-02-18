@@ -614,7 +614,9 @@ print.am_change <- function(x, ...) {
   if (!is.null(msg)) {
     cat("Message:", msg, "\n")
   }
-  cat("Seq:", am_change_seq(x), "\n")
-  cat("Ops:", am_change_size(x), "\n")
+  time <- am_change_time(x)
+  if (time != 0) {
+    cat("Time:", format(time), "\n")
+  }
   invisible(x)
 }

@@ -836,10 +836,7 @@ test_that("print.am_change displays change info", {
 
   change <- am_get_changes(doc)[[1]]
 
-  out <- capture.output(print(change))
-  expect_equal(out[1], "<Automerge Change>")
-  expect_match(out[2], "^Hash:")
-  expect_equal(out[3], "Message: Add x ")
-  expect_equal(out[4], "Seq: 1 ")
-  expect_equal(out[5], "Ops: 1 ")
+  expect_snapshot(print(change), transform = function(x) {
+    sub("Hash: .+", "Hash: <HASH>", x)
+  })
 })

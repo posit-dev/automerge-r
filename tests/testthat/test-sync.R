@@ -6,8 +6,7 @@ test_that("am_sync_state creates a valid sync state", {
 
 test_that("print.am_syncstate outputs expected text", {
   sync_state <- am_sync_state()
-  output <- capture.output(print(sync_state))
-  expect_match(output, "Automerge Sync State")
+  expect_snapshot(print(sync_state))
 })
 
 test_that("am_sync_encode/decode work with empty documents", {

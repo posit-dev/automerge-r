@@ -258,3 +258,12 @@
     Output
       <Automerge Sync State>
 
+# print.am_change displays change info
+
+    Code
+      print(change)
+    Output
+      <Automerge Change>
+      Hash: <HASH>
+      Message: Add x 
+
