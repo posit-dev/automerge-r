@@ -28,7 +28,7 @@ am_commit(doc)
 
 # Complete document has no missing deps
 missing <- am_get_missing_deps(doc)
-length(missing)  # 0
+missing
 
 am_close(doc)
 

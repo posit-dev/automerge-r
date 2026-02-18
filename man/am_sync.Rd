@@ -36,7 +36,7 @@ am_put(doc2, AM_ROOT, "y", 2)
 
 # Synchronize them (documents modified in place)
 rounds <- am_sync(doc1, doc2)
-cat("Synced in", rounds, "rounds\n")
+rounds
 
 # Now both documents have both x and y
 

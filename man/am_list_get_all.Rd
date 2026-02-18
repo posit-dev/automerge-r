@@ -32,7 +32,7 @@ items <- doc$items
 
 # Single value (no conflict)
 values <- am_list_get_all(doc, items, 1)
-length(values)  # 1
+values
 
 am_close(doc)
 

@@ -29,7 +29,7 @@ bytes <- am_save(doc)
 
 # Load as individual changes
 changes <- am_load_changes(bytes)
-length(changes)  # 2
+changes
 am_change_message(changes[[1]])  # "Add key"
 am_change_message(changes[[2]])  # "Add key2"
 

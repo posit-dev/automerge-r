@@ -28,10 +28,10 @@ am_commit(doc, "Second")
 
 history <- am_get_changes(doc)
 deps1 <- am_change_deps(history[[1]])
-length(deps1)  # 0 (first change has no deps)
+deps1
 
 deps2 <- am_change_deps(history[[2]])
-length(deps2)  # 1 (depends on first change)
+deps2
 
 am_close(doc)
 

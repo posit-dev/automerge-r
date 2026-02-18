@@ -25,7 +25,7 @@ am_put(doc, AM_ROOT, "x", 1)
 am_commit(doc)
 
 heads <- am_get_heads(doc)
-cat("Document has", length(heads), "head(s)\n")
+heads
 
 am_close(doc)
 

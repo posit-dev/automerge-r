@@ -31,7 +31,7 @@ doc$key <- "value"
 
 # Single value (no conflict)
 values <- am_map_get_all(doc, AM_ROOT, "key")
-length(values)  # 1
+values
 
 am_close(doc)
 

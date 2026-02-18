@@ -118,7 +118,7 @@ am_sync_decode <- function(doc, sync_state, message) {
 #'
 #' # Synchronize them (documents modified in place)
 #' rounds <- am_sync(doc1, doc2)
-#' cat("Synced in", rounds, "rounds\n")
+#' rounds
 #'
 #' # Now both documents have both x and y
 #'
@@ -179,7 +179,7 @@ am_sync <- function(doc1, doc2) {
 #' am_commit(doc)
 #'
 #' heads <- am_get_heads(doc)
-#' cat("Document has", length(heads), "head(s)\n")
+#' heads
 #'
 #' am_close(doc)
 #'
@@ -210,8 +210,8 @@ am_get_heads <- function(doc) {
 #' am_commit(doc)
 #'
 #' # Get all changes
-#' all_changes <- am_get_changes(doc, NULL)
-#' cat("Document has", length(all_changes), "change(s)\n")
+#' all_changes <- am_get_changes(doc)
+#' all_changes
 #'
 #' am_close(doc)
 #'
@@ -340,7 +340,6 @@ am_change_to_bytes <- function(change) {
 #' history <- am_get_changes(doc)
 #' hash <- am_change_hash(history[[1]])
 #' hash
-#' length(hash)  # 32 bytes
 #'
 #' am_close(doc)
 #'
@@ -474,10 +473,10 @@ am_change_seq <- function(change) {
 #'
 #' history <- am_get_changes(doc)
 #' deps1 <- am_change_deps(history[[1]])
-#' length(deps1)  # 0 (first change has no deps)
+#' deps1
 #'
 #' deps2 <- am_change_deps(history[[2]])
-#' length(deps2)  # 1 (depends on first change)
+#' deps2
 #'
 #' am_close(doc)
 #'
@@ -534,7 +533,7 @@ am_change_size <- function(change) {
 #'
 #' # Complete document has no missing deps
 #' missing <- am_get_missing_deps(doc)
-#' length(missing)  # 0
+#' missing
 #'
 #' am_close(doc)
 #'
@@ -565,7 +564,7 @@ am_get_missing_deps <- function(doc, heads = NULL) {
 #'
 #' # Load as individual changes
 #' changes <- am_load_changes(bytes)
-#' length(changes)  # 2
+#' changes
 #' am_change_message(changes[[1]])  # "Add key"
 #' am_change_message(changes[[2]])  # "Add key2"
 #'

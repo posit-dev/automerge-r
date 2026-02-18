@@ -489,7 +489,7 @@ am_counter_increment <- function(doc, obj, key, delta) {
 #'
 #' # Single value (no conflict)
 #' values <- am_map_get_all(doc, AM_ROOT, "key")
-#' length(values)  # 1
+#' values
 #'
 #' am_close(doc)
 #'
@@ -519,7 +519,7 @@ am_map_get_all <- function(doc, obj, key, heads = NULL) {
 #'
 #' # Single value (no conflict)
 #' values <- am_list_get_all(doc, items, 1)
-#' length(values)  # 1
+#' values
 #'
 #' am_close(doc)
 #'
@@ -582,7 +582,7 @@ am_map_range <- function(doc, obj, begin = "", end = "", heads = NULL) {
 #'
 #' # Get elements 2 through 4 -> "b", "c", "d"
 #' range <- am_list_range(doc, items, 2, 4)
-#' length(range)  # 3
+#' range
 #'
 #' am_close(doc)
 #'

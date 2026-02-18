@@ -457,7 +457,7 @@ am_commit(doc14, "Set version", Sys.time())
 
 # Get the full history (returns am_change objects directly)
 history <- am_get_changes(doc14)
-cat("Document has", length(history), "change(s)\n")
+history
 
 # Inspect each change - no parsing needed
 for (i in seq_along(history)) {

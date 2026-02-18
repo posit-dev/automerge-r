@@ -39,11 +39,11 @@ text_obj <- am_get(doc, AM_ROOT, "text")
 
 # Add a mark
 am_mark(text_obj, 0, 11, "bold", TRUE)
-length(am_marks(text_obj))  # 1
+am_marks(text_obj)
 
 # Clear the mark
 am_mark_clear(text_obj, 0, 11, "bold")
-length(am_marks(text_obj))  # 0
+am_marks(text_obj)
 
 am_close(doc)
 

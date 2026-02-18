@@ -32,7 +32,7 @@ items <- doc$items
 
 # Get elements 2 through 4 -> "b", "c", "d"
 range <- am_list_range(doc, items, 2, 4)
-length(range)  # 3
+range
 
 am_close(doc)
 

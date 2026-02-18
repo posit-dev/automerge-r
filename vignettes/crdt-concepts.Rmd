@@ -95,7 +95,7 @@ doc1[["name"]]
 
 # To see all conflicting values (not just the winner), use am_map_get_all()
 all_values <- am_map_get_all(doc1, AM_ROOT, "name")
-length(all_values) # 2 - both "Alice Smith" and "Alice Johnson"
+all_values
 
 am_close(doc1)
 am_close(doc2)
@@ -201,7 +201,6 @@ am_get(doc_c1, AM_ROOT, "status")
 
 # am_map_get_all returns all conflicting values
 all_statuses <- am_map_get_all(doc_c1, AM_ROOT, "status")
-length(all_statuses) # 2
 all_statuses
 ```
 
@@ -434,10 +433,10 @@ am_put(doc18b, AM_ROOT, "text", am_text("Hello World"))
 text18b <- am_get(doc18b, AM_ROOT, "text")
 
 am_mark(text18b, 0, 11, "bold", TRUE)
-length(am_marks(text18b)) # 1
+am_marks(text18b)
 
 am_mark_clear(text18b, 0, 11, "bold")
-length(am_marks(text18b)) # 0
+am_marks(text18b)
 
 am_close(doc18b)
 ```
