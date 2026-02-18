@@ -16,7 +16,7 @@
 #   3. CMakeLists.txt: Fix WIN32 check to WIN32 AND MSVC for lib tool
 #   4. CMakeLists.txt: Use CMake script for ar merge (GNU/BSD compatibility)
 #   5. Add ar-merge-objects.cmake helper for cross-platform static lib merging
-#   6. Fix Valgrind uninitialised value warning in ActorId comparisons
+#   6. Replace TinyVec with Box<[u8]> in ActorId (eliminates Valgrind false positive)
 #   7. Ensure all source files end with newline (POSIX compliance)
 #
 # ============================================================================
@@ -200,59 +200,51 @@ endif()
 EOF
 
 # ----------------------------------------------------------------------------
-# Patch 6: Fix Valgrind uninitialised value warning in ActorId comparisons
+# Patch 6: Replace TinyVec with Box<[u8]> in ActorId (eliminates Valgrind false positive)
 # ----------------------------------------------------------------------------
-# ActorId wraps TinyVec<[u8; 16]>. The Inline enum variant is smaller than
-# Heap(Vec<u8>), leaving uninitialised union padding. When the compiler
-# inlines derived PartialEq/Ord into callers it can emit wide loads that
-# read padding alongside the discriminant, triggering Valgrind's
-# "conditional jump depends on uninitialised value" false positive.
-# Fix: replace derived comparison traits with manual impls that compare
-# byte slices through the existing to_bytes() method marked #[inline(never)],
-# so callers only see a fully-initialised &[u8] fat pointer.
-echo "  Patching types.rs: fixing ActorId Valgrind warning..."
+# ActorId wraps TinyVec<[u8; 16]> which has uninitialised union padding in the
+# Inline variant, causing Valgrind false positives. Replace with Box<[u8]> to
+# eliminate the root cause. Also removes the tinyvec dependency from Cargo.toml.
+echo "  Patching ActorId: replacing TinyVec with Box<[u8]>..."
 
 TYPES_RS="$RUST_DIR/automerge/src/types.rs"
-if [ -f "$TYPES_RS" ]; then
-    if grep -q '#\[derive(Eq, PartialEq, Hash, Clone, PartialOrd, Ord)\]' "$TYPES_RS" 2>/dev/null; then
-        # Step 1: Replace the derive line
-        sedi 's/#\[derive(Eq, PartialEq, Hash, Clone, PartialOrd, Ord)\]/#[derive(Hash, Clone)]/' "$TYPES_RS"
+CARGO_TOML="$RUST_DIR/automerge/Cargo.toml"
 
-        # Step 2: Insert manual trait impls after the struct definition
+if [ -f "$TYPES_RS" ]; then
+    if grep -q 'TinyVec<\[u8; 16\]>' "$TYPES_RS" 2>/dev/null; then
+        # Step 1: Remove tinyvec from Cargo.toml
+        sedi '/^tinyvec/d' "$CARGO_TOML"
+
+        # Step 2: Delete tinyvec import
+        sedi '/^use tinyvec::{ArrayVec, TinyVec};$/d' "$TYPES_RS"
+
+        # Step 3: Replace struct field: TinyVec<[u8; 16]> -> Box<[u8]>
+        sedi 's/pub struct ActorId(TinyVec<\[u8; 16\]>);/pub struct ActorId(Box<[u8]>);/' "$TYPES_RS"
+
+        # Step 4: Replace TinyVec constructor calls
+        sedi 's/ActorId(TinyVec::from(bytes))/ActorId(Box::from(bytes.as_slice()))/' "$TYPES_RS"
+        sedi 's/ActorId(TinyVec::from(buf))/ActorId(Box::from(buf.as_slice()))/' "$TYPES_RS"
+        sedi 's/ActorId(TinyVec::from(bytes\.as_slice()))/ActorId(bytes.into_boxed_slice())/' "$TYPES_RS"
+        sedi 's/ActorId(TinyVec::from(b))/ActorId(Box::from(b))/' "$TYPES_RS"
+
+        # Step 5: Simplify From<Vec<u8>> and From<&[u8; N]> impls
+        # Replace ArrayVec/TinyVec branching with direct Box construction
         awk '
-        /pub struct ActorId\(TinyVec<\[u8; 16\]>\);/ {
-            print
-            print ""
-            print "impl PartialEq for ActorId {"
-            print "    fn eq(&self, other: &Self) -> bool {"
-            print "        self.to_bytes() == other.to_bytes()"
-            print "    }"
-            print "}"
-            print ""
-            print "impl Eq for ActorId {}"
-            print ""
-            print "impl PartialOrd for ActorId {"
-            print "    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {"
-            print "        Some(self.cmp(other))"
-            print "    }"
-            print "}"
-            print ""
-            print "impl Ord for ActorId {"
-            print "    fn cmp(&self, other: &Self) -> Ordering {"
-            print "        self.to_bytes().cmp(other.to_bytes())"
-            print "    }"
-            print "}"
+        /let inner = if let Ok\(arr\) = ArrayVec::try_from\(b\.as_slice\(\)\)/ {
+            getline; getline; getline; getline; getline
+            print "        ActorId(b.into_boxed_slice())"
+            next
+        }
+        /let inner = if let Ok\(arr\) = ArrayVec::try_from\(slice\.as_slice\(\)\)/ {
+            getline; getline; getline; getline; getline
+            print "        ActorId(Box::from(slice.as_slice()))"
             next
         }
         { print }
         ' "$TYPES_RS" > "${TYPES_RS}.tmp"
         mv "${TYPES_RS}.tmp" "$TYPES_RS"
 
-        # Step 3: Add #[inline(never)] to existing to_bytes() method
-        sedi 's/    pub fn to_bytes(&self) -> &\[u8\] {/    #[inline(never)]\
-    pub fn to_bytes(\&self) -> \&[u8] {/' "$TYPES_RS"
-
-        echo "    Applied ActorId comparison patch"
+        echo "    Applied ActorId Box<[u8]> patch"
     else
         echo "    (already patched or pattern not found)"
     fi
