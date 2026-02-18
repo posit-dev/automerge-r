@@ -8,7 +8,7 @@ Authors of bundled Rust crates:
  - cpufeatures 0.2.17: RustCrypto Developers
  - crc32fast 1.5.0: Sam Rijs, Alex Crichton
  - crypto-common 0.2.0: RustCrypto Developers
- - digest 0.11.0-rc.12: RustCrypto Developers
+ - digest 0.11.0: RustCrypto Developers
  - either 1.15.0: bluss
  - fastrand 1.9.0: Stjepan Glavina
  - flate2 1.1.9: Alex Crichton, Josh Triplett
@@ -20,7 +20,7 @@ Authors of bundled Rust crates:
  - itertools 0.14.0: bluss
  - itoa 1.0.17: David Tolnay
  - leb128 0.2.5: Nick Fitzgerald, Philip Craig
- - libc 0.2.181: The Rust Project Developers
+ - libc 0.2.182: The Rust Project Developers
  - log 0.4.29: The Rust Project Developers
  - memchr 2.8.0: Andrew Gallant, bluss
  - miniz_oxide 0.8.9: Frommi, oyvindln, Rich Geldreich richgel99@gmail.com
@@ -39,21 +39,19 @@ Authors of bundled Rust crates:
  - sha2 0.11.0-rc.5: RustCrypto Developers
  - simd-adler32 0.3.8: Marvin Countryman
  - smol_str 0.2.2: Aleksey Kladov
- - syn 2.0.115: David Tolnay
+ - syn 2.0.116: David Tolnay
  - tempfile 3.3.0: Steven Allen, The Rust Project Developers, Ashley Mannix, Jason White
  - thiserror 2.0.18: David Tolnay
  - thiserror-impl 2.0.18: David Tolnay
- - tinyvec 1.10.0: Lokathor
- - tinyvec_macros 0.1.1: Soveu
  - tracing 0.1.44: Eliza Weisman, Tokio Contributors
  - tracing-attributes 0.1.31: Tokio Contributors, Eliza Weisman, David Barsky
  - tracing-core 0.1.36: Tokio Contributors
  - typenum 1.19.0: Paho Lurie-Gregg, Andre Bogus
- - unicode-ident 1.0.23: David Tolnay
+ - unicode-ident 1.0.24: David Tolnay
  - unicode-segmentation 1.12.0: kwantam, Manish Goregaokar
  - winapi 0.3.9: Peter Atashian
  - winapi-i686-pc-windows-gnu 0.4.0: Peter Atashian
  - winapi-x86_64-pc-windows-gnu 0.4.0: Peter Atashian
  - zmij 1.0.21: David Tolnay
 
-(Generated from Cargo.toml files on 2026-02-12)
+(Generated from Cargo.toml files on 2026-02-18)
