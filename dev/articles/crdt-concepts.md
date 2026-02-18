@@ -81,7 +81,7 @@ am_merge(doc1, doc2)
 
 # One value wins (deterministic, all replicas agree)
 doc1[["name"]]
-#> [1] "Alice Smith"
+#> [1] "Alice Johnson"
 
 # To see all conflicting values (not just the winner), use am_map_get_all()
 all_values <- am_map_get_all(doc1, AM_ROOT, "name")
@@ -255,15 +255,15 @@ am_merge(doc_l1, doc_l2)
 
 # Winner
 am_get(doc_l1, scores, 1)
-#> [1] 200
+#> [1] 300
 
 # All conflicting values
 am_list_get_all(doc_l1, scores, 1)
 #> [[1]]
-#> [1] 300
+#> [1] 200
 #> 
 #> [[2]]
-#> [1] 200
+#> [1] 300
 
 am_close(doc_c1)
 am_close(doc_c2)
@@ -399,9 +399,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-02-17 11:44:24 UTC"
+#> [1] "2026-02-18 19:59:37 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-02-17 11:44:24 UTC"
+#> [1] "2026-02-18 19:59:37 UTC"
 
 am_close(doc15)
 am_close(doc16)

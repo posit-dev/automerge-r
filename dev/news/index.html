@@ -44,7 +44,9 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="automerge-development-version">automerge (development version)<a class="anchor" aria-label="anchor" href="#automerge-development-version"></a></h2>
-</div>
+<ul><li><p>Adds <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> method for <code>am_change</code> objects.</p></li>
+<li><p>Removes vendored <code>tinyvec</code> dependency to fix Valgrind false positive.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="automerge-030">automerge 0.3.0<a class="anchor" aria-label="anchor" href="#automerge-030"></a></h2><p class="text-muted">CRAN release: 2026-02-17</p>
 <ul><li><p>Change-returning functions (<code><a href="../reference/am_get_changes.html">am_get_changes()</a></code>, <code><a href="../reference/am_get_last_local_change.html">am_get_last_local_change()</a></code>, <code><a href="../reference/am_get_change_by_hash.html">am_get_change_by_hash()</a></code>, <code><a href="../reference/am_get_changes_added.html">am_get_changes_added()</a></code>) now return <code>am_change</code> objects instead of raw vectors.</p></li>

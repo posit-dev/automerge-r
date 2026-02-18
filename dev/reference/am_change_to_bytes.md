@@ -31,8 +31,8 @@ am_commit(doc, "Add key")
 history <- am_get_changes(doc)
 bytes <- am_change_to_bytes(history[[1]])
 bytes
-#>  [1] 85 6f 4a 83 02 be 6d ba 01 3c 00 10 b6 7e ba 98 cb c4 e5 bf 6c c1
-#> [23] 88 a2 4c 06 9d 25 01 01 00 07 41 64 64 20 6b 65 79 00 06 15 05 34
+#>  [1] 85 6f 4a 83 16 0f 21 84 01 3c 00 10 8e 22 c2 c5 14 a2 73 77 5f 35
+#> [23] 69 70 18 c9 bb 59 01 01 00 07 41 64 64 20 6b 65 79 00 06 15 05 34
 #> [45] 01 42 02 56 02 57 05 70 02 7f 03 6b 65 79 01 7f 01 7f 56 76 61 6c
 #> [67] 75 65 7f 00
 

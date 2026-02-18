@@ -2,6 +2,11 @@
 
 ## automerge (development version)
 
+- Adds [`print()`](https://rdrr.io/r/base/print.html) method for
+  `am_change` objects.
+
+- Removes vendored `tinyvec` dependency to fix Valgrind false positive.
+
 ## automerge 0.3.0
 
 CRAN release: 2026-02-17
