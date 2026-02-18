@@ -34,8 +34,17 @@ bytes <- am_save(doc)
 
 # Load as individual changes
 changes <- am_load_changes(bytes)
-length(changes)  # 2
-#> [1] 2
+changes
+#> [[1]]
+#> <Automerge Change>
+#> Hash: a1 e7 14 92 ...
+#> Message: Add key 
+#> 
+#> [[2]]
+#> <Automerge Change>
+#> Hash: 46 66 2d f3 ...
+#> Message: Add key2 
+#> 
 am_change_message(changes[[1]])  # "Add key"
 #> [1] "Add key"
 am_change_message(changes[[2]])  # "Add key2"

@@ -43,7 +43,7 @@ library(automerge)
 doc <- am_create()
 print(doc)
 #> <Automerge Document>
-#> Actor: 840f9d084f743b7ec070cef6f9a1fd83 
+#> Actor: cdc1fd04e69eb14d4f36af907d5f5ea2 
 #> Root keys: 0
 ```
 
@@ -302,7 +302,7 @@ am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
-#> [1] "2026-02-18 20:14:08 UTC"
+#> [1] "2026-02-18 20:33:20 UTC"
 
 am_close(doc9)
 ```
@@ -436,7 +436,7 @@ doc12[["value1"]]
 doc12[["value2"]]
 #> [1] 200
 doc12[["source"]] # One value wins deterministically for conflicting keys
-#> [1] "doc13"
+#> [1] "doc12"
 
 am_close(doc12)
 am_close(doc13)
@@ -493,8 +493,18 @@ am_commit(doc14, "Set version", Sys.time())
 
 # Get the full history (returns am_change objects directly)
 history <- am_get_changes(doc14)
-cat("Document has", length(history), "change(s)\n")
-#> Document has 2 change(s)
+history
+#> [[1]]
+#> <Automerge Change>
+#> Hash: 24 95 46 73 ...
+#> Message: Initial setup 
+#> Time: 2026-02-18 20:33:21 
+#> 
+#> [[2]]
+#> <Automerge Change>
+#> Hash: 39 32 22 fd ...
+#> Message: Set version 
+#> Time: 2026-02-18 20:33:21
 
 # Inspect each change - no parsing needed
 for (i in seq_along(history)) {
@@ -513,20 +523,20 @@ for (i in seq_along(history)) {
 # Extract many fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique 32-byte hash
-#>  [1] 80 ae dc cc 67 99 b0 eb 1d fc 9d e3 00 09 74 dd 3a 2d 57 ef 69 46
-#> [23] a2 0b 02 2e e5 54 d9 3a 8b 3a
+#>  [1] 39 32 22 fd 42 a6 97 ba 77 6f 8f 16 f9 31 22 28 55 55 d2 58 85 48
+#> [23] ea 71 7c 39 6e c5 2f 21 84 72
 am_change_message(change)  # Commit message
 #> [1] "Set version"
 am_change_time(change)     # Timestamp
-#> [1] "2026-02-18 20:14:08 UTC"
+#> [1] "2026-02-18 20:33:21 UTC"
 am_change_seq(change)      # Sequence number
 #> [1] 2
 am_change_actor_id(change) # Who made the change
-#>  [1] f1 6b 81 b3 09 ed a0 af 2f 48 f0 38 56 44 9b a6
+#>  [1] 07 4b ab 76 05 a9 35 7c b2 66 bc ab 73 4f 38 92
 am_change_deps(change)     # Parent change hashes
 #> [[1]]
-#>  [1] 3d dd 81 4a fb b8 4e ea bd 5d ac 76 00 d5 0c cb 9a af d4 ad b7 34
-#> [23] 75 00 da fb b9 36 8b 46 ce 15
+#>  [1] 24 95 46 73 57 db 83 25 0b 06 ac f5 0b eb 87 c7 a9 cf 47 4f 0d f2
+#> [23] f3 6c 97 79 aa 38 35 61 d4 b5
 am_change_size(change)     # Number of operations
 #> [1] 1
 

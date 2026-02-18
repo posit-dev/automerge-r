@@ -87,9 +87,12 @@ or <code>NULL</code> to get all changes.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get all changes</span></span></span>
-<span class="r-in"><span><span class="va">all_changes</span> <span class="op">&lt;-</span> <span class="fu">am_get_changes</span><span class="op">(</span><span class="va">doc</span>, <span class="cn">NULL</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Document has"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">all_changes</span><span class="op">)</span>, <span class="st">"change(s)\n"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Document has 1 change(s)</span>
+<span class="r-in"><span><span class="va">all_changes</span> <span class="op">&lt;-</span> <span class="fu">am_get_changes</span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">all_changes</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;Automerge Change&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Hash: ad 0e 73 3f ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

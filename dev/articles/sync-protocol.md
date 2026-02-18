@@ -78,7 +78,7 @@ am_merge(target, source)
 
 # Target now has source's changes
 target[["version"]]
-#> [1] "2.0"
+#> [1] "1.0"
 
 # Source is unchanged
 names(source)
@@ -143,9 +143,9 @@ repeat {
 round
 #> [1] 3
 peer3[["source"]]
-#> [1] "peer3"
+#> [1] "peer4"
 peer4[["source"]]
-#> [1] "peer3"
+#> [1] "peer4"
 
 am_close(peer3)
 am_close(peer4)
@@ -343,8 +343,8 @@ am_commit(doc_check)
 
 # A complete document has no missing deps
 missing <- am_get_missing_deps(doc_check)
-length(missing) # 0
-#> [1] 0
+missing
+#> list()
 
 am_close(doc_check)
 ```
@@ -372,16 +372,16 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] 5a d6 cd c2 3b 8e c3 5a c9 09 0a f7 03 46 a9 5d 1f 47 75 18 76 c3
-#> [23] 27 38 ff 8d e5 d0 52 1b 27 83
+#>  [1] 4a 59 b4 df d1 92 74 91 e7 97 fc 51 5d 73 49 45 90 d8 40 57 0c b2
+#> [23] b7 48 4b ad 0a a4 5e 0a 69 d5
 am_change_actor_id(change) # Who made this change
-#>  [1] 12 bf ea 19 6e 6d 5e fb bd 51 72 21 98 70 2c c5
+#>  [1] f0 40 99 ba cf c2 df a6 9f ba b6 ca 01 a8 90 19
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] a1 be e2 40 91 6b c0 58 aa a1 1c d9 e5 40 0c e6 1d 62 c2 d5 b1 4b
-#> [23] 0d ad c9 d6 c7 b4 9d 83 83 7b
+#>  [1] 9b fb 5c fe 43 f3 f4 07 16 77 1f 43 03 21 e5 f0 7c a6 4d 40 b2 72
+#> [23] 6e 3a b2 14 e7 07 56 fd a7 5f
 am_change_size(change)     # Number of operations
 #> [1] 2
 
@@ -529,7 +529,7 @@ editor1[["counter"]]
 
 # Status: Deterministic conflict resolution (one value wins)
 editor1[["status"]]
-#> [1] "published"
+#> [1] "review"
 
 am_close(base)
 am_close(editor1)

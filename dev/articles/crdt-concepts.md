@@ -85,8 +85,12 @@ doc1[["name"]]
 
 # To see all conflicting values (not just the winner), use am_map_get_all()
 all_values <- am_map_get_all(doc1, AM_ROOT, "name")
-length(all_values) # 2 - both "Alice Smith" and "Alice Johnson"
-#> [1] 2
+all_values
+#> [[1]]
+#> [1] "Alice Johnson"
+#> 
+#> [[2]]
+#> [1] "Alice Smith"
 
 am_close(doc1)
 am_close(doc2)
@@ -220,8 +224,6 @@ am_get(doc_c1, AM_ROOT, "status")
 
 # am_map_get_all returns all conflicting values
 all_statuses <- am_map_get_all(doc_c1, AM_ROOT, "status")
-length(all_statuses) # 2
-#> [1] 2
 all_statuses
 #> [[1]]
 #> [1] "archived"
@@ -255,15 +257,15 @@ am_merge(doc_l1, doc_l2)
 
 # Winner
 am_get(doc_l1, scores, 1)
-#> [1] 200
+#> [1] 300
 
 # All conflicting values
 am_list_get_all(doc_l1, scores, 1)
 #> [[1]]
-#> [1] 300
+#> [1] 200
 #> 
 #> [[2]]
-#> [1] 200
+#> [1] 300
 
 am_close(doc_c1)
 am_close(doc_c2)
@@ -399,9 +401,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-02-18 20:14:12 UTC"
+#> [1] "2026-02-18 20:33:24 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-02-18 20:14:12 UTC"
+#> [1] "2026-02-18 20:33:24 UTC"
 
 am_close(doc15)
 am_close(doc16)
@@ -508,12 +510,23 @@ am_put(doc18b, AM_ROOT, "text", am_text("Hello World"))
 text18b <- am_get(doc18b, AM_ROOT, "text")
 
 am_mark(text18b, 0, 11, "bold", TRUE)
-length(am_marks(text18b)) # 1
-#> [1] 1
+am_marks(text18b)
+#> [[1]]
+#> [[1]]$name
+#> [1] "bold"
+#> 
+#> [[1]]$value
+#> [1] TRUE
+#> 
+#> [[1]]$start
+#> [1] 0
+#> 
+#> [[1]]$end
+#> [1] 11
 
 am_mark_clear(text18b, 0, 11, "bold")
-length(am_marks(text18b)) # 0
-#> [1] 0
+am_marks(text18b)
+#> list()
 
 am_close(doc18b)
 ```
@@ -711,7 +724,7 @@ am_merge(doc26, doc27)
 
 # One will win - application should handle both states sensibly
 doc26[["status"]] # Should be prepared for either 'published' or 'archived'
-#> [1] "published"
+#> [1] "archived"
 
 # Use am_equal() to check if two documents have converged
 am_merge(doc27, doc26)

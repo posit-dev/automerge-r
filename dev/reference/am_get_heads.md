@@ -30,8 +30,11 @@ am_put(doc, AM_ROOT, "x", 1)
 am_commit(doc)
 
 heads <- am_get_heads(doc)
-cat("Document has", length(heads), "head(s)\n")
-#> Document has 1 head(s)
+heads
+#> [[1]]
+#>  [1] b5 1c c9 0f cf c7 62 fb 68 42 bb ba 30 c9 96 84 81 e4 60 2e 59 8d
+#> [23] 99 6e 5d 16 a2 a2 cf 87 c1 20
+#> 
 
 am_close(doc)
 ```

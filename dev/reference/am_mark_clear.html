@@ -105,13 +105,26 @@ Use the constants <a href="automerge-constants.html">AM_MARK_EXPAND_NONE</a>, <a
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Add a mark</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="am_mark.html">am_mark</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">0</span>, <span class="fl">11</span>, <span class="st">"bold"</span>, <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="am_marks.html">am_marks</a></span><span class="op">(</span><span class="va">text_obj</span><span class="op">)</span><span class="op">)</span>  <span class="co"># 1</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-in"><span><span class="fu"><a href="am_marks.html">am_marks</a></span><span class="op">(</span><span class="va">text_obj</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "bold"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$value</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$start</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [[1]]$end</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Clear the mark</span></span></span>
 <span class="r-in"><span><span class="fu">am_mark_clear</span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">0</span>, <span class="fl">11</span>, <span class="st">"bold"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="am_marks.html">am_marks</a></span><span class="op">(</span><span class="va">text_obj</span><span class="op">)</span><span class="op">)</span>  <span class="co"># 0</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-in"><span><span class="fu"><a href="am_marks.html">am_marks</a></span><span class="op">(</span><span class="va">text_obj</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

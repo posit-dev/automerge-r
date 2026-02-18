@@ -171,8 +171,12 @@ IDs) to ensure all replicas converge to the same value.</p>
 <span></span>
 <span><span class="co"># To see all conflicting values (not just the winner), use am_map_get_all()</span></span>
 <span><span class="va">all_values</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_map_get_all.html">am_map_get_all</a></span><span class="op">(</span><span class="va">doc1</span>, <span class="va">AM_ROOT</span>, <span class="st">"name"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">all_values</span><span class="op">)</span> <span class="co"># 2 - both "Alice Smith" and "Alice Johnson"</span></span>
-<span><span class="co">#&gt; [1] 2</span></span>
+<span><span class="va">all_values</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt; [1] "Alice Johnson"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[2]]</span></span>
+<span><span class="co">#&gt; [1] "Alice Smith"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc2</span><span class="op">)</span></span></code></pre></div>
@@ -295,8 +299,6 @@ application-specific resolution logic.</p>
 <span></span>
 <span><span class="co"># am_map_get_all returns all conflicting values</span></span>
 <span><span class="va">all_statuses</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_map_get_all.html">am_map_get_all</a></span><span class="op">(</span><span class="va">doc_c1</span>, <span class="va">AM_ROOT</span>, <span class="st">"status"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">all_statuses</span><span class="op">)</span> <span class="co"># 2</span></span>
-<span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="va">all_statuses</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; [1] "archived"</span></span>
@@ -326,15 +328,15 @@ values:</p>
 <span></span>
 <span><span class="co"># Winner</span></span>
 <span><span class="fu"><a href="../reference/am_get.html">am_get</a></span><span class="op">(</span><span class="va">doc_l1</span>, <span class="va">scores</span>, <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 200</span></span>
+<span><span class="co">#&gt; [1] 300</span></span>
 <span></span>
 <span><span class="co"># All conflicting values</span></span>
 <span><span class="fu"><a href="../reference/am_list_get_all.html">am_list_get_all</a></span><span class="op">(</span><span class="va">doc_l1</span>, <span class="va">scores</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt; [1] 300</span></span>
+<span><span class="co">#&gt; [1] 200</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
-<span><span class="co">#&gt; [1] 200</span></span>
+<span><span class="co">#&gt; [1] 300</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_c1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_c2</span><span class="op">)</span></span>
@@ -462,9 +464,9 @@ conflict resolution semantics (one value wins).</p>
 <span><span class="fu"><a href="../reference/am_merge.html">am_merge</a></span><span class="op">(</span><span class="va">doc15</span>, <span class="va">doc16</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc15</span><span class="op">[[</span><span class="st">"created_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-02-18 20:14:12 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-02-18 20:33:24 UTC"</span></span>
 <span><span class="va">doc15</span><span class="op">[[</span><span class="st">"updated_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-02-18 20:14:12 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-02-18 20:33:24 UTC"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc15</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc16</span><span class="op">)</span></span></code></pre></div>
@@ -565,12 +567,23 @@ annotations.</p>
 <span><span class="va">text18b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get.html">am_get</a></span><span class="op">(</span><span class="va">doc18b</span>, <span class="va">AM_ROOT</span>, <span class="st">"text"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_mark.html">am_mark</a></span><span class="op">(</span><span class="va">text18b</span>, <span class="fl">0</span>, <span class="fl">11</span>, <span class="st">"bold"</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="../reference/am_marks.html">am_marks</a></span><span class="op">(</span><span class="va">text18b</span><span class="op">)</span><span class="op">)</span> <span class="co"># 1</span></span>
-<span><span class="co">#&gt; [1] 1</span></span>
+<span><span class="fu"><a href="../reference/am_marks.html">am_marks</a></span><span class="op">(</span><span class="va">text18b</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt; [[1]]$name</span></span>
+<span><span class="co">#&gt; [1] "bold"</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[1]]$value</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[1]]$start</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[1]]$end</span></span>
+<span><span class="co">#&gt; [1] 11</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_mark_clear.html">am_mark_clear</a></span><span class="op">(</span><span class="va">text18b</span>, <span class="fl">0</span>, <span class="fl">11</span>, <span class="st">"bold"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu"><a href="../reference/am_marks.html">am_marks</a></span><span class="op">(</span><span class="va">text18b</span><span class="op">)</span><span class="op">)</span> <span class="co"># 0</span></span>
-<span><span class="co">#&gt; [1] 0</span></span>
+<span><span class="fu"><a href="../reference/am_marks.html">am_marks</a></span><span class="op">(</span><span class="va">text18b</span><span class="op">)</span></span>
+<span><span class="co">#&gt; list()</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc18b</span><span class="op">)</span></span></code></pre></div>
 <p><strong>When to use</strong>: Rich text editors, collaborative
@@ -774,7 +787,7 @@ well:</p>
 <span></span>
 <span><span class="co"># One will win - application should handle both states sensibly</span></span>
 <span><span class="va">doc26</span><span class="op">[[</span><span class="st">"status"</span><span class="op">]</span><span class="op">]</span> <span class="co"># Should be prepared for either 'published' or 'archived'</span></span>
-<span><span class="co">#&gt; [1] "published"</span></span>
+<span><span class="co">#&gt; [1] "archived"</span></span>
 <span></span>
 <span><span class="co"># Use am_equal() to check if two documents have converged</span></span>
 <span><span class="fu"><a href="../reference/am_merge.html">am_merge</a></span><span class="op">(</span><span class="va">doc27</span>, <span class="va">doc26</span><span class="op">)</span></span>

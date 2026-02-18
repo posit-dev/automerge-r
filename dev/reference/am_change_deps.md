@@ -35,12 +35,15 @@ am_commit(doc, "Second")
 
 history <- am_get_changes(doc)
 deps1 <- am_change_deps(history[[1]])
-length(deps1)  # 0 (first change has no deps)
-#> [1] 0
+deps1
+#> list()
 
 deps2 <- am_change_deps(history[[2]])
-length(deps2)  # 1 (depends on first change)
-#> [1] 1
+deps2
+#> [[1]]
+#>  [1] 2d f9 fc 57 83 e8 e4 4a bb 47 ad 62 ee 81 cb c7 41 be ed 0d 80 6b
+#> [23] d8 0f 06 80 68 00 bd f9 cd 78
+#> 
 
 am_close(doc)
 ```
