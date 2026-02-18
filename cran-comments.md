@@ -1,7 +1,15 @@
 ## R CMD check results
 
-0 errors | 0 warnings | 0 notes
+0 errors | 0 warnings | 1 note
 
-This release fixes all current CRAN issues:
+New submission
+  
+Package was archived on CRAN
 
-1. valgrind - the "conditional jump depends on uninitialised value" warning is a false positive (zero memory definitely or indirectly lost). It is caused by the compiler reading struct padding bytes during inlined comparisons. We have patched the vendored sources to use manual comparison methods that avoid reading padding, which should eliminate the warnings.
+CRAN repository db overrides:
+    X-CRAN-Comment: Archived on 2026-02-18 aw issues were not corrected
+      in multiple re-submissions.
+
+This release fixes CRAN issues from the archived package:
+
+1. valgrind - the previous "conditional jump depends on uninitialised value" warnings were false positives caused by a Rust dependency (tinyvec). This dependency has now been removed entirely from the vendored sources, so the warnings can no longer occur.
