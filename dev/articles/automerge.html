@@ -128,7 +128,7 @@ applications like shared notebooks or data pipelines</li>
 <code class="sourceCode R"><span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;Automerge Document&gt;</span></span>
-<span><span class="co">#&gt; Actor: 97f88087d67aae2369ade32fe08c0d47 </span></span>
+<span><span class="co">#&gt; Actor: 840f9d084f743b7ec070cef6f9a1fd83 </span></span>
 <span><span class="co">#&gt; Root keys: 0</span></span></code></pre></div>
 <p>Note: When you’re done working with a document, you can explicitly
 free its resources with <code>am_close(doc)</code> if you don’t want to
@@ -383,7 +383,7 @@ without conflicts:</p>
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc9</span>, <span class="va">AM_ROOT</span>, <span class="st">"updated_at"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc9</span><span class="op">[[</span><span class="st">"created_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-02-18 19:59:33 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-02-18 20:14:08 UTC"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc9</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -593,20 +593,20 @@ inspect this with the change introspection functions:</p>
 <span><span class="co"># Extract many fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique 32-byte hash</span></span>
-<span><span class="co">#&gt;  [1] 1c fd ec 77 92 8d d1 5c a5 20 26 86 ea 53 c4 65 55 d4 be b0 2f fe</span></span>
-<span><span class="co">#&gt; [23] b2 72 23 21 f7 16 0f 9a a0 69</span></span>
+<span><span class="co">#&gt;  [1] 80 ae dc cc 67 99 b0 eb 1d fc 9d e3 00 09 74 dd 3a 2d 57 ef 69 46</span></span>
+<span><span class="co">#&gt; [23] a2 0b 02 2e e5 54 d9 3a 8b 3a</span></span>
 <span><span class="fu"><a href="../reference/am_change_message.html">am_change_message</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>  <span class="co"># Commit message</span></span>
 <span><span class="co">#&gt; [1] "Set version"</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Timestamp</span></span>
-<span><span class="co">#&gt; [1] "2026-02-18 19:59:34 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-02-18 20:14:08 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_seq.html">am_change_seq</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>      <span class="co"># Sequence number</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made the change</span></span>
-<span><span class="co">#&gt;  [1] 28 33 5e 5d 46 3f e5 e2 48 3a 95 88 e4 fd c7 eb</span></span>
+<span><span class="co">#&gt;  [1] f1 6b 81 b3 09 ed a0 af 2f 48 f0 38 56 44 9b a6</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent change hashes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] a6 4f 3b df 17 c2 55 c4 c1 dd 82 20 6a 8d dd 7d 30 0e 47 bd 6e 7a</span></span>
-<span><span class="co">#&gt; [23] 7b d1 45 64 91 21 91 ef 00 18</span></span>
+<span><span class="co">#&gt;  [1] 3d dd 81 4a fb b8 4e ea bd 5d ac 76 00 d5 0c cb 9a af d4 ad b7 34</span></span>
+<span><span class="co">#&gt; [23] 75 00 da fb b9 36 8b 46 ce 15</span></span>
 <span><span class="fu"><a href="../reference/am_change_size.html">am_change_size</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Number of operations</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span></span>

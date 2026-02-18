@@ -216,9 +216,9 @@ API.</p>
 <span><span class="va">round</span></span>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="va">peer3</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer4"</span></span>
+<span><span class="co">#&gt; [1] "peer3"</span></span>
 <span><span class="va">peer4</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer4"</span></span>
+<span><span class="co">#&gt; [1] "peer3"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer4</span><span class="op">)</span></span></code></pre></div>
@@ -445,16 +445,16 @@ document has all its dependencies with
 <span><span class="co"># Extract multiple fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique hash</span></span>
-<span><span class="co">#&gt;  [1] f8 40 9d ca ed cb 9b bb f1 1b 75 21 2b 39 ab f1 32 8b a0 43 98 62</span></span>
-<span><span class="co">#&gt; [23] 29 16 0b 43 32 20 06 85 0d 40</span></span>
+<span><span class="co">#&gt;  [1] 5a d6 cd c2 3b 8e c3 5a c9 09 0a f7 03 46 a9 5d 1f 47 75 18 76 c3</span></span>
+<span><span class="co">#&gt; [23] 27 38 ff 8d e5 d0 52 1b 27 83</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made this change</span></span>
-<span><span class="co">#&gt;  [1] 95 25 43 44 78 e3 6e 37 0e 89 34 ab 97 24 a1 e5</span></span>
+<span><span class="co">#&gt;  [1] 12 bf ea 19 6e 6d 5e fb bd 51 72 21 98 70 2c c5</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># When</span></span>
 <span><span class="co">#&gt; [1] "1970-01-01 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent changes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] 1f c9 33 e7 fb d3 46 1d 5e 89 fc b0 1d 84 30 83 1e 4f 18 26 17 be</span></span>
-<span><span class="co">#&gt; [23] 7a c6 91 fd d8 4a 55 cf ad 83</span></span>
+<span><span class="co">#&gt;  [1] a1 be e2 40 91 6b c0 58 aa a1 1c d9 e5 40 0c e6 1d 62 c2 d5 b1 4b</span></span>
+<span><span class="co">#&gt; [23] 0d ad c9 d6 c7 b4 9d 83 83 7b</span></span>
 <span><span class="fu"><a href="../reference/am_change_size.html">am_change_size</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Number of operations</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span></span>
