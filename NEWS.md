@@ -1,5 +1,9 @@
 # automerge (development version)
 
+* Adds `print()` method for `am_change` objects.
+
+* Removes vendored `tinyvec` dependency to fix Valgrind false positive.
+
 # automerge 0.3.0
 
 * Change-returning functions (`am_get_changes()`, `am_get_last_local_change()`, 
