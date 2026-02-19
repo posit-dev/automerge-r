@@ -2,6 +2,10 @@
 
 ## automerge (development version)
 
+## automerge 0.3.1
+
+CRAN release: 2026-02-19
+
 - Adds [`print()`](https://rdrr.io/r/base/print.html) method for
   `am_change` objects.
 

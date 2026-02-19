@@ -37,12 +37,12 @@ changes <- am_load_changes(bytes)
 changes
 #> [[1]]
 #> <Automerge Change>
-#> Hash: a1 e7 14 92 ...
+#> Hash: 9d 89 5a 12 ...
 #> Message: Add key 
 #> 
 #> [[2]]
 #> <Automerge Change>
-#> Hash: 46 66 2d f3 ...
+#> Hash: d1 e6 3b 45 ...
 #> Message: Add key2 
 #> 
 am_change_message(changes[[1]])  # "Add key"
