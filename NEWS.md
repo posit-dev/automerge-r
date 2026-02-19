@@ -1,3 +1,5 @@
+# automerge (development version)
+
 # automerge 0.3.1
 
 * Adds `print()` method for `am_change` objects.
