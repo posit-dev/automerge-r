@@ -11,7 +11,7 @@ am_get_change_by_hash() or am_fork())."><script src="https://cdn.jsdelivr.net/gh
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,7 +43,7 @@ am_get_change_by_hash() or am_fork())."><script src="https://cdn.jsdelivr.net/gh
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Get the hash of a change</h1>
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/v0.3.0/R/sync.R" class="external-link"><code>R/sync.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/R/sync.R" class="external-link"><code>R/sync.R</code></a></small>
       <div class="d-none name"><code>am_change_hash.Rd</code></div>
     </div>
 
@@ -63,8 +63,8 @@ to reference specific points in document history (e.g., with
 
 
 <dl><dt id="arg-change">change<a class="anchor" aria-label="anchor" href="#arg-change"></a></dt>
-<dd><p>An <code>am_change</code> object (from <code><a href="am_get_changes.html">am_get_changes()</a></code>,
-<code><a href="am_get_changes.html">am_get_changes()</a></code>, or <code><a href="am_change_from_bytes.html">am_change_from_bytes()</a></code>)</p></dd>
+<dd><p>An <code>am_change</code> object (from <code><a href="am_get_changes.html">am_get_changes()</a></code> or
+<code><a href="am_change_from_bytes.html">am_change_from_bytes()</a></code>)</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -81,10 +81,8 @@ to reference specific points in document history (e.g., with
 <span class="r-in"><span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">hash</span> <span class="op">&lt;-</span> <span class="fu">am_change_hash</span><span class="op">(</span><span class="va">history</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">hash</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] bf 0e cd 10 e2 7b 16 33 2e 93 71 0f 5c 16 a2 86 e9 72 ef 1c 49 46</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23] ef 0c 34 c1 b0 b7 25 28 ff ef</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">hash</span><span class="op">)</span>  <span class="co"># 32 bytes</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] bd 93 38 ed 4b ea 1b 86 64 bf a0 cd 98 ba 0b 2e 0a 82 07 03 3d 48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] 0b 01 3c e4 1c ea 30 db 08 e5</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

@@ -14,8 +14,7 @@ am_change_size(change)
 - change:
 
   An `am_change` object (from
-  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md),
-  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md),
+  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md)
   or
   [`am_change_from_bytes()`](https://posit-dev.github.io/automerge-r/reference/am_change_from_bytes.md))
 

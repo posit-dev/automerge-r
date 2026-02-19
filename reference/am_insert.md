@@ -30,7 +30,21 @@ am_insert(doc, obj, pos, value)
 
 - value:
 
-  The value to insert
+  The value to store. Supported types:
+
+  - `NULL` - stores null
+
+  - Logical - stores boolean (must be scalar)
+
+  - Integer - stores integer (must be scalar)
+
+  - Numeric - stores double (must be scalar)
+
+  - Character - stores string (must be scalar)
+
+  - Raw - stores bytes
+
+  - `AM_OBJ_TYPE_LIST/MAP/TEXT` - creates nested object
 
 ## Value
 

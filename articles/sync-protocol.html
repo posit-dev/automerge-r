@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@
       <h1>Synchronization Protocol</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/v0.3.0/vignettes/sync-protocol.Rmd" class="external-link"><code>vignettes/sync-protocol.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/vignettes/sync-protocol.Rmd" class="external-link"><code>vignettes/sync-protocol.Rmd</code></a></small>
       <div class="d-none name"><code>sync-protocol.Rmd</code></div>
     </div>
 
@@ -215,9 +215,9 @@ API.</p>
 <span><span class="va">round</span></span>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="va">peer3</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer3"</span></span>
+<span><span class="co">#&gt; [1] "peer4"</span></span>
 <span><span class="va">peer4</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer3"</span></span>
+<span><span class="co">#&gt; [1] "peer4"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer4</span><span class="op">)</span></span></code></pre></div>
@@ -415,8 +415,8 @@ document has all its dependencies with
 <span></span>
 <span><span class="co"># A complete document has no missing deps</span></span>
 <span><span class="va">missing</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_missing_deps.html">am_get_missing_deps</a></span><span class="op">(</span><span class="va">doc_check</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">missing</span><span class="op">)</span> <span class="co"># 0</span></span>
-<span><span class="co">#&gt; [1] 0</span></span>
+<span><span class="va">missing</span></span>
+<span><span class="co">#&gt; list()</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_check</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -444,16 +444,16 @@ document has all its dependencies with
 <span><span class="co"># Extract multiple fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique hash</span></span>
-<span><span class="co">#&gt;  [1] a7 7f 3a a7 05 9b c5 92 ac ef d7 22 70 b2 2f de 14 e2 20 74 66 b6</span></span>
-<span><span class="co">#&gt; [23] b0 bd e9 5b f5 58 76 1e 08 13</span></span>
+<span><span class="co">#&gt;  [1] 58 85 e9 cb 13 65 46 61 1c f4 ca 1f fe 34 0a fe 32 35 91 a3 76 96</span></span>
+<span><span class="co">#&gt; [23] d3 81 f4 0e cd 29 a0 af 42 88</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made this change</span></span>
-<span><span class="co">#&gt;  [1] 51 4c b7 dd f2 ec 34 f2 fd a1 8a a2 0e c8 a8 49</span></span>
+<span><span class="co">#&gt;  [1] fe d0 ce 73 b7 89 ff 99 f2 49 f3 5a 4d 69 9d 1e</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># When</span></span>
 <span><span class="co">#&gt; [1] "1970-01-01 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent changes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] bb cd f5 4d 33 e5 c4 cc ae d5 a7 33 59 ef 06 84 fe 89 67 04 c2 f1</span></span>
-<span><span class="co">#&gt; [23] 91 a1 86 58 e9 56 fa 74 d3 2a</span></span>
+<span><span class="co">#&gt;  [1] 5a 44 81 87 b2 13 6c 57 b8 67 76 30 aa 27 c7 4d e0 57 4d 3c bf 7d</span></span>
+<span><span class="co">#&gt; [23] b6 59 4a 02 be 81 b2 6b 91 78</span></span>
 <span><span class="fu"><a href="../reference/am_change_size.html">am_change_size</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Number of operations</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span></span>

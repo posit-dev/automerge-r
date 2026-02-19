@@ -1,5 +1,14 @@
 # Changelog
 
+## automerge 0.3.1
+
+CRAN release: 2026-02-19
+
+- Adds [`print()`](https://rdrr.io/r/base/print.html) method for
+  `am_change` objects.
+
+- Removes vendored `tinyvec` dependency to fix Valgrind false positive.
+
 ## automerge 0.3.0
 
 CRAN release: 2026-02-17
@@ -105,9 +114,11 @@ CRAN release: 2026-02-05
 - Adds
   [`str.am_doc()`](https://posit-dev.github.io/automerge-r/reference/str.am_doc.md)
   method to display the structure of an Automerge document.
+
 - Adds
   [`am_close()`](https://posit-dev.github.io/automerge-r/reference/am_close.md)
   for explicitly closing a document.
+
 - Updates MSRV to 1.84.
 
 ## automerge 0.2.0

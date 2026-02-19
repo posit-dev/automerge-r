@@ -43,12 +43,10 @@ am_commit(doc2, "Add y")
 changes <- am_get_changes_added(doc1, doc2)
 changes
 #> [[1]]
-#> <pointer: 0x55735361f6e0>
-#> attr(,"class")
-#> [1] "am_change"
+#> <Automerge Change>
+#> Hash: 2c c3 b8 77 ...
+#> Message: Add y 
 #> 
-length(changes)  # 1 change
-#> [1] 1
 
 # Apply those changes to doc1
 am_apply_changes(doc1, changes)

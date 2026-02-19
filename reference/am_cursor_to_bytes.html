@@ -11,7 +11,7 @@ cursor positions across R sessions."><script src="https://cdn.jsdelivr.net/gh/po
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,7 +43,7 @@ cursor positions across R sessions."><script src="https://cdn.jsdelivr.net/gh/po
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Serialize a cursor to bytes</h1>
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/v0.3.0/R/cursors.R" class="external-link"><code>R/cursors.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/R/cursors.R" class="external-link"><code>R/cursors.R</code></a></small>
       <div class="d-none name"><code>am_cursor_to_bytes.Rd</code></div>
     </div>
 
@@ -84,7 +84,7 @@ cursor positions across R sessions.</p>
 <span class="r-in"><span><span class="va">cursor</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_cursor.html">am_cursor</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">bytes</span> <span class="op">&lt;-</span> <span class="fu">am_cursor_to_bytes</span><span class="op">(</span><span class="va">cursor</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">bytes</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 01 03 10 04 e4 4d b8 0f 6d 22 e4 e7 8c ad 2f 62 d8 62 5f 07 02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 01 03 10 86 26 11 12 74 ff 52 30 c5 99 4a 6e f3 bf 70 42 07 02</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Restore cursor later</span></span></span>
 <span class="r-in"><span><span class="va">restored</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_cursor_from_bytes.html">am_cursor_from_bytes</a></span><span class="op">(</span><span class="va">bytes</span>, <span class="va">text_obj</span><span class="op">)</span></span></span>

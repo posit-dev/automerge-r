@@ -20,7 +20,8 @@ am_items(doc, obj, heads = NULL)
 
 - obj:
 
-  An Automerge object ID, or `AM_ROOT` for the document root
+  An Automerge object ID (from nested object), or `AM_ROOT` for the
+  document root
 
 - heads:
 

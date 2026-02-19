@@ -9,7 +9,7 @@ create intermediate objects automatically."><script src="https://cdn.jsdelivr.ne
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,7 +41,7 @@ create intermediate objects automatically."><script src="https://cdn.jsdelivr.ne
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Set value at path</h1>
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/v0.3.0/R/convenience.R" class="external-link"><code>R/convenience.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/R/convenience.R" class="external-link"><code>R/convenience.R</code></a></small>
       <div class="d-none name"><code>am_put_path.Rd</code></div>
     </div>
 
@@ -65,11 +65,18 @@ create intermediate objects automatically.</p>
 
 <dt id="arg-path">path<a class="anchor" aria-label="anchor" href="#arg-path"></a></dt>
 <dd><p>Character vector, numeric vector, or list of mixed types
-specifying the path to the value</p></dd>
+specifying the path to navigate</p></dd>
 
 
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
-<dd><p>Value to set at the path</p></dd>
+<dd><p>The value to store. Supported types:</p><ul><li><p><code>NULL</code> - stores null</p></li>
+<li><p>Logical - stores boolean (must be scalar)</p></li>
+<li><p>Integer - stores integer (must be scalar)</p></li>
+<li><p>Numeric - stores double (must be scalar)</p></li>
+<li><p>Character - stores string (must be scalar)</p></li>
+<li><p>Raw - stores bytes</p></li>
+<li><p><code>AM_OBJ_TYPE_LIST/MAP/TEXT</code> - creates nested object</p></li>
+</ul></dd>
 
 
 <dt id="arg-create-intermediate">create_intermediate<a class="anchor" aria-label="anchor" href="#arg-create-intermediate"></a></dt>

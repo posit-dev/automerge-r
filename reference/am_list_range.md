@@ -45,8 +45,16 @@ items <- doc$items
 
 # Get elements 2 through 4 -> "b", "c", "d"
 range <- am_list_range(doc, items, 2, 4)
-length(range)  # 3
-#> [1] 3
+range
+#> [[1]]
+#> [1] "b"
+#> 
+#> [[2]]
+#> [1] "c"
+#> 
+#> [[3]]
+#> [1] "d"
+#> 
 
 am_close(doc)
 ```

@@ -32,8 +32,7 @@ and
 ## Details
 
 Note:
-[`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md),
-[`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md),
+[`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md)
 and other change-returning functions already return `am_change` objects
 directly, so this function is only needed when working with raw byte
 representations.
@@ -50,9 +49,9 @@ history <- am_get_changes(doc)
 bytes <- am_change_to_bytes(history[[1]])
 change <- am_change_from_bytes(bytes)
 change
-#> <pointer: 0x55734f78b1d0>
-#> attr(,"class")
-#> [1] "am_change"
+#> <Automerge Change>
+#> Hash: c0 9e 00 d4 ...
+#> Message: Add key 
 am_change_message(change)  # "Add key"
 #> [1] "Add key"
 

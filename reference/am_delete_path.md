@@ -17,7 +17,7 @@ am_delete_path(doc, path)
 - path:
 
   Character vector, numeric vector, or list of mixed types specifying
-  the path to the value to delete
+  the path to navigate
 
 ## Value
 

@@ -62,13 +62,26 @@ text_obj <- am_get(doc, AM_ROOT, "text")
 
 # Add a mark
 am_mark(text_obj, 0, 11, "bold", TRUE)
-length(am_marks(text_obj))  # 1
-#> [1] 1
+am_marks(text_obj)
+#> [[1]]
+#> [[1]]$name
+#> [1] "bold"
+#> 
+#> [[1]]$value
+#> [1] TRUE
+#> 
+#> [[1]]$start
+#> [1] 0
+#> 
+#> [[1]]$end
+#> [1] 11
+#> 
+#> 
 
 # Clear the mark
 am_mark_clear(text_obj, 0, 11, "bold")
-length(am_marks(text_obj))  # 0
-#> [1] 0
+am_marks(text_obj)
+#> list()
 
 am_close(doc)
 ```

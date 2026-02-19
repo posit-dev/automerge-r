@@ -16,7 +16,8 @@ am_values(doc, obj)
 
 - obj:
 
-  An Automerge object ID, or `AM_ROOT` for the document root
+  An Automerge object ID (from nested object), or `AM_ROOT` for the
+  document root
 
 ## Value
 

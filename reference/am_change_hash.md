@@ -17,8 +17,7 @@ am_change_hash(change)
 - change:
 
   An `am_change` object (from
-  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md),
-  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md),
+  [`am_get_changes()`](https://posit-dev.github.io/automerge-r/reference/am_get_changes.md)
   or
   [`am_change_from_bytes()`](https://posit-dev.github.io/automerge-r/reference/am_change_from_bytes.md))
 
@@ -36,10 +35,8 @@ am_commit(doc, "Add key")
 history <- am_get_changes(doc)
 hash <- am_change_hash(history[[1]])
 hash
-#>  [1] bf 0e cd 10 e2 7b 16 33 2e 93 71 0f 5c 16 a2 86 e9 72 ef 1c 49 46
-#> [23] ef 0c 34 c1 b0 b7 25 28 ff ef
-length(hash)  # 32 bytes
-#> [1] 32
+#>  [1] bd 93 38 ed 4b ea 1b 86 64 bf a0 cd 98 ba 0b 2e 0a 82 07 03 3d 48
+#> [23] 0b 01 3c e4 1c ea 30 db 08 e5
 
 am_close(doc)
 ```
