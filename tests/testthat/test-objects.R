@@ -2122,9 +2122,7 @@ test_that("am_values() with nested objects in lists", {
   expect_s3_class(values[[2]], "am_object")
 })
 
-# Multiple heads error paths
-
-test_that("am_map_get_all() errors on multiple heads", {
+test_that("am_map_get_all() supports multiple heads", {
   doc <- am_create()
   doc$key <- "v1"
   am_commit(doc)
@@ -2138,13 +2136,12 @@ test_that("am_map_get_all() errors on multiple heads", {
 
   heads <- am_get_heads(doc)
   expect_gte(length(heads), 2)
-  expect_error(
-    am_map_get_all(doc, AM_ROOT, "key", heads),
-    "multiple heads"
-  )
+  result <- am_map_get_all(doc, AM_ROOT, "key", heads)
+  expect_type(result, "list")
+  expect_gte(length(result), 2)
 })
 
-test_that("am_list_get_all() errors on multiple heads", {
+test_that("am_list_get_all() supports multiple heads", {
   doc <- am_create()
   doc$items <- list("a")
   am_commit(doc)
@@ -2160,13 +2157,12 @@ test_that("am_list_get_all() errors on multiple heads", {
 
   heads <- am_get_heads(doc)
   expect_gte(length(heads), 2)
-  expect_error(
-    am_list_get_all(doc, items1, 1, heads),
-    "multiple heads"
-  )
+  result <- am_list_get_all(doc, items1, 1, heads)
+  expect_type(result, "list")
+  expect_gte(length(result), 2)
 })
 
-test_that("am_map_range() errors on multiple heads", {
+test_that("am_map_range() supports multiple heads", {
   doc <- am_create()
   doc$a <- 1
   am_commit(doc)
@@ -2180,13 +2176,12 @@ test_that("am_map_range() errors on multiple heads", {
 
   heads <- am_get_heads(doc)
   expect_gte(length(heads), 2)
-  expect_error(
-    am_map_range(doc, AM_ROOT, "a", "z", heads),
-    "multiple heads"
-  )
+  result <- am_map_range(doc, AM_ROOT, "a", "z", heads)
+  expect_type(result, "list")
+  expect_gte(length(result), 3)
 })
 
-test_that("am_list_range() errors on multiple heads", {
+test_that("am_list_range() supports multiple heads", {
   doc <- am_create()
   doc$items <- list("a", "b")
   am_commit(doc)
@@ -2202,13 +2197,12 @@ test_that("am_list_range() errors on multiple heads", {
 
   heads <- am_get_heads(doc)
   expect_gte(length(heads), 2)
-  expect_error(
-    am_list_range(doc, items1, 1, 5, heads),
-    "multiple heads"
-  )
+  result <- am_list_range(doc, items1, 1, 5, heads)
+  expect_type(result, "list")
+  expect_gte(length(result), 3)
 })
 
-test_that("am_items() errors on multiple heads", {
+test_that("am_items() supports multiple heads", {
   doc <- am_create()
   doc$a <- 1
   am_commit(doc)
@@ -2222,10 +2216,9 @@ test_that("am_items() errors on multiple heads", {
 
   heads <- am_get_heads(doc)
   expect_gte(length(heads), 2)
-  expect_error(
-    am_items(doc, AM_ROOT, heads),
-    "multiple heads"
-  )
+  result <- am_items(doc, AM_ROOT, heads)
+  expect_type(result, "list")
+  expect_gte(length(result), 3)
 })
 
 # am_list_get_all input validation

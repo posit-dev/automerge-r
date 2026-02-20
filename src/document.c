@@ -159,40 +159,34 @@ SEXP C_am_load(SEXP data) {
 }
 
 /**
- * Helper: Convert R list of change hashes to AMitems struct.
+ * Helper: Convert R list of change hashes to a single AMresult.
  *
- * Takes an R list of raw vectors (change hashes) and creates the necessary
- * AMresult objects, then extracts AMitems for use with C API functions.
+ * Takes an R list of raw vectors (change hashes) and creates a single
+ * AMresult containing all hashes, using AMresultCat to concatenate when
+ * there are multiple heads.
  *
  * @param heads_list R list of raw vectors (change hashes)
- * @param results_out Output parameter: array of AMresult pointers to keep alive
- * @param n_results Output parameter: number of results in array
- * @return AMresult containing change hash items (must be freed by caller)
+ * @param n_results Output parameter: number of hashes found
+ * @return AMresult containing all change hash items (must be freed by caller),
+ *         or NULL if empty
  */
-AMresult* convert_r_heads_to_amresult(SEXP heads_list, AMresult ***results_out, size_t *n_results) {
+AMresult* convert_r_heads_to_amresult(SEXP heads_list, size_t *n_results) {
     if (TYPEOF(heads_list) != VECSXP) {
         Rf_error("heads must be NULL or a list of raw vectors");
     }
 
     R_xlen_t n_heads = XLENGTH(heads_list);
     if (n_heads == 0) {
-        *results_out = NULL;
         *n_results = 0;
         return NULL;
     }
 
-    AMresult **results = malloc(n_heads * sizeof(AMresult *));
-    if (!results) {
-        Rf_error("Failed to allocate memory for change hash results");
-    }
+    AMresult *combined = NULL;
 
     for (R_xlen_t i = 0; i < n_heads; i++) {
         SEXP r_hash = VECTOR_ELT(heads_list, i);
         if (TYPEOF(r_hash) != RAWSXP) {
-            for (R_xlen_t j = 0; j < i; j++) {
-                AMresultFree(results[j]);
-            }
-            free(results);
+            if (combined) AMresultFree(combined);
             Rf_error("All heads must be raw vectors (change hashes)");
         }
 
@@ -201,20 +195,26 @@ AMresult* convert_r_heads_to_amresult(SEXP heads_list, AMresult ***results_out, 
             .count = (size_t) XLENGTH(r_hash)
         };
 
-        results[i] = AMitemFromChangeHash(hash_span);
-        if (!results[i] || AMresultStatus(results[i]) != AM_STATUS_OK) {
-            for (R_xlen_t j = 0; j <= i; j++) {
-                if (results[j]) AMresultFree(results[j]);
-            }
-            free(results);
+        AMresult *item_result = AMitemFromChangeHash(hash_span);
+        if (!item_result || AMresultStatus(item_result) != AM_STATUS_OK) {
+            if (combined) AMresultFree(combined);
+            if (item_result) AMresultFree(item_result);
             Rf_error("Invalid change hash at index %lld", (long long) i);
+        }
+
+        if (combined == NULL) {
+            combined = item_result;
+        } else {
+            AMresult *new_combined = AMresultCat(combined, item_result);
+            AMresultFree(combined);
+            AMresultFree(item_result);
+            combined = new_combined;
         }
     }
 
-    *results_out = results;
     *n_results = (size_t) n_heads;
 
-    return results[0];
+    return combined;
 }
 
 /**
@@ -236,24 +236,16 @@ AMitems* resolve_heads(SEXP heads, AMitems *heads_items_out, AMresult **heads_re
         return NULL;
     }
 
-    AMresult **head_results = NULL;
-    size_t n_head_results = 0;
-    AMresult *heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
+    size_t n_heads = 0;
+    AMresult *heads_result = convert_r_heads_to_amresult(heads, &n_heads);
 
-    if (n_head_results == 0) {
+    if (n_heads == 0) {
         return NULL;
-    } else if (n_head_results == 1) {
-        *heads_items_out = AMresultItems(heads_result);
-        *heads_result_out = heads_result;
-        free(head_results);
-        return heads_items_out;
-    } else {
-        for (size_t i = 0; i < n_head_results; i++) {
-            AMresultFree(head_results[i]);
-        }
-        free(head_results);
-        Rf_error("multiple heads are not supported; commit first to produce a single head");
     }
+
+    *heads_items_out = AMresultItems(heads_result);
+    *heads_result_out = heads_result;
+    return heads_items_out;
 }
 
 /**
@@ -267,28 +259,19 @@ SEXP C_am_fork(SEXP doc_ptr, SEXP heads) {
     AMdoc *doc = get_doc(doc_ptr);
 
     AMresult *result = NULL;
-    AMresult **head_results = NULL;
-    size_t n_head_results = 0;
 
     if (heads == R_NilValue || (TYPEOF(heads) == VECSXP && XLENGTH(heads) == 0)) {
         result = AMfork(doc, NULL);
     } else {
-        AMresult *heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
+        size_t n_heads = 0;
+        AMresult *heads_result = convert_r_heads_to_amresult(heads, &n_heads);
 
-        if (n_head_results == 0) {
+        if (n_heads == 0) {
             result = AMfork(doc, NULL);
-        } else if (heads_result && n_head_results == 1) {
+        } else {
             AMitems heads_items = AMresultItems(heads_result);
             result = AMfork(doc, &heads_items);
-
             AMresultFree(heads_result);
-            free(head_results);
-        } else {
-            for (size_t i = 0; i < n_head_results; i++) {
-                AMresultFree(head_results[i]);
-            }
-            free(head_results);
-            Rf_error("multiple heads are not supported; commit first to produce a single head");
         }
     }
 

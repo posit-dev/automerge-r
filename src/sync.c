@@ -188,22 +188,14 @@ SEXP C_am_get_changes(SEXP doc_ptr, SEXP heads) {
     if (heads == R_NilValue) {
         result = AMgetChanges(doc, NULL);
     } else {
-        AMresult **head_results = NULL;
-        size_t n_head_results = 0;
-        AMresult *heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
-        if (n_head_results == 0) {
+        size_t n_heads = 0;
+        AMresult *heads_result = convert_r_heads_to_amresult(heads, &n_heads);
+        if (n_heads == 0) {
             result = AMgetChanges(doc, NULL);
-        } else if (n_head_results == 1) {
+        } else {
             AMitems heads_items = AMresultItems(heads_result);
             result = AMgetChanges(doc, &heads_items);
             AMresultFree(heads_result);
-            free(head_results);
-        } else {
-            for (size_t i = 0; i < n_head_results; i++) {
-                AMresultFree(head_results[i]);
-            }
-            free(head_results);
-            Rf_error("multiple heads are not supported; commit first to produce a single head");
         }
     }
 

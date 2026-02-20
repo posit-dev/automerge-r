@@ -1024,7 +1024,7 @@ test_that("am_load_incremental() errors on invalid bytes", {
 
 # Coverage Tests: Input Validation and Edge Cases =============================
 
-test_that("am_fork() errors on multiple heads", {
+test_that("am_fork() supports multiple heads", {
   doc <- am_create()
   doc$x <- 1
   am_commit(doc)
@@ -1038,10 +1038,11 @@ test_that("am_fork() errors on multiple heads", {
 
   heads <- am_get_heads(doc)
   expect_gte(length(heads), 2)
-  expect_error(
-    am_fork(doc, heads),
-    "multiple heads"
-  )
+  forked <- am_fork(doc, heads)
+  expect_s3_class(forked, "am_doc")
+  expect_equal(forked$x, 1)
+  expect_equal(forked$y, 2)
+  expect_equal(forked$z, 3)
 })
 
 test_that("am_commit_empty() errors on invalid message type", {

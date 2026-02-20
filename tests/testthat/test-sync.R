@@ -144,7 +144,6 @@ test_that("am_sync handles concurrent edits", {
   rounds <- am_sync(doc1, doc2)
   expect_gt(rounds, 0)
 
-
   # Both should have both x and y
   expect_equal(am_get(doc1, AM_ROOT, "x"), "from_doc1")
   expect_equal(am_get(doc1, AM_ROOT, "y"), "from_doc2")
@@ -402,21 +401,19 @@ test_that("am_get_changes with specific heads", {
   expect_equal(am_change_message(changes_since[[2]]), "Third")
 })
 
-test_that("am_get_changes with multiple explicit heads errors", {
+test_that("am_get_changes with multiple explicit heads succeeds", {
   doc <- am_create()
   am_put(doc, AM_ROOT, "x", 1)
   am_commit(doc, "First")
   am_put(doc, AM_ROOT, "y", 2)
   am_commit(doc, "Second")
 
-  # Construct a list of 2 heads from history hashes
   history <- am_get_changes(doc)
   two_heads <- list(am_change_hash(history[[1]]), am_change_hash(history[[2]]))
 
-  expect_error(
-    am_get_changes(doc, two_heads),
-    "multiple heads are not supported"
-  )
+  changes <- am_get_changes(doc, two_heads)
+  expect_type(changes, "list")
+  expect_length(changes, 0)
 })
 
 test_that("am_get_changes with empty heads list returns all changes", {
@@ -433,7 +430,7 @@ test_that("am_get_changes with empty heads list returns all changes", {
   expect_equal(length(changes), length(all_changes))
 })
 
-test_that("am_get_changes with multiple heads errors", {
+test_that("am_get_changes with multiple heads succeeds", {
   doc <- am_create()
   am_put(doc, AM_ROOT, "x", 1)
   am_commit(doc, "First")
@@ -448,10 +445,9 @@ test_that("am_get_changes with multiple heads errors", {
   heads <- am_get_heads(doc)
   expect_true(length(heads) >= 2)
 
-  expect_error(
-    am_get_changes(doc, heads),
-    "multiple heads are not supported"
-  )
+  changes <- am_get_changes(doc, heads)
+  expect_type(changes, "list")
+  expect_length(changes, 0)
 })
 
 test_that("am_get_changes_added returns added changes", {
@@ -746,8 +742,12 @@ test_that("sync state round-trip preserves sync progress", {
   for (i in 1:10) {
     msg_a <- am_sync_encode(doc1, sync1_restored)
     msg_b <- am_sync_encode(doc2, sync2_restored)
-    if (is.null(msg_a) && is.null(msg_b)) break
-    if (!is.null(msg_a)) am_sync_decode(doc2, sync2_restored, msg_a)
+    if (is.null(msg_a) && is.null(msg_b)) {
+      break
+    }
+    if (!is.null(msg_a)) {
+      am_sync_decode(doc2, sync2_restored, msg_a)
+    }
     if (!is.null(msg_b)) am_sync_decode(doc1, sync1_restored, msg_b)
   }
 
@@ -772,9 +772,7 @@ test_that("am_sync_state_decode() errors on invalid bytes", {
 
 # Coverage Tests: Input Validation and Edge Cases =============================
 
-# am_get_missing_deps with multiple heads error
-
-test_that("am_get_missing_deps() errors on multiple heads", {
+test_that("am_get_missing_deps() supports multiple heads", {
   doc <- am_create()
   doc$x <- 1
   am_commit(doc)
@@ -788,10 +786,8 @@ test_that("am_get_missing_deps() errors on multiple heads", {
 
   heads <- am_get_heads(doc)
   expect_gte(length(heads), 2)
-  expect_error(
-    am_get_missing_deps(doc, heads),
-    "multiple heads"
-  )
+  deps <- am_get_missing_deps(doc, heads)
+  expect_type(deps, "list")
 })
 
 # am_sync_encode/decode input validation

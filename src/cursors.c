@@ -33,22 +33,14 @@ SEXP C_am_cursor(SEXP obj_ptr, SEXP position, SEXP heads) {
     if (heads == R_NilValue) {
         result = AMgetCursor(doc, obj_id, c_pos, NULL);
     } else {
-        AMresult **head_results = NULL;
-        size_t n_head_results = 0;
-        AMresult *heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
-        if (n_head_results == 0) {
+        size_t n_heads = 0;
+        AMresult *heads_result = convert_r_heads_to_amresult(heads, &n_heads);
+        if (n_heads == 0) {
             result = AMgetCursor(doc, obj_id, c_pos, NULL);
-        } else if (n_head_results == 1) {
+        } else {
             AMitems heads_items = AMresultItems(heads_result);
             result = AMgetCursor(doc, obj_id, c_pos, &heads_items);
             AMresultFree(heads_result);
-            free(head_results);
-        } else {
-            for (size_t i = 0; i < n_head_results; i++) {
-                AMresultFree(head_results[i]);
-            }
-            free(head_results);
-            Rf_error("multiple heads are not supported; commit first to produce a single head");
         }
     }
 
@@ -104,22 +96,14 @@ SEXP C_am_cursor_position(SEXP cursor_ptr, SEXP heads) {
     if (heads == R_NilValue) {
         result = AMgetCursorPosition(doc, obj_id, cursor, NULL);
     } else {
-        AMresult **head_results = NULL;
-        size_t n_head_results = 0;
-        AMresult *heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
-        if (n_head_results == 0) {
+        size_t n_heads = 0;
+        AMresult *heads_result = convert_r_heads_to_amresult(heads, &n_heads);
+        if (n_heads == 0) {
             result = AMgetCursorPosition(doc, obj_id, cursor, NULL);
-        } else if (n_head_results == 1) {
+        } else {
             AMitems heads_items = AMresultItems(heads_result);
             result = AMgetCursorPosition(doc, obj_id, cursor, &heads_items);
             AMresultFree(heads_result);
-            free(head_results);
-        } else {
-            for (size_t i = 0; i < n_head_results; i++) {
-                AMresultFree(head_results[i]);
-            }
-            free(head_results);
-            Rf_error("multiple heads are not supported; commit first to produce a single head");
         }
     }
 
@@ -337,22 +321,14 @@ static SEXP C_am_marks_impl(SEXP obj_ptr, int filter_position, SEXP heads) {
     if (heads == R_NilValue) {
         result = AMmarks(doc, obj_id, NULL);
     } else {
-        AMresult **head_results = NULL;
-        size_t n_head_results = 0;
-        AMresult *heads_result = convert_r_heads_to_amresult(heads, &head_results, &n_head_results);
-        if (n_head_results == 0) {
+        size_t n_heads = 0;
+        AMresult *heads_result = convert_r_heads_to_amresult(heads, &n_heads);
+        if (n_heads == 0) {
             result = AMmarks(doc, obj_id, NULL);
-        } else if (n_head_results == 1) {
+        } else {
             AMitems heads_items = AMresultItems(heads_result);
             result = AMmarks(doc, obj_id, &heads_items);
             AMresultFree(heads_result);
-            free(head_results);
-        } else {
-            for (size_t i = 0; i < n_head_results; i++) {
-                AMresultFree(head_results[i]);
-            }
-            free(head_results);
-            Rf_error("multiple heads are not supported; commit first to produce a single head");
         }
     }
     CHECK_RESULT(result, AM_VAL_TYPE_VOID);

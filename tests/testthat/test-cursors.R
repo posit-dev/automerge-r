@@ -325,7 +325,7 @@ test_that("am_marks_at() with empty heads list falls back to current state", {
   expect_equal(marks[[1]]$name, "bold")
 })
 
-test_that("am_cursor() with multiple heads errors", {
+test_that("am_cursor() supports multiple heads", {
   doc <- am_create()
   am_put(doc, AM_ROOT, "text", am_text("hello"))
   am_commit(doc, "initial")
@@ -341,13 +341,11 @@ test_that("am_cursor() with multiple heads errors", {
   expect_true(length(heads) >= 2)
 
   text_obj <- am_get(doc, AM_ROOT, "text")
-  expect_error(
-    am_cursor(text_obj, 3, heads = heads),
-    "multiple heads are not supported"
-  )
+  cursor <- am_cursor(text_obj, 3, heads = heads)
+  expect_s3_class(cursor, "am_cursor")
 })
 
-test_that("am_cursor_position() with multiple heads errors", {
+test_that("am_cursor_position() supports multiple heads", {
   doc <- am_create()
   am_put(doc, AM_ROOT, "text", am_text("hello"))
   am_commit(doc, "initial")
@@ -365,13 +363,11 @@ test_that("am_cursor_position() with multiple heads errors", {
   heads <- am_get_heads(doc)
   expect_true(length(heads) >= 2)
 
-  expect_error(
-    am_cursor_position(cursor, heads = heads),
-    "multiple heads are not supported"
-  )
+  pos <- am_cursor_position(cursor, heads = heads)
+  expect_type(pos, "integer")
 })
 
-test_that("am_marks() with multiple heads errors", {
+test_that("am_marks() supports multiple heads", {
   doc <- am_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
@@ -388,13 +384,12 @@ test_that("am_marks() with multiple heads errors", {
   heads <- am_get_heads(doc)
   expect_true(length(heads) >= 2)
 
-  expect_error(
-    am_marks(text_obj, heads = heads),
-    "multiple heads are not supported"
-  )
+  marks <- am_marks(text_obj, heads = heads)
+  expect_type(marks, "list")
+  expect_length(marks, 1)
 })
 
-test_that("am_marks_at() with multiple heads errors", {
+test_that("am_marks_at() supports multiple heads", {
   doc <- am_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
@@ -411,10 +406,9 @@ test_that("am_marks_at() with multiple heads errors", {
   heads <- am_get_heads(doc)
   expect_true(length(heads) >= 2)
 
-  expect_error(
-    am_marks_at(text_obj, 3, heads = heads),
-    "multiple heads are not supported"
-  )
+  marks <- am_marks_at(text_obj, 3, heads = heads)
+  expect_type(marks, "list")
+  expect_length(marks, 1)
 })
 
 test_that("cursors remain valid after text deletion", {
