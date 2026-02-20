@@ -2,6 +2,8 @@
 
 ## automerge (development version)
 
+- Functions accepting a `heads` parameter now support multiple heads.
+
 - Fixes additional Valgrind false positive in vendored automerge
   library.
 
