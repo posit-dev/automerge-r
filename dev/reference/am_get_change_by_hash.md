@@ -42,7 +42,7 @@ head_hash <- heads[[1]]
 change <- am_get_change_by_hash(doc, head_hash)
 change
 #> <Automerge Change>
-#> Hash: ea a6 71 51 ...
+#> Hash: 74 52 bd e8 ...
 #> Message: Add key 
 am_change_message(change)  # "Add key"
 #> [1] "Add key"

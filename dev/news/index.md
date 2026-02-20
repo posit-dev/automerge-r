@@ -2,6 +2,9 @@
 
 ## automerge (development version)
 
+- Fixes additional Valgrind false positive in vendored automerge
+  library.
+
 ## automerge 0.3.1
 
 CRAN release: 2026-02-19
