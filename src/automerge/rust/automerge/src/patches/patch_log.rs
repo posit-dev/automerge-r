@@ -103,56 +103,6 @@ pub(crate) enum Event {
     },
 }
 
-impl Event {
-    pub(crate) fn with_new_actor(self, idx: usize) -> Self {
-        match self {
-            Self::PutMap {
-                key,
-                value,
-                id,
-                conflict,
-            } => Self::PutMap {
-                key,
-                value,
-                id: id.with_new_actor(idx),
-                conflict,
-            },
-            Self::PutSeq {
-                index,
-                value,
-                id,
-                conflict,
-            } => Self::PutSeq {
-                index,
-                value,
-                id: id.with_new_actor(idx),
-                conflict,
-            },
-            Self::Insert {
-                index,
-                value,
-                id,
-                conflict,
-            } => Self::Insert {
-                index,
-                value,
-                id: id.with_new_actor(idx),
-                conflict,
-            },
-            Self::IncrementMap { key, n, id } => Self::IncrementMap {
-                key,
-                n,
-                id: id.with_new_actor(idx),
-            },
-            Self::IncrementSeq { index, n, id } => Self::IncrementSeq {
-                index,
-                n,
-                id: id.with_new_actor(idx),
-            },
-            event => event,
-        }
-    }
-}
 
 impl PatchLog {
     /// Create a new [`PatchLog`]
@@ -438,11 +388,19 @@ impl PatchLog {
     }
 
     pub(crate) fn migrate_actor(&mut self, index: usize) {
-        let dirty = std::mem::take(&mut self.events);
-        self.events = dirty
-            .into_iter()
-            .map(|(o, e)| (o.with_new_actor(index), e.with_new_actor(index)))
-            .collect();
+        for (o, e) in &mut self.events {
+            *o = o.with_new_actor(index);
+            match e {
+                Event::PutMap { id, .. }
+                | Event::PutSeq { id, .. }
+                | Event::Insert { id, .. }
+                | Event::IncrementMap { id, .. }
+                | Event::IncrementSeq { id, .. } => {
+                    *id = id.with_new_actor(index);
+                }
+                _ => {}
+            }
+        }
 
         let dirty = std::mem::take(&mut self.expose);
         self.expose = dirty

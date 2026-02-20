@@ -1,5 +1,7 @@
 # automerge (development version)
 
+* Fixes additional Valgrind false positive in vendored automerge library.
+
 # automerge 0.3.1
 
 * Adds `print()` method for `am_change` objects.

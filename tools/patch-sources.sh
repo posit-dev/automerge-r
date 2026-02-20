@@ -17,7 +17,8 @@
 #   4. CMakeLists.txt: Use CMake script for ar merge (GNU/BSD compatibility)
 #   5. Add ar-merge-objects.cmake helper for cross-platform static lib merging
 #   6. Replace TinyVec with Box<[u8]> in ActorId (eliminates Valgrind false positive)
-#   7. Ensure all source files end with newline (POSIX compliance)
+#   7. Rewrite PatchLog::migrate_actor to mutate in-place (eliminates Valgrind false positive)
+#   8. Ensure all source files end with newline (POSIX compliance)
 #
 # ============================================================================
 
@@ -253,7 +254,82 @@ else
 fi
 
 # ----------------------------------------------------------------------------
-# Patch 7: Ensure all source files end with a newline (POSIX compliance)
+# Patch 7: Rewrite PatchLog::migrate_actor to mutate in-place
+# ----------------------------------------------------------------------------
+# Event::with_new_actor(self) moves entire Event enum values through the stack.
+# The Event enum has variants of different sizes, so the compiler copies the full
+# enum (including uninitialized padding) via memcpy. When inlined into
+# migrate_actors, Valgrind flags conditional branches on the discriminant as
+# depending on uninitialized memory. Fix: mutate OpId fields in-place through
+# &mut references (OpId is Copy, 8 bytes, no padding).
+echo "  Patching PatchLog::migrate_actor: in-place mutation..."
+
+PATCH_LOG_RS="$RUST_DIR/automerge/src/patches/patch_log.rs"
+
+if [ -f "$PATCH_LOG_RS" ]; then
+    if grep -q 'fn with_new_actor(self, idx: usize) -> Self' "$PATCH_LOG_RS" 2>/dev/null; then
+        awk '
+        BEGIN { skip = 0; depth = 0 }
+
+        # Remove impl Event block (contains only with_new_actor which moves Event by value)
+        /^impl Event \{/ {
+            skip = 1
+            depth = 1
+            next
+        }
+
+        # Replace migrate_actor: mutate events in-place instead of take/map/collect
+        /pub\(crate\) fn migrate_actor\(&mut self, index: usize\)/ {
+            skip = 1
+            depth = 1
+            print "    pub(crate) fn migrate_actor(&mut self, index: usize) {"
+            print "        for (o, e) in &mut self.events {"
+            print "            *o = o.with_new_actor(index);"
+            print "            match e {"
+            print "                Event::PutMap { id, .. }"
+            print "                | Event::PutSeq { id, .. }"
+            print "                | Event::Insert { id, .. }"
+            print "                | Event::IncrementMap { id, .. }"
+            print "                | Event::IncrementSeq { id, .. } => {"
+            print "                    *id = id.with_new_actor(index);"
+            print "                }"
+            print "                _ => {}"
+            print "            }"
+            print "        }"
+            print ""
+            print "        let dirty = std::mem::take(&mut self.expose);"
+            print "        self.expose = dirty"
+            print "            .into_iter()"
+            print "            .map(|id| id.with_new_actor(index))"
+            print "            .collect();"
+            print "    }"
+            next
+        }
+
+        # Skip lines inside blocks being removed/replaced (brace counting)
+        skip {
+            for (i = 1; i <= length($0); i++) {
+                c = substr($0, i, 1)
+                if (c == "{") depth++
+                if (c == "}") depth--
+            }
+            if (depth <= 0) skip = 0
+            next
+        }
+
+        { print }
+        ' "$PATCH_LOG_RS" > "${PATCH_LOG_RS}.tmp"
+        mv "${PATCH_LOG_RS}.tmp" "$PATCH_LOG_RS"
+        echo "    Applied migrate_actor in-place mutation patch"
+    else
+        echo "    (already patched or pattern not found)"
+    fi
+else
+    echo "    Warning: patch_log.rs not found"
+fi
+
+# ----------------------------------------------------------------------------
+# Patch 8: Ensure all source files end with a newline (POSIX compliance)
 # ----------------------------------------------------------------------------
 echo "  Ensuring source files end with newline..."
 
