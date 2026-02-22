@@ -346,6 +346,8 @@ am_text_splice <- function(text_obj, pos, del_count, text) {
 #' Retrieve the full text content from a text object as a string.
 #'
 #' @inheritParams am_text_splice
+#' @param heads Optional list of change hashes (raw vectors) for historical
+#'   query. If `NULL` (default), uses the current state.
 #' @return Character string with the full text
 #' @export
 #' @examples
@@ -359,8 +361,8 @@ am_text_splice <- function(text_obj, pos, del_count, text) {
 #'
 #' am_close(doc)
 #'
-am_text_content <- function(text_obj) {
-  .Call(C_am_text_content, text_obj)
+am_text_content <- function(text_obj, heads = NULL) {
+  .Call(C_am_text_content, text_obj, heads)
 }
 
 #' Update text content

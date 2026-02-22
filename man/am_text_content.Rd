@@ -4,10 +4,13 @@
 \alias{am_text_content}
 \title{Get text content from a text object}
 \usage{
-am_text_content(text_obj)
+am_text_content(text_obj, heads = NULL)
 }
 \arguments{
 \item{text_obj}{An Automerge text object ID}
+
+\item{heads}{Optional list of change hashes (raw vectors) for historical
+query. If \code{NULL} (default), uses the current state.}
 }
 \value{
 Character string with the full text
