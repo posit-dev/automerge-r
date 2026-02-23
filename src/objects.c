@@ -757,10 +757,7 @@ SEXP C_am_text_update(SEXP text_ptr, SEXP new_sexp) {
 
     AMitem *text_item = AMresultItem(text_result);
     AMbyteSpan old_span;
-    if (!text_item || !AMitemToStr(text_item, &old_span)) {
-        AMresultFree(text_result);
-        Rf_error("Failed to read current text content");
-    }
+    AMitemToStr(text_item, &old_span);
 
     const char *old_str = (const char *) old_span.src;
     size_t old_bytes = old_span.count;
