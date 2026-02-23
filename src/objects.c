@@ -599,14 +599,20 @@ SEXP C_am_text_splice(SEXP text_ptr, SEXP pos, SEXP del_count, SEXP text) {
  * Get the full text content from a text object.
  *
  * @param text_ptr External pointer to AMobjId (must be a text object)
+ * @param heads Optional list of change hashes (or R_NilValue)
  * @return Character string with the full text content
  */
-SEXP C_am_text_content(SEXP text_ptr) {
+SEXP C_am_text_content(SEXP text_ptr, SEXP heads) {
     SEXP doc_ptr = get_doc_from_objid(text_ptr);
     AMdoc *doc = get_doc(doc_ptr);
     const AMobjId *text_obj = get_objid(text_ptr);
 
-    AMresult *result = AMtext(doc, text_obj, NULL);
+    AMitems heads_items;
+    AMresult *heads_result = NULL;
+    AMitems *heads_ptr = resolve_heads(heads, &heads_items, &heads_result);
+
+    AMresult *result = AMtext(doc, text_obj, heads_ptr);
+    if (heads_result) AMresultFree(heads_result);
     CHECK_RESULT(result, AM_VAL_TYPE_VOID);
 
     AMitem *item = AMresultItem(result);

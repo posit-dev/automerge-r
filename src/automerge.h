@@ -89,7 +89,7 @@ SEXP C_am_keys(SEXP doc_ptr, SEXP obj_ptr);
 SEXP C_am_length(SEXP doc_ptr, SEXP obj_ptr);
 SEXP C_am_insert(SEXP doc_ptr, SEXP obj_ptr, SEXP pos, SEXP value);
 SEXP C_am_text_splice(SEXP text_ptr, SEXP pos, SEXP del_count, SEXP text);
-SEXP C_am_text_content(SEXP text_ptr);
+SEXP C_am_text_content(SEXP text_ptr, SEXP heads);
 SEXP C_am_text_update(SEXP text_ptr, SEXP old_str, SEXP new_str);
 SEXP C_am_values(SEXP doc_ptr, SEXP obj_ptr);
 SEXP C_am_counter_increment(SEXP doc_ptr, SEXP obj_ptr, SEXP key_or_pos, SEXP delta);

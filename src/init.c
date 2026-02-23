@@ -21,7 +21,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"C_am_length", (DL_FUNC) &C_am_length, 2},
     {"C_am_insert", (DL_FUNC) &C_am_insert, 4},
     {"C_am_text_splice", (DL_FUNC) &C_am_text_splice, 4},
-    {"C_am_text_content", (DL_FUNC) &C_am_text_content, 1},
+    {"C_am_text_content", (DL_FUNC) &C_am_text_content, 2},
     {"C_am_text_update", (DL_FUNC) &C_am_text_update, 3},
     {"C_am_values", (DL_FUNC) &C_am_values, 2},
     {"C_am_counter_increment", (DL_FUNC) &C_am_counter_increment, 4},

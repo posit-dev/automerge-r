@@ -914,6 +914,54 @@ test_that("am_text_content() returns empty string for empty text", {
   expect_equal(result, "")
 })
 
+test_that("am_text_content() with heads returns historical text", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello"))
+  am_commit(doc, "v1")
+  heads_v1 <- am_get_heads(doc)
+
+  text_obj <- am_get(doc, AM_ROOT, "text")
+  am_text_splice(text_obj, 5, 0, " World")
+  am_commit(doc, "v2")
+  heads_v2 <- am_get_heads(doc)
+
+  am_text_splice(text_obj, 11, 0, "!")
+  am_commit(doc, "v3")
+
+  expect_equal(am_text_content(text_obj), "Hello World!")
+  expect_equal(am_text_content(text_obj, heads_v1), "Hello")
+  expect_equal(am_text_content(text_obj, heads_v2), "Hello World")
+  expect_equal(am_text_content(text_obj, NULL), "Hello World!")
+})
+
+test_that("am_text_content() with heads works for empty text state", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text(""))
+  am_commit(doc, "empty")
+  heads_empty <- am_get_heads(doc)
+
+  text_obj <- am_get(doc, AM_ROOT, "text")
+  am_text_splice(text_obj, 0, 0, "content")
+  am_commit(doc, "filled")
+
+  expect_equal(am_text_content(text_obj, heads_empty), "")
+  expect_equal(am_text_content(text_obj), "content")
+})
+
+test_that("am_text_content() with heads works with unicode", {
+  doc <- am_create()
+  am_put(doc, AM_ROOT, "text", am_text("Hello"))
+  am_commit(doc, "v1")
+  heads_v1 <- am_get_heads(doc)
+
+  text_obj <- am_get(doc, AM_ROOT, "text")
+  am_text_update(text_obj, "Hello", "Hello 🌍")
+  am_commit(doc, "v2")
+
+  expect_equal(am_text_content(text_obj, heads_v1), "Hello")
+  expect_equal(am_text_content(text_obj), "Hello 🌍")
+})
+
 test_that("text objects persist after save/load", {
   doc1 <- am_create()
   am_put(doc1, AM_ROOT, "doc", am_text("Original"))

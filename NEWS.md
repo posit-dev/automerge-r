@@ -1,5 +1,7 @@
 # automerge (development version)
 
+* `am_text_content()` gains a `heads` parameter for historical text queries.
+
 * Functions accepting a `heads` parameter now support multiple heads.
 
 * Fixes additional Valgrind false positive in vendored automerge library.
