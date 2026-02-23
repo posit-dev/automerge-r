@@ -78,7 +78,7 @@ am_merge(target, source)
 
 # Target now has source's changes
 target[["version"]]
-#> [1] "2.0"
+#> [1] "1.0"
 
 # Source is unchanged
 names(source)
@@ -372,16 +372,16 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] f5 ed 44 1c 56 96 d4 86 4a 86 55 17 5c b2 ab f2 1d 6d 36 81 94 04
-#> [23] ef 82 55 d8 61 34 a6 cf 7e 14
+#>  [1] dd 95 53 69 b5 cd 0e d2 55 2f 65 8f 36 16 55 ec a2 7f 6e eb 3b 4f
+#> [23] 1e 22 02 12 d9 08 3f 52 42 d0
 am_change_actor_id(change) # Who made this change
-#>  [1] 52 41 a1 fe 75 68 a4 a3 51 8e 91 53 46 05 a8 c2
+#>  [1] fe f1 60 38 d1 9e 0d 52 f2 c5 67 9c e0 d2 c8 68
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] bc 12 fc 7a 01 d0 9a a5 70 ca e7 a3 fb 34 ff 31 9e 75 d5 c2 1d 41
-#> [23] bf 6d 7e bb 2f b0 5a 2b c2 e6
+#>  [1] 26 34 13 63 3e d5 50 79 2c 86 68 07 dd c8 9a 17 ae f3 76 e8 3a a8
+#> [23] 09 51 b8 c0 33 73 2c 2f a6 d1
 am_change_size(change)     # Number of operations
 #> [1] 2
 
@@ -484,7 +484,7 @@ str(y_changes)
 # Sync to merge divergent histories
 rounds <- am_sync(peer_x, peer_y)
 rounds
-#> [1] 5
+#> [1] 4
 
 # After sync, heads are identical again
 identical(am_get_heads(peer_x), am_get_heads(peer_y))
@@ -529,7 +529,7 @@ editor1[["counter"]]
 
 # Status: Deterministic conflict resolution (one value wins)
 editor1[["status"]]
-#> [1] "published"
+#> [1] "review"
 
 am_close(base)
 am_close(editor1)

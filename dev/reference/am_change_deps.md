@@ -41,8 +41,8 @@ deps1
 deps2 <- am_change_deps(history[[2]])
 deps2
 #> [[1]]
-#>  [1] 5e 93 15 75 c6 1a 0e 14 68 8d 09 f3 bc 25 3e f5 2c 33 49 da 53 44
-#> [23] 29 1b 40 f0 15 a4 7b 1a 2f 16
+#>  [1] c2 07 5f e3 cd 15 eb 61 34 00 63 6c 2b 40 b3 85 a0 ce 64 bd ac 29
+#> [23] d8 29 76 7f aa 90 78 c6 4a 5b
 #> 
 
 am_close(doc)

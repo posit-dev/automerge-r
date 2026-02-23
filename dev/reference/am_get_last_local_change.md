@@ -36,7 +36,7 @@ am_commit(doc, "Add key")
 change <- am_get_last_local_change(doc)
 change
 #> <Automerge Change>
-#> Hash: 3e 1a 36 8c ...
+#> Hash: 60 38 67 ed ...
 #> Message: Add key 
 am_change_message(change)  # "Add key"
 #> [1] "Add key"

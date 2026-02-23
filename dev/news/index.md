@@ -2,6 +2,9 @@
 
 ## automerge (development version)
 
+- [`am_text_content()`](https://posit-dev.github.io/automerge-r/dev/reference/am_text_content.md)
+  gains a `heads` parameter for historical text queries.
+
 - Functions accepting a `heads` parameter now support multiple heads.
 
 - Fixes additional Valgrind false positive in vendored automerge
