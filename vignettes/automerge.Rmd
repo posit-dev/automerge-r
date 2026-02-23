@@ -247,8 +247,7 @@ am_text_content(text_obj)
 
 # For collaborative editors, use am_text_update() which computes
 # and applies the minimal diff in one step:
-old_text <- am_text_content(text_obj)
-am_text_update(text_obj, old_text, "New content from user input")
+am_text_update(text_obj, "New content from user input")
 am_text_content(text_obj)
 
 am_close(doc7)
@@ -566,13 +565,13 @@ am_commit(doc_branch, "Initial text")
 v1_heads <- am_get_heads(doc_branch)
 
 text_obj <- am_get(doc_branch, AM_ROOT, "text")
-am_text_update(text_obj, "Hello World", "Hello World - CONFIDENTIAL")
+am_text_update(text_obj, "Hello World - CONFIDENTIAL")
 am_commit(doc_branch, "Add confidential marker")
 
 # Create a public version from v1 and take it in a different direction
 public <- am_fork(doc_branch, v1_heads)
 public_text <- am_get(public, AM_ROOT, "text")
-am_text_update(public_text, "Hello World", "Hello World - Public Draft")
+am_text_update(public_text, "Hello World - Public Draft")
 am_commit(public, "Public version")
 
 am_text_content(public_text) # "Hello World - Public Draft"
