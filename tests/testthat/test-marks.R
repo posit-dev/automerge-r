@@ -819,7 +819,7 @@ test_that("am_text_update() with identical strings is no-op", {
   doc$t <- am_text("hello")
   text_obj <- doc$t
 
-  am_text_update(text_obj, "hello", "hello")
+  am_text_update(text_obj, "hello")
   expect_equal(am_text_content(text_obj), "hello")
 })
 
@@ -827,16 +827,14 @@ test_that("am_text_update() errors on non-string arguments", {
   doc <- am_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
-  expect_error(am_text_update(text_obj, 123, "hello"), "single string")
-  expect_error(am_text_update(text_obj, "hello", 123), "single string")
+  expect_error(am_text_update(text_obj, 123), "single string")
 })
 
 test_that("am_text_update() errors on NA strings", {
   doc <- am_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
-  expect_error(am_text_update(text_obj, NA_character_, "hello"), "NA strings")
-  expect_error(am_text_update(text_obj, "hello", NA_character_), "NA strings")
+  expect_error(am_text_update(text_obj, NA_character_), "NA strings")
 })
 
 # am_counter_increment in lists

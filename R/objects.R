@@ -367,16 +367,15 @@ am_text_content <- function(text_obj, heads = NULL) {
 
 #' Update text content
 #'
-#' An optimized function for collaborative editing that computes the minimal
-#' diff between old and new text and applies it directly to the text object.
-#' This avoids intermediate R object allocation, making it more efficient than
-#' separate diff computation and splice operations.
+#' An optimized function for collaborative editing that reads the current text
+#' content from the document, computes the minimal diff against the new text,
+#' and applies it directly. This avoids intermediate R object allocation, making
+#' it more efficient than separate diff computation and splice operations.
 #'
 #' Positions use Unicode code points (matching R's `nchar()` behavior), not
 #' bytes. This means multibyte characters like emoji count as single characters.
 #'
 #' @inheritParams am_text_splice
-#' @param old_text The previous text content (single string)
 #' @param new_text The new text content (single string)
 #' @return Invisible NULL (called for side effect)
 #' @export
@@ -387,17 +386,17 @@ am_text_content <- function(text_obj, heads = NULL) {
 #' text_obj
 #'
 #' # Efficiently update text by computing and applying diff in one step
-#' am_text_update(text_obj, "Hello", "Hello World")
+#' am_text_update(text_obj, "Hello World")
 #' am_text_content(text_obj)  # "Hello World"
 #'
 #' # Works with Unicode
-#' am_text_update(text_obj, "Hello World", "Hello World!")
+#' am_text_update(text_obj, "Hello World!")
 #' am_text_content(text_obj)  # "Hello World!"
 #'
 #' am_close(doc)
 #'
-am_text_update <- function(text_obj, old_text, new_text) {
-  invisible(.Call(C_am_text_update, text_obj, old_text, new_text))
+am_text_update <- function(text_obj, new_text) {
+  invisible(.Call(C_am_text_update, text_obj, new_text))
 }
 
 #' Get all values from a map or list

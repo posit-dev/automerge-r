@@ -4,12 +4,10 @@
 \alias{am_text_update}
 \title{Update text content}
 \usage{
-am_text_update(text_obj, old_text, new_text)
+am_text_update(text_obj, new_text)
 }
 \arguments{
 \item{text_obj}{An Automerge text object ID}
-
-\item{old_text}{The previous text content (single string)}
 
 \item{new_text}{The new text content (single string)}
 }
@@ -17,10 +15,10 @@ am_text_update(text_obj, old_text, new_text)
 Invisible NULL (called for side effect)
 }
 \description{
-An optimized function for collaborative editing that computes the minimal
-diff between old and new text and applies it directly to the text object.
-This avoids intermediate R object allocation, making it more efficient than
-separate diff computation and splice operations.
+An optimized function for collaborative editing that reads the current text
+content from the document, computes the minimal diff against the new text,
+and applies it directly. This avoids intermediate R object allocation, making
+it more efficient than separate diff computation and splice operations.
 }
 \details{
 Positions use Unicode code points (matching R's \code{nchar()} behavior), not
@@ -33,11 +31,11 @@ text_obj <- am_get(doc, AM_ROOT, "content")
 text_obj
 
 # Efficiently update text by computing and applying diff in one step
-am_text_update(text_obj, "Hello", "Hello World")
+am_text_update(text_obj, "Hello World")
 am_text_content(text_obj)  # "Hello World"
 
 # Works with Unicode
-am_text_update(text_obj, "Hello World", "Hello World!")
+am_text_update(text_obj, "Hello World!")
 am_text_content(text_obj)  # "Hello World!"
 
 am_close(doc)
