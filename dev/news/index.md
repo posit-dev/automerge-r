@@ -2,6 +2,10 @@
 
 ## automerge (development version)
 
+- [`am_text_update()`](https://posit-dev.github.io/automerge-r/dev/reference/am_text_update.md)
+  no longer requires the `old_text` argument; the current text content
+  is now read from the document automatically.
+
 - [`am_text_content()`](https://posit-dev.github.io/automerge-r/dev/reference/am_text_content.md)
   gains a `heads` parameter for historical text queries.
 

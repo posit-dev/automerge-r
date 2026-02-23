@@ -78,7 +78,7 @@ am_merge(target, source)
 
 # Target now has source's changes
 target[["version"]]
-#> [1] "1.0"
+#> [1] "2.0"
 
 # Source is unchanged
 names(source)
@@ -372,16 +372,16 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] dd 95 53 69 b5 cd 0e d2 55 2f 65 8f 36 16 55 ec a2 7f 6e eb 3b 4f
-#> [23] 1e 22 02 12 d9 08 3f 52 42 d0
+#>  [1] a2 2b be 39 81 09 7d 17 aa 20 0e c4 16 a2 de 2c 1a 6d 7b c6 f3 bf
+#> [23] 28 ab c6 54 47 2a a5 23 c1 c1
 am_change_actor_id(change) # Who made this change
-#>  [1] fe f1 60 38 d1 9e 0d 52 f2 c5 67 9c e0 d2 c8 68
+#>  [1] f3 56 03 d9 60 42 e3 cb ca 00 4d 91 91 24 b8 34
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] 26 34 13 63 3e d5 50 79 2c 86 68 07 dd c8 9a 17 ae f3 76 e8 3a a8
-#> [23] 09 51 b8 c0 33 73 2c 2f a6 d1
+#>  [1] f1 a3 b9 a8 6a 4b 9a 42 05 e1 5e ec 16 2d 03 b3 25 81 8b bf 3f 81
+#> [23] 7b 41 ae 81 22 17 87 24 69 cb
 am_change_size(change)     # Number of operations
 #> [1] 2
 

@@ -43,7 +43,7 @@ library(automerge)
 doc <- am_create()
 print(doc)
 #> <Automerge Document>
-#> Actor: ff652a92e672272442b36a167fa52205 
+#> Actor: ed77711b728ccc4e40e0b65c795e6869 
 #> Root keys: 0
 ```
 
@@ -262,8 +262,7 @@ am_text_content(text_obj)
 
 # For collaborative editors, use am_text_update() which computes
 # and applies the minimal diff in one step:
-old_text <- am_text_content(text_obj)
-am_text_update(text_obj, old_text, "New content from user input")
+am_text_update(text_obj, "New content from user input")
 am_text_content(text_obj)
 #> [1] "New content from user input"
 
@@ -302,7 +301,7 @@ am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
-#> [1] "2026-02-23 09:19:41 UTC"
+#> [1] "2026-02-23 11:00:05 UTC"
 
 am_close(doc9)
 ```
@@ -436,7 +435,7 @@ doc12[["value1"]]
 doc12[["value2"]]
 #> [1] 200
 doc12[["source"]] # One value wins deterministically for conflicting keys
-#> [1] "doc12"
+#> [1] "doc13"
 
 am_close(doc12)
 am_close(doc13)
@@ -496,15 +495,15 @@ history <- am_get_changes(doc14)
 history
 #> [[1]]
 #> <Automerge Change>
-#> Hash: de 49 dc f2 ...
+#> Hash: 14 bc d0 05 ...
 #> Message: Initial setup 
-#> Time: 2026-02-23 09:19:42 
+#> Time: 2026-02-23 11:00:05 
 #> 
 #> [[2]]
 #> <Automerge Change>
-#> Hash: 0e 95 ad 53 ...
+#> Hash: be a4 5d 29 ...
 #> Message: Set version 
-#> Time: 2026-02-23 09:19:42
+#> Time: 2026-02-23 11:00:05
 
 # Inspect each change - no parsing needed
 for (i in seq_along(history)) {
@@ -523,20 +522,20 @@ for (i in seq_along(history)) {
 # Extract many fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique 32-byte hash
-#>  [1] 0e 95 ad 53 c9 fb 62 5f 2f ed 49 ff e0 3b 75 20 e4 c2 7d 33 35 61
-#> [23] 9d 67 0a 8f 52 4a be cb 2b 09
+#>  [1] be a4 5d 29 56 95 5e 40 3c 55 60 46 b2 e3 81 0b 0c fe 9d 74 f6 18
+#> [23] be 22 03 9d af c4 09 ec 3d 3a
 am_change_message(change)  # Commit message
 #> [1] "Set version"
 am_change_time(change)     # Timestamp
-#> [1] "2026-02-23 09:19:42 UTC"
+#> [1] "2026-02-23 11:00:05 UTC"
 am_change_seq(change)      # Sequence number
 #> [1] 2
 am_change_actor_id(change) # Who made the change
-#>  [1] ea 65 47 fb f3 cd 86 d5 bb f1 65 6d bb 74 92 a8
+#>  [1] d4 08 0e b6 b1 15 b5 40 76 53 a8 ee ec ac ae 85
 am_change_deps(change)     # Parent change hashes
 #> [[1]]
-#>  [1] de 49 dc f2 7c 69 15 3c 21 69 f7 0f e2 86 38 b6 17 76 f8 36 09 87
-#> [23] 4b 54 25 10 29 99 c9 5b e9 cd
+#>  [1] 14 bc d0 05 37 a5 ec 35 fe f6 b4 54 c6 83 40 b8 35 be 26 6a e4 e6
+#> [23] 12 6a 5a 9e 9f 7b b7 6e fd db
 am_change_size(change)     # Number of operations
 #> [1] 1
 
@@ -641,13 +640,13 @@ am_commit(doc_branch, "Initial text")
 v1_heads <- am_get_heads(doc_branch)
 
 text_obj <- am_get(doc_branch, AM_ROOT, "text")
-am_text_update(text_obj, "Hello World", "Hello World - CONFIDENTIAL")
+am_text_update(text_obj, "Hello World - CONFIDENTIAL")
 am_commit(doc_branch, "Add confidential marker")
 
 # Create a public version from v1 and take it in a different direction
 public <- am_fork(doc_branch, v1_heads)
 public_text <- am_get(public, AM_ROOT, "text")
-am_text_update(public_text, "Hello World", "Hello World - Public Draft")
+am_text_update(public_text, "Hello World - Public Draft")
 am_commit(public, "Public version")
 
 am_text_content(public_text) # "Hello World - Public Draft"

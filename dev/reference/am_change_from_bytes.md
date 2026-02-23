@@ -50,7 +50,7 @@ bytes <- am_change_to_bytes(history[[1]])
 change <- am_change_from_bytes(bytes)
 change
 #> <Automerge Change>
-#> Hash: c4 89 42 f3 ...
+#> Hash: 8c 38 6d 4d ...
 #> Message: Add key 
 am_change_message(change)  # "Add key"
 #> [1] "Add key"
