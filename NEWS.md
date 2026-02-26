@@ -1,3 +1,5 @@
+# automerge (development version)
+
 # automerge 0.4.0
 
 * `am_text_update()` no longer requires the `old_text` argument; the current
