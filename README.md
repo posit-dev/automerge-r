@@ -54,12 +54,12 @@ am_commit(bob, "Bob's data")
 am_sync(alice, bob)
 alice
 #> <Automerge Document>
-#> Actor: 430ffacff3ae9ece2c50d476120588d1 
+#> Actor: fd21a4c3a295910bd287650d0e5d0031 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 bob
 #> <Automerge Document>
-#> Actor: abb94fd55ba7c10623aa19f30ae871b1 
+#> Actor: 53e6a0fb9664332928f7310efdb55827 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 ```
@@ -122,8 +122,8 @@ Rtools43+ on Windows).
 
 - [autosync](https://shikokuchuo.net/autosync/) - automerge-repo
   compatible R sync server
-- [autoedit](https://shikokuchuo.net/autoedit/) - Collaborative code
-  editor widget for R and Shiny
+- [shinysync](https://shikokuchuo.net/shinysync/) - Collaborative Shiny
+  Apps with Automerge
 
 ## License
 

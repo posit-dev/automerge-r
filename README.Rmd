@@ -90,7 +90,7 @@ Building from source requires Rust >= 1.85 ([rustup.rs](https://rustup.rs/)) and
 ## Related Projects
 
 - [autosync](https://shikokuchuo.net/autosync/) - automerge-repo compatible R sync server
-- [autoedit](https://shikokuchuo.net/autoedit/) - Collaborative code editor widget for R and Shiny
+- [shinysync](https://shikokuchuo.net/shinysync/) - Collaborative Shiny Apps with Automerge
 
 ## License
 
