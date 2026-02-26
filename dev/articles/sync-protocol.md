@@ -143,9 +143,9 @@ repeat {
 round
 #> [1] 3
 peer3[["source"]]
-#> [1] "peer4"
+#> [1] "peer3"
 peer4[["source"]]
-#> [1] "peer4"
+#> [1] "peer3"
 
 am_close(peer3)
 am_close(peer4)
@@ -372,16 +372,16 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] 6e 8d 3a d8 83 d5 23 62 ec ce 2e 18 a1 36 80 a8 fd 72 e7 31 77 1d
-#> [23] bd 82 d2 60 68 fe 3f 24 08 4e
+#>  [1] 81 ee 5f 09 f2 03 dc 95 31 f4 d3 a7 ff 19 b0 7b f4 96 dd 51 21 ad
+#> [23] 23 81 22 c2 0e 59 6b 5d 19 b1
 am_change_actor_id(change) # Who made this change
-#>  [1] 45 9f 04 49 d0 f9 5f 66 af e7 9f d1 d8 26 1f 17
+#>  [1] aa b5 e1 44 b9 c2 ce 7a 9a 04 65 b8 9f f6 1a 9c
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] be b6 4b 2b 61 0d 5d 4a 79 0a 12 c6 bd 4e 98 57 f8 48 c4 a9 90 0a
-#> [23] 45 54 7b b0 33 01 7f 4c f4 d4
+#>  [1] ae e2 1a 42 f6 d1 99 ce 64 44 22 3d 58 b0 f6 85 f9 64 67 2c a5 97
+#> [23] 31 49 71 04 89 ef 38 96 16 9d
 am_change_size(change)     # Number of operations
 #> [1] 2
 
@@ -529,7 +529,7 @@ editor1[["counter"]]
 
 # Status: Deterministic conflict resolution (one value wins)
 editor1[["status"]]
-#> [1] "published"
+#> [1] "review"
 
 am_close(base)
 am_close(editor1)
