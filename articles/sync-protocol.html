@@ -68,7 +68,7 @@
       <h1>Synchronization Protocol</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/vignettes/sync-protocol.Rmd" class="external-link"><code>vignettes/sync-protocol.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/v0.4.0/vignettes/sync-protocol.Rmd" class="external-link"><code>vignettes/sync-protocol.Rmd</code></a></small>
       <div class="d-none name"><code>sync-protocol.Rmd</code></div>
     </div>
 
@@ -149,7 +149,7 @@ changes back:</p>
 <span></span>
 <span><span class="co"># Target now has source's changes</span></span>
 <span><span class="va">target</span><span class="op">[[</span><span class="st">"version"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "1.0"</span></span>
+<span><span class="co">#&gt; [1] "2.0"</span></span>
 <span></span>
 <span><span class="co"># Source is unchanged</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">source</span><span class="op">)</span></span>
@@ -215,9 +215,9 @@ API.</p>
 <span><span class="va">round</span></span>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="va">peer3</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer4"</span></span>
+<span><span class="co">#&gt; [1] "peer3"</span></span>
 <span><span class="va">peer4</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer4"</span></span>
+<span><span class="co">#&gt; [1] "peer3"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer4</span><span class="op">)</span></span></code></pre></div>
@@ -444,16 +444,16 @@ document has all its dependencies with
 <span><span class="co"># Extract multiple fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique hash</span></span>
-<span><span class="co">#&gt;  [1] ad 7e 0e 30 09 cf d4 f5 d6 41 48 7d d8 06 1e 6a f8 6c f1 9c 5f e0</span></span>
-<span><span class="co">#&gt; [23] 38 3a a7 c7 b4 d4 89 65 62 32</span></span>
+<span><span class="co">#&gt;  [1] 59 5d 84 e8 28 0d a4 e3 e1 1a b7 54 cf 99 bb 64 70 d8 0d dd 74 6e</span></span>
+<span><span class="co">#&gt; [23] 4f 8c 46 6c 52 5b 25 3e 63 69</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made this change</span></span>
-<span><span class="co">#&gt;  [1] 5c 0a 78 9e 42 07 a7 5c e0 f3 d7 4f ad 1a 08 7f</span></span>
+<span><span class="co">#&gt;  [1] 64 bc 35 de c3 d7 30 b1 de 77 1b 77 22 50 73 95</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># When</span></span>
 <span><span class="co">#&gt; [1] "1970-01-01 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent changes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] 23 28 37 06 18 88 c2 22 70 9c 54 77 4c 71 74 aa 6b cd d7 d9 f8 5d</span></span>
-<span><span class="co">#&gt; [23] 69 99 20 c9 74 1e 56 4e de d3</span></span>
+<span><span class="co">#&gt;  [1] 07 c6 93 b8 1d b8 e6 54 e7 13 4c 25 96 d2 29 a1 b3 9c b3 e8 e4 17</span></span>
+<span><span class="co">#&gt; [23] 33 6f 8d dd c5 60 af b0 83 b9</span></span>
 <span><span class="fu"><a href="../reference/am_change_size.html">am_change_size</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Number of operations</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span></span>
@@ -600,7 +600,7 @@ document has all its dependencies with
 <span></span>
 <span><span class="co"># Status: Deterministic conflict resolution (one value wins)</span></span>
 <span><span class="va">editor1</span><span class="op">[[</span><span class="st">"status"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "review"</span></span>
+<span><span class="co">#&gt; [1] "published"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">base</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">editor1</span><span class="op">)</span></span>
