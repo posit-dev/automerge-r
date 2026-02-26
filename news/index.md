@@ -1,5 +1,21 @@
 # Changelog
 
+## automerge 0.4.0
+
+CRAN release: 2026-02-26
+
+- [`am_text_update()`](https://posit-dev.github.io/automerge-r/reference/am_text_update.md)
+  no longer requires the `old_text` argument; the current text content
+  is now read from the document automatically.
+
+- [`am_text_content()`](https://posit-dev.github.io/automerge-r/reference/am_text_content.md)
+  gains a `heads` parameter for historical text queries.
+
+- Functions accepting a `heads` parameter now support multiple heads.
+
+- Fixes additional Valgrind false positive in vendored automerge
+  library.
+
 ## automerge 0.3.1
 
 CRAN release: 2026-02-19

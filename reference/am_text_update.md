@@ -1,14 +1,15 @@
 # Update text content
 
-An optimized function for collaborative editing that computes the
-minimal diff between old and new text and applies it directly to the
-text object. This avoids intermediate R object allocation, making it
-more efficient than separate diff computation and splice operations.
+An optimized function for collaborative editing that reads the current
+text content from the document, computes the minimal diff against the
+new text, and applies it directly. This avoids intermediate R object
+allocation, making it more efficient than separate diff computation and
+splice operations.
 
 ## Usage
 
 ``` r
-am_text_update(text_obj, old_text, new_text)
+am_text_update(text_obj, new_text)
 ```
 
 ## Arguments
@@ -16,10 +17,6 @@ am_text_update(text_obj, old_text, new_text)
 - text_obj:
 
   An Automerge text object ID
-
-- old_text:
-
-  The previous text content (single string)
 
 - new_text:
 
@@ -47,12 +44,12 @@ text_obj
 #> Content: "Hello" 
 
 # Efficiently update text by computing and applying diff in one step
-am_text_update(text_obj, "Hello", "Hello World")
+am_text_update(text_obj, "Hello World")
 am_text_content(text_obj)  # "Hello World"
 #> [1] "Hello World"
 
 # Works with Unicode
-am_text_update(text_obj, "Hello World", "Hello World!")
+am_text_update(text_obj, "Hello World!")
 am_text_content(text_obj)  # "Hello World!"
 #> [1] "Hello World!"
 

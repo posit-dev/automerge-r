@@ -5,7 +5,7 @@ Retrieve the full text content from a text object as a string.
 ## Usage
 
 ``` r
-am_text_content(text_obj)
+am_text_content(text_obj, heads = NULL)
 ```
 
 ## Arguments
@@ -13,6 +13,11 @@ am_text_content(text_obj)
 - text_obj:
 
   An Automerge text object ID
+
+- heads:
+
+  Optional list of change hashes (raw vectors) for historical query. If
+  `NULL` (default), uses the current state.
 
 ## Value
 
