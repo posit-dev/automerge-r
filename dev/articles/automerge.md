@@ -43,7 +43,7 @@ library(automerge)
 doc <- am_create()
 print(doc)
 #> <Automerge Document>
-#> Actor: ed77711b728ccc4e40e0b65c795e6869 
+#> Actor: d8fb1ef81333cb3739f660146beddd30 
 #> Root keys: 0
 ```
 
@@ -301,7 +301,7 @@ am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
-#> [1] "2026-02-23 11:00:05 UTC"
+#> [1] "2026-02-26 11:35:21 UTC"
 
 am_close(doc9)
 ```
@@ -495,15 +495,15 @@ history <- am_get_changes(doc14)
 history
 #> [[1]]
 #> <Automerge Change>
-#> Hash: 14 bc d0 05 ...
+#> Hash: da 0a 28 1e ...
 #> Message: Initial setup 
-#> Time: 2026-02-23 11:00:05 
+#> Time: 2026-02-26 11:35:22 
 #> 
 #> [[2]]
 #> <Automerge Change>
-#> Hash: be a4 5d 29 ...
+#> Hash: 13 05 9e 9e ...
 #> Message: Set version 
-#> Time: 2026-02-23 11:00:05
+#> Time: 2026-02-26 11:35:22
 
 # Inspect each change - no parsing needed
 for (i in seq_along(history)) {
@@ -522,20 +522,20 @@ for (i in seq_along(history)) {
 # Extract many fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique 32-byte hash
-#>  [1] be a4 5d 29 56 95 5e 40 3c 55 60 46 b2 e3 81 0b 0c fe 9d 74 f6 18
-#> [23] be 22 03 9d af c4 09 ec 3d 3a
+#>  [1] 13 05 9e 9e c0 ca af 4a a0 74 52 08 e2 fc 88 ae e1 d7 c8 ed ae e3
+#> [23] 18 9d 3f dd fd c5 95 22 de 06
 am_change_message(change)  # Commit message
 #> [1] "Set version"
 am_change_time(change)     # Timestamp
-#> [1] "2026-02-23 11:00:05 UTC"
+#> [1] "2026-02-26 11:35:22 UTC"
 am_change_seq(change)      # Sequence number
 #> [1] 2
 am_change_actor_id(change) # Who made the change
-#>  [1] d4 08 0e b6 b1 15 b5 40 76 53 a8 ee ec ac ae 85
+#>  [1] 06 8e 47 89 b1 a3 78 94 0a 28 46 fd 47 a4 33 da
 am_change_deps(change)     # Parent change hashes
 #> [[1]]
-#>  [1] 14 bc d0 05 37 a5 ec 35 fe f6 b4 54 c6 83 40 b8 35 be 26 6a e4 e6
-#> [23] 12 6a 5a 9e 9f 7b b7 6e fd db
+#>  [1] da 0a 28 1e 18 24 07 4e 90 6b 3b 40 c9 dc c1 5a 30 93 19 02 53 ab
+#> [23] 91 11 97 97 5c 47 9e 59 ee 5d
 am_change_size(change)     # Number of operations
 #> [1] 1
 

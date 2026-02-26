@@ -2,6 +2,10 @@
 
 ## automerge (development version)
 
+## automerge 0.4.0
+
+CRAN release: 2026-02-26
+
 - [`am_text_update()`](https://posit-dev.github.io/automerge-r/dev/reference/am_text_update.md)
   no longer requires the `old_text` argument; the current text content
   is now read from the document automatically.
