@@ -13,6 +13,7 @@ use std::collections::HashMap;
 use std::fmt;
 use std::fmt::Display;
 use std::str::FromStr;
+use tinyvec::{ArrayVec, TinyVec};
 
 use rustc_hash::FxBuildHasher;
 pub(crate) type SmallHasher = FxBuildHasher;
@@ -40,8 +41,28 @@ const HEAD_STR: &str = "_head";
 // Note that change encoding relies on the Ord implementation for the ActorId being implemented in
 // terms of the lexicographic ordering of the underlying bytes. Be aware of this if you are
 // changing the ActorId implementation in ways which might affect the Ord implementation
-#[derive(Eq, PartialEq, Hash, Clone, PartialOrd, Ord)]
-pub struct ActorId(Box<[u8]>);
+#[derive(Hash, Clone)]
+pub struct ActorId(TinyVec<[u8; 16]>);
+
+impl PartialEq for ActorId {
+    fn eq(&self, other: &Self) -> bool {
+        self.to_bytes() == other.to_bytes()
+    }
+}
+
+impl Eq for ActorId {}
+
+impl PartialOrd for ActorId {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for ActorId {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.to_bytes().cmp(other.to_bytes())
+    }
+}
 
 impl fmt::Debug for ActorId {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -55,7 +76,7 @@ impl Distribution<ActorId> for StandardUniform {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> ActorId {
         let mut bytes = [0u8; 16];
         rng.fill(&mut bytes);
-        ActorId(Box::from(bytes.as_slice()))
+        ActorId(TinyVec::from(bytes))
     }
 }
 
@@ -63,9 +84,10 @@ impl ActorId {
     pub fn random() -> ActorId {
         let mut buf = [0u8; 16];
         getrandom::fill(&mut buf).expect("random number generator failed");
-        ActorId(Box::from(buf.as_slice()))
+        ActorId(TinyVec::from(buf))
     }
 
+    #[inline(never)]
     pub fn to_bytes(&self) -> &[u8] {
         &self.0
     }
@@ -80,7 +102,7 @@ impl ActorId {
         bytes.extend(&CONCURRENCY_MAGIC_BYTES);
         leb128::write::unsigned(&mut bytes, level as u64).unwrap();
         bytes.extend(&self.0);
-        ActorId(bytes.into_boxed_slice())
+        ActorId(TinyVec::from(bytes.as_slice()))
     }
 }
 
@@ -112,7 +134,7 @@ impl AsRef<[u8]> for ActorId {
 
 impl From<&[u8]> for ActorId {
     fn from(b: &[u8]) -> Self {
-        ActorId(Box::from(b))
+        ActorId(TinyVec::from(b))
     }
 }
 
@@ -124,7 +146,12 @@ impl From<&Vec<u8>> for ActorId {
 
 impl From<Vec<u8>> for ActorId {
     fn from(b: Vec<u8>) -> Self {
-        ActorId(b.into_boxed_slice())
+        let inner = if let Ok(arr) = ArrayVec::try_from(b.as_slice()) {
+            TinyVec::Inline(arr)
+        } else {
+            TinyVec::Heap(b)
+        };
+        ActorId(inner)
     }
 }
 
@@ -136,7 +163,12 @@ impl<const N: usize> From<[u8; N]> for ActorId {
 
 impl<const N: usize> From<&[u8; N]> for ActorId {
     fn from(slice: &[u8; N]) -> Self {
-        ActorId(Box::from(slice.as_slice()))
+        let inner = if let Ok(arr) = ArrayVec::try_from(slice.as_slice()) {
+            TinyVec::Inline(arr)
+        } else {
+            TinyVec::Heap(slice.to_vec())
+        };
+        ActorId(inner)
     }
 }
 
