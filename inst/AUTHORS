@@ -5,7 +5,7 @@ Authors of bundled Rust crates:
  - block-buffer 0.12.0: RustCrypto Developers
  - cbindgen 0.29.2: Emilio Cobos Álvarez, Jeff Muizelaar, Kartikaya Gupta, Ryan Hunt
  - cfg-if 1.0.4: Alex Crichton
- - cpufeatures 0.2.17: RustCrypto Developers
+ - cpufeatures 0.3.0: RustCrypto Developers
  - crc32fast 1.5.0: Sam Rijs, Alex Crichton
  - crypto-common 0.2.1: RustCrypto Developers
  - digest 0.11.2: RustCrypto Developers
@@ -36,8 +36,8 @@ Authors of bundled Rust crates:
  - serde_core 1.0.228: Erick Tryzelaar, David Tolnay
  - serde_derive 1.0.228: Erick Tryzelaar, David Tolnay
  - serde_json 1.0.149: Erick Tryzelaar, David Tolnay
- - sha2 0.11.0-rc.5: RustCrypto Developers
- - simd-adler32 0.3.8: Marvin Countryman
+ - sha2 0.11.0: RustCrypto Developers
+ - simd-adler32 0.3.9: Marvin Countryman
  - smol_str 0.2.2: Aleksey Kladov
  - syn 2.0.117: David Tolnay
  - tempfile 3.3.0: Steven Allen, The Rust Project Developers, Ashley Mannix, Jason White
@@ -50,10 +50,10 @@ Authors of bundled Rust crates:
  - tracing-core 0.1.36: Tokio Contributors
  - typenum 1.19.0: Paho Lurie-Gregg, Andre Bogus
  - unicode-ident 1.0.24: David Tolnay
- - unicode-segmentation 1.12.0: kwantam, Manish Goregaokar
+ - unicode-segmentation 1.13.2: kwantam, Manish Goregaokar
  - winapi 0.3.9: Peter Atashian
  - winapi-i686-pc-windows-gnu 0.4.0: Peter Atashian
  - winapi-x86_64-pc-windows-gnu 0.4.0: Peter Atashian
  - zmij 1.0.21: David Tolnay
 
-(Generated from Cargo.toml files on 2026-03-23)
+(Generated from Cargo.toml files on 2026-03-27)

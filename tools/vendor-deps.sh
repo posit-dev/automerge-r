@@ -118,8 +118,12 @@ find "$VENDOR_DIR" -type f -name "README*" -delete 2>/dev/null || true
 
 # Restore empty placeholders for crates with build.rs or include_str! that require them
 mkdir -p "$VENDOR_DIR/cbindgen/tests/rust" "$VENDOR_DIR/cbindgen/tests/depfile"
-mkdir -p "$VENDOR_DIR/winnow/examples/css"
-touch "$VENDOR_DIR/winnow/examples/css/parser.rs"
+for dir in "$VENDOR_DIR"/winnow*/; do
+    if [ -d "$dir" ]; then
+        mkdir -p "$dir/examples/css"
+        touch "$dir/examples/css/parser.rs"
+    fi
+done
 # Crates using include_str!("../README.md") need an empty placeholder
 for dir in "$VENDOR_DIR"/*/; do
     if grep -rql 'include_str!("../README.md")' "$dir/src" 2>/dev/null; then
