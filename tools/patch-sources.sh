@@ -16,9 +16,7 @@
 #   3. CMakeLists.txt: Fix WIN32 check to WIN32 AND MSVC for lib tool
 #   4. CMakeLists.txt: Use CMake script for ar merge (GNU/BSD compatibility)
 #   5. Add ar-merge-objects.cmake helper for cross-platform static lib merging
-#   6. Replace TinyVec with Box<[u8]> in ActorId (eliminates Valgrind false positive)
-#   7. Rewrite PatchLog::migrate_actor to mutate in-place (eliminates Valgrind false positive)
-#   8. Ensure all source files end with newline (POSIX compliance)
+#   6. Ensure all source files end with newline (POSIX compliance)
 #
 # ============================================================================
 
@@ -201,135 +199,7 @@ endif()
 EOF
 
 # ----------------------------------------------------------------------------
-# Patch 6: Replace TinyVec with Box<[u8]> in ActorId (eliminates Valgrind false positive)
-# ----------------------------------------------------------------------------
-# ActorId wraps TinyVec<[u8; 16]> which has uninitialised union padding in the
-# Inline variant, causing Valgrind false positives. Replace with Box<[u8]> to
-# eliminate the root cause. Also removes the tinyvec dependency from Cargo.toml.
-echo "  Patching ActorId: replacing TinyVec with Box<[u8]>..."
-
-TYPES_RS="$RUST_DIR/automerge/src/types.rs"
-CARGO_TOML="$RUST_DIR/automerge/Cargo.toml"
-
-if [ -f "$TYPES_RS" ]; then
-    if grep -q 'TinyVec<\[u8; 16\]>' "$TYPES_RS" 2>/dev/null; then
-        # Step 1: Remove tinyvec from Cargo.toml
-        sedi '/^tinyvec/d' "$CARGO_TOML"
-
-        # Step 2: Delete tinyvec import
-        sedi '/^use tinyvec::{ArrayVec, TinyVec};$/d' "$TYPES_RS"
-
-        # Step 3: Replace struct field: TinyVec<[u8; 16]> -> Box<[u8]>
-        sedi 's/pub struct ActorId(TinyVec<\[u8; 16\]>);/pub struct ActorId(Box<[u8]>);/' "$TYPES_RS"
-
-        # Step 4: Replace TinyVec constructor calls
-        sedi 's/ActorId(TinyVec::from(bytes))/ActorId(Box::from(bytes.as_slice()))/' "$TYPES_RS"
-        sedi 's/ActorId(TinyVec::from(buf))/ActorId(Box::from(buf.as_slice()))/' "$TYPES_RS"
-        sedi 's/ActorId(TinyVec::from(bytes\.as_slice()))/ActorId(bytes.into_boxed_slice())/' "$TYPES_RS"
-        sedi 's/ActorId(TinyVec::from(b))/ActorId(Box::from(b))/' "$TYPES_RS"
-
-        # Step 5: Simplify From<Vec<u8>> and From<&[u8; N]> impls
-        # Replace ArrayVec/TinyVec branching with direct Box construction
-        awk '
-        /let inner = if let Ok\(arr\) = ArrayVec::try_from\(b\.as_slice\(\)\)/ {
-            getline; getline; getline; getline; getline
-            print "        ActorId(b.into_boxed_slice())"
-            next
-        }
-        /let inner = if let Ok\(arr\) = ArrayVec::try_from\(slice\.as_slice\(\)\)/ {
-            getline; getline; getline; getline; getline
-            print "        ActorId(Box::from(slice.as_slice()))"
-            next
-        }
-        { print }
-        ' "$TYPES_RS" > "${TYPES_RS}.tmp"
-        mv "${TYPES_RS}.tmp" "$TYPES_RS"
-
-        echo "    Applied ActorId Box<[u8]> patch"
-    else
-        echo "    (already patched or pattern not found)"
-    fi
-else
-    echo "    Warning: types.rs not found"
-fi
-
-# ----------------------------------------------------------------------------
-# Patch 7: Rewrite PatchLog::migrate_actor to mutate in-place
-# ----------------------------------------------------------------------------
-# Event::with_new_actor(self) moves entire Event enum values through the stack.
-# The Event enum has variants of different sizes, so the compiler copies the full
-# enum (including uninitialized padding) via memcpy. When inlined into
-# migrate_actors, Valgrind flags conditional branches on the discriminant as
-# depending on uninitialized memory. Fix: mutate OpId fields in-place through
-# &mut references (OpId is Copy, 8 bytes, no padding).
-echo "  Patching PatchLog::migrate_actor: in-place mutation..."
-
-PATCH_LOG_RS="$RUST_DIR/automerge/src/patches/patch_log.rs"
-
-if [ -f "$PATCH_LOG_RS" ]; then
-    if grep -q 'fn with_new_actor(self, idx: usize) -> Self' "$PATCH_LOG_RS" 2>/dev/null; then
-        awk '
-        BEGIN { skip = 0; depth = 0 }
-
-        # Remove impl Event block (contains only with_new_actor which moves Event by value)
-        /^impl Event \{/ {
-            skip = 1
-            depth = 1
-            next
-        }
-
-        # Replace migrate_actor: mutate events in-place instead of take/map/collect
-        /pub\(crate\) fn migrate_actor\(&mut self, index: usize\)/ {
-            skip = 1
-            depth = 1
-            print "    pub(crate) fn migrate_actor(&mut self, index: usize) {"
-            print "        for (o, e) in &mut self.events {"
-            print "            *o = o.with_new_actor(index);"
-            print "            match e {"
-            print "                Event::PutMap { id, .. }"
-            print "                | Event::PutSeq { id, .. }"
-            print "                | Event::Insert { id, .. }"
-            print "                | Event::IncrementMap { id, .. }"
-            print "                | Event::IncrementSeq { id, .. } => {"
-            print "                    *id = id.with_new_actor(index);"
-            print "                }"
-            print "                _ => {}"
-            print "            }"
-            print "        }"
-            print ""
-            print "        let dirty = std::mem::take(&mut self.expose);"
-            print "        self.expose = dirty"
-            print "            .into_iter()"
-            print "            .map(|id| id.with_new_actor(index))"
-            print "            .collect();"
-            print "    }"
-            next
-        }
-
-        # Skip lines inside blocks being removed/replaced (brace counting)
-        skip {
-            for (i = 1; i <= length($0); i++) {
-                c = substr($0, i, 1)
-                if (c == "{") depth++
-                if (c == "}") depth--
-            }
-            if (depth <= 0) skip = 0
-            next
-        }
-
-        { print }
-        ' "$PATCH_LOG_RS" > "${PATCH_LOG_RS}.tmp"
-        mv "${PATCH_LOG_RS}.tmp" "$PATCH_LOG_RS"
-        echo "    Applied migrate_actor in-place mutation patch"
-    else
-        echo "    (already patched or pattern not found)"
-    fi
-else
-    echo "    Warning: patch_log.rs not found"
-fi
-
-# ----------------------------------------------------------------------------
-# Patch 8: Ensure all source files end with a newline (POSIX compliance)
+# Patch 6: Ensure all source files end with a newline (POSIX compliance)
 # ----------------------------------------------------------------------------
 echo "  Ensuring source files end with newline..."
 
