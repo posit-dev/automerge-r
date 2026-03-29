@@ -44,7 +44,7 @@ changes <- am_get_changes_added(doc1, doc2)
 changes
 #> [[1]]
 #> <Automerge Change>
-#> Hash: 96 35 39 19 ...
+#> Hash: 83 61 7c 86 ...
 #> Message: Add y 
 #> 
 
