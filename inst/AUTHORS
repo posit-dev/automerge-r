@@ -31,7 +31,7 @@ Authors of bundled Rust crates:
  - rand_core 0.9.5: The Rand Project Developers, The Rust Project Developers
  - redox_syscall 0.2.16: Jeremy Soller
  - remove_dir_all 0.5.3: Aaronepower
- - rustc-hash 2.1.1: The Rust Project Developers
+ - rustc-hash 2.1.2: The Rust Project Developers
  - serde 1.0.228: Erick Tryzelaar, David Tolnay
  - serde_core 1.0.228: Erick Tryzelaar, David Tolnay
  - serde_derive 1.0.228: Erick Tryzelaar, David Tolnay
@@ -56,4 +56,4 @@ Authors of bundled Rust crates:
  - winapi-x86_64-pc-windows-gnu 0.4.0: Peter Atashian
  - zmij 1.0.21: David Tolnay
 
-(Generated from Cargo.toml files on 2026-03-27)
+(Generated from Cargo.toml files on 2026-03-29)
