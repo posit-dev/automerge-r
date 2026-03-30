@@ -88,4 +88,4 @@ package version 0.4.0.9000, <https://github.com/posit-dev/automerge-r>.
      - winapi-x86_64-pc-windows-gnu 0.4.0: Peter Atashian
      - zmij 1.0.21: David Tolnay
 
-    (Generated from Cargo.toml files on 2026-03-29)
+    (Generated from Cargo.toml files on 2026-03-30)
