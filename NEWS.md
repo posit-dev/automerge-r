@@ -1,5 +1,7 @@
 # automerge (development version)
 
+* Updates vendored automerge library to 0.9.0.
+
 # automerge 0.4.0
 
 * `am_text_update()` no longer requires the `old_text` argument; the current
