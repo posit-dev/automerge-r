@@ -47,12 +47,14 @@ CARGO_FILES="$RUST_DIR/automerge/Cargo.toml $RUST_DIR/hexane/Cargo.toml"
 for cargo_file in $CARGO_FILES; do
     if [ -f "$cargo_file" ]; then
         cp "$cargo_file" "${cargo_file}.bak"
-        # Remove section contents (keep headers for idempotent patching)
-        # Remove wasm feature line and js-sys, wasm-bindgen optional deps
-        # Using awk for BSD/GNU portability
+        # Fully remove sections we don't need (an empty `[dependencies.web-sys]`
+        # table is invalid TOML for cargo, so we drop the header too).
+        # Also strip wasm feature line and js-sys/wasm-bindgen optional deps.
+        # Using awk for BSD/GNU portability.
         awk '
-            /^\[dev-dependencies\]/ { skip = 1; print; next }
-            /^\[dependencies\.web-sys\]/ { skip = 1; print; next }
+            /^\[dev-dependencies\]/ { skip = 1; next }
+            /^\[dependencies\.web-sys\]/ { skip = 1; next }
+            /^\[\[bench\]\]/ { skip = 1; next }
             /^\[/ { skip = 0 }
             skip { next }
             /^wasm = \[/ { next }
@@ -88,16 +90,18 @@ done
 # Step 2: Remove WASM-related crates (unused by C FFI, excluded from Cargo.lock)
 # ----------------------------------------------------------------------------
 echo "Removing WASM-related crates..."
-WASM_CRATES="web-sys js-sys wasm-bindgen wasm-bindgen-backend wasm-bindgen-macro wasm-bindgen-macro-support wasm-bindgen-shared wit-bindgen wit-bindgen-rt wasip2"
+WASM_CRATES="web-sys js-sys wasm-bindgen wasm-bindgen-backend wasm-bindgen-macro wasm-bindgen-macro-support wasm-bindgen-shared wit-bindgen-rt wasip2 wasip3 wit-bindgen-core wit-bindgen-rust wit-bindgen-rust-macro wit-component wit-parser wasm-encoder wasm-metadata wasmparser"
 for crate in $WASM_CRATES; do
     rm -rf "$VENDOR_DIR/$crate"
 done
+# wit-bindgen may be vendored under both `wit-bindgen` and version-suffixed dirs
+rm -rf "$VENDOR_DIR"/wit-bindgen "$VENDOR_DIR"/wit-bindgen-[0-9]*
 
-# Strip wasip2 target dep from getrandom (avoids vendoring wasip2/wit-bindgen chain)
+# Strip wasip2/wasip3 target deps from getrandom (avoids vendoring wasi/wit-bindgen chain)
 for dir in "$VENDOR_DIR"/getrandom*; do
     if [ -f "$dir/Cargo.toml" ]; then
         awk '
-            /^\[target.*wasip2/ { skip = 1; next }
+            /^\[target.*wasip[0-9]+/ { skip = 1; next }
             /^\[/ { skip = 0 }
             skip { next }
             { print }

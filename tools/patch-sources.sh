@@ -199,7 +199,22 @@ endif()
 EOF
 
 # ----------------------------------------------------------------------------
-# Patch 6: Ensure all source files end with a newline (POSIX compliance)
+# Patch 6: Drop add_subdirectory calls for dirs we don't vendor (test/docs/examples)
+# ----------------------------------------------------------------------------
+echo "  Patching CMakeLists.txt: removing add_subdirectory(test/docs/examples)..."
+
+if grep -q "^add_subdirectory(docs)" "$CMAKE_FILE" 2>/dev/null; then
+    # Drop the BUILD_TESTING block (test subdir + enable_testing)
+    sedi '/^if(BUILD_TESTING)$/,/^endif()$/d' "$CMAKE_FILE"
+    sedi '/^add_subdirectory(docs)$/d' "$CMAKE_FILE"
+    sedi '/^add_subdirectory(examples EXCLUDE_FROM_ALL)$/d' "$CMAKE_FILE"
+    echo "    Applied add_subdirectory removal patch"
+else
+    echo "    (already patched or pattern not found)"
+fi
+
+# ----------------------------------------------------------------------------
+# Patch 7: Ensure all source files end with a newline (POSIX compliance)
 # ----------------------------------------------------------------------------
 echo "  Ensuring source files end with newline..."
 
