@@ -1,6 +1,7 @@
 # Synchronization Protocol
 
 ``` r
+
 library(automerge)
 ```
 
@@ -21,6 +22,7 @@ protocol automatically.
 The simplest way to synchronize two documents:
 
 ``` r
+
 # Create two peers with different data
 peer1 <- am_create()
 peer1[["edited_by"]] <- "peer1"
@@ -61,6 +63,7 @@ For pulling changes from one document to another without sending changes
 back:
 
 ``` r
+
 # Create source document
 source <- am_create()
 source[["version"]] <- "2.0"
@@ -78,7 +81,7 @@ am_merge(target, source)
 
 # Target now has source's changes
 target[["version"]]
-#> [1] "1.0"
+#> [1] "2.0"
 
 # Source is unchanged
 names(source)
@@ -98,6 +101,7 @@ For network protocols or fine-grained control, use the low-level API.
 ### Basic Protocol Flow
 
 ``` r
+
 # Create two peers
 peer3 <- am_create()
 peer3[["source"]] <- "peer3"
@@ -179,6 +183,7 @@ For scenarios where you want explicit control over individual changes:
 ### Exporting and Importing Changes
 
 ``` r
+
 # Create base document that will be shared
 base_doc <- am_create()
 base_doc[["v1"]] <- "first"
@@ -217,6 +222,7 @@ peer_b[["v3"]]
 ### Saving Changes to Files
 
 ``` r
+
 # Save individual changes to files (serialize to raw bytes first)
 temp_dir <- tempdir()
 for (i in seq_along(changes)) {
@@ -256,6 +262,7 @@ document, use
 [`am_load_changes()`](https://posit-dev.github.io/automerge-r/dev/reference/am_load_changes.md):
 
 ``` r
+
 # Save a document with multiple commits
 doc_decompose <- am_create()
 doc_decompose[["x"]] <- 1
@@ -298,6 +305,7 @@ am_close(doc_selective)
 represent the current state’s frontier in the change graph.
 
 ``` r
+
 # Create document and make changes
 doc_main <- am_create()
 doc_main[["version"]] <- "1.0"
@@ -337,6 +345,7 @@ has all its dependencies with
 [`am_get_missing_deps()`](https://posit-dev.github.io/automerge-r/dev/reference/am_get_missing_deps.md):
 
 ``` r
+
 doc_check <- am_create()
 doc_check[["data"]] <- "complete"
 am_commit(doc_check)
@@ -352,6 +361,7 @@ am_close(doc_check)
 ### Working with History
 
 ``` r
+
 # Get full change history
 history <- am_get_changes(doc_main)
 length(history)
@@ -372,16 +382,16 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] c5 5d 60 dc 24 13 46 08 4a 39 1e ee 68 c6 25 a0 b1 4d e7 e8 22 46
-#> [23] 46 c7 52 da 4e 57 54 43 31 70
+#>  [1] 8e a9 af a4 db e5 54 43 d3 de be e7 13 bc 69 a5 b9 7b 98 2d a9 5b
+#> [23] c2 76 53 fd 5f d5 8a 0b 34 ca
 am_change_actor_id(change) # Who made this change
-#>  [1] e3 c4 7e 01 5b 8a d2 cc 41 fe 3e 6d a7 de 35 2a
+#>  [1] 51 c8 e9 88 07 c0 cc 47 ed 30 fe 2e 3d 38 17 80
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] cf 53 8c bd 4a 94 a6 0a 23 6b c8 bf ba 5e d6 eb d8 dd f8 a1 36 bf
-#> [23] 20 c3 1e c2 4d f1 f7 14 aa 2d
+#>  [1] 6c 29 a8 40 3e 6d 08 6d 9e 42 35 53 ca 0a a7 37 91 4a c3 b7 7b 9f
+#> [23] 4e cb 8c 24 3a 93 44 7b fd 9e
 am_change_size(change)     # Number of operations
 #> [1] 2
 
@@ -389,7 +399,7 @@ am_change_size(change)     # Number of operations
 changes_since_v1 <- am_get_changes(doc_main, heads_v1)
 str(changes_since_v1)
 #> List of 1
-#>  $ :Class 'am_change' <externalptr>
+#>  $ :Class 'am_change' <pointer: 0x56201f24a6c0>
 
 am_close(doc_main)
 ```
@@ -399,6 +409,7 @@ am_close(doc_main)
 Common pattern: track last sync point and only send new changes
 
 ``` r
+
 # Server document that accumulates changes
 server <- am_create()
 server[["users"]] <- 0L
@@ -446,6 +457,7 @@ am_close(client)
 ### Detecting Divergence
 
 ``` r
+
 # Create two peers that will diverge
 peer_x <- am_create()
 peer_x[["id"]] <- "x"
@@ -476,10 +488,10 @@ y_changes <- am_get_changes(peer_y, common_heads)
 
 str(x_changes)
 #> List of 1
-#>  $ :Class 'am_change' <externalptr>
+#>  $ :Class 'am_change' <pointer: 0x56201dcdccc0>
 str(y_changes)
 #> List of 1
-#>  $ :Class 'am_change' <externalptr>
+#>  $ :Class 'am_change' <pointer: 0x56201a432420>
 
 # Sync to merge divergent histories
 rounds <- am_sync(peer_x, peer_y)
@@ -499,6 +511,7 @@ am_close(peer_y)
 Understanding how concurrent edits merge:
 
 ``` r
+
 # Create shared starting point
 base <- am_create()
 base[["counter"]] <- am_counter(0)
@@ -544,6 +557,7 @@ There’s a fundamental tradeoff between *collaboration latency* and
 *efficiency*:
 
 ``` r
+
 # Strategy A: Frequent sync (lower latency, more overhead)
 doc_frequent <- am_create()
 peer_frequent <- am_create()
@@ -614,6 +628,7 @@ am_close(peer_batched)
 **Hybrid approach** (recommended for most cases):
 
 ``` r
+
 # Batch related changes, sync periodically
 doc_hybrid <- am_create()
 
@@ -642,6 +657,7 @@ Sync state tracks what each peer has seen, enabling efficient
 incremental sync:
 
 ``` r
+
 # Without reusing sync state (inefficient)
 doc_no_reuse <- am_create()
 doc_no_reuse[["v1"]] <- 1
@@ -704,6 +720,7 @@ serialize and restore it with
 [`am_sync_state_decode()`](https://posit-dev.github.io/automerge-r/dev/reference/am_sync_state_decode.md):
 
 ``` r
+
 # After initial sync, save sync state for later reuse
 sync_bytes <- am_sync_state_encode(sync_state_local)
 
@@ -723,6 +740,7 @@ restored_sync <- am_sync_state_decode(sync_bytes)
 ### Measuring Performance
 
 ``` r
+
 # Compare efficiency of different approaches
 measure_sync <- function(n_changes, batch_size) {
   doc <- am_create()

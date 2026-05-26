@@ -2,6 +2,8 @@
 
 ## automerge (development version)
 
+- Updates vendored automerge library to 0.9.0.
+
 ## automerge 0.4.0
 
 CRAN release: 2026-02-26

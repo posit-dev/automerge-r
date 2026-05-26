@@ -54,6 +54,7 @@ Rscript -e 'doc <- automerge::am_load(readBin("shared_doc.automerge", "raw", 1e7
 ### Option 3: Interactive Verification
 
 ``` r
+
 library(automerge)
 
 # Check if Node.js is available
@@ -140,6 +141,7 @@ console.log('Actor ID:', Automerge.getActorId(doc))
 ### R Side
 
 ``` r
+
 library(automerge)
 
 # Load the document created in JavaScript
@@ -173,6 +175,7 @@ cat(
 ### R Side - Make Changes
 
 ``` r
+
 # Continue from previous example
 # Add analysis results from R
 am_put(
@@ -240,6 +243,7 @@ synchronization between JavaScript and R.
 ### R Side - Set Up Sync
 
 ``` r
+
 # Initial R document
 r_doc <- am_create() |>
   am_put(AM_ROOT, "source", "R") |>
@@ -305,6 +309,7 @@ if (syncMsgToR) {
 ### R Side - Complete Sync
 
 ``` r
+
 # Load sync message from JavaScript
 sync_msg_from_js <- readBin("js_to_r_sync.bin", "raw", 1e7)
 
@@ -330,6 +335,7 @@ both platforms.
 ### Scenario Setup
 
 ``` r
+
 # Create a shared document
 shared <- am_create() |>
   am_put(AM_ROOT, "document", "Shared Document") |>
@@ -375,6 +381,7 @@ node inst/js/concurrent-edit.js concurrent_doc.automerge js_concurrent.automerge
 ### R - Concurrent Edit 2
 
 ``` r
+
 # Load the same original document
 r_doc <- am_load(shared_bytes)
 
@@ -401,6 +408,7 @@ writeBin(am_save(r_doc), "r_concurrent.automerge")
 ### Merge Concurrent Changes (R Side)
 
 ``` r
+
 # Load JavaScript version
 js_doc_bytes <- readBin("js_concurrent.automerge", "raw", 1e7)
 js_doc <- am_load(js_doc_bytes)
@@ -480,6 +488,7 @@ fs.writeFileSync('text_doc.automerge', Automerge.save(textDoc))
 ### R - Load and Edit Text
 
 ``` r
+
 # Load text document
 text_doc <- am_load(readBin("text_doc.automerge", "raw", 1e7))
 
@@ -512,20 +521,20 @@ console.log('Text content:', updatedTextDoc.notes.toString())
 
 ## Type Compatibility Matrix
 
-| Automerge       | JavaScript                                       | R                     | Notes                               |
-|-----------------|--------------------------------------------------|-----------------------|-------------------------------------|
-| Map             | Object [`{}`](https://rdrr.io/r/base/Paren.html) | Named list            | Root is always a map                |
-| List            | Array `[]`                                       | Unnamed list          | R uses 1-based indexing             |
-| Text            | `Automerge.Text`                                 | Text object (am_text) | Character-level CRDT                |
-| String          | `string`                                         | `character(1)`        | UTF-8 encoding                      |
-| Number (int)    | `number`                                         | `integer` / `double`  | 32-bit int if in range, else double |
-| Number (uint64) | `BigInt`                                         | `am_uint64`           | Unsigned 64-bit integer             |
-| Number (float)  | `number`                                         | `double`              | Double precision (64-bit)           |
-| Boolean         | `boolean`                                        | `logical`             | TRUE/FALSE                          |
-| Null            | `null`                                           | `NULL`                | Absence of value                    |
-| Bytes           | `Uint8Array`                                     | `raw`                 | Binary data                         |
-| Timestamp       | `Date` / `number`                                | `POSIXct`             | Milliseconds since epoch            |
-| Counter         | CRDT counter                                     | `am_counter`          | Conflict-free counter               |
+| Automerge | JavaScript | R | Notes |
+|----|----|----|----|
+| Map | Object [`{}`](https://rdrr.io/r/base/Paren.html) | Named list | Root is always a map |
+| List | Array `[]` | Unnamed list | R uses 1-based indexing |
+| Text | `Automerge.Text` | Text object (am_text) | Character-level CRDT |
+| String | `string` | `character(1)` | UTF-8 encoding |
+| Number (int) | `number` | `integer` / `double` | 32-bit int if in range, else double |
+| Number (uint64) | `BigInt` | `am_uint64` | Unsigned 64-bit integer |
+| Number (float) | `number` | `double` | Double precision (64-bit) |
+| Boolean | `boolean` | `logical` | TRUE/FALSE |
+| Null | `null` | `NULL` | Absence of value |
+| Bytes | `Uint8Array` | `raw` | Binary data |
+| Timestamp | `Date` / `number` | `POSIXct` | Milliseconds since epoch |
+| Counter | CRDT counter | `am_counter` | Conflict-free counter |
 
 **Important Notes:**
 
@@ -568,6 +577,7 @@ Both JavaScript and R use UTF-8 for strings. If you encounter encoding
 issues:
 
 ``` r
+
 # Ensure UTF-8 encoding when reading from files
 doc <- am_load(readBin("doc.automerge", "raw", 1e7))
 
@@ -593,6 +603,7 @@ scp -B doc.automerge server:/path/
 Each platform generates random actor IDs. To use custom IDs:
 
 ``` r
+
 # R - specify actor ID as raw bytes or hex string
 doc <- am_create(actor_id = "r-session-123")
 ```
@@ -607,6 +618,7 @@ let doc = Automerge.init({ actorId: "js-session-456" })
 Remember the indexing conventions:
 
 ``` r
+
 # Lists: R uses 1-based indexing
 list_obj <- doc[["items"]]
 first_item <- am_get(doc, list_obj, 1) # First element
@@ -659,6 +671,7 @@ The following scripts are available in `inst/js/`:
 To find these scripts after installation:
 
 ``` r
+
 system.file("js", package = "automerge")
 ```
 

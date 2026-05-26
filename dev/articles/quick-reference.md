@@ -8,6 +8,7 @@ with `?function_name`.
 ### Installation
 
 ``` r
+
 # From R-universe
 install.packages("automerge", repos = "https://posit-dev.r-universe.dev")
 
@@ -18,6 +19,7 @@ pak::pak("posit-dev/automerge-r")
 ### Document Lifecycle
 
 ``` r
+
 library(automerge)
 
 # Create
@@ -58,6 +60,7 @@ am_close(doc) # Explicitly free resources (optional)
 ### Basic Access (Maps)
 
 ``` r
+
 # S3 operators
 doc[["key"]] <- "value" # Set value
 value <- doc[["key"]] # Get value
@@ -87,6 +90,7 @@ entries <- am_map_range(doc, AM_ROOT, "a", "m")
 ### Nested Objects
 
 ``` r
+
 # Automatic recursive conversion (recommended)
 am_put(
   doc,
@@ -113,6 +117,7 @@ name <- am_get(doc, user_obj, "name")
 ### Lists
 
 ``` r
+
 # Create list
 am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
 items <- am_get(doc, AM_ROOT, "items")
@@ -138,6 +143,7 @@ sub <- am_list_range(doc, items, 2, 4)
 ### Text Objects
 
 ``` r
+
 # Text objects use 0-based inter-character positions
 # For the text "Hello":
 #  H e l l o
@@ -179,6 +185,7 @@ am_mark_clear(text_obj, 0, 5, "bold") # Remove a mark from range
 ### Value Types
 
 ``` r
+
 # NULL
 am_put(doc, AM_ROOT, "null", NULL)
 
@@ -217,6 +224,7 @@ am_put(doc, AM_ROOT, "notes", am_text()) # Text object
 ### Synchronization (High-Level)
 
 ``` r
+
 # Bidirectional sync (auto-converge)
 # Documents are modified in place
 rounds <- am_sync(doc1, doc2)
@@ -229,6 +237,7 @@ am_merge(doc1, doc2) # Merge doc2 into doc1
 ### Synchronization (Low-Level)
 
 ``` r
+
 # Create sync state
 sync_state <- am_sync_state()
 
@@ -259,6 +268,7 @@ repeat {
 ### History & Changes
 
 ``` r
+
 # Get heads (fingerprint of current state)
 heads <- am_get_heads(doc)
 
@@ -303,6 +313,7 @@ missing <- am_get_missing_deps(doc, heads) # With specific heads
 ### Conversion
 
 ``` r
+
 # R → Automerge
 doc <- as_automerge(list(name = "Alice", age = 30L))
 
@@ -316,6 +327,7 @@ text_str <- as.character(text_obj) # S3 method for text objects
 ### Pipe-Friendly Style
 
 ``` r
+
 doc <- am_create() |>
   am_put(AM_ROOT, "name", "Alice") |>
   am_put(AM_ROOT, "age", 30L) |>
@@ -325,6 +337,7 @@ doc <- am_create() |>
 ### File Operations
 
 ``` r
+
 # Save to file
 writeBin(am_save(doc), "document.automerge")
 
@@ -335,6 +348,7 @@ doc <- am_load(readBin("document.automerge", "raw", 1e6))
 ### Constants
 
 ``` r
+
 AM_ROOT # Root object (NULL)
 AM_OBJ_TYPE_LIST # "list"
 AM_OBJ_TYPE_MAP # "map"
@@ -349,6 +363,7 @@ AM_MARK_EXPAND_BOTH # "both" (expands at both boundaries)
 ### Getting Help
 
 ``` r
+
 # Function help
 ?am_create
 ?am_put

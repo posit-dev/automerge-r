@@ -23,6 +23,7 @@ simpler.
 ## Quick Example
 
 ``` r
+
 library(automerge)
 
 # Two researchers working independently
@@ -68,6 +69,7 @@ bob
 ## Installation
 
 ``` r
+
 install.packages("automerge")
 ```
 

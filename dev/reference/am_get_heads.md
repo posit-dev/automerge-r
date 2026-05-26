@@ -32,8 +32,8 @@ am_commit(doc)
 heads <- am_get_heads(doc)
 heads
 #> [[1]]
-#>  [1] c3 88 a7 ca b0 1b 92 a3 3c 76 90 f8 ec 57 9e 84 a8 94 1a 6d 47 0f
-#> [23] e6 8d a7 7e de eb d2 07 b3 13
+#>  [1] 8c 20 b2 c4 63 20 23 cb 2b 87 d6 67 4c 19 0b 71 b4 a0 63 31 7e b4
+#> [23] db 8b 87 1c cb d5 4e 51 9a 34
 #> 
 
 am_close(doc)
