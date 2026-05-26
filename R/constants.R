@@ -6,9 +6,7 @@
 #' root references, and mark expansion modes.
 #'
 #' @name automerge-constants
-#' @aliases AM_ROOT AM_OBJ_TYPE_LIST AM_OBJ_TYPE_MAP AM_OBJ_TYPE_TEXT
-#'   AM_MARK_EXPAND_NONE AM_MARK_EXPAND_BEFORE AM_MARK_EXPAND_AFTER
-#'   AM_MARK_EXPAND_BOTH
+#' @aliases AM_ROOT AM_OBJ_TYPE_LIST AM_OBJ_TYPE_MAP AM_OBJ_TYPE_TEXT AM_MARK_EXPAND_NONE AM_MARK_EXPAND_BEFORE AM_MARK_EXPAND_AFTER AM_MARK_EXPAND_BOTH
 #'
 #' @section Root Object:
 #' \describe{

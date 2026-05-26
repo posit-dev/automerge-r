@@ -488,6 +488,7 @@ print.am_text <- function(x, ...) {
 #' @param ... Additional arguments (unused)
 #' @return Named list
 #' @keywords internal
+#' @export
 #'
 as.list.am_map <- function(x, doc = NULL, ...) {
   if (is.null(doc)) {
@@ -515,6 +516,7 @@ as.list.am_map <- function(x, doc = NULL, ...) {
 #' @param ... Additional arguments (unused)
 #' @return Unnamed list
 #' @keywords internal
+#' @export
 #'
 as.list.am_list <- function(x, doc = NULL, ...) {
   if (is.null(doc)) {
@@ -540,6 +542,7 @@ as.list.am_list <- function(x, doc = NULL, ...) {
 #' @param ... Additional arguments (unused)
 #' @return Character string
 #' @keywords internal
+#' @export
 #'
 as.list.am_text <- function(x, doc = NULL, ...) {
   am_text_content(x)
