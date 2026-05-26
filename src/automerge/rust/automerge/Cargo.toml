@@ -1,6 +1,6 @@
 [package]
 name = "automerge"
-version = "0.7.3"
+version = "0.9.0"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/automerge/automerge"
@@ -11,12 +11,15 @@ readme = "./README.md"
 [features]
 utf8-indexing = []
 utf16-indexing = []
+# Whether to enable "slow path" assertions which check that various invariants hold
+# should only be enabled when running tests
+slow_path_assertions = ["hexane/slow_path_assertions"]
 
 [dependencies]
-hexane = { version = "0.1.7", path = "../hexane" }
+hexane = { version = "0.2.1", path = "../hexane" }
 hex = "^0.4.3"
 leb128 = "^0.2.5"
-sha2 = { version = "0.11.0-pre.5", default-features = false }
+sha2 = { version = "0.11.0", default-features = false }
 thiserror = "^2.0.12"
 itertools = "0.14.0"
 flate2 = "^1.0.22"
@@ -26,12 +29,12 @@ rustc-hash = "^2.1.1"
 tinyvec = { version = "^1.5.1", features = ["alloc"] }
 serde = { version = "^1.0", features = ["derive"] }
 cfg-if = "1.0"
-getrandom = "0.3"
+getrandom = "0.4"
 
-rand = { version = "^0.9", default-features = false }
+# optional deps
+rand = { version = "^0.10", default-features = false }
 
 unicode-segmentation = "1.10.1"
 
 [lints]
 workspace = true
-

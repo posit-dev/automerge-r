@@ -411,7 +411,7 @@ impl OpSet {
         let range = self.scope_to_obj(obj);
         let mut iter = self.cols.index.text.iter_range(range.clone()).with_acc();
         let start_acc = iter.acc().as_usize();
-        let tx = iter.nth(index.get() - 1)?;
+        let tx = iter.shift_acc(index.get() - 1)?;
         let current_acc = tx.acc.as_usize();
         let iter = self.iter_range(&(tx.pos..range.end));
         let marks = self.cols.index.mark.rich_text_at(tx.pos, None);
@@ -523,7 +523,7 @@ impl OpSet {
             } else {
                 self.seek_text_ops_by_index_fast(obj, index)
             };
-            #[cfg(debug_assertions)]
+            #[cfg(feature = "slow_path_assertions")]
             {
                 let slow = self.seek_ops_by_index_slow(obj, index, seq_type, clock);
                 assert_eq!(found, slow, "fast != slow");
@@ -631,7 +631,7 @@ impl OpSet {
         let mut ops = vec![];
         let mut end_pos = range.end;
         let obj_start = iter.acc();
-        if let Some(tx) = iter.nth(index) {
+        if let Some(tx) = iter.shift_acc(index) {
             assert!(tx.acc >= obj_start);
             range.start = tx.pos;
             index = (tx.acc - obj_start).as_usize();
@@ -1347,7 +1347,7 @@ mod tests {
     use super::OpSet;
 
     use rand::distr::Alphanumeric;
-    use rand::Rng;
+    use rand::RngExt;
 
     #[test]
     fn suspend_resume_op_set_iter() {

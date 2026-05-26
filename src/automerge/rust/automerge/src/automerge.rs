@@ -15,6 +15,7 @@ pub(crate) use crate::op_set2::{
 pub(crate) use crate::read::ReadDoc;
 
 use crate::change_graph::ChangeGraph;
+use crate::change_queue::ChangeQueue;
 use crate::cursor::{CursorPosition, MoveCursor, OpCursor};
 use crate::exid::ExId;
 use crate::iter::{DiffIter, DocIter, Keys, ListRange, MapRange, Spans, Values};
@@ -22,7 +23,8 @@ use crate::marks::{Mark, MarkAccumulator, MarkSet};
 use crate::patches::{Patch, PatchLog};
 use crate::storage::{self, change, load, Bundle, CompressConfig, Document, VerificationMode};
 use crate::transaction::{
-    self, CommitOptions, Failure, Success, Transactable, Transaction, TransactionArgs,
+    self, CommitOptions, Failure, OwnedTransaction, Success, Transactable, Transaction,
+    TransactionArgs,
 };
 
 use crate::clock::{Clock, ClockRange};
@@ -199,7 +201,7 @@ impl std::default::Default for LoadOptions<'static> {
 #[derive(Debug, Clone)]
 pub struct Automerge {
     /// The list of unapplied changes that are not causally ready.
-    pub(crate) queue: Vec<Change>,
+    pub(crate) queue: ChangeQueue,
     /// Graph of changes
     pub(crate) change_graph: ChangeGraph,
     /// Current dependencies of this document (heads hashes).
@@ -214,7 +216,7 @@ impl Automerge {
     /// Create a new document with a random actor id.
     pub fn new() -> Self {
         Automerge {
-            queue: vec![],
+            queue: ChangeQueue::new(),
             change_graph: ChangeGraph::new(0),
             ops: OpSet::new(TextEncoding::platform_default()),
             deps: Default::default(),
@@ -222,9 +224,20 @@ impl Automerge {
         }
     }
 
+    /// Overwrite the keys of the root object with the values from `value`
+    ///
+    /// This is useful to initialize an empty document with a large initial
+    /// value. Note that existing keys which are not in `value` are left as is
+    pub fn init_from_hydrate(&mut self, value: &crate::hydrate::Map) -> Result<(), AutomergeError> {
+        let mut tx = self.transaction();
+        tx.batch_init_root_map(value)?;
+        tx.commit();
+        Ok(())
+    }
+
     pub fn new_with_encoding(encoding: TextEncoding) -> Self {
         Automerge {
-            queue: vec![],
+            queue: ChangeQueue::new(),
             change_graph: ChangeGraph::new(0),
             ops: OpSet::new(encoding),
             deps: Default::default(),
@@ -235,7 +248,7 @@ impl Automerge {
     pub(crate) fn from_parts(ops: OpSet, change_graph: ChangeGraph) -> Self {
         let deps = change_graph.heads().collect();
         let mut doc = Automerge {
-            queue: vec![],
+            queue: ChangeQueue::new(),
             change_graph,
             ops,
             deps,
@@ -355,6 +368,24 @@ impl Automerge {
     pub fn transaction_at(&mut self, patch_log: PatchLog, heads: &[ChangeHash]) -> Transaction<'_> {
         let args = self.transaction_args(Some(heads));
         Transaction::new(self, args, patch_log)
+    }
+
+    /// Start a transaction that owns the document, consuming `self`.
+    ///
+    /// This is useful when the transaction must be `'static` (e.g. storing across an FFI
+    /// boundary or in a struct that requires `'static`). The document is returned when the
+    /// transaction is committed or rolled back.
+    ///
+    /// # Arguments
+    /// * `patch_log` - An optional [`PatchLog`] to log the changes in this transaction to
+    /// * `heads` - An optional set of heads to isolate this transaction at, or `None` to use the
+    ///   current heads of the document
+    pub fn into_transaction(
+        self,
+        patch_log: Option<PatchLog>,
+        heads: Option<&[ChangeHash]>,
+    ) -> OwnedTransaction {
+        OwnedTransaction::new(self, patch_log, heads)
     }
 
     pub(crate) fn transaction_args(&mut self, heads: Option<&[ChangeHash]>) -> TransactionArgs {
@@ -1925,7 +1956,6 @@ impl ReadDoc for Automerge {
 
     #[inline(never)]
     fn get_missing_deps(&self, heads: &[ChangeHash]) -> Vec<ChangeHash> {
-        let in_queue: HashSet<_> = self.queue.iter().map(|change| change.hash()).collect();
         let mut missing = HashSet::new();
 
         for head in self.queue.iter().flat_map(|change| change.deps()) {
@@ -1942,7 +1972,7 @@ impl ReadDoc for Automerge {
 
         let mut missing = missing
             .into_iter()
-            .filter(|hash| !in_queue.contains(hash))
+            .filter(|hash| !self.queue.has_hash(hash))
             .copied()
             .collect::<Vec<_>>();
         missing.sort();

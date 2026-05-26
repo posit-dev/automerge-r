@@ -22,6 +22,9 @@
 #   sha2:       default-features = false (removes const-oid)
 #   dot:        remove unused optional dependency and optree-visualisation feature
 #
+# Patterns target the automerge 0.9.0 upstream Cargo.toml dependency lines
+# (rand ^0.10, sha2 0.11.0). Update the patterns if the upstream pins change.
+#
 # Note: tempfile is pinned to 3.3.0 in vendor-deps.sh to use winapi
 # instead of windows-sys (smaller dependency footprint)
 #
@@ -53,11 +56,14 @@ sedi() {
 # Patch automerge/Cargo.toml
 CARGO_AUTOMERGE="$RUST_DIR/automerge/Cargo.toml"
 if [ -f "$CARGO_AUTOMERGE" ]; then
+    # Lower the declared MSRV from upstream's 1.89 to 1.85 (cargo refuses to
+    # build a crate whose rust-version exceeds the installed toolchain).
+    sedi 's/^rust-version = "1.89.0"$/rust-version = "1.85.0"/' "$CARGO_AUTOMERGE"
     sedi 's/smol_str = { version = "0.3"/smol_str = { version = "0.2"/' "$CARGO_AUTOMERGE"
-    # Disable rand default features (only core traits needed; small_rng is test-only)
-    sedi 's/rand = { version = "\^0.9", optional = false, features = \["small_rng"\] }/rand = { version = "^0.9", default-features = false }/' "$CARGO_AUTOMERGE"
+    # Disable rand default features (only core traits needed; default features pull rand_chacha/ppv-lite86/zerocopy)
+    sedi 's/rand = { version = "\^0.10", optional = false }/rand = { version = "^0.10", default-features = false }/' "$CARGO_AUTOMERGE"
     # Disable sha2 default features (no OID support needed)
-    sedi 's/sha2 = "0.11.0-pre.5"/sha2 = { version = "0.11.0-pre.5", default-features = false }/' "$CARGO_AUTOMERGE"
+    sedi 's/^sha2 = "0.11.0"$/sha2 = { version = "0.11.0", default-features = false }/' "$CARGO_AUTOMERGE"
     # Remove unused dot optional dependency and its feature
     sedi '/^dot = /d' "$CARGO_AUTOMERGE"
     sedi '/^optree-visualisation = /d' "$CARGO_AUTOMERGE"
