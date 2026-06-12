@@ -1,19 +1,14 @@
 ---
 title: "Synchronization Protocol"
-output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Synchronization Protocol}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: "#>"
 ---
-
-```{r}
-#| include: false
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
 
 ```{r}
 #| label: setup
