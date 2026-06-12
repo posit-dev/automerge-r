@@ -272,7 +272,7 @@ repeat {
 heads <- am_get_heads(doc)
 
 # Get changes (returns am_change objects)
-changes <- am_get_changes(doc, NULL)  # All changes
+changes <- am_get_changes(doc, NULL) # All changes
 changes <- am_get_changes(doc, heads) # Changes since heads (i.e. none)
 
 # Typical pattern: remember a checkpoint, then get new changes later
@@ -378,7 +378,7 @@ vignette(package = "automerge") # List all
 
 - R >= 4.2
 - For building from source:
-  - Rust >= 1.89.0 (<https://rustup.rs/>)
+  - Rust >= 1.85.0 (<https://rustup.rs/>)
   - CMake >= 3.25 (included in Rtools43+ on Windows)
 - Or: Install automerge-c (with UTF-32 character indexing) system-wide to skip build
 
