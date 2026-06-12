@@ -9,11 +9,8 @@ with `?function_name`.
 
 ``` r
 
-# From R-universe
-install.packages("automerge", repos = "https://posit-dev.r-universe.dev")
-
-# From GitHub
-pak::pak("posit-dev/automerge-r")
+# From CRAN
+install.packages("automerge")
 ```
 
 ### Document Lifecycle
@@ -391,10 +388,10 @@ vignette(package = "automerge") # List all
 
 ### Resources
 
-- Package site: <https://posit-dev.github.io/automerge-r/>
-- Automerge docs: <https://automerge.org/>
-- Binary format: <https://automerge.org/automerge-binary-format-spec/>
-- CRDT research: <https://crdt.tech/>
+- [Automerge docs](https://automerge.org/)
+- [Automerge binary
+  format](https://automerge.org/automerge-binary-format-spec/)
+- [CRDT research](https://crdt.tech/)
 
 ------------------------------------------------------------------------
 

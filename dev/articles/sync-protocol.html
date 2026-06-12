@@ -12,7 +12,9 @@
 <link href="../deps/Source_Code_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Synchronization Protocol">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="sync-protocol_files/libs/quarto-html/popper.min.js"></script><script src="sync-protocol_files/libs/quarto-html/tippy.umd.min.js"></script><link href="sync-protocol_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="sync-protocol_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Synchronization Protocol">
 <meta name="robots" content="noindex">
 <script src="https://cdn.jsdelivr.net/gh/posit-dev/supported-by-posit/js/badge.min.js" data-max-height="43" data-light-bg="#666f76" data-light-fg="#f9f9f9"></script>
 </head>
@@ -58,43 +60,39 @@
 
 
   </div>
-</nav><div class="container template-article" id="container">
-
-
-
-
+</nav><div class="container template-quarto" id="container">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Synchronization Protocol</h1>
-            
-      
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/vignettes/sync-protocol.Rmd" class="external-link"><code>vignettes/sync-protocol.Rmd</code></a></small>
-      <div class="d-none name"><code>sync-protocol.Rmd</code></div>
+
+
+
+
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/vignettes/sync-protocol.qmd" class="external-link"><code>vignettes/sync-protocol.qmd</code></a></small>
+      <div class="d-none name"><code></code></div>
     </div>
 
-    
-    
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+
+
+
+
+
+    <div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/posit-dev/automerge-r" class="external-link">automerge</a></span><span class="op">)</span></span></code></pre></div>
-<div class="section level2">
-<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
-</h2>
-<p>Automerge’s synchronization protocol enables multiple peers to
-exchange changes and converge to the same document state. The protocol
-is efficient, handling only missing changes between peers, and works
-over any transport (files, HTTP, WebSockets, etc.).</p>
 </div>
-<div class="section level2">
-<h2 id="high-level-sync-recommended">High-Level Sync (Recommended)<a class="anchor" aria-label="anchor" href="#high-level-sync-recommended"></a>
+<section class="level2"><h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>For most use cases, use the high-level sync helpers that handle the
-protocol automatically.</p>
-<div class="section level3">
-<h3 id="bidirectional-sync">Bidirectional Sync<a class="anchor" aria-label="anchor" href="#bidirectional-sync"></a>
+<p>Automerge’s synchronization protocol enables multiple peers to exchange changes and converge to the same document state. The protocol is efficient, handling only missing changes between peers, and works over any transport (files, HTTP, WebSockets, etc.).</p>
+</section><section class="level2"><h2 id="high-level-sync-recommended">High-Level Sync (Recommended)<a class="anchor" aria-label="anchor" href="#high-level-sync-recommended"></a>
+</h2>
+<p>For most use cases, use the high-level sync helpers that handle the protocol automatically.</p>
+<section class="level3"><h3 id="bidirectional-sync">Bidirectional Sync<a class="anchor" aria-label="anchor" href="#bidirectional-sync"></a>
 </h3>
 <p>The simplest way to synchronize two documents:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create two peers with different data</span></span>
 <span><span class="va">peer1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">peer1</span><span class="op">[[</span><span class="st">"edited_by"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"peer1"</span></span>
@@ -124,15 +122,13 @@ protocol automatically.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer2</span><span class="op">)</span></span></code></pre></div>
-<p><strong>When to use</strong>: Simple peer-to-peer synchronization
-where both sides need all changes.</p>
 </div>
-<div class="section level3">
-<h3 id="one-way-merge">One-Way Merge<a class="anchor" aria-label="anchor" href="#one-way-merge"></a>
+<p><strong>When to use</strong>: Simple peer-to-peer synchronization where both sides need all changes.</p>
+</section><section class="level3"><h3 id="one-way-merge">One-Way Merge<a class="anchor" aria-label="anchor" href="#one-way-merge"></a>
 </h3>
-<p>For pulling changes from one document to another without sending
-changes back:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<p>For pulling changes from one document to another without sending changes back:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create source document</span></span>
 <span><span class="va">source</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">source</span><span class="op">[[</span><span class="st">"version"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"2.0"</span></span>
@@ -158,19 +154,15 @@ changes back:</p>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">source</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">target</span><span class="op">)</span></span></code></pre></div>
-<p><strong>When to use</strong>: Client pulling updates from server,
-importing changes from another peer.</p>
 </div>
-</div>
-<div class="section level2">
-<h2 id="low-level-sync-protocol">Low-Level Sync Protocol<a class="anchor" aria-label="anchor" href="#low-level-sync-protocol"></a>
+<p><strong>When to use</strong>: Client pulling updates from server, importing changes from another peer.</p>
+</section></section><section class="level2"><h2 id="low-level-sync-protocol">Low-Level Sync Protocol<a class="anchor" aria-label="anchor" href="#low-level-sync-protocol"></a>
 </h2>
-<p>For network protocols or fine-grained control, use the low-level
-API.</p>
-<div class="section level3">
-<h3 id="basic-protocol-flow">Basic Protocol Flow<a class="anchor" aria-label="anchor" href="#basic-protocol-flow"></a>
+<p>For network protocols or fine-grained control, use the low-level API.</p>
+<section class="level3"><h3 id="basic-protocol-flow">Basic Protocol Flow<a class="anchor" aria-label="anchor" href="#basic-protocol-flow"></a>
 </h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create two peers</span></span>
 <span><span class="va">peer3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">peer3</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"peer3"</span></span>
@@ -216,15 +208,14 @@ API.</p>
 <span><span class="va">round</span></span>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="va">peer3</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer4"</span></span>
+<span><span class="co">#&gt; [1] "peer3"</span></span>
 <span><span class="va">peer4</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer4"</span></span>
+<span><span class="co">#&gt; [1] "peer3"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer4</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="protocol-components">Protocol Components<a class="anchor" aria-label="anchor" href="#protocol-components"></a>
+</section><section class="level3"><h3 id="protocol-components">Protocol Components<a class="anchor" aria-label="anchor" href="#protocol-components"></a>
 </h3>
 <p><strong>Sync State</strong> (<code><a href="../reference/am_sync_state.html">am_sync_state()</a></code>):</p>
 <ul>
@@ -232,31 +223,24 @@ API.</p>
 <li>Document-independent (can be reused)</li>
 <li>Should be preserved across sessions for efficiency</li>
 </ul>
-<p><strong>Sync Encode</strong>
-(<code>am_sync_encode(doc, sync_state)</code>):</p>
+<p><strong>Sync Encode</strong> (<code>am_sync_encode(doc, sync_state)</code>):</p>
 <ul>
 <li>Generates sync message to send to peer</li>
 <li>Returns <code>NULL</code> when no more changes to send</li>
 <li>Message is binary (raw vector)</li>
 </ul>
-<p><strong>Sync Decode</strong>
-(<code>am_sync_decode(doc, sync_state, message)</code>):</p>
+<p><strong>Sync Decode</strong> (<code>am_sync_decode(doc, sync_state, message)</code>):</p>
 <ul>
 <li>Receives sync message from peer</li>
 <li>Updates document and sync state</li>
 <li>Returns document invisibly for chaining</li>
-</ul>
-</div>
-</div>
-<div class="section level2">
-<h2 id="change-based-synchronization">Change-Based Synchronization<a class="anchor" aria-label="anchor" href="#change-based-synchronization"></a>
+</ul></section></section><section class="level2"><h2 id="change-based-synchronization">Change-Based Synchronization<a class="anchor" aria-label="anchor" href="#change-based-synchronization"></a>
 </h2>
-<p>For scenarios where you want explicit control over individual
-changes:</p>
-<div class="section level3">
-<h3 id="exporting-and-importing-changes">Exporting and Importing Changes<a class="anchor" aria-label="anchor" href="#exporting-and-importing-changes"></a>
+<p>For scenarios where you want explicit control over individual changes:</p>
+<section class="level3"><h3 id="exporting-and-importing-changes">Exporting and Importing Changes<a class="anchor" aria-label="anchor" href="#exporting-and-importing-changes"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create base document that will be shared</span></span>
 <span><span class="va">base_doc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">base_doc</span><span class="op">[[</span><span class="st">"v1"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"first"</span></span>
@@ -291,10 +275,10 @@ changes:</p>
 <span><span class="va">peer_b</span><span class="op">[[</span><span class="st">"v3"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] "third"</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="saving-changes-to-files">Saving Changes to Files<a class="anchor" aria-label="anchor" href="#saving-changes-to-files"></a>
+</section><section class="level3"><h3 id="saving-changes-to-files">Saving Changes to Files<a class="anchor" aria-label="anchor" href="#saving-changes-to-files"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Save individual changes to files (serialize to raw bytes first)</span></span>
 <span><span class="va">temp_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">changes</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -324,13 +308,11 @@ changes:</p>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_b</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_c</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="decomposing-saved-documents">Decomposing Saved Documents<a class="anchor" aria-label="anchor" href="#decomposing-saved-documents"></a>
+</section><section class="level3"><h3 id="decomposing-saved-documents">Decomposing Saved Documents<a class="anchor" aria-label="anchor" href="#decomposing-saved-documents"></a>
 </h3>
-<p>If you have a saved document (from <code><a href="../reference/am_save.html">am_save()</a></code>) and want
-to extract its individual changes without loading the full document, use
-<code><a href="../reference/am_load_changes.html">am_load_changes()</a></code>:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>If you have a saved document (from <code><a href="../reference/am_save.html">am_save()</a></code>) and want to extract its individual changes without loading the full document, use <code><a href="../reference/am_load_changes.html">am_load_changes()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Save a document with multiple commits</span></span>
 <span><span class="va">doc_decompose</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">doc_decompose</span><span class="op">[[</span><span class="st">"x"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
@@ -361,20 +343,15 @@ to extract its individual changes without loading the full document, use
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_decompose</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_selective</span><span class="op">)</span></span></code></pre></div>
-<p><strong>When to use</strong>: Git-like workflows, change logs,
-selective sync.</p>
 </div>
-</div>
-<div class="section level2">
-<h2 id="document-heads-and-history">Document Heads and History<a class="anchor" aria-label="anchor" href="#document-heads-and-history"></a>
+<p><strong>When to use</strong>: Git-like workflows, change logs, selective sync.</p>
+</section></section><section class="level2"><h2 id="document-heads-and-history">Document Heads and History<a class="anchor" aria-label="anchor" href="#document-heads-and-history"></a>
 </h2>
-<div class="section level3">
-<h3 id="understanding-heads">Understanding Heads<a class="anchor" aria-label="anchor" href="#understanding-heads"></a>
+<section class="level3"><h3 id="understanding-heads">Understanding Heads<a class="anchor" aria-label="anchor" href="#understanding-heads"></a>
 </h3>
-<p><strong>Heads</strong> are the most recent commits in a document’s
-history. They represent the current state’s frontier in the change
-graph.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p><strong>Heads</strong> are the most recent commits in a document’s history. They represent the current state’s frontier in the change graph.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create document and make changes</span></span>
 <span><span class="va">doc_main</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">doc_main</span><span class="op">[[</span><span class="st">"version"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"1.0"</span></span>
@@ -393,23 +370,18 @@ graph.</p>
 <span><span class="va">heads_v2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_heads.html">am_get_heads</a></span><span class="op">(</span><span class="va">doc_main</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">heads_v1</span>, <span class="va">heads_v2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
+</div>
 <p>Heads are useful for:</p>
 <ul>
 <li>Tracking which changes you’ve already seen</li>
 <li>Computing incremental updates</li>
 <li>Detecting whether documents have diverged</li>
-<li>Querying historical document states (pass <code>heads</code> to
-<code><a href="../reference/am_cursor.html">am_cursor()</a></code>, <code><a href="../reference/am_cursor_position.html">am_cursor_position()</a></code>,
-<code><a href="../reference/am_marks.html">am_marks()</a></code>, or <code><a href="../reference/am_marks_at.html">am_marks_at()</a></code>)</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="checking-document-completeness">Checking Document Completeness<a class="anchor" aria-label="anchor" href="#checking-document-completeness"></a>
+<li>Querying historical document states (pass <code>heads</code> to <code><a href="../reference/am_cursor.html">am_cursor()</a></code>, <code><a href="../reference/am_cursor_position.html">am_cursor_position()</a></code>, <code><a href="../reference/am_marks.html">am_marks()</a></code>, or <code><a href="../reference/am_marks_at.html">am_marks_at()</a></code>)</li>
+</ul></section><section class="level3"><h3 id="checking-document-completeness">Checking Document Completeness<a class="anchor" aria-label="anchor" href="#checking-document-completeness"></a>
 </h3>
-<p>After applying changes from external sources, you can verify a
-document has all its dependencies with
-<code><a href="../reference/am_get_missing_deps.html">am_get_missing_deps()</a></code>:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p>After applying changes from external sources, you can verify a document has all its dependencies with <code><a href="../reference/am_get_missing_deps.html">am_get_missing_deps()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc_check</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">doc_check</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"complete"</span></span>
 <span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc_check</span><span class="op">)</span></span>
@@ -421,10 +393,10 @@ document has all its dependencies with
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_check</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="working-with-history">Working with History<a class="anchor" aria-label="anchor" href="#working-with-history"></a>
+</section><section class="level3"><h3 id="working-with-history">Working with History<a class="anchor" aria-label="anchor" href="#working-with-history"></a>
 </h3>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get full change history</span></span>
 <span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc_main</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">history</span><span class="op">)</span></span>
@@ -445,16 +417,16 @@ document has all its dependencies with
 <span><span class="co"># Extract multiple fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique hash</span></span>
-<span><span class="co">#&gt;  [1] b5 f9 4c 9c 85 2e 9e 67 6e 52 15 88 de dc 2a 0c 21 81 96 0f 28 45</span></span>
-<span><span class="co">#&gt; [23] da 10 8c 88 a5 6e e8 b3 3a d4</span></span>
+<span><span class="co">#&gt;  [1] 31 83 f0 a9 b8 97 73 0a ea a9 94 60 60 6b 4c 12 e1 22 9a a0 99 eb 4c e8 64</span></span>
+<span><span class="co">#&gt; [26] d9 79 bf b3 fc 91 cd</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made this change</span></span>
-<span><span class="co">#&gt;  [1] b5 ad 42 a2 a6 fc 77 17 e2 b1 8e ed c6 4f e3 f5</span></span>
+<span><span class="co">#&gt;  [1] 7e 60 71 96 2e 65 d6 8e d9 ae 65 b6 a2 6f e7 a6</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># When</span></span>
 <span><span class="co">#&gt; [1] "1970-01-01 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent changes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] cf 56 11 30 87 6a a9 6c 29 bc e2 fe 48 5a f0 54 3d ac 7b b1 50 fb</span></span>
-<span><span class="co">#&gt; [23] 80 42 2d 5a 6d d0 30 73 51 76</span></span>
+<span><span class="co">#&gt;  [1] 66 4c e5 3c 8a e2 6e 9c ea 08 10 ba 40 47 3d 37 50 5f 0b c2 bb 00 a5 7b f6</span></span>
+<span><span class="co">#&gt; [26] 0b 18 5c 07 76 f3 a4</span></span>
 <span><span class="fu"><a href="../reference/am_change_size.html">am_change_size</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Number of operations</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span></span>
@@ -462,15 +434,15 @@ document has all its dependencies with
 <span><span class="va">changes_since_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc_main</span>, <span class="va">heads_v1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">changes_since_v1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 1</span></span>
-<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x5607e9c67970&gt;</span></span>
+<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x559ab95842e0&gt;</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_main</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="incremental-sync-pattern">Incremental Sync Pattern<a class="anchor" aria-label="anchor" href="#incremental-sync-pattern"></a>
+</section><section class="level3"><h3 id="incremental-sync-pattern">Incremental Sync Pattern<a class="anchor" aria-label="anchor" href="#incremental-sync-pattern"></a>
 </h3>
 <p>Common pattern: track last sync point and only send new changes</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Server document that accumulates changes</span></span>
 <span><span class="va">server</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">server</span><span class="op">[[</span><span class="st">"users"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0L</span></span>
@@ -514,10 +486,10 @@ document has all its dependencies with
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">server</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">client</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="detecting-divergence">Detecting Divergence<a class="anchor" aria-label="anchor" href="#detecting-divergence"></a>
+</section><section class="level3"><h3 id="detecting-divergence">Detecting Divergence<a class="anchor" aria-label="anchor" href="#detecting-divergence"></a>
 </h3>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create two peers that will diverge</span></span>
 <span><span class="va">peer_x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">peer_x</span><span class="op">[[</span><span class="st">"id"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"x"</span></span>
@@ -548,10 +520,10 @@ document has all its dependencies with
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">x_changes</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 1</span></span>
-<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x5607e52adb40&gt;</span></span>
+<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x559ab9d29cd0&gt;</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">y_changes</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 1</span></span>
-<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x5607e4cfe620&gt;</span></span>
+<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x559ab6d680c0&gt;</span></span>
 <span></span>
 <span><span class="co"># Sync to merge divergent histories</span></span>
 <span><span class="va">rounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_sync.html">am_sync</a></span><span class="op">(</span><span class="va">peer_x</span>, <span class="va">peer_y</span><span class="op">)</span></span>
@@ -565,12 +537,11 @@ document has all its dependencies with
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_x</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_y</span><span class="op">)</span></span></code></pre></div>
 </div>
-</div>
-<div class="section level2">
-<h2 id="concurrent-edits">Concurrent Edits<a class="anchor" aria-label="anchor" href="#concurrent-edits"></a>
+</section></section><section class="level2"><h2 id="concurrent-edits">Concurrent Edits<a class="anchor" aria-label="anchor" href="#concurrent-edits"></a>
 </h2>
 <p>Understanding how concurrent edits merge:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create shared starting point</span></span>
 <span><span class="va">base</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">base</span><span class="op">[[</span><span class="st">"counter"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_counter.html">am_counter</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
@@ -601,21 +572,19 @@ document has all its dependencies with
 <span></span>
 <span><span class="co"># Status: Deterministic conflict resolution (one value wins)</span></span>
 <span><span class="va">editor1</span><span class="op">[[</span><span class="st">"status"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "review"</span></span>
+<span><span class="co">#&gt; [1] "published"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">base</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">editor1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">editor2</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="sync-performance">Sync Performance<a class="anchor" aria-label="anchor" href="#sync-performance"></a>
+</section><section class="level2"><h2 id="sync-performance">Sync Performance<a class="anchor" aria-label="anchor" href="#sync-performance"></a>
 </h2>
-<div class="section level3">
-<h3 id="the-sync-frequency-tradeoff">The Sync Frequency Tradeoff<a class="anchor" aria-label="anchor" href="#the-sync-frequency-tradeoff"></a>
+<section class="level3"><h3 id="the-sync-frequency-tradeoff">The Sync Frequency Tradeoff<a class="anchor" aria-label="anchor" href="#the-sync-frequency-tradeoff"></a>
 </h3>
-<p>There’s a fundamental tradeoff between <em>collaboration latency</em>
-and <em>efficiency</em>:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<p>There’s a fundamental tradeoff between <em>collaboration latency</em> and <em>efficiency</em>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Strategy A: Frequent sync (lower latency, more overhead)</span></span>
 <span><span class="va">doc_frequent</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">peer_frequent</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -659,15 +628,13 @@ and <em>efficiency</em>:</p>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_frequent</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_batched</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_batched</span><span class="op">)</span></span></code></pre></div>
+</div>
 <p><strong>Batching creates smaller documents</strong> because:</p>
 <ul>
 <li>Fewer commit metadata entries</li>
 <li>Better compression of related changes</li>
 <li>Less overhead from commit boundaries</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="choosing-a-strategy">Choosing a Strategy<a class="anchor" aria-label="anchor" href="#choosing-a-strategy"></a>
+</ul></section><section class="level3"><h3 id="choosing-a-strategy">Choosing a Strategy<a class="anchor" aria-label="anchor" href="#choosing-a-strategy"></a>
 </h3>
 <p><strong>Use frequent syncs when:</strong></p>
 <ul>
@@ -684,7 +651,8 @@ and <em>efficiency</em>:</p>
 <li>Changes are logically related (e.g., form submission)</li>
 </ul>
 <p><strong>Hybrid approach</strong> (recommended for most cases):</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Batch related changes, sync periodically</span></span>
 <span><span class="va">doc_hybrid</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -706,12 +674,11 @@ and <em>efficiency</em>:</p>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_hybrid</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="reusing-sync-state">Reusing Sync State<a class="anchor" aria-label="anchor" href="#reusing-sync-state"></a>
+</section><section class="level3"><h3 id="reusing-sync-state">Reusing Sync State<a class="anchor" aria-label="anchor" href="#reusing-sync-state"></a>
 </h3>
-<p>Sync state tracks what each peer has seen, enabling efficient
-incremental sync:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<p>Sync state tracks what each peer has seen, enabling efficient incremental sync:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Without reusing sync state (inefficient)</span></span>
 <span><span class="va">doc_no_reuse</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">doc_no_reuse</span><span class="op">[[</span><span class="st">"v1"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
@@ -765,10 +732,10 @@ incremental sync:</p>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_no_reuse</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_reuse</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer_reuse</span><span class="op">)</span></span></code></pre></div>
-<p>To persist sync state across R sessions (or send it over a network),
-serialize and restore it with <code><a href="../reference/am_sync_state_encode.html">am_sync_state_encode()</a></code> /
-<code><a href="../reference/am_sync_state_decode.html">am_sync_state_decode()</a></code>:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+</div>
+<p>To persist sync state across R sessions (or send it over a network), serialize and restore it with <code><a href="../reference/am_sync_state_encode.html">am_sync_state_encode()</a></code> / <code><a href="../reference/am_sync_state_decode.html">am_sync_state_decode()</a></code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># After initial sync, save sync state for later reuse</span></span>
 <span><span class="va">sync_bytes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_sync_state_encode.html">am_sync_state_encode</a></span><span class="op">(</span><span class="va">sync_state_local</span><span class="op">)</span></span>
 <span></span>
@@ -776,18 +743,17 @@ serialize and restore it with <code><a href="../reference/am_sync_state_encode.h
 <span><span class="va">restored_sync</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_sync_state_decode.html">am_sync_state_decode</a></span><span class="op">(</span><span class="va">sync_bytes</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Continue syncing efficiently with the restored state</span></span></code></pre></div>
+</div>
 <p><strong>When to persist sync state:</strong></p>
 <ul>
 <li>Long-lived connections (WebSocket servers)</li>
 <li>Periodic sync jobs (cron, scheduled tasks)</li>
 <li>Client apps that reconnect frequently</li>
 <li>Reduces redundant data transfer significantly</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="measuring-performance">Measuring Performance<a class="anchor" aria-label="anchor" href="#measuring-performance"></a>
+</ul></section><section class="level3"><h3 id="measuring-performance">Measuring Performance<a class="anchor" aria-label="anchor" href="#measuring-performance"></a>
 </h3>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Compare efficiency of different approaches</span></span>
 <span><span class="va">measure_sync</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n_changes</span>, <span class="va">batch_size</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -852,29 +818,101 @@ serialize and restore it with <code><a href="../reference/am_sync_state_encode.h
 <span><span class="va">result_full</span><span class="op">$</span><span class="va">size</span></span>
 <span><span class="co">#&gt; [1] 233</span></span></code></pre></div>
 </div>
-</div>
-<div class="section level2">
-<h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+</section></section><section class="level2"><h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
 </h2>
 <ul>
-<li>Learn about <a href="crdt-concepts.html">CRDT Concepts</a> to
-understand merge behavior</li>
-<li>Check the <a href="quick-reference.html">Quick Reference</a> for all
-sync functions</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="further-reading">Further Reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
+<li>Learn about <a href="crdt-concepts.html">CRDT Concepts</a> to understand merge behavior</li>
+<li>Check the <a href="quick-reference.html">Quick Reference</a> for all sync functions</li>
+</ul></section><section class="level2"><h2 id="further-reading">Further Reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
 </h2>
 <ul>
-<li><a href="https://www.inkandswitch.com/local-first/" class="external-link">Local-First
-Software</a></li>
-</ul>
-</div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+<li><a href="https://www.inkandswitch.com/local-first/" class="external-link">Local-First Software</a></li>
+</ul></section><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'light-border',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config);
+    }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
-
 
 
    </div>

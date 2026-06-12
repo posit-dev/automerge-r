@@ -31,7 +31,7 @@ am_commit(doc, "Add key")
 history <- am_get_changes(doc)
 actor <- am_change_actor_id(history[[1]])
 actor
-#>  [1] 8e 0e 27 de 25 e4 b6 b1 38 db c5 11 6b a8 19 39
+#>  [1] 6c f7 84 ac 4e a0 bc f5 76 f6 a2 bb 7c f6 1f 44
 
 # Should match the document's actor
 identical(actor, am_get_actor(doc))  # TRUE

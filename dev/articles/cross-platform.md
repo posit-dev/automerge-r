@@ -1,4 +1,4 @@
-# Cross-Platform Synchronization: JavaScript ↔ R
+# Cross-Platform Synchronization: JavaScript ↔︎ R
 
 ## Running the Examples
 

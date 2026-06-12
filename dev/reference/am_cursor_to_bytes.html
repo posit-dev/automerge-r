@@ -84,7 +84,7 @@ cursor positions across R sessions.</p>
 <span class="r-in"><span><span class="va">cursor</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_cursor.html">am_cursor</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">bytes</span> <span class="op">&lt;-</span> <span class="fu">am_cursor_to_bytes</span><span class="op">(</span><span class="va">cursor</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">bytes</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 01 03 10 f1 4e 6d 06 24 c4 34 58 ff ef 20 78 20 98 41 4b 07 02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 01 03 10 17 fb 6a 2e e9 92 4b 60 b9 b6 16 75 1b 60 97 90 07 02</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Restore cursor later</span></span></span>
 <span class="r-in"><span><span class="va">restored</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_cursor_from_bytes.html">am_cursor_from_bytes</a></span><span class="op">(</span><span class="va">bytes</span>, <span class="va">text_obj</span><span class="op">)</span></span></span>
