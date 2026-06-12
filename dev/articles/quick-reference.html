@@ -337,7 +337,7 @@
 <span><span class="va">heads</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_heads.html">am_get_heads</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Get changes (returns am_change objects)</span></span>
-<span><span class="va">changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span>, <span class="cn">NULL</span><span class="op">)</span>  <span class="co"># All changes</span></span>
+<span><span class="va">changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span>, <span class="cn">NULL</span><span class="op">)</span> <span class="co"># All changes</span></span>
 <span><span class="va">changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">heads</span><span class="op">)</span> <span class="co"># Changes since heads (i.e. none)</span></span>
 <span></span>
 <span><span class="co"># Typical pattern: remember a checkpoint, then get new changes later</span></span>
@@ -444,7 +444,7 @@
 <li>R &gt;= 4.2</li>
 <li>For building from source:
 <ul>
-<li>Rust &gt;= 1.89.0 (<a href="https://rustup.rs/" class="external-link uri">https://rustup.rs/</a>)</li>
+<li>Rust &gt;= 1.85.0 (<a href="https://rustup.rs/" class="external-link uri">https://rustup.rs/</a>)</li>
 <li>CMake &gt;= 3.25 (included in Rtools43+ on Windows)</li>
 </ul>
 </li>

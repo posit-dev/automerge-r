@@ -147,9 +147,9 @@ repeat {
 round
 #> [1] 3
 peer3[["source"]]
-#> [1] "peer3"
+#> [1] "peer4"
 peer4[["source"]]
-#> [1] "peer3"
+#> [1] "peer4"
 
 am_close(peer3)
 am_close(peer4)
@@ -382,16 +382,16 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] 31 83 f0 a9 b8 97 73 0a ea a9 94 60 60 6b 4c 12 e1 22 9a a0 99 eb 4c e8 64
-#> [26] d9 79 bf b3 fc 91 cd
+#>  [1] be 23 7d 06 7a fc 99 fe 5a d6 a2 20 86 8b ee 5b 51 31 e4 42 6d cb 49 83 4f
+#> [26] 12 87 e7 a0 cf ec b7
 am_change_actor_id(change) # Who made this change
-#>  [1] 7e 60 71 96 2e 65 d6 8e d9 ae 65 b6 a2 6f e7 a6
+#>  [1] c0 23 ec 80 d8 2c 2b 84 f4 47 1f 9a 4b 02 3d df
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] 66 4c e5 3c 8a e2 6e 9c ea 08 10 ba 40 47 3d 37 50 5f 0b c2 bb 00 a5 7b f6
-#> [26] 0b 18 5c 07 76 f3 a4
+#>  [1] cc d7 de ba 42 52 a0 2d 09 42 75 aa d5 ef e7 ae d9 e9 ef c3 c2 f0 3d 62 36
+#> [26] 2e a1 ca 80 20 28 da
 am_change_size(change)     # Number of operations
 #> [1] 2
 
@@ -399,7 +399,7 @@ am_change_size(change)     # Number of operations
 changes_since_v1 <- am_get_changes(doc_main, heads_v1)
 str(changes_since_v1)
 #> List of 1
-#>  $ :Class 'am_change' <pointer: 0x559ab95842e0>
+#>  $ :Class 'am_change' <pointer: 0x55817b9b22e0>
 
 am_close(doc_main)
 ```
@@ -488,10 +488,10 @@ y_changes <- am_get_changes(peer_y, common_heads)
 
 str(x_changes)
 #> List of 1
-#>  $ :Class 'am_change' <pointer: 0x559ab9d29cd0>
+#>  $ :Class 'am_change' <pointer: 0x558179b87cf0>
 str(y_changes)
 #> List of 1
-#>  $ :Class 'am_change' <pointer: 0x559ab6d680c0>
+#>  $ :Class 'am_change' <pointer: 0x55817c157cd0>
 
 # Sync to merge divergent histories
 rounds <- am_sync(peer_x, peer_y)

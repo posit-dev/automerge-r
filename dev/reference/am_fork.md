@@ -48,7 +48,7 @@ doc1 <- am_create()
 doc2 <- am_fork(doc1)
 doc2
 #> <Automerge Document>
-#> Actor: 5875069d3b06ce66e7798d39f5a804cb 
+#> Actor: d342e01b1bf53237055fd15c9ac12498 
 #> Root keys: 0 
 
 # Fork has a different actor ID
