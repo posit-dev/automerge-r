@@ -120,10 +120,8 @@ Rtools43+ on Windows).
 
 ## Related Projects
 
-- [autosync](https://shikokuchuo.net/autosync/) - automerge-repo
-  compatible R sync server
-- [shinysync](https://shikokuchuo.net/shinysync/) - Collaborative Shiny
-  Apps with Automerge
+- [autosync](https://posit-dev.github.io/autosync/) - automerge-repo
+  compatible R sync server and client
 
 ## License
 
