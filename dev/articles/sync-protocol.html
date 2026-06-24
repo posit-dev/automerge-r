@@ -146,7 +146,7 @@
 <span></span>
 <span><span class="co"># Target now has source's changes</span></span>
 <span><span class="va">target</span><span class="op">[[</span><span class="st">"version"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2.0"</span></span>
+<span><span class="co">#&gt; [1] "1.0"</span></span>
 <span></span>
 <span><span class="co"># Source is unchanged</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">source</span><span class="op">)</span></span>
@@ -417,16 +417,16 @@
 <span><span class="co"># Extract multiple fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique hash</span></span>
-<span><span class="co">#&gt;  [1] be 23 7d 06 7a fc 99 fe 5a d6 a2 20 86 8b ee 5b 51 31 e4 42 6d cb 49 83 4f</span></span>
-<span><span class="co">#&gt; [26] 12 87 e7 a0 cf ec b7</span></span>
+<span><span class="co">#&gt;  [1] d1 42 47 80 39 d2 03 d9 36 75 d6 0f 19 bc b3 45 b7 ad 98 01 fa 48 e9 62 41</span></span>
+<span><span class="co">#&gt; [26] 69 9a 76 04 0f d5 11</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made this change</span></span>
-<span><span class="co">#&gt;  [1] c0 23 ec 80 d8 2c 2b 84 f4 47 1f 9a 4b 02 3d df</span></span>
+<span><span class="co">#&gt;  [1] 59 95 a2 a8 23 1c 69 75 6d 1c a6 da 4d 15 7c 4b</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># When</span></span>
 <span><span class="co">#&gt; [1] "1970-01-01 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent changes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] cc d7 de ba 42 52 a0 2d 09 42 75 aa d5 ef e7 ae d9 e9 ef c3 c2 f0 3d 62 36</span></span>
-<span><span class="co">#&gt; [26] 2e a1 ca 80 20 28 da</span></span>
+<span><span class="co">#&gt;  [1] c1 0d e2 94 c6 f3 4c 67 f6 29 b3 53 ea 6a 45 9f 11 7d 66 c2 5f a8 97 46 62</span></span>
+<span><span class="co">#&gt; [26] 33 2b 31 37 1d eb 67</span></span>
 <span><span class="fu"><a href="../reference/am_change_size.html">am_change_size</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Number of operations</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span></span>
@@ -434,7 +434,7 @@
 <span><span class="va">changes_since_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc_main</span>, <span class="va">heads_v1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">changes_since_v1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 1</span></span>
-<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x55817b9b22e0&gt;</span></span>
+<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x55a130968150&gt;</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_main</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -520,10 +520,10 @@
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">x_changes</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 1</span></span>
-<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x558179b87cf0&gt;</span></span>
+<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x55a130fe9ca0&gt;</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">y_changes</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 1</span></span>
-<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x55817c157cd0&gt;</span></span>
+<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x55a13046c5e0&gt;</span></span>
 <span></span>
 <span><span class="co"># Sync to merge divergent histories</span></span>
 <span><span class="va">rounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_sync.html">am_sync</a></span><span class="op">(</span><span class="va">peer_x</span>, <span class="va">peer_y</span><span class="op">)</span></span>

@@ -115,7 +115,7 @@
 <code class="sourceCode R"><span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;Automerge Document&gt;</span></span>
-<span><span class="co">#&gt; Actor: 9bc9a8521293e42b42ca7beb16a659a8 </span></span>
+<span><span class="co">#&gt; Actor: 0f994ad72a2dfd41f5f434a6c92f5572 </span></span>
 <span><span class="co">#&gt; Root keys: 0</span></span></code></pre></div>
 </div>
 <p>Note: When you’re done working with a document, you can explicitly free its resources with <code>am_close(doc)</code> if you don’t want to wait for garbage collection.</p>
@@ -354,7 +354,7 @@
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc9</span>, <span class="va">AM_ROOT</span>, <span class="st">"updated_at"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc9</span><span class="op">[[</span><span class="st">"created_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-06-12 10:25:16 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-06-24 17:50:38 UTC"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc9</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -539,15 +539,15 @@
 <span><span class="va">history</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; &lt;Automerge Change&gt;</span></span>
-<span><span class="co">#&gt; Hash: 55 e1 c5 df ...</span></span>
+<span><span class="co">#&gt; Hash: 1b a9 0e 0c ...</span></span>
 <span><span class="co">#&gt; Message: Initial setup </span></span>
-<span><span class="co">#&gt; Time: 2026-06-12 10:25:16 </span></span>
+<span><span class="co">#&gt; Time: 2026-06-24 17:50:38 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
 <span><span class="co">#&gt; &lt;Automerge Change&gt;</span></span>
-<span><span class="co">#&gt; Hash: 35 0f 8b 66 ...</span></span>
+<span><span class="co">#&gt; Hash: 6a 1e eb 6e ...</span></span>
 <span><span class="co">#&gt; Message: Set version </span></span>
-<span><span class="co">#&gt; Time: 2026-06-12 10:25:16</span></span>
+<span><span class="co">#&gt; Time: 2026-06-24 17:50:38</span></span>
 <span></span>
 <span><span class="co"># Inspect each change - no parsing needed</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">history</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -566,20 +566,20 @@
 <span><span class="co"># Extract many fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique 32-byte hash</span></span>
-<span><span class="co">#&gt;  [1] 35 0f 8b 66 8f 69 db 70 9d 6f ca c3 5c 60 40 3f 75 85 ff 36 1e d7 59 7a 50</span></span>
-<span><span class="co">#&gt; [26] 6c ea 11 6c b5 c9 b5</span></span>
+<span><span class="co">#&gt;  [1] 6a 1e eb 6e 12 b9 54 b4 8b 3f e9 eb 88 5e d7 e5 cb 44 a8 b8 e2 49 ae 64 5b</span></span>
+<span><span class="co">#&gt; [26] 95 1b 56 20 1c c1 09</span></span>
 <span><span class="fu"><a href="../reference/am_change_message.html">am_change_message</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>  <span class="co"># Commit message</span></span>
 <span><span class="co">#&gt; [1] "Set version"</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Timestamp</span></span>
-<span><span class="co">#&gt; [1] "2026-06-12 10:25:16 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-06-24 17:50:38 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_seq.html">am_change_seq</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>      <span class="co"># Sequence number</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made the change</span></span>
-<span><span class="co">#&gt;  [1] df c3 e9 a0 fb 6c e6 bd ad 59 83 8c 85 6a d4 cb</span></span>
+<span><span class="co">#&gt;  [1] d0 00 f1 64 c2 8c 9b 6c ad fd ad 22 03 c4 7e 19</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent change hashes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] 55 e1 c5 df 4e 20 a3 8e 44 77 3e 86 46 84 1b 2a b8 6b e5 4a a4 4c ab eb 3e</span></span>
-<span><span class="co">#&gt; [26] 01 fa f1 11 8e 6c 50</span></span>
+<span><span class="co">#&gt;  [1] 1b a9 0e 0c c6 03 1f 54 18 79 9c 67 ea 91 9d 19 a0 ab 6c 3c d1 11 2f 18 27</span></span>
+<span><span class="co">#&gt; [26] b8 61 1c ba 06 83 2d</span></span>
 <span><span class="fu"><a href="../reference/am_change_size.html">am_change_size</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Number of operations</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span></span>
