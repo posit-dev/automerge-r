@@ -1,7 +1,7 @@
 use crate::automerge::Automerge;
 use crate::exid::ExId;
 use crate::patches::PatchLog;
-use crate::ChangeHash;
+use crate::{ChangeHash, PatchLogMismatch};
 
 use super::{CommitOptions, TransactionInner};
 
@@ -38,15 +38,15 @@ impl OwnedTransaction {
         mut doc: Automerge,
         patch_log: Option<PatchLog>,
         heads: Option<&[ChangeHash]>,
-    ) -> Self {
+    ) -> Result<Self, PatchLogMismatch> {
         let args = doc.transaction_args(heads);
         let mut patch_log = patch_log.unwrap_or_else(PatchLog::inactive);
-        patch_log.migrate_actors(&doc.ops().actors).unwrap();
-        Self {
+        patch_log.begin_transaction(&doc, &args)?;
+        Ok(Self {
             inner: Some(TransactionInner::new(args)),
             patch_log,
             doc,
-        }
+        })
     }
 
     /// Get the hash of the change that contains the given opid.
@@ -70,6 +70,7 @@ impl OwnedTransaction {
     pub fn commit(mut self) -> (Automerge, Option<ChangeHash>, PatchLog) {
         let tx = self.inner.take().unwrap();
         let hash = tx.commit(&mut self.doc, None, None);
+        self.patch_log.finish_transaction(&self.doc.ops().actors);
         (self.doc, hash, self.patch_log)
     }
 
@@ -80,12 +81,14 @@ impl OwnedTransaction {
     ) -> (Automerge, Option<ChangeHash>, PatchLog) {
         let tx = self.inner.take().unwrap();
         let hash = tx.commit(&mut self.doc, options.message, options.time);
+        self.patch_log.finish_transaction(&self.doc.ops().actors);
         (self.doc, hash, self.patch_log)
     }
 
     /// Rollback the transaction, returning the document and number of cancelled ops.
     pub fn rollback(mut self) -> (Automerge, usize) {
         let cancelled = self.inner.take().unwrap().rollback(&mut self.doc);
+        self.patch_log.finish_transaction(&self.doc.ops().actors);
         (self.doc, cancelled)
     }
 
@@ -117,7 +120,7 @@ mod tests {
     #[test]
     fn put_and_get_roundtrip() {
         let doc = Automerge::new();
-        let mut tx = doc.into_transaction(None, None);
+        let mut tx = doc.into_transaction(None, None).unwrap();
         tx.put(ROOT, "key", "value").unwrap();
         let (doc, hash, _) = tx.commit();
         assert!(hash.is_some());
@@ -130,7 +133,7 @@ mod tests {
     #[test]
     fn read_during_transaction() {
         let doc = Automerge::new();
-        let mut tx = doc.into_transaction(None, None);
+        let mut tx = doc.into_transaction(None, None).unwrap();
         tx.put(ROOT, "a", "1").unwrap();
         // ReadDoc works on the transaction itself
         let (val, _) = tx.get(ROOT, "a").unwrap().unwrap();
@@ -141,7 +144,7 @@ mod tests {
     #[test]
     fn nested_objects() {
         let doc = Automerge::new();
-        let mut tx = doc.into_transaction(None, None);
+        let mut tx = doc.into_transaction(None, None).unwrap();
         let list = tx.put_object(ROOT, "items", ObjType::List).unwrap();
         tx.insert(&list, 0, "first").unwrap();
         tx.insert(&list, 1, "second").unwrap();
@@ -153,7 +156,7 @@ mod tests {
     #[test]
     fn commit_with_options() {
         let doc = Automerge::new();
-        let mut tx = doc.into_transaction(None, None);
+        let mut tx = doc.into_transaction(None, None).unwrap();
         tx.put(ROOT, "x", 42).unwrap();
         let (doc, hash, _) = tx.commit_with(CommitOptions::default().with_message("test commit"));
         assert!(hash.is_some());
@@ -169,7 +172,7 @@ mod tests {
             tx.put(ROOT, "keep", "yes").unwrap();
             tx.commit();
         }
-        let doc = doc.into_transaction(None, None);
+        let doc = doc.into_transaction(None, None).unwrap();
         // Haven't written anything, just rollback
         let (doc, cancelled) = doc.rollback();
         assert_eq!(cancelled, 0);
@@ -182,7 +185,7 @@ mod tests {
     #[test]
     fn rollback_undoes_writes() {
         let doc = Automerge::new();
-        let mut tx = doc.into_transaction(None, None);
+        let mut tx = doc.into_transaction(None, None).unwrap();
         tx.put(ROOT, "gone", "soon").unwrap();
         let (doc, cancelled) = tx.rollback();
         assert_eq!(cancelled, 1);
@@ -205,7 +208,7 @@ mod tests {
         tx.commit();
 
         // Start an owned transaction isolated at v1 heads
-        let mut tx = doc.into_transaction(None, Some(&heads_v1));
+        let mut tx = doc.into_transaction(None, Some(&heads_v1)).unwrap();
         // Should see v=1, not v=2
         let (val, _) = tx.get(ROOT, "v").unwrap().unwrap();
         assert_eq!(val.to_i64().unwrap(), 1);
@@ -219,7 +222,9 @@ mod tests {
     #[test]
     fn log_patches() {
         let doc = Automerge::new();
-        let mut tx = doc.into_transaction(Some(PatchLog::active()), None);
+        let mut tx = doc
+            .into_transaction(Some(PatchLog::active()), None)
+            .unwrap();
         tx.put(ROOT, "patched", "yes").unwrap();
         let (doc, _, mut patch_log) = tx.commit();
         let patches = doc.make_patches(&mut patch_log);
@@ -235,7 +240,7 @@ mod tests {
         tx.commit();
         let heads = doc.get_heads();
 
-        let tx = doc.into_transaction(None, None);
+        let tx = doc.into_transaction(None, None).unwrap();
         assert_eq!(tx.get_heads(), heads);
         tx.commit();
     }
@@ -243,7 +248,7 @@ mod tests {
     #[test]
     fn pending_ops() {
         let doc = Automerge::new();
-        let mut tx = doc.into_transaction(None, None);
+        let mut tx = doc.into_transaction(None, None).unwrap();
         assert_eq!(tx.pending_ops(), 0);
         tx.put(ROOT, "a", 1).unwrap();
         assert_eq!(tx.pending_ops(), 1);
@@ -255,7 +260,7 @@ mod tests {
     #[test]
     fn empty_commit_returns_none_hash() {
         let doc = Automerge::new();
-        let tx = doc.into_transaction(None, None);
+        let tx = doc.into_transaction(None, None).unwrap();
         let (_, hash, _) = tx.commit();
         assert!(hash.is_none());
     }

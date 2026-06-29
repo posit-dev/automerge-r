@@ -208,6 +208,9 @@ if grep -q "^add_subdirectory(docs)" "$CMAKE_FILE" 2>/dev/null; then
     sedi '/^if(BUILD_TESTING)$/,/^endif()$/d' "$CMAKE_FILE"
     sedi '/^add_subdirectory(docs)$/d' "$CMAKE_FILE"
     sedi '/^add_subdirectory(examples EXCLUDE_FROM_ALL)$/d' "$CMAKE_FILE"
+    # These blocks sit at EOF in newer upstream; drop the blank lines they leave behind
+    awk '{ buf[NR] = $0 } NF { last = NR } END { for (i = 1; i <= last; i++) print buf[i] }' "$CMAKE_FILE" > "${CMAKE_FILE}.tmp"
+    mv "${CMAKE_FILE}.tmp" "$CMAKE_FILE"
     echo "    Applied add_subdirectory removal patch"
 else
     echo "    (already patched or pattern not found)"

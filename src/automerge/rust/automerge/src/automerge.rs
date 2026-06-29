@@ -354,20 +354,38 @@ impl Automerge {
 
     /// Start a transaction.
     pub fn transaction(&mut self) -> Transaction<'_> {
+        let patch_log = PatchLog::inactive();
         let args = self.transaction_args(None);
-        Transaction::new(self, args, PatchLog::inactive())
+        Transaction::new(self, args, patch_log)
     }
 
     /// Start a transaction which records changes in a [`PatchLog`]
-    pub fn transaction_log_patches(&mut self, patch_log: PatchLog) -> Transaction<'_> {
+    ///
+    /// Returns [`PatchLogMismatch`](crate::PatchLogMismatch) if `patch_log` does not belong to
+    /// this document. This probably means a patch log created for one document was reused with
+    /// another document.
+    pub fn transaction_log_patches(
+        &mut self,
+        mut patch_log: PatchLog,
+    ) -> Result<Transaction<'_>, crate::PatchLogMismatch> {
         let args = self.transaction_args(None);
-        Transaction::new(self, args, patch_log)
+        patch_log.begin_transaction(self, &args)?;
+        Ok(Transaction::new(self, args, patch_log))
     }
 
     /// Start a transaction isolated at a given heads
-    pub fn transaction_at(&mut self, patch_log: PatchLog, heads: &[ChangeHash]) -> Transaction<'_> {
+    ///
+    /// Returns [`PatchLogMismatch`](crate::PatchLogMismatch) if `patch_log` does not belong to
+    /// this document. This probably means a patch log created for one document was reused with
+    /// another document.
+    pub fn transaction_at(
+        &mut self,
+        mut patch_log: PatchLog,
+        heads: &[ChangeHash],
+    ) -> Result<Transaction<'_>, crate::PatchLogMismatch> {
         let args = self.transaction_args(Some(heads));
-        Transaction::new(self, args, patch_log)
+        patch_log.begin_transaction(self, &args)?;
+        Ok(Transaction::new(self, args, patch_log))
     }
 
     /// Start a transaction that owns the document, consuming `self`.
@@ -380,11 +398,15 @@ impl Automerge {
     /// * `patch_log` - An optional [`PatchLog`] to log the changes in this transaction to
     /// * `heads` - An optional set of heads to isolate this transaction at, or `None` to use the
     ///   current heads of the document
+    ///
+    /// Returns [`PatchLogMismatch`](crate::PatchLogMismatch) if `patch_log` does not belong to
+    /// this document. This probably means a patch log created for one document was reused with
+    /// another document.
     pub fn into_transaction(
         self,
         patch_log: Option<PatchLog>,
         heads: Option<&[ChangeHash]>,
-    ) -> OwnedTransaction {
+    ) -> Result<OwnedTransaction, crate::PatchLogMismatch> {
         OwnedTransaction::new(self, patch_log, heads)
     }
 
@@ -418,6 +440,7 @@ impl Automerge {
         // SAFETY: this unwrap is safe as we always add 1
         let start_op = NonZeroU64::new(self.change_graph.max_op() + 1).unwrap();
         let checkpoint = self.ops.save_checkpoint();
+
         TransactionArgs {
             actor_index,
             seq,
@@ -508,7 +531,9 @@ impl Automerge {
         F: FnOnce(&mut Transaction<'_>) -> Result<O, E>,
         C: FnOnce(&O) -> CommitOptions,
     {
-        let mut tx = self.transaction_log_patches(PatchLog::active());
+        let mut tx = self
+            .transaction_log_patches(PatchLog::active())
+            .expect("new patch log should not mismatch");
         let result = f(&mut tx);
         match result {
             Ok(result) => {
@@ -536,6 +561,7 @@ impl Automerge {
     /// The main reason to do this is if you want to create a "merge commit", which is a change
     /// that has all the current heads of the document as dependencies.
     pub fn empty_commit(&mut self, opts: CommitOptions) -> ChangeHash {
+        // No patch log is recorded for an empty change, so migrate a throwaway one.
         let args = self.transaction_args(None);
         Transaction::empty(self, args, opts)
     }
