@@ -10,19 +10,6 @@ CFLAGS=`"${R_HOME}/bin/R" CMD config CFLAGS`
 LDFLAGS=`"${R_HOME}/bin/R" CMD config LDFLAGS`
 export CC CFLAGS LDFLAGS
 
-# Helper function: detect cmake
-detect_cmake() {
-  if command -v cmake >/dev/null 2>&1; then
-    return 0
-  fi
-  export PATH=$PATH:/Applications/CMake.app/Contents/bin
-  if command -v cmake >/dev/null 2>&1; then
-    return 0
-  fi
-  echo "ERROR: CMake not found"
-  exit 1
-}
-
 # Helper function: check for UTF-32 indexing in system library
 check_utf32_indexing() {
     echo "#include <automerge-c/config.h>
@@ -146,9 +133,7 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
         exit 1
     fi
 
-    detect_cmake
-
-    echo "Building automerge-c..."
+    echo "Building automerge-c from bundled source..."
     echo "using Rust package manager: '$($CARGO_CMD --version)'"
     echo "using Rust compiler: '$($RUSTC_CMD --version)'"
 
@@ -162,6 +147,13 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
     export CARGO_HOME="${PWD}/am-build/.cargo"
     mkdir -p "$CARGO_HOME"
 
+    # Keep Cargo's build artefacts inside the package build tree
+    export CARGO_TARGET_DIR="${PWD}/am-build/target"
+
+    # automerge-c's build.rs writes the cbindgen-generated header here
+    export CBINDGEN_TARGET_DIR="${PWD}/am-install/include/automerge-c"
+    mkdir -p "$CBINDGEN_TARGET_DIR" am-install/lib
+
     # Generate vendor config with absolute path (env vars don't work for source replacement)
     cat > "$CARGO_HOME/config.toml" << EOF
 [source.crates-io]
@@ -171,36 +163,38 @@ replace-with = "vendored-sources"
 directory = "${PWD}/src/automerge/rust/vendor"
 EOF
 
-    # Extract vendored Rust dependencies (CMakeLists.txt configures Cargo to use them)
+    # Extract vendored Rust dependencies
     if [ -f "src/automerge/rust/vendor.tar.xz" ] && [ ! -d "src/automerge/rust/vendor" ]; then
         echo "Extracting vendored Rust dependencies..."
         xz -dc src/automerge/rust/vendor.tar.xz | tar -xf - -C src/automerge/rust
     fi
 
-    cmake -S src/automerge/rust/automerge-c -B am-build \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-        -DCMAKE_INSTALL_PREFIX="${PWD}/am-install" \
-        -DCMAKE_INSTALL_LIBDIR=lib \
-        -DBUILD_TESTING=OFF \
-        -DCMAKE_COLOR_MAKEFILE=OFF \
-        -DCMAKE_INSTALL_MESSAGE=NEVER \
-        -DUTF32_INDEXING=ON \
-        || { echo "ERROR: CMake configuration failed"; exit 1; }
-
     echo "Building (this may take several minutes)..."
-    cmake --build am-build --config Release \
-        || { echo "ERROR: Build failed"; exit 1; }
+    # Default features select UTF-32 indexing; -j2 respects CRAN's core limit.
+    # build.rs runs cbindgen to emit ${CBINDGEN_TARGET_DIR}/automerge.h.
+    "$CARGO_CMD" build --release -j2 \
+        --manifest-path src/automerge/rust/automerge-c/Cargo.toml \
+        || { echo "ERROR: cargo build failed"; exit 1; }
 
-    cmake --build am-build --target install \
-        || { echo "ERROR: Install failed"; exit 1; }
-
-    rm -rf am-build
-
-    if [ ! -d "am-install/lib" ]; then
-        echo "ERROR: Installation did not create expected lib directory"
+    HEADER="am-install/include/automerge-c/automerge.h"
+    if [ ! -f "$HEADER" ]; then
+        echo "ERROR: cbindgen did not generate ${HEADER}"
         exit 1
     fi
+
+    # Post-process the cbindgen header (work previously done by CMake):
+    #   1. cbindgen renders consecutive capitals as "A_M..."; restore "AM_...".
+    #   2. cbindgen ignores size_of::<usize>(); substitute the pointer size.
+    PTR_SIZE=`"${R_HOME}/bin/Rscript" -e 'cat(.Machine$sizeof.pointer)'`
+    sed -e 's/A_M\([^_][^_]*\)_/AM_\1_/g' \
+        -e "s/USIZE_/+${PTR_SIZE}/g" \
+        "$HEADER" > "${HEADER}.tmp" && mv "${HEADER}.tmp" "$HEADER"
+
+    # Stage the static library where Makevars expects it
+    cp am-build/target/release/libautomerge_core.a am-install/lib/libautomerge.a \
+        || { echo "ERROR: failed to stage static library"; exit 1; }
+
+    rm -rf am-build
 
     echo "Successfully built automerge-c from source"
 

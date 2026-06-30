@@ -12,8 +12,9 @@
 #
 # When updating automerge (src/automerge/rust/):
 #   1. Update the Rust source from upstream
-#   2. Run this script: ./tools/patch-rust-msrv.sh src/automerge/rust
-#   3. Run vendor script: ./tools/vendor-deps.sh
+#   2. Run ./tools/patch-sources.sh (generates Cargo.toml, drops CMake)
+#   3. Run this script: ./tools/patch-rust-msrv.sh src/automerge/rust
+#   4. Run vendor script: ./tools/vendor-deps.sh
 #
 # Dependency changes:
 #   smol_str:   0.3 -> 0.2   (MSRV 1.89 -> 1.56)
@@ -69,18 +70,11 @@ if [ -f "$CARGO_AUTOMERGE" ]; then
     sedi '/^optree-visualisation = /d' "$CARGO_AUTOMERGE"
 fi
 
-# Patch automerge-c/Cargo.toml
+# Patch automerge-c/Cargo.toml (generated from the template by patch-sources.sh)
 CARGO_AUTOMERGE_C="$RUST_DIR/automerge-c/Cargo.toml"
 if [ -f "$CARGO_AUTOMERGE_C" ]; then
     sedi 's/smol_str = "0.3"/smol_str = "0.2"/' "$CARGO_AUTOMERGE_C"
     sedi 's/cbindgen = "\^0.29"/cbindgen = { version = "^0.29", default-features = false }/' "$CARGO_AUTOMERGE_C"
-fi
-
-# Patch automerge-c/cmake/Cargo.toml.in (CMake template)
-CARGO_CMAKE="$RUST_DIR/automerge-c/cmake/Cargo.toml.in"
-if [ -f "$CARGO_CMAKE" ]; then
-    sedi 's/smol_str = "0.3"/smol_str = "0.2"/' "$CARGO_CMAKE"
-    sedi 's/cbindgen = "\^0.29"/cbindgen = { version = "^0.29", default-features = false }/' "$CARGO_CMAKE"
 fi
 
 # Remove Cargo.lock to allow fresh dependency resolution
