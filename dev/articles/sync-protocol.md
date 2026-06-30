@@ -147,9 +147,9 @@ repeat {
 round
 #> [1] 3
 peer3[["source"]]
-#> [1] "peer4"
+#> [1] "peer3"
 peer4[["source"]]
-#> [1] "peer4"
+#> [1] "peer3"
 
 am_close(peer3)
 am_close(peer4)
@@ -382,16 +382,16 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] 8f 21 df 7e 3d e4 7e 5e 78 bc 62 26 1e 2f 73 12 86 3f 19 f2 2a af
-#> [23] da e0 70 87 5b 6b b4 e4 6d cd
+#>  [1] 0d 7d 80 fb 00 0c 49 a9 e4 b2 86 c3 74 58 8b 3d f5 2f 22 5e 2e 9c
+#> [23] cb f3 1d cf 25 87 a8 20 df d3
 am_change_actor_id(change) # Who made this change
-#>  [1] 23 f5 42 4c 11 4c 3e 9e db 4b 2e 10 ef 58 b2 07
+#>  [1] 45 bb e7 ea 87 61 5d 55 46 5e 6c 51 cc a3 8e 85
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] 6c 7e d6 c6 f8 f7 d1 bc 7f 5a 68 87 95 22 b0 d4 8d 6a 46 f2 bf b3
-#> [23] fd 0c fb 57 54 4f 0a 7f 08 62
+#>  [1] 09 dd 85 1a 2c 3b ad 7d 88 8d 45 94 87 39 87 cc cf da 04 9e 5c 16
+#> [23] 38 0c cd 84 7c a2 6b 80 ef dc
 am_change_size(change)     # Number of operations
 #> [1] 2
 
@@ -399,7 +399,7 @@ am_change_size(change)     # Number of operations
 changes_since_v1 <- am_get_changes(doc_main, heads_v1)
 str(changes_since_v1)
 #> List of 1
-#>  $ :Class 'am_change' <pointer: 0x56504cc9fa60>
+#>  $ :Class 'am_change' <pointer: 0x564412cb53f0>
 
 am_close(doc_main)
 ```
@@ -488,10 +488,10 @@ y_changes <- am_get_changes(peer_y, common_heads)
 
 str(x_changes)
 #> List of 1
-#>  $ :Class 'am_change' <pointer: 0x56504ce9aa70>
+#>  $ :Class 'am_change' <pointer: 0x56441409a840>
 str(y_changes)
 #> List of 1
-#>  $ :Class 'am_change' <pointer: 0x56504ad14000>
+#>  $ :Class 'am_change' <pointer: 0x564411d5e120>
 
 # Sync to merge divergent histories
 rounds <- am_sync(peer_x, peer_y)
@@ -542,7 +542,7 @@ editor1[["counter"]]
 
 # Status: Deterministic conflict resolution (one value wins)
 editor1[["status"]]
-#> [1] "published"
+#> [1] "review"
 
 am_close(base)
 am_close(editor1)

@@ -381,8 +381,8 @@ vignette(package = "automerge") # List all
 
 - R \>= 4.2
 - For building from source:
-  - Rust \>= 1.85.0 (<https://rustup.rs/>)
-  - CMake \>= 3.25 (included in Rtools43+ on Windows)
+  - Rust \>= 1.85.0 (<https://rustup.rs/>; included in Rtools43+ on
+    Windows)
 - Or: Install automerge-c (with UTF-32 character indexing) system-wide
   to skip build
 

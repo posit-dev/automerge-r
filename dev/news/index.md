@@ -2,6 +2,9 @@
 
 ## automerge (development version)
 
+- Building the bundled automerge library from source no longer requires
+  CMake.
+
 - Updates vendored automerge library to 0.10.0.
 
 ## automerge 0.4.0
