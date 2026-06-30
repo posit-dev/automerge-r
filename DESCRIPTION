@@ -27,10 +27,11 @@ BugReports: https://github.com/posit-dev/automerge-r/issues
 Depends:
     R (>= 4.2)
 Suggests:
-    quarto,
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 VignetteBuilder:
-    quarto
+    knitr
 Config/build/compilation-database: true
 Config/Needs/website: tidyverse/tidytemplate
 Config/roxygen2/markdown: TRUE

@@ -11,8 +11,6 @@ src/Makevars
 compile_commands.json
 am-build
 am-install
-/.quarto/
-**/*.quarto_ipynb
 docs
 inst/doc
 /doc/

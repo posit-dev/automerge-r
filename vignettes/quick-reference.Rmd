@@ -1,16 +1,20 @@
 ---
 title: "Quick Reference"
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Quick Reference}
-  %\VignetteEngine{quarto::html}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-execute:
-  eval: false
-knitr:
-  opts_chunk:
-    collapse: true
-    comment: "#>"
 ---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
 
 # Automerge R Package Quick Reference
 

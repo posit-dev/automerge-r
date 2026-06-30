@@ -1,16 +1,19 @@
 ---
 title: "Cross-Platform Synchronization: JavaScript ↔ R"
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Cross-Platform Synchronization: JavaScript ↔ R}
-  %\VignetteEngine{quarto::html}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-execute:
-  eval: false
-knitr:
-  opts_chunk:
-    collapse: true
-    comment: "#>"
 ---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE # Set to FALSE since examples require Node.js and filesystem operations
+)
+```
 
 ## Running the Examples
 

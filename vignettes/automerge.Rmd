@@ -1,14 +1,19 @@
 ---
 title: "Getting Started with automerge"
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Getting Started with automerge}
-  %\VignetteEngine{quarto::html}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-knitr:
-  opts_chunk:
-    collapse: true
-    comment: "#>"
 ---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
 ## What is Automerge?
 
