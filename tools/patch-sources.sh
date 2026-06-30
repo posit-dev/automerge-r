@@ -3,20 +3,30 @@
 # Patch Automerge Sources for R Package Build
 # ============================================================================
 #
-# This script applies necessary patches to the vendored automerge sources to
-# ensure compatibility with CRAN requirements and cross-platform builds.
+# This script converts the upstream automerge-c sources, which build with
+# CMake, into a CMake-free layout that the package's configure script builds
+# with Cargo directly. CMake's only essential jobs for this package were
+# (1) substituting the Cargo.toml / cbindgen.toml templates and (2) running
+# Cargo + cbindgen; the configure script now does (2) (plus the two header
+# fix-ups CMake applied), so here we do (1) and remove the CMake machinery.
 #
 # Usage: ./tools/patch-sources.sh
 #
-# Run this script after updating automerge sources and before vendor-deps.sh.
+# Run this FIRST when updating the bundled automerge sources, then:
+#   1. ./tools/patch-rust-msrv.sh src/automerge/rust   (downgrade MSRV deps)
+#   2. ./tools/vendor-deps.sh                          (refresh vendor.tar.xz)
 #
-# Patches Applied:
-#   1. Remove rust-toolchain.toml (if present) to use system Rust
-#   2. CMakeLists.txt: Remove nightly Rust requirement (use stable toolchain)
-#   3. CMakeLists.txt: Fix WIN32 check to WIN32 AND MSVC for lib tool
-#   4. CMakeLists.txt: Use CMake script for ar merge (GNU/BSD compatibility)
-#   5. Add ar-merge-objects.cmake helper for cross-platform static lib merging
-#   6. Ensure all source files end with newline (POSIX compliance)
+# Changes applied to src/automerge/rust/automerge-c:
+#   1. Remove rust-toolchain.toml (forces a specific Rust version)
+#   2. Generate Cargo.toml    from cmake/Cargo.toml.in   (CMake configure_file)
+#   3. Generate cbindgen.toml from cmake/cbindgen.toml.in (CMake configure_file)
+#   4. Remove CMakeLists.txt and the cmake/ helper directory
+#   5. Ensure all source files end with a newline (POSIX compliance)
+#
+# The substitutions in steps 2-3 mirror the defaults in upstream's
+# CMakeLists.txt: PROJECT_NAME=automerge-c, BINDINGS_NAME=automerge_core,
+# LIBRARY_NAME=automerge, and INCLUDE_GUARD_PREFIX=AUTOMERGE_C. PROJECT_VERSION
+# is read from the project() declaration so it tracks upstream bumps.
 #
 # ============================================================================
 
@@ -24,6 +34,7 @@ set -e
 
 RUST_DIR="src/automerge/rust"
 AUTOMERGE_C_DIR="$RUST_DIR/automerge-c"
+CMAKE_DIR="$AUTOMERGE_C_DIR/cmake"
 CMAKE_FILE="$AUTOMERGE_C_DIR/CMakeLists.txt"
 
 if [ ! -d "$RUST_DIR" ]; then
@@ -31,201 +42,54 @@ if [ ! -d "$RUST_DIR" ]; then
     exit 1
 fi
 
-if [ ! -f "$CMAKE_FILE" ]; then
-    echo "Error: CMakeLists.txt not found at $CMAKE_FILE"
-    exit 1
-fi
+echo "Patching automerge sources (CMake-free layout)..."
 
-# Portable sed -i (works on both macOS and Linux)
-sedi() {
-    if [ "$(uname)" = "Darwin" ]; then
-        sed -i '' "$@"
-    else
-        sed -i "$@"
+# ----------------------------------------------------------------------------
+# Patch 1: Remove rust-toolchain.toml (forces a specific Rust version)
+# ----------------------------------------------------------------------------
+for toolchain in "$AUTOMERGE_C_DIR/rust-toolchain.toml" "$RUST_DIR/rust-toolchain.toml"; do
+    if [ -f "$toolchain" ]; then
+        echo "  Removing $toolchain..."
+        rm -f "$toolchain"
     fi
-}
-
-echo "Patching automerge sources..."
+done
 
 # ----------------------------------------------------------------------------
-# Patch 1: Remove rust-toolchain.toml (forces specific Rust version)
+# Patches 2-4: Replace CMake's configure_file + build orchestration
 # ----------------------------------------------------------------------------
-TOOLCHAIN_FILE="$AUTOMERGE_C_DIR/rust-toolchain.toml"
-if [ -f "$TOOLCHAIN_FILE" ]; then
-    echo "  Removing rust-toolchain.toml..."
-    rm -f "$TOOLCHAIN_FILE"
-fi
+if [ -f "$CMAKE_DIR/Cargo.toml.in" ]; then
+    # Read the version from the project() declaration before removing CMakeLists.
+    PROJECT_VERSION=$(sed -n 's/^[[:space:]]*project(automerge-c VERSION \([0-9.]*\).*/\1/p' "$CMAKE_FILE" | head -1)
+    if [ -z "$PROJECT_VERSION" ]; then
+        echo "Error: could not read PROJECT_VERSION from $CMAKE_FILE"
+        exit 1
+    fi
+    echo "  Generating Cargo.toml from cmake/Cargo.toml.in (version $PROJECT_VERSION)..."
+    sed -e 's/${PROJECT_NAME}/automerge-c/g' \
+        -e "s/\${PROJECT_VERSION}/${PROJECT_VERSION}/g" \
+        -e 's/${BINDINGS_NAME}/automerge_core/g' \
+        -e 's/${LIBRARY_NAME}/automerge/g' \
+        "$CMAKE_DIR/Cargo.toml.in" > "$AUTOMERGE_C_DIR/Cargo.toml"
 
-# Also check workspace root
-TOOLCHAIN_FILE_ROOT="$RUST_DIR/rust-toolchain.toml"
-if [ -f "$TOOLCHAIN_FILE_ROOT" ]; then
-    echo "  Removing rust-toolchain.toml from workspace root..."
-    rm -f "$TOOLCHAIN_FILE_ROOT"
-fi
+    echo "  Generating cbindgen.toml from cmake/cbindgen.toml.in..."
+    sed 's/@INCLUDE_GUARD_PREFIX@/AUTOMERGE_C/g' \
+        "$CMAKE_DIR/cbindgen.toml.in" > "$AUTOMERGE_C_DIR/cbindgen.toml"
 
-# ----------------------------------------------------------------------------
-# Patch 2: CMakeLists.txt - Remove nightly toolchain and build-std requirements
-# ----------------------------------------------------------------------------
-echo "  Patching CMakeLists.txt: removing nightly Rust requirement..."
-
-# Check if patch is needed (look for nightly toolchain setting)
-if grep -q "RUSTUP_TOOLCHAIN nightly" "$CMAKE_FILE" 2>/dev/null; then
-    # Remove the nightly toolchain conditional block
-    # Original:
-    #     if (NOT RUSTC_VERSION MATCHES "nightly")
-    #         set(RUSTUP_TOOLCHAIN nightly)
-    #     endif()
-    sedi '/if (NOT RUSTC_VERSION MATCHES "nightly")/,/endif()/d' "$CMAKE_FILE"
-fi
-
-if grep -q 'RUSTFLAGS.*panic=abort' "$CMAKE_FILE" 2>/dev/null; then
-    # Remove panic=abort RUSTFLAGS line
-    sedi '/set(RUSTFLAGS.*panic=abort/d' "$CMAKE_FILE"
-fi
-
-if grep -q "set(CARGO_FLAGS -Z build-std" "$CMAKE_FILE" 2>/dev/null; then
-    # Replace build-std flags with simple --release
-    sedi 's/set(CARGO_FLAGS -Z build-std=std,panic_abort --release \${CARGO_FLAGS})/set(CARGO_FLAGS --release ${CARGO_FLAGS})/' "$CMAKE_FILE"
-    echo "    Applied nightly removal patch"
+    echo "  Removing CMakeLists.txt and cmake/ ..."
+    rm -f "$CMAKE_FILE"
+    rm -rf "$CMAKE_DIR"
 else
-    echo "    (already patched or pattern not found)"
-fi
-
-# Clean up empty lines left by removals (collapse multiple blank lines)
-sedi '/^$/N;/^\n$/d' "$CMAKE_FILE"
-
-# ----------------------------------------------------------------------------
-# Patch 3: CMakeLists.txt - Change if(WIN32) to if(WIN32 AND MSVC) for lib tool
-# ----------------------------------------------------------------------------
-echo "  Patching CMakeLists.txt: WIN32 -> WIN32 AND MSVC for lib tool..."
-
-# Only patch the specific if(WIN32) that precedes find_program(LIB_TOOL
-# NOT the if(WIN32) for library dependencies (Bcrypt, etc.)
-if grep -A1 'if(WIN32)$' "$CMAKE_FILE" 2>/dev/null | grep -q 'find_program(LIB_TOOL'; then
-    # Use awk for context-aware replacement
-    awk '
-    /if\(WIN32\)$/ {
-        getline nextline
-        if (nextline ~ /find_program\(LIB_TOOL/) {
-            print "    if(WIN32 AND MSVC)"
-            print nextline
-            next
-        } else {
-            print
-            print nextline
-            next
-        }
-    }
-    { print }
-    ' "$CMAKE_FILE" > "${CMAKE_FILE}.tmp"
-    mv "${CMAKE_FILE}.tmp" "$CMAKE_FILE"
-    echo "    Applied WIN32 AND MSVC patch"
-else
-    echo "    (already patched or pattern not found)"
+    echo "  CMake templates absent; sources already converted (skipping 2-4)."
 fi
 
 # ----------------------------------------------------------------------------
-# Patch 4: CMakeLists.txt - Use CMake script for ar merge
-# ----------------------------------------------------------------------------
-echo "  Patching CMakeLists.txt: using CMake script for ar merge..."
-
-# Only replace the actual command, not the echo statement
-# Pattern: line starts with whitespace, then ${CMAKE_AR} -rs (not echo)
-if grep -q '^[[:space:]]*\${CMAKE_AR} -rs' "$CMAKE_FILE" 2>/dev/null; then
-    # Replace direct ar command with CMake script invocation
-    sedi 's|^\([[:space:]]*\)\${CMAKE_AR} -rs \$<TARGET_FILE_NAME:\${LIBRARY_NAME}> \${BINDINGS_OBJECTS_DIR}/\*\.o|\1${CMAKE_COMMAND} -DCMAKE_AR="${CMAKE_AR}" -DLIBRARY_NAME="$<TARGET_FILE_NAME:${LIBRARY_NAME}>" -DBINDINGS_OBJECTS_DIR="${BINDINGS_OBJECTS_DIR}" -DPROJECT_BINARY_DIR="${PROJECT_BINARY_DIR}" -P "${PROJECT_SOURCE_DIR}/cmake/ar-merge-objects.cmake"|' "$CMAKE_FILE"
-    echo "    Applied ar-merge-objects.cmake patch"
-else
-    echo "    (already patched or pattern not found)"
-fi
-
-# ----------------------------------------------------------------------------
-# Patch 5: Add ar-merge-objects.cmake helper script
-# ----------------------------------------------------------------------------
-AR_MERGE_SCRIPT="$AUTOMERGE_C_DIR/cmake/ar-merge-objects.cmake"
-echo "  Creating ar-merge-objects.cmake..."
-
-cat > "$AR_MERGE_SCRIPT" << 'EOF'
-# CMake script to merge object files into an archive
-# This script handles both GNU ar (with MRI script support) and BSD ar
-
-file(GLOB OBJECT_FILES "${BINDINGS_OBJECTS_DIR}/*.o")
-if(NOT OBJECT_FILES)
-    message(FATAL_ERROR "No object files found in ${BINDINGS_OBJECTS_DIR}")
-endif()
-
-# Test if ar supports MRI mode (GNU ar)
-execute_process(
-    COMMAND ${CMAKE_AR} -M
-    INPUT_FILE /dev/null
-    RESULT_VARIABLE AR_MRI_TEST
-    ERROR_QUIET
-    OUTPUT_QUIET
-)
-
-if(AR_MRI_TEST EQUAL 0)
-    # GNU ar with MRI support
-    set(MRI_SCRIPT "${PROJECT_BINARY_DIR}/ar-merge.mri")
-    file(WRITE ${MRI_SCRIPT} "CREATE ${LIBRARY_NAME}\n")
-    foreach(OBJ_FILE ${OBJECT_FILES})
-        file(APPEND ${MRI_SCRIPT} "ADDMOD ${OBJ_FILE}\n")
-    endforeach()
-    file(APPEND ${MRI_SCRIPT} "SAVE\nEND\n")
-
-    execute_process(
-        COMMAND ${CMAKE_AR} -M
-        INPUT_FILE ${MRI_SCRIPT}
-        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-        RESULT_VARIABLE AR_RESULT
-        ERROR_VARIABLE AR_ERROR
-        OUTPUT_VARIABLE AR_OUTPUT
-    )
-
-    file(REMOVE ${MRI_SCRIPT})
-else()
-    # BSD ar (macOS) - use traditional commands
-    execute_process(
-        COMMAND ${CMAKE_AR} -r -s ${LIBRARY_NAME} ${OBJECT_FILES}
-        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-        RESULT_VARIABLE AR_RESULT
-        ERROR_VARIABLE AR_ERROR
-        OUTPUT_VARIABLE AR_OUTPUT
-    )
-endif()
-
-if(NOT AR_RESULT EQUAL 0)
-    message(FATAL_ERROR "ar command failed with code ${AR_RESULT}\nError: ${AR_ERROR}\nOutput: ${AR_OUTPUT}")
-endif()
-EOF
-
-# ----------------------------------------------------------------------------
-# Patch 6: Drop add_subdirectory calls for dirs we don't vendor (test/docs/examples)
-# ----------------------------------------------------------------------------
-echo "  Patching CMakeLists.txt: removing add_subdirectory(test/docs/examples)..."
-
-if grep -q "^add_subdirectory(docs)" "$CMAKE_FILE" 2>/dev/null; then
-    # Drop the BUILD_TESTING block (test subdir + enable_testing)
-    sedi '/^if(BUILD_TESTING)$/,/^endif()$/d' "$CMAKE_FILE"
-    sedi '/^add_subdirectory(docs)$/d' "$CMAKE_FILE"
-    sedi '/^add_subdirectory(examples EXCLUDE_FROM_ALL)$/d' "$CMAKE_FILE"
-    # These blocks sit at EOF in newer upstream; drop the blank lines they leave behind
-    awk '{ buf[NR] = $0 } NF { last = NR } END { for (i = 1; i <= last; i++) print buf[i] }' "$CMAKE_FILE" > "${CMAKE_FILE}.tmp"
-    mv "${CMAKE_FILE}.tmp" "$CMAKE_FILE"
-    echo "    Applied add_subdirectory removal patch"
-else
-    echo "    (already patched or pattern not found)"
-fi
-
-# ----------------------------------------------------------------------------
-# Patch 7: Ensure all source files end with a newline (POSIX compliance)
+# Patch 5: Ensure all source files end with a newline (POSIX compliance)
 # ----------------------------------------------------------------------------
 echo "  Ensuring source files end with newline..."
 
 FIXED_COUNT=0
-for file in $(find "$RUST_DIR" -type f \( -name "*.rs" -o -name "*.c" -o -name "*.h" -o -name "*.toml" -o -name "*.cmake" \) 2>/dev/null); do
-    # Check if file exists and is not empty
+for file in $(find "$RUST_DIR" -type f \( -name "*.rs" -o -name "*.c" -o -name "*.h" -o -name "*.toml" \) 2>/dev/null); do
     if [ -s "$file" ]; then
-        # Check if file ends with newline (tail -c1 returns empty if last char is newline)
         if [ -n "$(tail -c1 "$file")" ]; then
             echo "" >> "$file"
             FIXED_COUNT=$((FIXED_COUNT + 1))

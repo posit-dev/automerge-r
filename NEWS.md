@@ -1,5 +1,9 @@
 # automerge (development version)
 
+* Building the bundled library from source no longer requires CMake; the
+  configure scripts now drive Cargo directly. Rust (Cargo and rustc >= 1.85)
+  remains the only toolchain requirement.
+
 * Updates vendored automerge library to 0.10.0.
 
 # automerge 0.4.0

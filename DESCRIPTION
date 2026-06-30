@@ -38,5 +38,5 @@ Config/roxygen2/markdown: TRUE
 Config/roxygen2/version: 8.0.0
 Config/testthat/edition: 3
 Encoding: UTF-8
-SystemRequirements: 'automerge-c', or Cargo (Rust's package manager),
-    rustc >= 1.85 and CMake >= 3.25 to build from package sources.
+SystemRequirements: 'automerge-c', or Cargo (Rust's package manager) and
+    rustc >= 1.85 to build from package sources.
