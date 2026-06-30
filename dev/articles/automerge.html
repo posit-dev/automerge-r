@@ -12,9 +12,7 @@
 <link href="../deps/Source_Code_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="automerge_files/libs/quarto-html/popper.min.js"></script><script src="automerge_files/libs/quarto-html/tippy.umd.min.js"></script><link href="automerge_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="automerge_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting Started with automerge">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting Started with automerge">
 <meta name="robots" content="noindex">
 <script src="https://cdn.jsdelivr.net/gh/posit-dev/supported-by-posit/js/badge.min.js" data-max-height="43" data-light-bg="#666f76" data-light-fg="#f9f9f9"></script>
 </head>
@@ -60,72 +58,88 @@
 
 
   </div>
-</nav><div class="container template-quarto" id="container">
+</nav><div class="container template-article" id="container">
+
+
+
+
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Getting Started with automerge</h1>
-
-
-
-
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/vignettes/automerge.qmd" class="external-link"><code>vignettes/automerge.qmd</code></a></small>
-      <div class="d-none name"><code></code></div>
+            
+      
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/vignettes/automerge.Rmd" class="external-link"><code>vignettes/automerge.Rmd</code></a></small>
+      <div class="d-none name"><code>automerge.Rmd</code></div>
     </div>
 
-
-
-
-
-
-    <section class="level2"><h2 id="what-is-automerge">What is Automerge?<a class="anchor" aria-label="anchor" href="#what-is-automerge"></a>
+    
+    
+<div class="section level2">
+<h2 id="what-is-automerge">What is Automerge?<a class="anchor" aria-label="anchor" href="#what-is-automerge"></a>
 </h2>
-<p>Automerge is a library that enables automatic merging of concurrent changes without conflicts. It’s built on the concept of Conflict-free Replicated Data Types (CRDTs), which are data structures designed to be safely replicated across multiple devices and automatically merged.</p>
-<section class="level3"><h3 id="key-benefits">Key Benefits<a class="anchor" aria-label="anchor" href="#key-benefits"></a>
+<p>Automerge is a library that enables automatic merging of concurrent
+changes without conflicts. It’s built on the concept of Conflict-free
+Replicated Data Types (CRDTs), which are data structures designed to be
+safely replicated across multiple devices and automatically merged.</p>
+<div class="section level3">
+<h3 id="key-benefits">Key Benefits<a class="anchor" aria-label="anchor" href="#key-benefits"></a>
 </h3>
 <ul>
 <li>
-<strong>Automatic conflict resolution</strong>: Multiple users can edit the same document simultaneously without manual conflict resolution</li>
+<strong>Automatic conflict resolution</strong>: Multiple users can
+edit the same document simultaneously without manual conflict
+resolution</li>
 <li>
-<strong>Offline-first</strong>: Changes can be made offline and synchronized later</li>
+<strong>Offline-first</strong>: Changes can be made offline and
+synchronized later</li>
 <li>
-<strong>Cross-platform</strong>: Documents created in R can be synced with JavaScript, Python, and other implementations</li>
+<strong>Cross-platform</strong>: Documents created in R can be
+synced with JavaScript, Python, and other implementations</li>
 <li>
-<strong>Version history</strong>: Complete change history is preserved for auditing and debugging</li>
+<strong>Version history</strong>: Complete change history is
+preserved for auditing and debugging</li>
 <li>
-<strong>Collaborative</strong>: Perfect for building collaborative applications like shared notebooks or data pipelines</li>
-</ul></section></section><section class="level2"><h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+<strong>Collaborative</strong>: Perfect for building collaborative
+applications like shared notebooks or data pipelines</li>
+</ul>
+</div>
+</div>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># From CRAN</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"automerge"</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h2 id="basic-usage">Basic Usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
+<div class="section level2">
+<h2 id="basic-usage">Basic Usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
 </h2>
 <p>Let’s start with the most fundamental operations:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/posit-dev/automerge-r" class="external-link">automerge</a></span><span class="op">)</span></span></code></pre></div>
-</div>
-<section class="level3"><h3 id="creating-a-document">Creating a Document<a class="anchor" aria-label="anchor" href="#creating-a-document"></a>
+<div class="section level3">
+<h3 id="creating-a-document">Creating a Document<a class="anchor" aria-label="anchor" href="#creating-a-document"></a>
 </h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;Automerge Document&gt;</span></span>
-<span><span class="co">#&gt; Actor: 0f994ad72a2dfd41f5f434a6c92f5572 </span></span>
+<span><span class="co">#&gt; Actor: 4d258284c7a5c0aea98911e1357a3e07 </span></span>
 <span><span class="co">#&gt; Root keys: 0</span></span></code></pre></div>
+<p>Note: When you’re done working with a document, you can explicitly
+free its resources with <code>am_close(doc)</code> if you don’t want to
+wait for garbage collection.</p>
 </div>
-<p>Note: When you’re done working with a document, you can explicitly free its resources with <code>am_close(doc)</code> if you don’t want to wait for garbage collection.</p>
-</section><section class="level3"><h3 id="adding-data---three-approaches">Adding Data - Three Approaches<a class="anchor" aria-label="anchor" href="#adding-data---three-approaches"></a>
+<div class="section level3">
+<h3 id="adding-data---three-approaches">Adding Data - Three Approaches<a class="anchor" aria-label="anchor" href="#adding-data---three-approaches"></a>
 </h3>
-<p>Automerge provides multiple ways to add data, from functional to R-idiomatic:</p>
-<section class="level4"><h4 id="functional-api">1. Functional API<a class="anchor" aria-label="anchor" href="#functional-api"></a>
+<p>Automerge provides multiple ways to add data, from functional to
+R-idiomatic:</p>
+<div class="section level4">
+<h4 id="functional-api">1. Functional API<a class="anchor" aria-label="anchor" href="#functional-api"></a>
 </h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"name"</span>, <span class="st">"Alice"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"age"</span>, <span class="fl">30L</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"active"</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -136,10 +150,10 @@
 <span><span class="fu"><a href="../reference/am_get.html">am_get</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">AM_ROOT</span>, <span class="st">"age"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 30</span></span></code></pre></div>
 </div>
-</section><section class="level4"><h4 id="s3-operators-r-idiomatic">2. S3 Operators (R-idiomatic)<a class="anchor" aria-label="anchor" href="#s3-operators-r-idiomatic"></a>
+<div class="section level4">
+<h4 id="s3-operators-r-idiomatic">2. S3 Operators (R-idiomatic)<a class="anchor" aria-label="anchor" href="#s3-operators-r-idiomatic"></a>
 </h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc</span><span class="op">[[</span><span class="st">"email"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"alice@example.com"</span></span>
 <span><span class="va">doc</span><span class="op">[[</span><span class="st">"score"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">95.5</span></span>
 <span></span>
@@ -152,10 +166,10 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "active" "age"    "email"  "name"   "score"</span></span></code></pre></div>
 </div>
-</section><section class="level4"><h4 id="pipe-friendly-style">3. Pipe-Friendly Style<a class="anchor" aria-label="anchor" href="#pipe-friendly-style"></a>
+<div class="section level4">
+<h4 id="pipe-friendly-style">3. Pipe-Friendly Style<a class="anchor" aria-label="anchor" href="#pipe-friendly-style"></a>
 </h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">AM_ROOT</span>, <span class="st">"name"</span>, <span class="st">"Bob"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">AM_ROOT</span>, <span class="st">"age"</span>, <span class="fl">25L</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -167,14 +181,19 @@
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc2</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section></section></section><section class="level2"><h2 id="working-with-nested-structures">Working with Nested Structures<a class="anchor" aria-label="anchor" href="#working-with-nested-structures"></a>
+</div>
+</div>
+<div class="section level2">
+<h2 id="working-with-nested-structures">Working with Nested Structures<a class="anchor" aria-label="anchor" href="#working-with-nested-structures"></a>
 </h2>
-<p>Automerge supports nested data structures (maps within maps, lists within maps, etc.).</p>
-<section class="level3"><h3 id="recursive-conversion">Recursive Conversion<a class="anchor" aria-label="anchor" href="#recursive-conversion"></a>
+<p>Automerge supports nested data structures (maps within maps, lists
+within maps, etc.).</p>
+<div class="section level3">
+<h3 id="recursive-conversion">Recursive Conversion<a class="anchor" aria-label="anchor" href="#recursive-conversion"></a>
 </h3>
-<p>The simplest approach is to use R’s native list structures, which are automatically converted:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<p>The simplest approach is to use R’s native list structures, which are
+automatically converted:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create document with nested structure in one call</span></span>
 <span><span class="va">doc3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span></span>
@@ -206,11 +225,12 @@
 <span><span class="fu"><a href="../reference/am_get.html">am_get</a></span><span class="op">(</span><span class="va">doc3</span>, <span class="va">address</span>, <span class="st">"city"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Boston"</span></span></code></pre></div>
 </div>
-</section><section class="level3"><h3 id="path-based-access">Path-Based Access<a class="anchor" aria-label="anchor" href="#path-based-access"></a>
+<div class="section level3">
+<h3 id="path-based-access">Path-Based Access<a class="anchor" aria-label="anchor" href="#path-based-access"></a>
 </h3>
-<p>For deep structures, path-based helpers make navigation much easier:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<p>For deep structures, path-based helpers make navigation much
+easier:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Much simpler - use path-based access</span></span>
 <span><span class="fu"><a href="../reference/am_get_path.html">am_get_path</a></span><span class="op">(</span><span class="va">doc3</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"company"</span>, <span class="st">"office"</span>, <span class="st">"address"</span>, <span class="st">"city"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Boston"</span></span>
@@ -230,11 +250,12 @@
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc4</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level3"><h3 id="converting-r-data-structures">Converting R Data Structures<a class="anchor" aria-label="anchor" href="#converting-r-data-structures"></a>
+<div class="section level3">
+<h3 id="converting-r-data-structures">Converting R Data Structures<a class="anchor" aria-label="anchor" href="#converting-r-data-structures"></a>
 </h3>
-<p>Use <code><a href="../reference/as_automerge.html">as_automerge()</a></code> to convert entire R structures at once:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<p>Use <code><a href="../reference/as_automerge.html">as_automerge()</a></code> to convert entire R structures at
+once:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Your existing R data</span></span>
 <span><span class="va">config_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  app_name <span class="op">=</span> <span class="st">"MyApp"</span>,</span>
@@ -260,11 +281,12 @@
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc5</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section></section><section class="level2"><h2 id="working-with-lists">Working with Lists<a class="anchor" aria-label="anchor" href="#working-with-lists"></a>
+</div>
+<div class="section level2">
+<h2 id="working-with-lists">Working with Lists<a class="anchor" aria-label="anchor" href="#working-with-lists"></a>
 </h2>
 <p>Lists in R use 1-based indexing (standard R convention):</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a document with a list</span></span>
 <span><span class="va">doc6</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc6</span>, <span class="va">AM_ROOT</span>, <span class="st">"items"</span>, <span class="va">AM_OBJ_TYPE_LIST</span><span class="op">)</span></span>
@@ -291,13 +313,15 @@
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc6</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h2 id="special-automerge-types">Special Automerge Types<a class="anchor" aria-label="anchor" href="#special-automerge-types"></a>
+<div class="section level2">
+<h2 id="special-automerge-types">Special Automerge Types<a class="anchor" aria-label="anchor" href="#special-automerge-types"></a>
 </h2>
-<section class="level3"><h3 id="text-objects-for-collaborative-editing">Text Objects (for Collaborative Editing)<a class="anchor" aria-label="anchor" href="#text-objects-for-collaborative-editing"></a>
+<div class="section level3">
+<h3 id="text-objects-for-collaborative-editing">Text Objects (for Collaborative Editing)<a class="anchor" aria-label="anchor" href="#text-objects-for-collaborative-editing"></a>
 </h3>
-<p>Regular strings use deterministic conflict resolution (one value wins). For collaborative text editing, use text objects:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<p>Regular strings use deterministic conflict resolution (one value
+wins). For collaborative text editing, use text objects:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc7</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Regular string (last-write-wins)</span></span>
@@ -324,11 +348,12 @@
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc7</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level3"><h3 id="counters-for-crdt-counting">Counters (for CRDT Counting)<a class="anchor" aria-label="anchor" href="#counters-for-crdt-counting"></a>
+<div class="section level3">
+<h3 id="counters-for-crdt-counting">Counters (for CRDT Counting)<a class="anchor" aria-label="anchor" href="#counters-for-crdt-counting"></a>
 </h3>
-<p>Counters are special values that can be incremented/decremented without conflicts:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<p>Counters are special values that can be incremented/decremented
+without conflicts:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc8</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Create a counter</span></span>
@@ -343,26 +368,27 @@
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc8</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level3"><h3 id="timestamps">Timestamps<a class="anchor" aria-label="anchor" href="#timestamps"></a>
+<div class="section level3">
+<h3 id="timestamps">Timestamps<a class="anchor" aria-label="anchor" href="#timestamps"></a>
 </h3>
 <p>POSIXct timestamps are natively supported:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc9</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc9</span>, <span class="va">AM_ROOT</span>, <span class="st">"created_at"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc9</span>, <span class="va">AM_ROOT</span>, <span class="st">"updated_at"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc9</span><span class="op">[[</span><span class="st">"created_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-06-24 17:50:38 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-06-30 09:04:40 UTC"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc9</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section></section><section class="level2"><h2 id="saving-and-loading-documents">Saving and Loading Documents<a class="anchor" aria-label="anchor" href="#saving-and-loading-documents"></a>
+</div>
+<div class="section level2">
+<h2 id="saving-and-loading-documents">Saving and Loading Documents<a class="anchor" aria-label="anchor" href="#saving-and-loading-documents"></a>
 </h2>
 <p>Documents can be saved to binary format and loaded later:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Save to binary format</span></span>
 <span><span class="va">bytes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_save.html">am_save</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span></span>
@@ -383,12 +409,13 @@
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_loaded</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_from_file</span><span class="op">)</span></span></code></pre></div>
-</div>
-<section class="level3"><h3 id="incremental-save-and-load">Incremental Save and Load<a class="anchor" aria-label="anchor" href="#incremental-save-and-load"></a>
+<div class="section level3">
+<h3 id="incremental-save-and-load">Incremental Save and Load<a class="anchor" aria-label="anchor" href="#incremental-save-and-load"></a>
 </h3>
-<p>For long-lived documents, incremental save/load allows exchanging only the changes since the last save, rather than the entire document:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="downlit sourceCode r">
+<p>For long-lived documents, incremental save/load allows exchanging
+only the changes since the last save, rather than the entire
+document:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc_inc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">doc_inc</span><span class="op">[[</span><span class="st">"v1"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"first"</span></span>
 <span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc_inc</span>, <span class="st">"Version 1"</span><span class="op">)</span></span>
@@ -414,12 +441,14 @@
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_inc</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_inc2</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section></section><section class="level2"><h2 id="document-lifecycle">Document Lifecycle<a class="anchor" aria-label="anchor" href="#document-lifecycle"></a>
+</div>
+<div class="section level2">
+<h2 id="document-lifecycle">Document Lifecycle<a class="anchor" aria-label="anchor" href="#document-lifecycle"></a>
 </h2>
-<section class="level3"><h3 id="committing-changes">Committing Changes<a class="anchor" aria-label="anchor" href="#committing-changes"></a>
+<div class="section level3">
+<h3 id="committing-changes">Committing Changes<a class="anchor" aria-label="anchor" href="#committing-changes"></a>
 </h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc10</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Make changes</span></span>
@@ -437,11 +466,11 @@
 <span><span class="va">doc10</span><span class="op">[[</span><span class="st">"z"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
 <span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc10</span>, <span class="st">"Add z coordinate"</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level3"><h3 id="forking-and-cloning-documents">Forking and Cloning Documents<a class="anchor" aria-label="anchor" href="#forking-and-cloning-documents"></a>
+<div class="section level3">
+<h3 id="forking-and-cloning-documents">Forking and Cloning Documents<a class="anchor" aria-label="anchor" href="#forking-and-cloning-documents"></a>
 </h3>
 <p>Create independent copies:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc11</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_fork.html">am_fork</a></span><span class="op">(</span><span class="va">doc10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Changes to fork don't affect original</span></span>
@@ -460,11 +489,11 @@
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc11</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc11b</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level3"><h3 id="merging-documents">Merging Documents<a class="anchor" aria-label="anchor" href="#merging-documents"></a>
+<div class="section level3">
+<h3 id="merging-documents">Merging Documents<a class="anchor" aria-label="anchor" href="#merging-documents"></a>
 </h3>
 <p>Merge changes from one document into another:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create two documents</span></span>
 <span><span class="va">doc12</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">doc12</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"doc12"</span></span>
@@ -483,16 +512,18 @@
 <span><span class="va">doc12</span><span class="op">[[</span><span class="st">"value2"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] 200</span></span>
 <span><span class="va">doc12</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span> <span class="co"># One value wins deterministically for conflicting keys</span></span>
-<span><span class="co">#&gt; [1] "doc12"</span></span>
+<span><span class="co">#&gt; [1] "doc13"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc12</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc13</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section></section><section class="level2"><h2 id="basic-synchronization">Basic Synchronization<a class="anchor" aria-label="anchor" href="#basic-synchronization"></a>
+</div>
+<div class="section level2">
+<h2 id="basic-synchronization">Basic Synchronization<a class="anchor" aria-label="anchor" href="#basic-synchronization"></a>
 </h2>
-<p>Automerge’s key feature is automatic synchronization between documents:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="downlit sourceCode r">
+<p>Automerge’s key feature is automatic synchronization between
+documents:</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create two peers</span></span>
 <span><span class="va">peer1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">peer1</span><span class="op">[[</span><span class="st">"edited_by"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"peer1"</span></span>
@@ -522,11 +553,13 @@
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer2</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h2 id="inspecting-document-history">Inspecting Document History<a class="anchor" aria-label="anchor" href="#inspecting-document-history"></a>
+<div class="section level2">
+<h2 id="inspecting-document-history">Inspecting Document History<a class="anchor" aria-label="anchor" href="#inspecting-document-history"></a>
 </h2>
-<p>Every change in an Automerge document carries metadata: who made it, when, what message was attached, and what it depended on. You can inspect this with the change introspection functions:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="downlit sourceCode r">
+<p>Every change in an Automerge document carries metadata: who made it,
+when, what message was attached, and what it depended on. You can
+inspect this with the change introspection functions:</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc14</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">doc14</span><span class="op">[[</span><span class="st">"title"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"My Project"</span></span>
 <span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc14</span>, <span class="st">"Initial setup"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
@@ -539,15 +572,15 @@
 <span><span class="va">history</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; &lt;Automerge Change&gt;</span></span>
-<span><span class="co">#&gt; Hash: 1b a9 0e 0c ...</span></span>
+<span><span class="co">#&gt; Hash: ab a9 72 80 ...</span></span>
 <span><span class="co">#&gt; Message: Initial setup </span></span>
-<span><span class="co">#&gt; Time: 2026-06-24 17:50:38 </span></span>
+<span><span class="co">#&gt; Time: 2026-06-30 09:04:40 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
 <span><span class="co">#&gt; &lt;Automerge Change&gt;</span></span>
-<span><span class="co">#&gt; Hash: 6a 1e eb 6e ...</span></span>
+<span><span class="co">#&gt; Hash: 34 82 2f 16 ...</span></span>
 <span><span class="co">#&gt; Message: Set version </span></span>
-<span><span class="co">#&gt; Time: 2026-06-24 17:50:38</span></span>
+<span><span class="co">#&gt; Time: 2026-06-30 09:04:40</span></span>
 <span></span>
 <span><span class="co"># Inspect each change - no parsing needed</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">history</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -566,33 +599,38 @@
 <span><span class="co"># Extract many fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique 32-byte hash</span></span>
-<span><span class="co">#&gt;  [1] 6a 1e eb 6e 12 b9 54 b4 8b 3f e9 eb 88 5e d7 e5 cb 44 a8 b8 e2 49 ae 64 5b</span></span>
-<span><span class="co">#&gt; [26] 95 1b 56 20 1c c1 09</span></span>
+<span><span class="co">#&gt;  [1] 34 82 2f 16 37 2a a5 7e 44 9e 47 8b 25 66 ff 6e d2 bf 1d 0a 04 ac</span></span>
+<span><span class="co">#&gt; [23] b9 ff 24 07 d4 4d 55 4e 34 56</span></span>
 <span><span class="fu"><a href="../reference/am_change_message.html">am_change_message</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>  <span class="co"># Commit message</span></span>
 <span><span class="co">#&gt; [1] "Set version"</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Timestamp</span></span>
-<span><span class="co">#&gt; [1] "2026-06-24 17:50:38 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-06-30 09:04:40 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_seq.html">am_change_seq</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>      <span class="co"># Sequence number</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made the change</span></span>
-<span><span class="co">#&gt;  [1] d0 00 f1 64 c2 8c 9b 6c ad fd ad 22 03 c4 7e 19</span></span>
+<span><span class="co">#&gt;  [1] 85 f9 0b 4c d5 c4 72 ca 3b 79 89 65 3d 20 a1 a4</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent change hashes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] 1b a9 0e 0c c6 03 1f 54 18 79 9c 67 ea 91 9d 19 a0 ab 6c 3c d1 11 2f 18 27</span></span>
-<span><span class="co">#&gt; [26] b8 61 1c ba 06 83 2d</span></span>
+<span><span class="co">#&gt;  [1] ab a9 72 80 37 21 dc 72 c3 51 9e 2d 9e 96 8f 69 87 56 1c 18 3d cf</span></span>
+<span><span class="co">#&gt; [23] f2 41 0a a3 9d fb a5 5f f7 ab</span></span>
 <span><span class="fu"><a href="../reference/am_change_size.html">am_change_size</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Number of operations</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc14</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h2 id="time-travel-undoing-changes">Time Travel: Undoing Changes<a class="anchor" aria-label="anchor" href="#time-travel-undoing-changes"></a>
+<div class="section level2">
+<h2 id="time-travel-undoing-changes">Time Travel: Undoing Changes<a class="anchor" aria-label="anchor" href="#time-travel-undoing-changes"></a>
 </h2>
-<p>Since Automerge preserves every committed change, you can “time travel” back to any point in the document’s history. The key is <code>am_fork(doc, heads)</code>, which creates an independent copy of the document at a specific historical state.</p>
-<section class="level3"><h3 id="reverting-to-a-known-checkpoint">Reverting to a Known Checkpoint<a class="anchor" aria-label="anchor" href="#reverting-to-a-known-checkpoint"></a>
+<p>Since Automerge preserves every committed change, you can “time
+travel” back to any point in the document’s history. The key is
+<code>am_fork(doc, heads)</code>, which creates an independent copy of
+the document at a specific historical state.</p>
+<div class="section level3">
+<h3 id="reverting-to-a-known-checkpoint">Reverting to a Known Checkpoint<a class="anchor" aria-label="anchor" href="#reverting-to-a-known-checkpoint"></a>
 </h3>
-<p>If you know you might want to undo future changes, save the heads before making them:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="downlit sourceCode r">
+<p>If you know you might want to undo future changes, save the heads
+before making them:</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc_tt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">doc_tt</span><span class="op">[[</span><span class="st">"title"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"My Report"</span></span>
 <span><span class="va">doc_tt</span><span class="op">[[</span><span class="st">"status"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"draft"</span></span>
@@ -619,11 +657,12 @@
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_tt</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">draft</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level3"><h3 id="browsing-history-to-find-the-right-point">Browsing History to Find the Right Point<a class="anchor" aria-label="anchor" href="#browsing-history-to-find-the-right-point"></a>
+<div class="section level3">
+<h3 id="browsing-history-to-find-the-right-point">Browsing History to Find the Right Point<a class="anchor" aria-label="anchor" href="#browsing-history-to-find-the-right-point"></a>
 </h3>
-<p>When you don’t have a saved checkpoint, browse the history to find the change you want to revert to:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="downlit sourceCode r">
+<p>When you don’t have a saved checkpoint, browse the history to find
+the change you want to revert to:</p>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc_hist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc_hist</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, y <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -661,11 +700,12 @@
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_hist</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">reverted</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level3"><h3 id="continuing-from-a-historical-state">Continuing from a Historical State<a class="anchor" aria-label="anchor" href="#continuing-from-a-historical-state"></a>
+<div class="section level3">
+<h3 id="continuing-from-a-historical-state">Continuing from a Historical State<a class="anchor" aria-label="anchor" href="#continuing-from-a-historical-state"></a>
 </h3>
-<p>A forked document is fully independent, so you can make new changes from the historical state without affecting the original:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="downlit sourceCode r">
+<p>A forked document is fully independent, so you can make new changes
+from the historical state without affecting the original:</p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc_branch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">doc_branch</span><span class="op">[[</span><span class="st">"text"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_text.html">am_text</a></span><span class="op">(</span><span class="st">"Hello World"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_commit.html">am_commit</a></span><span class="op">(</span><span class="va">doc_branch</span>, <span class="st">"Initial text"</span><span class="op">)</span></span>
@@ -689,11 +729,13 @@
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_branch</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">public</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section></section><section class="level2"><h2 id="cursor-persistence">Cursor Persistence<a class="anchor" aria-label="anchor" href="#cursor-persistence"></a>
+</div>
+<div class="section level2">
+<h2 id="cursor-persistence">Cursor Persistence<a class="anchor" aria-label="anchor" href="#cursor-persistence"></a>
 </h2>
-<p>Cursors can be serialized and restored across R sessions, which is useful for saving editor state:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="downlit sourceCode r">
+<p>Cursors can be serialized and restored across R sessions, which is
+useful for saving editor state:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">doc15</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc15</span>, <span class="va">AM_ROOT</span>, <span class="st">"content"</span>, <span class="fu"><a href="../reference/am_text.html">am_text</a></span><span class="op">(</span><span class="st">"Hello World"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">text_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get.html">am_get</a></span><span class="op">(</span><span class="va">doc15</span>, <span class="va">AM_ROOT</span>, <span class="st">"content"</span><span class="op">)</span></span>
@@ -714,13 +756,20 @@
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc15</span><span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+<div class="section level2">
+<h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
 </h2>
 <ul>
-<li>Learn about <a href="crdt-concepts.html">CRDT Concepts</a> to understand the theory behind Automerge</li>
-<li>Explore <a href="sync-protocol.html">Synchronization Patterns</a> for collaborative workflows</li>
-<li>Check the <a href="quick-reference.html">Quick Reference</a> for a one-page guide to all functions</li>
-</ul></section><section class="level2"><h2 id="getting-help">Getting Help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
+<li>Learn about <a href="crdt-concepts.html">CRDT Concepts</a> to
+understand the theory behind Automerge</li>
+<li>Explore <a href="sync-protocol.html">Synchronization Patterns</a>
+for collaborative workflows</li>
+<li>Check the <a href="quick-reference.html">Quick Reference</a> for a
+one-page guide to all functions</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="getting-help">Getting Help<a class="anchor" aria-label="anchor" href="#getting-help"></a>
 </h2>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Function help</span></span>
@@ -734,92 +783,11 @@
 <span></span>
 <span><span class="co"># All vignettes</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"automerge"</span><span class="op">)</span></span></code></pre></div>
-</section><script id="quarto-html-after-body" type="application/javascript">
-  window.document.addEventListener("DOMContentLoaded", function (event) {
-      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-      var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
-      var isInternal = (href) => {
-          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-      }
-      // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-      for (var i=0; i<links.length; i++) {
-        const link = links[i];
-        if (!isInternal(link.href)) {
-          // undo the damage that might have been done by quarto-nav.js in the case of
-          // links that we want to consider external
-          if (link.dataset.originalHref !== undefined) {
-            link.href = link.dataset.originalHref;
-          }
-        }
-      }
-    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-      const config = {
-        allowHTML: true,
-        maxWidth: 500,
-        delay: 100,
-        arrow: false,
-        appendTo: function(el) {
-            return el.parentElement;
-        },
-        interactive: true,
-        interactiveBorder: 10,
-        theme: 'light-border',
-        placement: 'bottom-start',
-      };
-      if (contentFn) {
-        config.content = contentFn;
-      }
-      if (onTriggerFn) {
-        config.onTrigger = onTriggerFn;
-      }
-      if (onUntriggerFn) {
-        config.onUntrigger = onUntriggerFn;
-      }
-      window.tippy(el, config);
-    }
-    const findCites = (el) => {
-      const parentEl = el.parentElement;
-      if (parentEl) {
-        const cites = parentEl.dataset.cites;
-        if (cites) {
-          return {
-            el,
-            cites: cites.split(' ')
-          };
-        } else {
-          return findCites(el.parentElement)
-        }
-      } else {
-        return undefined;
-      }
-    };
-    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-    for (var i=0; i<bibliorefs.length; i++) {
-      const ref = bibliorefs[i];
-      const citeInfo = findCites(ref);
-      if (citeInfo) {
-        tippyHover(citeInfo.el, function() {
-          var popup = window.document.createElement('div');
-          citeInfo.cites.forEach(function(cite) {
-            var citeDiv = window.document.createElement('div');
-            citeDiv.classList.add('hanging-indent');
-            citeDiv.classList.add('csl-entry');
-            var biblioDiv = window.document.getElementById('ref-' + cite);
-            if (biblioDiv) {
-              citeDiv.innerHTML = biblioDiv.innerHTML;
-            }
-            popup.appendChild(citeDiv);
-          });
-          return popup.innerHTML;
-        });
-      }
-    }
-  });
-  </script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
+
 
 
    </div>

@@ -52,7 +52,7 @@ data <- list(
 doc <- as_automerge(data)
 doc
 #> <Automerge Document>
-#> Actor: 3f683a27a2216a13d8421f8cdfd21a71 
+#> Actor: 3e12f1377eb0e9ea27a690e384869850 
 #> Root keys: 4 
 #> Keys: age, metadata, name, scores 
 doc[["name"]]  # "Alice"

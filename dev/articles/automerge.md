@@ -43,7 +43,7 @@ library(automerge)
 doc <- am_create()
 print(doc)
 #> <Automerge Document>
-#> Actor: 0f994ad72a2dfd41f5f434a6c92f5572 
+#> Actor: 4d258284c7a5c0aea98911e1357a3e07 
 #> Root keys: 0
 ```
 
@@ -311,7 +311,7 @@ am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
-#> [1] "2026-06-24 17:50:38 UTC"
+#> [1] "2026-06-30 09:04:40 UTC"
 
 am_close(doc9)
 ```
@@ -450,7 +450,7 @@ doc12[["value1"]]
 doc12[["value2"]]
 #> [1] 200
 doc12[["source"]] # One value wins deterministically for conflicting keys
-#> [1] "doc12"
+#> [1] "doc13"
 
 am_close(doc12)
 am_close(doc13)
@@ -512,15 +512,15 @@ history <- am_get_changes(doc14)
 history
 #> [[1]]
 #> <Automerge Change>
-#> Hash: 1b a9 0e 0c ...
+#> Hash: ab a9 72 80 ...
 #> Message: Initial setup 
-#> Time: 2026-06-24 17:50:38 
+#> Time: 2026-06-30 09:04:40 
 #> 
 #> [[2]]
 #> <Automerge Change>
-#> Hash: 6a 1e eb 6e ...
+#> Hash: 34 82 2f 16 ...
 #> Message: Set version 
-#> Time: 2026-06-24 17:50:38
+#> Time: 2026-06-30 09:04:40
 
 # Inspect each change - no parsing needed
 for (i in seq_along(history)) {
@@ -539,20 +539,20 @@ for (i in seq_along(history)) {
 # Extract many fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique 32-byte hash
-#>  [1] 6a 1e eb 6e 12 b9 54 b4 8b 3f e9 eb 88 5e d7 e5 cb 44 a8 b8 e2 49 ae 64 5b
-#> [26] 95 1b 56 20 1c c1 09
+#>  [1] 34 82 2f 16 37 2a a5 7e 44 9e 47 8b 25 66 ff 6e d2 bf 1d 0a 04 ac
+#> [23] b9 ff 24 07 d4 4d 55 4e 34 56
 am_change_message(change)  # Commit message
 #> [1] "Set version"
 am_change_time(change)     # Timestamp
-#> [1] "2026-06-24 17:50:38 UTC"
+#> [1] "2026-06-30 09:04:40 UTC"
 am_change_seq(change)      # Sequence number
 #> [1] 2
 am_change_actor_id(change) # Who made the change
-#>  [1] d0 00 f1 64 c2 8c 9b 6c ad fd ad 22 03 c4 7e 19
+#>  [1] 85 f9 0b 4c d5 c4 72 ca 3b 79 89 65 3d 20 a1 a4
 am_change_deps(change)     # Parent change hashes
 #> [[1]]
-#>  [1] 1b a9 0e 0c c6 03 1f 54 18 79 9c 67 ea 91 9d 19 a0 ab 6c 3c d1 11 2f 18 27
-#> [26] b8 61 1c ba 06 83 2d
+#>  [1] ab a9 72 80 37 21 dc 72 c3 51 9e 2d 9e 96 8f 69 87 56 1c 18 3d cf
+#> [23] f2 41 0a a3 9d fb a5 5f f7 ab
 am_change_size(change)     # Number of operations
 #> [1] 1
 
