@@ -1,7 +1,7 @@
 # Change Introspection Tests
 
 test_that("am_change_hash() returns 32-byte raw vector", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Add key")
 
@@ -14,7 +14,7 @@ test_that("am_change_hash() returns 32-byte raw vector", {
 })
 
 test_that("am_change_hash() matches am_get_heads()", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Add key")
 
@@ -27,7 +27,7 @@ test_that("am_change_hash() matches am_get_heads()", {
 })
 
 test_that("am_change_message() returns commit message", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Add key")
 
@@ -38,7 +38,7 @@ test_that("am_change_message() returns commit message", {
 })
 
 test_that("am_change_message() returns NULL when no message", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc)
 
@@ -49,7 +49,7 @@ test_that("am_change_message() returns NULL when no message", {
 })
 
 test_that("am_change_message() handles UTF-8 messages", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "\u63d0\u4ea4\u6d88\u606f \U0001f389")
 
@@ -60,7 +60,7 @@ test_that("am_change_message() handles UTF-8 messages", {
 })
 
 test_that("am_change_time() returns POSIXct", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Add key", Sys.time())
 
@@ -71,7 +71,7 @@ test_that("am_change_time() returns POSIXct", {
 })
 
 test_that("am_change_actor_id() matches document actor", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Add key")
 
@@ -82,7 +82,7 @@ test_that("am_change_actor_id() matches document actor", {
 })
 
 test_that("am_change_seq() returns sequence numbers", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "x", 1)
   am_commit(doc, "First")
   am_put(doc, AM_ROOT, "y", 2)
@@ -96,7 +96,7 @@ test_that("am_change_seq() returns sequence numbers", {
 })
 
 test_that("am_change_deps() returns empty list for first change", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "First")
 
@@ -108,7 +108,7 @@ test_that("am_change_deps() returns empty list for first change", {
 })
 
 test_that("am_change_deps() returns parent hash for second change", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "x", 1)
   am_commit(doc, "First")
   am_put(doc, AM_ROOT, "y", 2)
@@ -125,7 +125,7 @@ test_that("am_change_deps() returns parent hash for second change", {
 })
 
 test_that("am_change_from_bytes() creates am_change object", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Add key")
 
@@ -140,7 +140,7 @@ test_that("am_change_from_bytes() errors on non-raw input", {
 })
 
 test_that("am_change_to_bytes() round-trips through am_change_from_bytes()", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Add key")
 
@@ -152,7 +152,7 @@ test_that("am_change_to_bytes() round-trips through am_change_from_bytes()", {
 })
 
 test_that("am_get_changes() returns am_change objects directly", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Add key")
 
@@ -178,7 +178,7 @@ test_that("am_change functions error on invalid input", {
 })
 
 test_that("am_change functions error on raw bytes (must parse first)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Add key")
 
@@ -195,11 +195,11 @@ test_that("am_change functions error on raw bytes (must parse first)", {
 })
 
 test_that("am_apply_changes() errors on invalid am_change external pointer", {
-  doc <- am_create()
+  doc <- local_create()
 
   # A closed doc is an external pointer with NULL address,
   # which triggers the !data check in the am_change validation loop
-  closed_doc <- am_create()
+  closed_doc <- local_create()
   am_close(closed_doc)
 
   expect_error(
@@ -211,7 +211,7 @@ test_that("am_apply_changes() errors on invalid am_change external pointer", {
 # Change Size and Empty Tests --------------------------------------------------
 
 test_that("am_change_size() returns number of operations", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "x", 1)
   am_put(doc, AM_ROOT, "y", 2)
   am_commit(doc, "Two ops")
@@ -229,7 +229,7 @@ test_that("am_change_size() errors on invalid input", {
 # Change Metadata Round-Trip Tests ---------------------------------------------
 
 test_that("am_change_from_bytes() preserves all metadata through round-trip", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   time <- Sys.time()
   am_commit(doc, "Test message", time)
@@ -249,7 +249,7 @@ test_that("am_change_from_bytes() preserves all metadata through round-trip", {
 })
 
 test_that("am_change_to_bytes() returns raw vector", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Add key")
 
@@ -265,7 +265,7 @@ test_that("am_change_from_bytes() errors on corrupted data", {
 })
 
 test_that("am_change_time() returns POSIXct even without explicit timestamp", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc)
 
@@ -275,7 +275,7 @@ test_that("am_change_time() returns POSIXct even without explicit timestamp", {
 })
 
 test_that("am_change_seq() returns numeric (double)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Add key")
 
@@ -287,12 +287,12 @@ test_that("am_change_seq() returns numeric (double)", {
 # Change Dependencies with Multiple Parents ------------------------------------
 
 test_that("am_change_deps() returns multiple deps after merging concurrent changes", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "base", 0)
   am_commit(doc, "Base")
 
   # Fork and create concurrent changes
-  doc2 <- am_fork(doc)
+  doc2 <- local_fork(doc)
   am_put(doc, AM_ROOT, "x", 1)
   am_commit(doc, "Add x")
 
@@ -320,7 +320,7 @@ test_that("am_change_deps() returns multiple deps after merging concurrent chang
 # Change Introspection on Serialized Changes from get_changes ------------------
 
 test_that("am_get_changes() returns introspectable am_change objects", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "x", 1)
   am_commit(doc, "First")
   am_put(doc, AM_ROOT, "y", 2)
@@ -336,7 +336,7 @@ test_that("am_get_changes() returns introspectable am_change objects", {
 })
 
 test_that("am_get_last_local_change() returns introspectable am_change", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Local change")
 
@@ -348,7 +348,7 @@ test_that("am_get_last_local_change() returns introspectable am_change", {
 })
 
 test_that("am_get_change_by_hash() returns introspectable am_change", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "By hash")
 
@@ -360,11 +360,11 @@ test_that("am_get_change_by_hash() returns introspectable am_change", {
 })
 
 test_that("am_get_changes_added() returns introspectable am_change objects", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put(doc1, AM_ROOT, "x", 1)
   am_commit(doc1, "In doc1")
 
-  doc2 <- am_fork(doc1)
+  doc2 <- local_fork(doc1)
   am_put(doc2, AM_ROOT, "y", 2)
   am_commit(doc2, "In doc2")
 

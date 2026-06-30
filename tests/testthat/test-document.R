@@ -1,19 +1,19 @@
 # Document Lifecycle Tests (Phase 2)
 
 test_that("am_close() returns NULL invisibly", {
-  doc <- am_create()
+  doc <- local_create()
   result <- am_close(doc)
   expect_null(result)
 })
 
 test_that("am_close() can be called twice (idempotent)", {
-  doc <- am_create()
+  doc <- local_create()
   expect_no_error(am_close(doc))
   expect_no_error(am_close(doc))
 })
 
 test_that("document operations error after am_close()", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_close(doc)
 
@@ -23,13 +23,13 @@ test_that("document operations error after am_close()", {
 })
 
 test_that("am_create() creates a valid document", {
-  doc <- am_create()
+  doc <- local_create()
   expect_s3_class(doc, "am_doc")
   expect_s3_class(doc, "automerge")
 })
 
 test_that("am_create() works with NULL actor_id", {
-  doc <- am_create(NULL)
+  doc <- local_create(NULL)
   expect_s3_class(doc, "am_doc")
   actor <- am_get_actor(doc)
   expect_type(actor, "raw")
@@ -39,14 +39,14 @@ test_that("am_create() works with NULL actor_id", {
 test_that("am_create() works with hex string actor_id", {
   # Create with specific hex actor ID (32 hex chars = 16 bytes)
   hex_id <- paste0(rep("0", 32), collapse = "")
-  doc <- am_create(hex_id)
+  doc <- local_create(hex_id)
   expect_s3_class(doc, "am_doc")
 })
 
 test_that("am_create() works with raw bytes actor_id", {
   # Create with 16 byte actor ID
   actor_bytes <- as.raw(1:16)
-  doc <- am_create(actor_bytes)
+  doc <- local_create(actor_bytes)
   expect_s3_class(doc, "am_doc")
 
   # Verify actor ID was set correctly
@@ -60,17 +60,17 @@ test_that("am_create() errors on invalid actor_id", {
 })
 
 test_that("am_save() returns raw bytes", {
-  doc <- am_create()
+  doc <- local_create()
   bytes <- am_save(doc)
   expect_type(bytes, "raw")
   expect_true(length(bytes) > 0)
 })
 
 test_that("am_load() restores a saved document", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   bytes <- am_save(doc1)
 
-  doc2 <- am_load(bytes)
+  doc2 <- local_load(bytes)
   expect_s3_class(doc2, "am_doc")
 })
 
@@ -80,8 +80,8 @@ test_that("am_load() errors on non-raw input", {
 })
 
 test_that("am_fork() creates independent copy", {
-  doc1 <- am_create()
-  doc2 <- am_fork(doc1)
+  doc1 <- local_create()
+  doc2 <- local_fork(doc1)
 
   expect_s3_class(doc2, "am_doc")
   # doc1 and doc2 should be different external pointers
@@ -89,8 +89,8 @@ test_that("am_fork() creates independent copy", {
 })
 
 test_that("am_merge() combines documents", {
-  doc1 <- am_create()
-  doc2 <- am_create()
+  doc1 <- local_create()
+  doc2 <- local_create()
 
   # Merge doc2 into doc1
   result <- am_merge(doc1, doc2)
@@ -98,7 +98,7 @@ test_that("am_merge() combines documents", {
 })
 
 test_that("am_get_actor() returns raw bytes", {
-  doc <- am_create()
+  doc <- local_create()
   actor <- am_get_actor(doc)
 
   expect_type(actor, "raw")
@@ -111,7 +111,7 @@ test_that("am_get_actor() returns raw bytes", {
 })
 
 test_that("am_set_actor() changes actor ID", {
-  doc <- am_create()
+  doc <- local_create()
   original_actor <- am_get_actor(doc)
 
   # Set new random actor ID
@@ -124,7 +124,7 @@ test_that("am_set_actor() changes actor ID", {
 })
 
 test_that("am_set_actor() works with hex string", {
-  doc <- am_create()
+  doc <- local_create()
   hex_id <- paste0(rep("0", 32), collapse = "")
 
   am_set_actor(doc, hex_id)
@@ -135,7 +135,7 @@ test_that("am_set_actor() works with hex string", {
 })
 
 test_that("am_set_actor() works with raw bytes", {
-  doc <- am_create()
+  doc <- local_create()
   new_actor_bytes <- as.raw(seq(16, 1, -1)) # 16 bytes in reverse
 
   am_set_actor(doc, new_actor_bytes)
@@ -145,7 +145,7 @@ test_that("am_set_actor() works with raw bytes", {
 })
 
 test_that("am_get_actor_hex() returns hex string", {
-  doc <- am_create()
+  doc <- local_create()
   actor_hex <- am_get_actor_hex(doc)
 
   expect_type(actor_hex, "character")
@@ -155,7 +155,7 @@ test_that("am_get_actor_hex() returns hex string", {
 })
 
 test_that("am_get_actor_hex() matches am_get_actor() conversion", {
-  doc <- am_create()
+  doc <- local_create()
   actor_raw <- am_get_actor(doc)
   actor_hex <- am_get_actor_hex(doc)
 
@@ -164,7 +164,7 @@ test_that("am_get_actor_hex() matches am_get_actor() conversion", {
 })
 
 test_that("am_get_actor_hex() works with custom actor ID", {
-  doc <- am_create()
+  doc <- local_create()
   custom_hex <- "0123456789abcdef0123456789abcdef"
   am_set_actor(doc, custom_hex)
 
@@ -173,45 +173,45 @@ test_that("am_get_actor_hex() works with custom actor ID", {
 })
 
 test_that("am_commit() works with no arguments", {
-  doc <- am_create()
+  doc <- local_create()
   result <- am_commit(doc)
   expect_identical(result, doc) # Returns doc invisibly
 })
 
 test_that("am_commit() works with message", {
-  doc <- am_create()
+  doc <- local_create()
   result <- am_commit(doc, "Test commit message")
   expect_identical(result, doc)
 })
 
 test_that("am_commit() works with message and time", {
-  doc <- am_create()
+  doc <- local_create()
   timestamp <- Sys.time()
   result <- am_commit(doc, "Commit with timestamp", timestamp)
   expect_identical(result, doc)
 })
 
 test_that("am_commit() errors on invalid message", {
-  doc <- am_create()
+  doc <- local_create()
   expect_error(am_commit(doc, 123), "message must be NULL")
   expect_error(am_commit(doc, c("a", "b")), "message must be NULL")
 })
 
 test_that("am_commit() errors on invalid time", {
-  doc <- am_create()
+  doc <- local_create()
   expect_error(am_commit(doc, NULL, "not a time"), "time must be NULL")
   expect_error(am_commit(doc, NULL, 12345), "time must be NULL")
 })
 
 test_that("am_rollback() works", {
-  doc <- am_create()
+  doc <- local_create()
   result <- am_rollback(doc)
   expect_identical(result, doc) # Returns doc invisibly
 })
 
 test_that("Document lifecycle integration test", {
   # Create document
-  doc1 <- am_create()
+  doc1 <- local_create()
 
   # Commit some changes (even though we haven't added data yet)
   am_commit(doc1, "Initial commit")
@@ -221,11 +221,11 @@ test_that("Document lifecycle integration test", {
   expect_type(bytes, "raw")
 
   # Load from bytes
-  doc2 <- am_load(bytes)
+  doc2 <- local_load(bytes)
   expect_s3_class(doc2, "am_doc")
 
   # Fork the document
-  doc3 <- am_fork(doc2)
+  doc3 <- local_fork(doc2)
   expect_s3_class(doc3, "am_doc")
 
   # Merge (even though they're identical)
@@ -236,11 +236,11 @@ test_that("Document lifecycle integration test", {
 })
 
 test_that("Actor ID round-trip works", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   actor1 <- am_get_actor(doc1)
 
   # Create new document with same actor
-  doc2 <- am_create(actor1)
+  doc2 <- local_create(actor1)
   actor2 <- am_get_actor(doc2)
 
   expect_equal(actor1, actor2)
@@ -249,7 +249,7 @@ test_that("Actor ID round-trip works", {
 # Edge Cases ------------------------------------------------------------------
 
 test_that("am_commit without changes succeeds", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "First commit")
 
@@ -257,7 +257,7 @@ test_that("am_commit without changes succeeds", {
 })
 
 test_that("am_commit with empty message", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "")
 
@@ -265,7 +265,7 @@ test_that("am_commit with empty message", {
 })
 
 test_that("am_commit with very long message", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
 
   long_message <- paste(rep("Long message text. ", 500), collapse = "")
@@ -275,7 +275,7 @@ test_that("am_commit with very long message", {
 })
 
 test_that("am_commit with special characters in message", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
 
   special_message <- "Commit\nwith\ttabs\rand\nnewlines\r\n"
@@ -285,7 +285,7 @@ test_that("am_commit with special characters in message", {
 })
 
 test_that("am_commit with UTF-8 message", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
 
   utf8_message <- "提交消息 🎉 Mensaje de confirmación"
@@ -295,7 +295,7 @@ test_that("am_commit with UTF-8 message", {
 })
 
 test_that("am_merge with same document", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc)
 
@@ -304,11 +304,11 @@ test_that("am_merge with same document", {
 })
 
 test_that("am_merge with unrelated documents", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put(doc1, AM_ROOT, "key1", "value1")
   am_commit(doc1)
 
-  doc2 <- am_create()
+  doc2 <- local_create()
   am_put(doc2, AM_ROOT, "key2", "value2")
   am_commit(doc2)
 
@@ -319,12 +319,12 @@ test_that("am_merge with unrelated documents", {
 })
 
 test_that("am_merge handles concurrent changes to same key", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "original")
   am_commit(doc)
 
-  doc1 <- am_fork(doc)
-  doc2 <- am_fork(doc)
+  doc1 <- local_fork(doc)
+  doc2 <- local_fork(doc)
 
   am_put(doc1, AM_ROOT, "key", "change1")
   am_commit(doc1)
@@ -339,12 +339,12 @@ test_that("am_merge handles concurrent changes to same key", {
 })
 
 test_that("am_fork preserves all data", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put(doc1, AM_ROOT, "key1", "value1")
   am_put(doc1, AM_ROOT, "key2", list(nested = "data"))
   am_commit(doc1, "Initial data")
 
-  doc2 <- am_fork(doc1)
+  doc2 <- local_fork(doc1)
 
   expect_equal(am_get(doc2, AM_ROOT, "key1"), "value1")
 
@@ -354,19 +354,19 @@ test_that("am_fork preserves all data", {
 })
 
 test_that("am_save on empty document", {
-  doc <- am_create()
+  doc <- local_create()
   bytes <- am_save(doc)
 
   expect_type(bytes, "raw")
   expect_true(length(bytes) > 0)
 
-  doc2 <- am_load(bytes)
+  doc2 <- local_load(bytes)
   expect_s3_class(doc2, "am_doc")
   expect_equal(am_length(doc2, AM_ROOT), 0)
 })
 
 test_that("am_save/load preserves complex structure", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$users <- am_list(
     list(name = "Alice", age = 30L),
     list(name = "Bob", age = 25L)
@@ -377,7 +377,7 @@ test_that("am_save/load preserves complex structure", {
   )
 
   bytes <- am_save(doc1)
-  doc2 <- am_load(bytes)
+  doc2 <- local_load(bytes)
 
   users <- doc2$users
   expect_equal(users[[1]]$name, "Alice")
@@ -388,7 +388,7 @@ test_that("am_save/load preserves complex structure", {
 })
 
 test_that("am_rollback clears uncommitted changes", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key1", "value1")
   am_commit(doc)
 
@@ -402,7 +402,7 @@ test_that("am_rollback clears uncommitted changes", {
 })
 
 test_that("am_rollback on empty transaction", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc)
 
@@ -411,7 +411,7 @@ test_that("am_rollback on empty transaction", {
 })
 
 test_that("multiple consecutive commits", {
-  doc <- am_create()
+  doc <- local_create()
 
   am_put(doc, AM_ROOT, "key1", "value1")
   am_commit(doc, "Commit 1")
@@ -428,7 +428,7 @@ test_that("multiple consecutive commits", {
 })
 
 test_that("am_set_actor changes actor ID", {
-  doc <- am_create()
+  doc <- local_create()
   original_actor <- am_get_actor(doc)
 
   new_actor <- as.raw(rep(0xFF, 16))
@@ -440,24 +440,24 @@ test_that("am_set_actor changes actor ID", {
 })
 
 test_that("am_get_actor returns consistent format", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   actor1 <- am_get_actor(doc1)
 
   expect_type(actor1, "raw")
   expect_equal(length(actor1), 16)
 
-  doc2 <- am_create(actor1)
+  doc2 <- local_create(actor1)
   actor2 <- am_get_actor(doc2)
 
   expect_identical(actor1, actor2)
 })
 
 test_that("documents with different actors can merge", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put(doc1, AM_ROOT, "from", "doc1")
   am_commit(doc1)
 
-  doc2 <- am_create()
+  doc2 <- local_create()
   am_put(doc2, AM_ROOT, "from", "doc2")
   am_commit(doc2)
 
@@ -473,13 +473,13 @@ test_that("documents with different actors can merge", {
 # Historical Query Tests (Phase 6) --------------------------------------------
 
 test_that("am_get_last_local_change() returns NULL for new document", {
-  doc <- am_create()
+  doc <- local_create()
   change <- am_get_last_local_change(doc)
   expect_null(change)
 })
 
 test_that("am_get_last_local_change() returns am_change after commit", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   am_commit(doc, "Add key")
 
@@ -489,7 +489,7 @@ test_that("am_get_last_local_change() returns am_change after commit", {
 })
 
 test_that("am_get_last_local_change() returns most recent change", {
-  doc <- am_create()
+  doc <- local_create()
 
   am_put(doc, AM_ROOT, "key1", "value1")
   am_commit(doc, "First commit")
@@ -506,7 +506,7 @@ test_that("am_get_last_local_change() returns most recent change", {
 })
 
 test_that("am_get_change_by_hash() retrieves existing change", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc, "Add key")
 
@@ -519,7 +519,7 @@ test_that("am_get_change_by_hash() retrieves existing change", {
 })
 
 test_that("am_get_change_by_hash() returns NULL for non-existent hash", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
 
@@ -529,7 +529,7 @@ test_that("am_get_change_by_hash() returns NULL for non-existent hash", {
 })
 
 test_that("am_get_change_by_hash() errors on invalid hash length", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
 
@@ -540,7 +540,7 @@ test_that("am_get_change_by_hash() errors on invalid hash length", {
 })
 
 test_that("am_get_change_by_hash() errors on non-raw hash", {
-  doc <- am_create()
+  doc <- local_create()
   expect_error(
     am_get_change_by_hash(doc, "not a raw vector"),
     "hash must be a raw vector"
@@ -548,11 +548,11 @@ test_that("am_get_change_by_hash() errors on non-raw hash", {
 })
 
 test_that("am_get_changes_added() returns empty list for identical documents", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$key <- "value"
   am_commit(doc1)
 
-  doc2 <- am_fork(doc1)
+  doc2 <- local_fork(doc1)
 
   changes <- am_get_changes_added(doc1, doc2)
   expect_type(changes, "list")
@@ -560,11 +560,11 @@ test_that("am_get_changes_added() returns empty list for identical documents", {
 })
 
 test_that("am_get_changes_added() finds new changes in doc2", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$x <- 1
   am_commit(doc1, "Add x")
 
-  doc2 <- am_create()
+  doc2 <- local_create()
   doc2$y <- 2
   am_commit(doc2, "Add y")
 
@@ -575,11 +575,11 @@ test_that("am_get_changes_added() finds new changes in doc2", {
 })
 
 test_that("am_get_changes_added() can sync documents", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$from_doc1 <- "value1"
   am_commit(doc1)
 
-  doc2 <- am_create()
+  doc2 <- local_create()
   doc2$from_doc2 <- "value2"
   am_commit(doc2)
 
@@ -591,15 +591,15 @@ test_that("am_get_changes_added() can sync documents", {
 })
 
 test_that("am_get_changes_added() works with forked documents", {
-  base <- am_create()
+  base <- local_create()
   base$initial <- "value"
   am_commit(base)
 
-  fork1 <- am_fork(base)
+  fork1 <- local_fork(base)
   fork1$fork1_data <- "data1"
   am_commit(fork1)
 
-  fork2 <- am_fork(base)
+  fork2 <- local_fork(base)
   fork2$fork2_data <- "data2"
   am_commit(fork2)
 
@@ -611,7 +611,7 @@ test_that("am_get_changes_added() works with forked documents", {
 })
 
 test_that("am_fork() at specific head (single) works", {
-  doc <- am_create()
+  doc <- local_create()
   doc$v1 <- "first"
   am_commit(doc, "v1")
 
@@ -621,7 +621,7 @@ test_that("am_fork() at specific head (single) works", {
   am_commit(doc, "v2")
 
   # Fork at v1 heads
-  fork_at_v1 <- am_fork(doc, heads_v1)
+  fork_at_v1 <- local_fork(doc, heads_v1)
   expect_s3_class(fork_at_v1, "am_doc")
 
   # Forked document should only have v1 data
@@ -630,12 +630,12 @@ test_that("am_fork() at specific head (single) works", {
 })
 
 test_that("am_fork() with empty list works like NULL", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
 
-  fork_current <- am_fork(doc, NULL)
-  fork_empty <- am_fork(doc, list())
+  fork_current <- local_fork(doc, NULL)
+  fork_empty <- local_fork(doc, list())
 
   expect_equal(
     am_get(fork_current, AM_ROOT, "key"),
@@ -648,22 +648,22 @@ test_that("am_fork() with empty list works like NULL", {
 # am_clone tests
 
 test_that("am_clone() creates an independent deep copy", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
 
-  clone <- am_clone(doc)
+  clone <- local_clone(doc)
   expect_s3_class(clone, "am_doc")
   expect_s3_class(clone, "automerge")
   expect_equal(am_get(clone, AM_ROOT, "key"), "value")
 })
 
 test_that("am_clone() produces independent document", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "original"
   am_commit(doc)
 
-  clone <- am_clone(doc)
+  clone <- local_clone(doc)
 
   clone$key <- "changed"
   am_commit(clone)
@@ -673,8 +673,8 @@ test_that("am_clone() produces independent document", {
 })
 
 test_that("am_clone() of empty document works", {
-  doc <- am_create()
-  clone <- am_clone(doc)
+  doc <- local_create()
+  clone <- local_clone(doc)
   expect_s3_class(clone, "am_doc")
   expect_equal(am_length(clone, AM_ROOT), 0)
 })
@@ -682,20 +682,20 @@ test_that("am_clone() of empty document works", {
 # am_equal tests
 
 test_that("am_equal() returns TRUE for equal docs", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$key <- "value"
   am_commit(doc1)
 
-  doc2 <- am_clone(doc1)
+  doc2 <- local_clone(doc1)
   expect_true(am_equal(doc1, doc2))
 })
 
 test_that("am_equal() returns FALSE for unequal docs", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$key <- "value1"
   am_commit(doc1)
 
-  doc2 <- am_clone(doc1)
+  doc2 <- local_clone(doc1)
   doc2$key <- "value2"
   am_commit(doc2)
 
@@ -703,17 +703,17 @@ test_that("am_equal() returns FALSE for unequal docs", {
 })
 
 test_that("am_equal() for empty documents", {
-  doc1 <- am_create()
-  doc2 <- am_create()
+  doc1 <- local_create()
+  doc2 <- local_create()
   expect_true(am_equal(doc1, doc2))
 })
 
 test_that("am_equal() after merge", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$x <- 1
   am_commit(doc1)
 
-  doc2 <- am_clone(doc1)
+  doc2 <- local_clone(doc1)
   doc2$y <- 2
   am_commit(doc2)
 
@@ -726,18 +726,18 @@ test_that("am_equal() after merge", {
 # am_pending_ops tests
 
 test_that("am_pending_ops() is zero on fresh doc", {
-  doc <- am_create()
+  doc <- local_create()
   expect_equal(am_pending_ops(doc), 0L)
 })
 
 test_that("am_pending_ops() is non-zero after put", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   expect_gt(am_pending_ops(doc), 0L)
 })
 
 test_that("am_pending_ops() returns to zero after commit", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
   expect_equal(am_pending_ops(doc), 0L)
@@ -746,7 +746,7 @@ test_that("am_pending_ops() returns to zero after commit", {
 # am_commit_empty tests
 
 test_that("am_commit_empty() adds to history", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc, "First")
   heads_before <- am_get_heads(doc)
@@ -758,7 +758,7 @@ test_that("am_commit_empty() adds to history", {
 })
 
 test_that("am_commit_empty() preserves message", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc, "Setup")
 
@@ -769,7 +769,7 @@ test_that("am_commit_empty() preserves message", {
 })
 
 test_that("am_commit_empty() returns doc invisibly", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
   result <- am_commit_empty(doc, "test")
@@ -779,7 +779,7 @@ test_that("am_commit_empty() returns doc invisibly", {
 # am_save_incremental / am_load_incremental tests
 
 test_that("am_save_incremental() returns raw bytes", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
   bytes <- am_save_incremental(doc)
@@ -787,7 +787,7 @@ test_that("am_save_incremental() returns raw bytes", {
 })
 
 test_that("incremental save/load round-trip works", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$key1 <- "value1"
   am_commit(doc1)
   full_bytes <- am_save(doc1)
@@ -796,13 +796,13 @@ test_that("incremental save/load round-trip works", {
   am_commit(doc1)
   incremental <- am_save_incremental(doc1)
 
-  doc2 <- am_load(full_bytes)
+  doc2 <- local_load(full_bytes)
   am_load_incremental(doc2, incremental)
   expect_equal(am_get(doc2, AM_ROOT, "key2"), "value2")
 })
 
 test_that("am_save_incremental() after no changes returns empty or small bytes", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
   am_save(doc)
@@ -813,12 +813,12 @@ test_that("am_save_incremental() after no changes returns empty or small bytes",
 })
 
 test_that("am_load_incremental() errors on non-raw input", {
-  doc <- am_create()
+  doc <- local_create()
   expect_error(am_load_incremental(doc, "not raw"), "data must be a raw vector")
 })
 
 test_that("multiple incremental saves accumulate correctly", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$a <- 1
   am_commit(doc1)
   full <- am_save(doc1)
@@ -831,7 +831,7 @@ test_that("multiple incremental saves accumulate correctly", {
   am_commit(doc1)
   inc2 <- am_save_incremental(doc1)
 
-  doc2 <- am_load(full)
+  doc2 <- local_load(full)
   am_load_incremental(doc2, inc1)
   am_load_incremental(doc2, inc2)
 
@@ -843,22 +843,22 @@ test_that("multiple incremental saves accumulate correctly", {
 # Additional am_clone tests
 
 test_that("am_clone() preserves the actor ID", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
 
-  clone <- am_clone(doc)
+  clone <- local_clone(doc)
   expect_equal(am_get_actor(doc), am_get_actor(clone))
   expect_equal(am_get_actor_hex(doc), am_get_actor_hex(clone))
 })
 
 test_that("am_clone() preserves nested structures", {
-  doc <- am_create()
+  doc <- local_create()
   doc$config <- list(host = "localhost", port = 8080L)
   doc$items <- am_list("a", "b", "c")
   am_commit(doc)
 
-  clone <- am_clone(doc)
+  clone <- local_clone(doc)
   config <- am_get(clone, AM_ROOT, "config")
   expect_equal(am_get(clone, config, "host"), "localhost")
   expect_equal(am_get(clone, config, "port"), 8080L)
@@ -867,13 +867,13 @@ test_that("am_clone() preserves nested structures", {
 })
 
 test_that("am_clone() preserves history", {
-  doc <- am_create()
+  doc <- local_create()
   doc$v1 <- 1
   am_commit(doc, "First")
   doc$v2 <- 2
   am_commit(doc, "Second")
 
-  clone <- am_clone(doc)
+  clone <- local_clone(doc)
   history <- am_get_changes(clone)
   expect_length(history, 2)
   expect_equal(am_change_message(history[[1]]), "First")
@@ -883,18 +883,18 @@ test_that("am_clone() preserves history", {
 # Additional am_equal tests
 
 test_that("am_equal() is reflexive", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
   expect_true(am_equal(doc, doc))
 })
 
 test_that("am_equal() after fork and mutual merge", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$x <- 1
   am_commit(doc1)
 
-  doc2 <- am_fork(doc1)
+  doc2 <- local_fork(doc1)
   doc2$y <- 2
   am_commit(doc2)
 
@@ -908,11 +908,11 @@ test_that("am_equal() after fork and mutual merge", {
 })
 
 test_that("am_equal() distinguishes docs with different content", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$key <- "alpha"
   am_commit(doc1)
 
-  doc2 <- am_create()
+  doc2 <- local_create()
   doc2$key <- "beta"
   am_commit(doc2)
 
@@ -922,7 +922,7 @@ test_that("am_equal() distinguishes docs with different content", {
 # Additional am_pending_ops tests
 
 test_that("am_pending_ops() counts multiple operations", {
-  doc <- am_create()
+  doc <- local_create()
   doc$a <- 1
   doc$b <- 2
   doc$c <- 3
@@ -930,7 +930,7 @@ test_that("am_pending_ops() counts multiple operations", {
 })
 
 test_that("am_pending_ops() returns zero after rollback", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   expect_gt(am_pending_ops(doc), 0L)
   am_rollback(doc)
@@ -940,14 +940,14 @@ test_that("am_pending_ops() returns zero after rollback", {
 # Additional am_commit_empty tests
 
 test_that("am_commit_empty() on fresh doc creates head", {
-  doc <- am_create()
+  doc <- local_create()
   expect_length(am_get_heads(doc), 0)
   am_commit_empty(doc, "Genesis")
   expect_length(am_get_heads(doc), 1)
 })
 
 test_that("am_commit_empty() with timestamp", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
 
@@ -959,7 +959,7 @@ test_that("am_commit_empty() with timestamp", {
 })
 
 test_that("am_commit_empty() without message", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
 
@@ -971,7 +971,7 @@ test_that("am_commit_empty() without message", {
 # Additional am_save_incremental / am_load_incremental tests
 
 test_that("am_load_incremental() returns operation count invisibly", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$key <- "value"
   am_commit(doc1)
   full <- am_save(doc1)
@@ -980,14 +980,14 @@ test_that("am_load_incremental() returns operation count invisibly", {
   am_commit(doc1)
   inc <- am_save_incremental(doc1)
 
-  doc2 <- am_load(full)
+  doc2 <- local_load(full)
   result <- withVisible(am_load_incremental(doc2, inc))
   expect_false(result$visible)
   expect_type(result$value, "double")
 })
 
 test_that("incremental save/load with nested objects", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$base <- "data"
   am_commit(doc1)
   full <- am_save(doc1)
@@ -996,14 +996,14 @@ test_that("incremental save/load with nested objects", {
   am_commit(doc1)
   inc <- am_save_incremental(doc1)
 
-  doc2 <- am_load(full)
+  doc2 <- local_load(full)
   am_load_incremental(doc2, inc)
   config <- am_get(doc2, AM_ROOT, "config")
   expect_equal(am_get(doc2, config, "host"), "localhost")
 })
 
 test_that("am_save_incremental() resets after am_save()", {
-  doc <- am_create()
+  doc <- local_create()
   doc$a <- 1
   am_commit(doc)
 
@@ -1018,18 +1018,18 @@ test_that("am_save_incremental() resets after am_save()", {
 })
 
 test_that("am_load_incremental() errors on invalid bytes", {
-  doc <- am_create()
+  doc <- local_create()
   expect_error(am_load_incremental(doc, raw(10)))
 })
 
 # Coverage Tests: Input Validation and Edge Cases =============================
 
 test_that("am_fork() supports multiple heads", {
-  doc <- am_create()
+  doc <- local_create()
   doc$x <- 1
   am_commit(doc)
 
-  doc2 <- am_fork(doc)
+  doc2 <- local_fork(doc)
   doc$y <- 2
   am_commit(doc)
   doc2$z <- 3
@@ -1038,7 +1038,7 @@ test_that("am_fork() supports multiple heads", {
 
   heads <- am_get_heads(doc)
   expect_gte(length(heads), 2)
-  forked <- am_fork(doc, heads)
+  forked <- local_fork(doc, heads)
   expect_s3_class(forked, "am_doc")
   expect_equal(forked$x, 1)
   expect_equal(forked$y, 2)
@@ -1046,12 +1046,12 @@ test_that("am_fork() supports multiple heads", {
 })
 
 test_that("am_commit_empty() errors on invalid message type", {
-  doc <- am_create()
+  doc <- local_create()
   expect_error(am_commit_empty(doc, message = 123), "character string")
 })
 
 test_that("am_commit_empty() errors on invalid time type", {
-  doc <- am_create()
+  doc <- local_create()
   expect_error(am_commit_empty(doc, time = "not a time"), "POSIXct")
 })
 
@@ -1060,16 +1060,16 @@ test_that("am_create() errors on invalid actor_id type", {
 })
 
 test_that("am_set_actor() errors on invalid type", {
-  doc <- am_create()
+  doc <- local_create()
   expect_error(am_set_actor(doc, 123L), "NULL.*character string.*raw bytes")
 })
 
 test_that("am_get_changes_added() returns new changes from fork", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$x <- 1
   am_commit(doc1)
 
-  doc2 <- am_fork(doc1)
+  doc2 <- local_fork(doc1)
   doc2$y <- 2
   am_commit(doc2)
 
@@ -1079,7 +1079,7 @@ test_that("am_get_changes_added() returns new changes from fork", {
 })
 
 test_that("am_get_changes() errors on non-raw head in list", {
-  doc <- am_create()
+  doc <- local_create()
   doc$x <- 1
   am_commit(doc)
   expect_error(am_get_changes(doc, list("not raw")), "raw vectors")

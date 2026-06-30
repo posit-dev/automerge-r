@@ -10,8 +10,8 @@ test_that("print.am_syncstate outputs expected text", {
 })
 
 test_that("am_sync_encode/decode work with empty documents", {
-  doc1 <- am_create()
-  doc2 <- am_create()
+  doc1 <- local_create()
+  doc2 <- local_create()
 
   sync1 <- am_sync_state()
   sync2 <- am_sync_state()
@@ -49,8 +49,8 @@ test_that("am_sync_encode/decode work with empty documents", {
 
 test_that("am_sync_encode/decode synchronize simple changes", {
   # Create two documents with different changes
-  doc1 <- am_create()
-  doc2 <- am_create()
+  doc1 <- local_create()
+  doc2 <- local_create()
 
   # Make changes in doc1
   am_put(doc1, AM_ROOT, "x", 1)
@@ -91,8 +91,8 @@ test_that("am_sync_encode/decode synchronize simple changes", {
 })
 
 test_that("am_sync synchronizes two documents", {
-  doc1 <- am_create()
-  doc2 <- am_create()
+  doc1 <- local_create()
+  doc2 <- local_create()
 
   # Make different changes in each document
   am_put(doc1, AM_ROOT, "a", 1)
@@ -124,12 +124,12 @@ test_that("am_sync synchronizes two documents", {
 
 test_that("am_sync handles concurrent edits", {
   # Start with synchronized documents
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put(doc1, AM_ROOT, "counter", 0)
   am_commit(doc1)
 
   # Fork to create doc2
-  doc2 <- am_fork(doc1)
+  doc2 <- local_fork(doc1)
 
   # Make concurrent changes
   am_put(doc1, AM_ROOT, "counter", 1)
@@ -158,7 +158,7 @@ test_that("am_sync handles concurrent edits", {
 })
 
 test_that("am_get_heads returns current document heads", {
-  doc <- am_create()
+  doc <- local_create()
 
   # New document should have empty heads
   heads <- am_get_heads(doc)
@@ -185,7 +185,7 @@ test_that("am_get_heads returns current document heads", {
 })
 
 test_that("am_get_changes returns document history", {
-  doc <- am_create()
+  doc <- local_create()
 
   # No changes initially
   changes <- am_get_changes(doc, NULL)
@@ -214,7 +214,7 @@ test_that("am_get_changes returns document history", {
 
 test_that("am_apply_changes applies changes to a document", {
   # Create a document with changes
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put(doc1, AM_ROOT, "a", 1)
   am_put(doc1, AM_ROOT, "b", 2)
   am_commit(doc1)
@@ -227,7 +227,7 @@ test_that("am_apply_changes applies changes to a document", {
   expect_gt(length(changes), 0)
 
   # Create a new document and apply changes
-  doc2 <- am_create()
+  doc2 <- local_create()
   am_apply_changes(doc2, changes)
 
   # doc2 should now have the same data as doc1
@@ -237,7 +237,7 @@ test_that("am_apply_changes applies changes to a document", {
 })
 
 test_that("am_get_changes returns full change history", {
-  doc <- am_create()
+  doc <- local_create()
 
   am_put(doc, AM_ROOT, "v1", "first")
   am_commit(doc, "Version 1")
@@ -259,8 +259,8 @@ test_that("am_get_changes returns full change history", {
 })
 
 test_that("sync works with nested objects", {
-  doc1 <- am_create()
-  doc2 <- am_create()
+  doc1 <- local_create()
+  doc2 <- local_create()
 
   # Create nested structure in doc1
   am_put(doc1, AM_ROOT, "config", AM_OBJ_TYPE_MAP)
@@ -297,7 +297,7 @@ test_that("sync works with nested objects", {
 })
 
 test_that("sync protocol errors are handled gracefully", {
-  doc <- am_create()
+  doc <- local_create()
   sync_state <- am_sync_state()
 
   # Try to decode invalid sync message
@@ -314,9 +314,9 @@ test_that("sync protocol errors are handled gracefully", {
 
 test_that("sync state is document-independent", {
   # Create multiple documents
-  doc1 <- am_create()
-  doc2 <- am_create()
-  doc3 <- am_create()
+  doc1 <- local_create()
+  doc2 <- local_create()
+  doc3 <- local_create()
 
   # Single sync state can be used with different documents
   sync_state <- am_sync_state()
@@ -331,7 +331,7 @@ test_that("sync state is document-independent", {
 })
 
 test_that("am_apply_changes handles empty change list", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Apply empty changes list
   am_apply_changes(doc, list())
@@ -342,8 +342,8 @@ test_that("am_apply_changes handles empty change list", {
 })
 
 test_that("sync works with text objects", {
-  doc1 <- am_create()
-  doc2 <- am_create()
+  doc1 <- local_create()
+  doc2 <- local_create()
 
   # Create text in doc1
   am_put(doc1, AM_ROOT, "notes", AM_OBJ_TYPE_TEXT)
@@ -374,7 +374,7 @@ test_that("sync works with text objects", {
 })
 
 test_that("am_get_changes with specific heads", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Make first change
   am_put(doc, AM_ROOT, "x", 1)
@@ -402,7 +402,7 @@ test_that("am_get_changes with specific heads", {
 })
 
 test_that("am_get_changes with multiple explicit heads succeeds", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "x", 1)
   am_commit(doc, "First")
   am_put(doc, AM_ROOT, "y", 2)
@@ -417,7 +417,7 @@ test_that("am_get_changes with multiple explicit heads succeeds", {
 })
 
 test_that("am_get_changes with empty heads list returns all changes", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "x", 1)
   am_commit(doc, "First")
   am_put(doc, AM_ROOT, "y", 2)
@@ -431,11 +431,11 @@ test_that("am_get_changes with empty heads list returns all changes", {
 })
 
 test_that("am_get_changes with multiple heads succeeds", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "x", 1)
   am_commit(doc, "First")
 
-  doc2 <- am_fork(doc)
+  doc2 <- local_fork(doc)
   am_put(doc, AM_ROOT, "y", 2)
   am_commit(doc, "doc1 edit")
   am_put(doc2, AM_ROOT, "z", 3)
@@ -451,12 +451,12 @@ test_that("am_get_changes with multiple heads succeeds", {
 })
 
 test_that("am_get_changes_added returns added changes", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put(doc1, AM_ROOT, "x", 1)
   am_commit(doc1)
 
   # Fork and make independent changes
-  doc2 <- am_fork(doc1)
+  doc2 <- local_fork(doc1)
 
   am_put(doc2, AM_ROOT, "y", 2)
   am_commit(doc2)
@@ -476,7 +476,7 @@ test_that("am_get_changes_added returns added changes", {
 # am_get_missing_deps tests
 
 test_that("am_get_missing_deps() returns empty for complete doc", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
 
@@ -486,7 +486,7 @@ test_that("am_get_missing_deps() returns empty for complete doc", {
 })
 
 test_that("am_get_missing_deps() with specific heads", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
 
@@ -499,7 +499,7 @@ test_that("am_get_missing_deps() with specific heads", {
 # am_load_changes tests
 
 test_that("am_load_changes() decomposes document", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key1 <- "value1"
   am_commit(doc, "First")
   doc$key2 <- "value2"
@@ -516,7 +516,7 @@ test_that("am_load_changes() decomposes document", {
 })
 
 test_that("am_load_changes() changes can be applied", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$x <- 1
   am_commit(doc1, "Add x")
   doc1$y <- 2
@@ -525,7 +525,7 @@ test_that("am_load_changes() changes can be applied", {
 
   changes <- am_load_changes(bytes)
 
-  doc2 <- am_create()
+  doc2 <- local_create()
   am_apply_changes(doc2, changes)
   expect_equal(am_get(doc2, AM_ROOT, "x"), 1)
   expect_equal(am_get(doc2, AM_ROOT, "y"), 2)
@@ -536,7 +536,7 @@ test_that("am_load_changes() errors on non-raw", {
 })
 
 test_that("am_load_changes() on empty doc", {
-  doc <- am_create()
+  doc <- local_create()
   bytes <- am_save(doc)
 
   changes <- am_load_changes(bytes)
@@ -562,11 +562,11 @@ test_that("am_sync_state_decode() restores sync state", {
 })
 
 test_that("sync state round-trip works with active sync", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$key <- "value"
   am_commit(doc1)
 
-  doc2 <- am_create()
+  doc2 <- local_create()
 
   sync1 <- am_sync_state()
   sync2 <- am_sync_state()
@@ -587,14 +587,14 @@ test_that("am_sync_state_decode() errors on non-raw", {
 # Additional am_get_missing_deps tests
 
 test_that("am_get_missing_deps() on empty doc returns empty", {
-  doc <- am_create()
+  doc <- local_create()
   missing <- am_get_missing_deps(doc)
   expect_type(missing, "list")
   expect_length(missing, 0)
 })
 
 test_that("am_get_missing_deps() with NULL heads same as default", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
 
@@ -604,11 +604,11 @@ test_that("am_get_missing_deps() with NULL heads same as default", {
 })
 
 test_that("am_get_missing_deps() after sync returns empty", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$x <- 1
   am_commit(doc1)
 
-  doc2 <- am_fork(doc1)
+  doc2 <- local_fork(doc1)
   doc2$y <- 2
   am_commit(doc2)
 
@@ -621,7 +621,7 @@ test_that("am_get_missing_deps() after sync returns empty", {
 # Additional am_load_changes tests
 
 test_that("am_load_changes() preserves change metadata", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   ts <- as.POSIXct("2025-06-15 12:00:00", tz = "UTC")
   am_commit(doc, "Test message", ts)
@@ -635,7 +635,7 @@ test_that("am_load_changes() preserves change metadata", {
 })
 
 test_that("am_load_changes() with nested structures", {
-  doc <- am_create()
+  doc <- local_create()
   doc$config <- list(host = "localhost", port = 8080L)
   doc$items <- am_list("a", "b", "c")
   am_commit(doc, "Add nested")
@@ -645,7 +645,7 @@ test_that("am_load_changes() with nested structures", {
   expect_length(changes, 1)
 
   # Apply to new doc and verify structure
-  doc2 <- am_create()
+  doc2 <- local_create()
   am_apply_changes(doc2, changes)
   config <- am_get(doc2, AM_ROOT, "config")
   expect_equal(am_get(doc2, config, "host"), "localhost")
@@ -658,7 +658,7 @@ test_that("am_load_changes() errors on invalid bytes", {
 })
 
 test_that("am_load_changes() preserves change dependencies", {
-  doc <- am_create()
+  doc <- local_create()
   doc$a <- 1
   am_commit(doc, "First")
   doc$b <- 2
@@ -680,7 +680,7 @@ test_that("am_load_changes() preserves change dependencies", {
 })
 
 test_that("am_load_changes() selective apply works", {
-  doc <- am_create()
+  doc <- local_create()
   doc$a <- 1
   am_commit(doc, "First")
   doc$b <- 2
@@ -692,7 +692,7 @@ test_that("am_load_changes() selective apply works", {
   changes <- am_load_changes(bytes)
 
   # Apply only the first change
-  doc2 <- am_create()
+  doc2 <- local_create()
   am_apply_changes(doc2, changes[1])
   expect_equal(am_get(doc2, AM_ROOT, "a"), 1)
   expect_null(am_get(doc2, AM_ROOT, "b"))
@@ -701,11 +701,11 @@ test_that("am_load_changes() selective apply works", {
 # Additional am_sync_state_encode/decode tests
 
 test_that("sync state round-trip preserves sync progress", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$x <- 1
   am_commit(doc1)
 
-  doc2 <- am_create()
+  doc2 <- local_create()
 
   sync1 <- am_sync_state()
   sync2 <- am_sync_state()
@@ -773,11 +773,11 @@ test_that("am_sync_state_decode() errors on invalid bytes", {
 # Coverage Tests: Input Validation and Edge Cases =============================
 
 test_that("am_get_missing_deps() supports multiple heads", {
-  doc <- am_create()
+  doc <- local_create()
   doc$x <- 1
   am_commit(doc)
 
-  doc2 <- am_fork(doc)
+  doc2 <- local_fork(doc)
   doc$y <- 2
   am_commit(doc)
   doc2$z <- 3
@@ -793,7 +793,7 @@ test_that("am_get_missing_deps() supports multiple heads", {
 # am_sync_encode/decode input validation
 
 test_that("am_sync_decode() errors on non-raw message", {
-  doc <- am_create()
+  doc <- local_create()
   sync <- am_sync_state()
   expect_error(am_sync_decode(doc, sync, "not raw"), "raw vector")
 })
@@ -801,14 +801,14 @@ test_that("am_sync_decode() errors on non-raw message", {
 # am_apply_changes input validation
 
 test_that("am_apply_changes() errors on non-list", {
-  doc <- am_create()
+  doc <- local_create()
   expect_error(am_apply_changes(doc, "not a list"), "list")
 })
 
 # am_get_changes with empty doc returns empty
 
 test_that("am_get_changes() on empty doc returns empty list", {
-  doc <- am_create()
+  doc <- local_create()
   changes <- am_get_changes(doc, NULL)
   expect_type(changes, "list")
   expect_length(changes, 0)
@@ -817,11 +817,11 @@ test_that("am_get_changes() on empty doc returns empty list", {
 # am_get_heads on document with concurrent edits returns multiple heads
 
 test_that("am_get_heads() returns multiple heads after merge without commit", {
-  doc <- am_create()
+  doc <- local_create()
   doc$x <- 1
   am_commit(doc)
 
-  doc2 <- am_fork(doc)
+  doc2 <- local_fork(doc)
   doc$y <- 2
   am_commit(doc)
   doc2$z <- 3
@@ -838,7 +838,7 @@ test_that("am_get_heads() returns multiple heads after merge without commit", {
 # am_get_missing_deps with empty heads list
 
 test_that("am_get_missing_deps() with empty heads list same as NULL", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
 
@@ -850,13 +850,13 @@ test_that("am_get_missing_deps() with empty heads list same as NULL", {
 # am_get_missing_deps returning actual missing deps
 
 test_that("am_get_missing_deps() detects missing deps from unknown heads", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$a <- 1
   am_commit(doc1)
   heads1 <- am_get_heads(doc1)
 
   # Empty doc doesn't have the changes
-  doc2 <- am_create()
+  doc2 <- local_create()
   missing <- am_get_missing_deps(doc2, heads1)
   expect_gte(length(missing), 1)
   expect_type(missing[[1]], "raw")
@@ -865,7 +865,7 @@ test_that("am_get_missing_deps() detects missing deps from unknown heads", {
 # am_get_changes with heads parameter
 
 test_that("am_get_changes() with empty heads list", {
-  doc <- am_create()
+  doc <- local_create()
   doc$a <- 1
   am_commit(doc)
   doc$b <- 2

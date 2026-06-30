@@ -22,7 +22,7 @@
 #   sha2:       default-features = false (removes const-oid)
 #   dot:        remove unused optional dependency and optree-visualisation feature
 #
-# Patterns target the automerge 0.9.0 upstream Cargo.toml dependency lines
+# Patterns target the automerge 0.10.0 upstream Cargo.toml dependency lines
 # (rand ^0.10, sha2 0.11.0). Update the patterns if the upstream pins change.
 #
 # Note: tempfile is pinned to 3.3.0 in vendor-deps.sh to use winapi

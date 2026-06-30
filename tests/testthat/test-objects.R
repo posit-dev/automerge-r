@@ -3,13 +3,13 @@
 # Map Operations --------------------------------------------------------------
 
 test_that("am_put() works with map (root)", {
-  doc <- am_create()
+  doc <- local_create()
   result <- am_put(doc, AM_ROOT, "key", "value")
   expect_identical(result, doc) # Returns doc invisibly
 })
 
 test_that("am_get() retrieves map values", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "name", "Alice")
   am_put(doc, AM_ROOT, "age", 30L)
 
@@ -18,13 +18,13 @@ test_that("am_get() retrieves map values", {
 })
 
 test_that("am_get() returns NULL for missing keys", {
-  doc <- am_create()
+  doc <- local_create()
   result <- am_get(doc, AM_ROOT, "nonexistent")
   expect_null(result)
 })
 
 test_that("am_put() supports all scalar types", {
-  doc <- am_create()
+  doc <- local_create()
 
   # NULL
   am_put(doc, AM_ROOT, "null_val", NULL)
@@ -53,7 +53,7 @@ test_that("am_put() supports all scalar types", {
 })
 
 test_that("am_keys() returns all map keys", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "a", 1)
   am_put(doc, AM_ROOT, "b", 2)
   am_put(doc, AM_ROOT, "c", 3)
@@ -65,14 +65,14 @@ test_that("am_keys() returns all map keys", {
 })
 
 test_that("am_keys() returns empty vector for empty map", {
-  doc <- am_create()
+  doc <- local_create()
   keys <- am_keys(doc, AM_ROOT)
   expect_type(keys, "character")
   expect_length(keys, 0)
 })
 
 test_that("am_length() returns map size", {
-  doc <- am_create()
+  doc <- local_create()
   expect_equal(am_length(doc, AM_ROOT), 0L)
 
   am_put(doc, AM_ROOT, "a", 1)
@@ -83,7 +83,7 @@ test_that("am_length() returns map size", {
 })
 
 test_that("am_delete() removes map entries", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
   expect_equal(am_length(doc, AM_ROOT), 1L)
 
@@ -93,7 +93,7 @@ test_that("am_delete() removes map entries", {
 })
 
 test_that("am_put() updates existing keys", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value1")
   expect_equal(am_get(doc, AM_ROOT, "key"), "value1")
 
@@ -105,7 +105,7 @@ test_that("am_put() updates existing keys", {
 # List Operations -------------------------------------------------------------
 
 test_that("am_put() creates and works with lists", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Create a list (returns doc, retrieve with am_get)
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
@@ -118,7 +118,7 @@ test_that("am_put() creates and works with lists", {
 })
 
 test_that("am_put() appends to lists with 'end'", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -131,7 +131,7 @@ test_that("am_put() appends to lists with 'end'", {
 })
 
 test_that("am_get() retrieves list elements by position", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -144,7 +144,7 @@ test_that("am_get() retrieves list elements by position", {
 })
 
 test_that("am_put() replaces list elements at position", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -156,7 +156,7 @@ test_that("am_put() replaces list elements at position", {
 })
 
 test_that("am_delete() removes list elements", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -177,7 +177,7 @@ test_that("am_delete() removes list elements", {
 # Nested Objects --------------------------------------------------------------
 
 test_that("am_put() creates nested maps", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "person", AM_OBJ_TYPE_MAP)
   person_obj <- am_get(doc, AM_ROOT, "person")
 
@@ -192,7 +192,7 @@ test_that("am_put() creates nested maps", {
 })
 
 test_that("Multiple levels of nesting work", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Level 1: root -> "data" (map)
   am_put(doc, AM_ROOT, "data", AM_OBJ_TYPE_MAP)
@@ -216,14 +216,14 @@ test_that("Multiple levels of nesting work", {
 # Integration Tests -----------------------------------------------------------
 
 test_that("Map operations integrate with commit/save/load", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put(doc1, AM_ROOT, "x", 1)
   am_put(doc1, AM_ROOT, "y", 2)
   am_commit(doc1, "Add x and y")
 
   # Save and load
   bytes <- am_save(doc1)
-  doc2 <- am_load(bytes)
+  doc2 <- local_load(bytes)
 
   # Verify values survived
   expect_equal(am_get(doc2, AM_ROOT, "x"), 1)
@@ -232,7 +232,7 @@ test_that("Map operations integrate with commit/save/load", {
 })
 
 test_that("List operations integrate with commit/save/load", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put(doc1, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc1, AM_ROOT, "list")
 
@@ -242,7 +242,7 @@ test_that("List operations integrate with commit/save/load", {
 
   # Save and load
   bytes <- am_save(doc1)
-  doc2 <- am_load(bytes)
+  doc2 <- local_load(bytes)
 
   # Get list from loaded doc
   list_obj2 <- am_get(doc2, AM_ROOT, "list")
@@ -252,8 +252,8 @@ test_that("List operations integrate with commit/save/load", {
 })
 
 test_that("Merge works with object operations", {
-  doc1 <- am_create()
-  doc2 <- am_create()
+  doc1 <- local_create()
+  doc2 <- local_create()
 
   # Make changes in each doc
   am_put(doc1, AM_ROOT, "x", 1)
@@ -272,7 +272,7 @@ test_that("Merge works with object operations", {
 })
 
 test_that("Complex document structure", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Create a document structure like:
   # {
@@ -304,7 +304,7 @@ test_that("Complex document structure", {
 # Edge Cases ------------------------------------------------------------------
 
 test_that("am_put replaces nested object with scalar", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", list(nested = "data"))
 
   nested <- am_get(doc, AM_ROOT, "key")
@@ -315,7 +315,7 @@ test_that("am_put replaces nested object with scalar", {
 })
 
 test_that("am_put replaces scalar with nested object", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "scalar")
   expect_equal(am_get(doc, AM_ROOT, "key"), "scalar")
 
@@ -326,7 +326,7 @@ test_that("am_put replaces scalar with nested object", {
 })
 
 test_that("am_delete then re-add same key", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value1")
   am_delete(doc, AM_ROOT, "key")
   expect_null(am_get(doc, AM_ROOT, "key"))
@@ -336,7 +336,7 @@ test_that("am_delete then re-add same key", {
 })
 
 test_that("am_delete then re-add maintains different value", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", 100)
   am_commit(doc)
   am_delete(doc, AM_ROOT, "key")
@@ -346,7 +346,7 @@ test_that("am_delete then re-add maintains different value", {
 })
 
 test_that("am_keys preserves keys after delete and re-add", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "a", 1)
   am_put(doc, AM_ROOT, "b", 2)
   am_delete(doc, AM_ROOT, "a")
@@ -358,7 +358,7 @@ test_that("am_keys preserves keys after delete and re-add", {
 })
 
 test_that("am_put with UTF-8 keys", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "键", "value")
   am_put(doc, AM_ROOT, "clé", "value")
   am_put(doc, AM_ROOT, "🔑", "value")
@@ -372,7 +372,7 @@ test_that("am_put with UTF-8 keys", {
 })
 
 test_that("am_put with UTF-8 string values", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "chinese", "你好世界")
   am_put(doc, AM_ROOT, "emoji", "🎉🎊🎈")
   am_put(doc, AM_ROOT, "mixed", "Hello 世界 🌍")
@@ -383,14 +383,14 @@ test_that("am_put with UTF-8 string values", {
 })
 
 test_that("am_put with very long key name", {
-  doc <- am_create()
+  doc <- local_create()
   long_key <- paste(rep("key", 1000), collapse = "_")
   am_put(doc, AM_ROOT, long_key, "value")
   expect_equal(am_get(doc, AM_ROOT, long_key), "value")
 })
 
 test_that("am_put handles zero values correctly", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "zero_int", 0L)
   am_put(doc, AM_ROOT, "zero_dbl", 0.0)
 
@@ -399,7 +399,7 @@ test_that("am_put handles zero values correctly", {
 })
 
 test_that("am_put handles negative numbers", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "neg_int", -42L)
   am_put(doc, AM_ROOT, "neg_dbl", -3.14)
 
@@ -408,7 +408,7 @@ test_that("am_put handles negative numbers", {
 })
 
 test_that("am_put handles very small and very large doubles", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "small", 1e-308)
   am_put(doc, AM_ROOT, "large", 1e308)
 
@@ -417,7 +417,7 @@ test_that("am_put handles very small and very large doubles", {
 })
 
 test_that("am_length updates correctly after mixed operations", {
-  doc <- am_create()
+  doc <- local_create()
   expect_equal(am_length(doc, AM_ROOT), 0L)
 
   am_put(doc, AM_ROOT, "a", 1)
@@ -435,7 +435,7 @@ test_that("am_length updates correctly after mixed operations", {
 })
 
 test_that("list operations maintain order after deletions", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -453,7 +453,7 @@ test_that("list operations maintain order after deletions", {
 })
 
 test_that("multiple sequential deletes from list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -468,7 +468,7 @@ test_that("multiple sequential deletes from list", {
 })
 
 test_that("empty nested structures", {
-  doc <- am_create()
+  doc <- local_create()
 
   am_put(doc, AM_ROOT, "empty_map", AM_OBJ_TYPE_MAP)
   empty_map <- am_get(doc, AM_ROOT, "empty_map")
@@ -481,7 +481,7 @@ test_that("empty nested structures", {
 })
 
 test_that("nested structures persist after save/load", {
-  doc1 <- am_create()
+  doc1 <- local_create()
 
   am_put(doc1, AM_ROOT, "outer", AM_OBJ_TYPE_MAP)
   outer <- am_get(doc1, AM_ROOT, "outer")
@@ -490,7 +490,7 @@ test_that("nested structures persist after save/load", {
   am_put(doc1, inner, "value", 42)
 
   binary <- am_save(doc1)
-  doc2 <- am_load(binary)
+  doc2 <- local_load(binary)
 
   outer2 <- am_get(doc2, AM_ROOT, "outer")
   inner2 <- am_get(doc2, outer2, "inner")
@@ -500,7 +500,7 @@ test_that("nested structures persist after save/load", {
 # am_insert() Tests -----------------------------------------------------------
 
 test_that("am_insert() inserts at position and shifts elements", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -517,7 +517,7 @@ test_that("am_insert() inserts at position and shifts elements", {
 })
 
 test_that("am_insert() at position 1 prepends to list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -534,7 +534,7 @@ test_that("am_insert() at position 1 prepends to list", {
 })
 
 test_that("am_insert() vs am_put() behavior differs", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -554,7 +554,7 @@ test_that("am_insert() vs am_put() behavior differs", {
 })
 
 test_that("am_insert() appends with 'end'", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -567,7 +567,7 @@ test_that("am_insert() appends with 'end'", {
 })
 
 test_that("am_insert() returns doc invisibly", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -578,7 +578,7 @@ test_that("am_insert() returns doc invisibly", {
 })
 
 test_that("am_insert() only works on lists", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "map", AM_OBJ_TYPE_MAP)
   map_obj <- am_get(doc, AM_ROOT, "map")
 
@@ -613,7 +613,7 @@ test_that("am_counter() coerces to integer", {
 # Counter Increment Tests -----------------------------------------------------
 
 test_that("am_counter_increment() increments counter in map", {
-  doc <- am_create()
+  doc <- local_create()
   doc$score <- am_counter(0)
 
   am_counter_increment(doc, AM_ROOT, "score", 10)
@@ -624,7 +624,7 @@ test_that("am_counter_increment() increments counter in map", {
 })
 
 test_that("am_counter_increment() accepts negative delta", {
-  doc <- am_create()
+  doc <- local_create()
   doc$score <- am_counter(100)
 
   am_counter_increment(doc, AM_ROOT, "score", -30)
@@ -635,7 +635,7 @@ test_that("am_counter_increment() accepts negative delta", {
 })
 
 test_that("am_counter_increment() works in nested map", {
-  doc <- am_create()
+  doc <- local_create()
   doc$stats <- am_map(views = am_counter(0), likes = am_counter(0))
   stats_obj <- doc$stats
 
@@ -647,7 +647,7 @@ test_that("am_counter_increment() works in nested map", {
 })
 
 test_that("am_counter_increment() works in list (1-based indexing)", {
-  doc <- am_create()
+  doc <- local_create()
   doc$counters <- list(am_counter(0), am_counter(10), am_counter(20))
   counters_obj <- doc$counters
 
@@ -661,7 +661,7 @@ test_that("am_counter_increment() works in list (1-based indexing)", {
 })
 
 test_that("am_counter_increment() multiple increments accumulate", {
-  doc <- am_create()
+  doc <- local_create()
   doc$count <- am_counter(0)
 
   for (i in 1:10) {
@@ -672,7 +672,7 @@ test_that("am_counter_increment() multiple increments accumulate", {
 })
 
 test_that("am_counter_increment() returns doc invisibly", {
-  doc <- am_create()
+  doc <- local_create()
   doc$score <- am_counter(0)
 
   result <- withVisible(am_counter_increment(doc, AM_ROOT, "score", 5))
@@ -682,7 +682,7 @@ test_that("am_counter_increment() returns doc invisibly", {
 })
 
 test_that("am_counter_increment() coerces numeric to integer", {
-  doc <- am_create()
+  doc <- local_create()
   doc$score <- am_counter(0)
 
   am_counter_increment(doc, AM_ROOT, "score", 10.7)
@@ -690,13 +690,13 @@ test_that("am_counter_increment() coerces numeric to integer", {
 })
 
 test_that("am_counter_increment() persists after save/load", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$score <- am_counter(5)
   am_counter_increment(doc1, AM_ROOT, "score", 10)
   am_commit(doc1, "Increment counter")
 
   bytes <- am_save(doc1)
-  doc2 <- am_load(bytes)
+  doc2 <- local_load(bytes)
 
   expect_equal(doc2$score, 15)
 
@@ -705,12 +705,12 @@ test_that("am_counter_increment() persists after save/load", {
 })
 
 test_that("am_counter_increment() concurrent increments merge correctly", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$counter <- am_counter(0)
   am_commit(doc1, "Create counter")
 
   bytes <- am_save(doc1)
-  doc2 <- am_load(bytes)
+  doc2 <- local_load(bytes)
 
   am_counter_increment(doc1, AM_ROOT, "counter", 5)
   am_commit(doc1, "Doc1 increments by 5")
@@ -724,7 +724,7 @@ test_that("am_counter_increment() concurrent increments merge correctly", {
 })
 
 test_that("am_counter_increment() errors on wrong object type", {
-  doc <- am_create()
+  doc <- local_create()
   doc$text <- am_text("hello")
   text_obj <- doc$text
 
@@ -814,7 +814,7 @@ test_that("am_text() requires scalar string", {
 # Text Operations -------------------------------------------------------------
 
 test_that("am_text_splice() inserts text", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "doc", am_text("Hello"))
   text_obj <- am_get(doc, AM_ROOT, "doc")
 
@@ -825,7 +825,7 @@ test_that("am_text_splice() inserts text", {
 })
 
 test_that("am_text_splice() deletes text", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "doc", am_text("Hello World"))
   text_obj <- am_get(doc, AM_ROOT, "doc")
 
@@ -836,7 +836,7 @@ test_that("am_text_splice() deletes text", {
 })
 
 test_that("am_text_splice() replaces text", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "doc", am_text("Hello World"))
   text_obj <- am_get(doc, AM_ROOT, "doc")
 
@@ -847,7 +847,7 @@ test_that("am_text_splice() replaces text", {
 })
 
 test_that("am_text_splice() at position 0 prepends", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "doc", am_text("World"))
   text_obj <- am_get(doc, AM_ROOT, "doc")
 
@@ -858,7 +858,7 @@ test_that("am_text_splice() at position 0 prepends", {
 })
 
 test_that("am_text_splice() returns text_obj invisibly", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "doc", am_text("test"))
   text_obj <- am_get(doc, AM_ROOT, "doc")
 
@@ -869,7 +869,7 @@ test_that("am_text_splice() returns text_obj invisibly", {
 })
 
 test_that("am_text_splice() handles UTF-8 text (character indexing)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "doc", am_text(""))
   text_obj <- am_get(doc, AM_ROOT, "doc")
 
@@ -882,7 +882,7 @@ test_that("am_text_splice() handles UTF-8 text (character indexing)", {
 })
 
 test_that("am_text_splice() handles emoji", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "doc", am_text("Hello"))
   text_obj <- am_get(doc, AM_ROOT, "doc")
 
@@ -893,7 +893,7 @@ test_that("am_text_splice() handles emoji", {
 })
 
 test_that("am_text_content() returns text from text object", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "doc", am_text("Test content"))
   text_obj <- am_get(doc, AM_ROOT, "doc")
 
@@ -905,7 +905,7 @@ test_that("am_text_content() returns text from text object", {
 })
 
 test_that("am_text_content() returns empty string for empty text", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "doc", am_text())
   text_obj <- am_get(doc, AM_ROOT, "doc")
 
@@ -915,7 +915,7 @@ test_that("am_text_content() returns empty string for empty text", {
 })
 
 test_that("am_text_content() with heads returns historical text", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello"))
   am_commit(doc, "v1")
   heads_v1 <- am_get_heads(doc)
@@ -935,7 +935,7 @@ test_that("am_text_content() with heads returns historical text", {
 })
 
 test_that("am_text_content() with heads works for empty text state", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text(""))
   am_commit(doc, "empty")
   heads_empty <- am_get_heads(doc)
@@ -949,7 +949,7 @@ test_that("am_text_content() with heads works for empty text state", {
 })
 
 test_that("am_text_content() with heads works with unicode", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello"))
   am_commit(doc, "v1")
   heads_v1 <- am_get_heads(doc)
@@ -963,13 +963,13 @@ test_that("am_text_content() with heads works with unicode", {
 })
 
 test_that("text objects persist after save/load", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put(doc1, AM_ROOT, "doc", am_text("Original"))
   text_obj <- am_get(doc1, AM_ROOT, "doc")
   am_text_splice(text_obj, 8, 0, " Text")
 
   binary <- am_save(doc1)
-  doc2 <- am_load(binary)
+  doc2 <- local_load(binary)
 
   text_obj2 <- am_get(doc2, AM_ROOT, "doc")
   result <- am_text_content(text_obj2)
@@ -977,7 +977,7 @@ test_that("text objects persist after save/load", {
 })
 
 test_that("multiple text edits accumulate correctly", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "doc", am_text(""))
   text_obj <- am_get(doc, AM_ROOT, "doc")
 
@@ -993,7 +993,7 @@ test_that("multiple text edits accumulate correctly", {
 # am_text_update() Tests ----------------------------------------------------
 
 test_that("am_text_update() inserts text at end", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("Hello"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1003,7 +1003,7 @@ test_that("am_text_update() inserts text at end", {
 })
 
 test_that("am_text_update() inserts text at beginning", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("World"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1013,7 +1013,7 @@ test_that("am_text_update() inserts text at beginning", {
 })
 
 test_that("am_text_update() inserts text in middle", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("HelloWorld"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1023,7 +1023,7 @@ test_that("am_text_update() inserts text in middle", {
 })
 
 test_that("am_text_update() deletes text at end", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("Hello World"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1033,7 +1033,7 @@ test_that("am_text_update() deletes text at end", {
 })
 
 test_that("am_text_update() deletes text at beginning", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("Hello World"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1043,7 +1043,7 @@ test_that("am_text_update() deletes text at beginning", {
 })
 
 test_that("am_text_update() deletes text in middle", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("Hello World"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1053,7 +1053,7 @@ test_that("am_text_update() deletes text in middle", {
 })
 
 test_that("am_text_update() replaces text", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("Hello World"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1063,7 +1063,7 @@ test_that("am_text_update() replaces text", {
 })
 
 test_that("am_text_update() handles identical strings (no-op)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("Hello"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1073,7 +1073,7 @@ test_that("am_text_update() handles identical strings (no-op)", {
 })
 
 test_that("am_text_update() handles empty to non-empty", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text(""))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1083,7 +1083,7 @@ test_that("am_text_update() handles empty to non-empty", {
 })
 
 test_that("am_text_update() handles non-empty to empty", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("Hello"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1093,7 +1093,7 @@ test_that("am_text_update() handles non-empty to empty", {
 })
 
 test_that("am_text_update() handles UTF-8 characters", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("你好"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1103,7 +1103,7 @@ test_that("am_text_update() handles UTF-8 characters", {
 })
 
 test_that("am_text_update() handles emoji", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("Hello"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1113,7 +1113,7 @@ test_that("am_text_update() handles emoji", {
 })
 
 test_that("am_text_update() handles emoji deletion", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("Hello 🌍 World"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1123,7 +1123,7 @@ test_that("am_text_update() handles emoji deletion", {
 })
 
 test_that("am_text_update() handles mixed Unicode", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("Hello 世界"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1133,7 +1133,7 @@ test_that("am_text_update() handles mixed Unicode", {
 })
 
 test_that("am_text_update() returns invisibly", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("Hello"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1144,7 +1144,7 @@ test_that("am_text_update() returns invisibly", {
 })
 
 test_that("am_text_update() errors on non-string new_text", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("Hello"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1152,7 +1152,7 @@ test_that("am_text_update() errors on non-string new_text", {
 })
 
 test_that("am_text_update() errors on NA new_text", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("Hello"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1160,7 +1160,7 @@ test_that("am_text_update() errors on NA new_text", {
 })
 
 test_that("am_text_update() handles single character changes", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("cat"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1170,7 +1170,7 @@ test_that("am_text_update() handles single character changes", {
 })
 
 test_that("am_text_update() handles complete replacement", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("Hello"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -1180,14 +1180,14 @@ test_that("am_text_update() handles complete replacement", {
 })
 
 test_that("am_text_update() persists after save/load", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put(doc1, AM_ROOT, "content", am_text("Hello"))
   text_obj <- am_get(doc1, AM_ROOT, "content")
   am_text_update(text_obj, "Hello World")
   am_commit(doc1, "Edit text")
 
   bytes <- am_save(doc1)
-  doc2 <- am_load(bytes)
+  doc2 <- local_load(bytes)
 
   text_obj2 <- am_get(doc2, AM_ROOT, "content")
   expect_equal(am_text_content(text_obj2), "Hello World")
@@ -1196,7 +1196,7 @@ test_that("am_text_update() persists after save/load", {
 # am_values() Tests -----------------------------------------------------------
 
 test_that("am_values() returns all values from map", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "a", 1)
   am_put(doc, AM_ROOT, "b", 2)
   am_put(doc, AM_ROOT, "c", 3)
@@ -1209,7 +1209,7 @@ test_that("am_values() returns all values from map", {
 })
 
 test_that("am_values() returns all values from list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -1227,7 +1227,7 @@ test_that("am_values() returns all values from list", {
 })
 
 test_that("am_values() returns empty list for empty map", {
-  doc <- am_create()
+  doc <- local_create()
 
   values <- am_values(doc, AM_ROOT)
 
@@ -1236,7 +1236,7 @@ test_that("am_values() returns empty list for empty map", {
 })
 
 test_that("am_values() returns empty list for empty list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -1247,7 +1247,7 @@ test_that("am_values() returns empty list for empty list", {
 })
 
 test_that("am_values() handles mixed types", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "int", 42L)
   am_put(doc, AM_ROOT, "str", "text")
   am_put(doc, AM_ROOT, "bool", TRUE)
@@ -1262,7 +1262,7 @@ test_that("am_values() handles mixed types", {
 })
 
 test_that("am_values() includes nested objects", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "scalar", "value")
   am_put(doc, AM_ROOT, "nested", AM_OBJ_TYPE_MAP)
   nested <- am_get(doc, AM_ROOT, "nested")
@@ -1277,7 +1277,7 @@ test_that("am_values() includes nested objects", {
 # List Edge Cases -------------------------------------------------------------
 
 test_that("am_get() with index 0 returns NULL", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
   am_put(doc, list_obj, "end", "value")
@@ -1288,7 +1288,7 @@ test_that("am_get() with index 0 returns NULL", {
 })
 
 test_that("am_get() with negative index returns NULL", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
   am_put(doc, list_obj, "end", "value")
@@ -1299,7 +1299,7 @@ test_that("am_get() with negative index returns NULL", {
 })
 
 test_that("am_get() with out-of-bounds index returns NULL", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
   am_put(doc, list_obj, "end", "value")
@@ -1310,7 +1310,7 @@ test_that("am_get() with out-of-bounds index returns NULL", {
 })
 
 test_that("am_get() on empty list returns NULL", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -1322,7 +1322,7 @@ test_that("am_get() on empty list returns NULL", {
 # Return Value Tests ----------------------------------------------------------
 
 test_that("am_put() with scalar returns doc invisibly", {
-  doc <- am_create()
+  doc <- local_create()
 
   result <- withVisible(am_put(doc, AM_ROOT, "key", "value"))
 
@@ -1331,7 +1331,7 @@ test_that("am_put() with scalar returns doc invisibly", {
 })
 
 test_that("am_put() with object type returns doc invisibly", {
-  doc <- am_create()
+  doc <- local_create()
 
   result <- withVisible(am_put(doc, AM_ROOT, "key", AM_OBJ_TYPE_MAP))
 
@@ -1340,7 +1340,7 @@ test_that("am_put() with object type returns doc invisibly", {
 })
 
 test_that("am_delete() returns doc invisibly", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
 
   result <- withVisible(am_delete(doc, AM_ROOT, "key"))
@@ -1367,7 +1367,7 @@ test_that("am_uint64() warns for values exceeding 2^53", {
 })
 
 test_that("am_uint64 round-trips through document", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "id", am_uint64(12345))
 
   val <- am_get(doc, AM_ROOT, "id")
@@ -1376,7 +1376,7 @@ test_that("am_uint64 round-trips through document", {
 })
 
 test_that("am_uint64 in list round-trips correctly", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list(am_uint64(1), am_uint64(2), am_uint64(3))
 
   items <- as.list(doc$items)
@@ -1386,7 +1386,7 @@ test_that("am_uint64 in list round-trips correctly", {
 })
 
 test_that("am_uint64 preserves type through as.list() round-trip", {
-  doc <- am_create()
+  doc <- local_create()
   doc$val <- am_uint64(42)
 
   # Simulate the problematic workflow: read, modify other things, write back
@@ -1394,7 +1394,7 @@ test_that("am_uint64 preserves type through as.list() round-trip", {
   expect_s3_class(lst$val, "am_uint64")
 
   # Create new doc and populate from list
-  doc2 <- am_create()
+  doc2 <- local_create()
   for (key in names(lst)) {
     am_put(doc2, AM_ROOT, key, lst[[key]])
   }
@@ -1404,12 +1404,12 @@ test_that("am_uint64 preserves type through as.list() round-trip", {
 })
 
 test_that("am_uint64 persists through save/load", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put(doc1, AM_ROOT, "id", am_uint64(999))
   am_commit(doc1, "Add uint64")
 
   bytes <- am_save(doc1)
-  doc2 <- am_load(bytes)
+  doc2 <- local_load(bytes)
 
   val <- am_get(doc2, AM_ROOT, "id")
   expect_s3_class(val, "am_uint64")
@@ -1417,7 +1417,7 @@ test_that("am_uint64 persists through save/load", {
 })
 
 test_that("am_uint64 with value 0 works correctly", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "zero", am_uint64(0))
 
   val <- am_get(doc, AM_ROOT, "zero")
@@ -1426,7 +1426,7 @@ test_that("am_uint64 with value 0 works correctly", {
 })
 
 test_that("am_uint64 with large value (within precision) works", {
-  doc <- am_create()
+  doc <- local_create()
   large_val <- 2^50  # Safe within 2^53
   am_put(doc, AM_ROOT, "large", am_uint64(large_val))
 
@@ -1458,7 +1458,7 @@ test_that("print.am_uint64 displays value correctly", {
 })
 
 test_that("am_put with invalid am_uint64 errors", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Non-scalar am_uint64
   bad_uint <- structure(c(1, 2), class = "am_uint64")
@@ -1474,7 +1474,7 @@ test_that("am_put with invalid am_uint64 errors", {
 })
 
 test_that("am_get warns for uint64 exceeding 2^53", {
-  doc <- am_create()
+  doc <- local_create()
   # Store large value (R warns on creation, C warns on retrieval)
   suppressWarnings(am_put(doc, AM_ROOT, "big", am_uint64(2^54)))
 
@@ -1484,7 +1484,7 @@ test_that("am_get warns for uint64 exceeding 2^53", {
 })
 
 test_that("am_values warns for uint64 exceeding 2^53", {
-  doc <- am_create()
+  doc <- local_create()
   suppressWarnings(am_put(doc, AM_ROOT, "big", am_uint64(2^54)))
 
   expect_snapshot({
@@ -1497,7 +1497,7 @@ test_that("am_values warns for uint64 exceeding 2^53", {
 # am_map_get_all tests
 
 test_that("am_map_get_all() returns single value when no conflict", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
 
   values <- am_map_get_all(doc, AM_ROOT, "key")
@@ -1507,11 +1507,11 @@ test_that("am_map_get_all() returns single value when no conflict", {
 })
 
 test_that("am_map_get_all() returns multiple values with conflict", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$key <- "original"
   am_commit(doc1)
 
-  doc2 <- am_fork(doc1)
+  doc2 <- local_fork(doc1)
 
   doc1$key <- "from_doc1"
   am_commit(doc1)
@@ -1527,14 +1527,14 @@ test_that("am_map_get_all() returns multiple values with conflict", {
 })
 
 test_that("am_map_get_all() errors on non-string key", {
-  doc <- am_create()
+  doc <- local_create()
   expect_error(am_map_get_all(doc, AM_ROOT, 123), "character string")
 })
 
 # am_list_get_all tests
 
 test_that("am_list_get_all() returns single value when no conflict", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a", "b", "c")
   items <- doc$items
 
@@ -1545,7 +1545,7 @@ test_that("am_list_get_all() returns single value when no conflict", {
 })
 
 test_that("am_list_get_all() errors on invalid position", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a")
   items <- doc$items
 
@@ -1555,7 +1555,7 @@ test_that("am_list_get_all() errors on invalid position", {
 # am_map_range tests
 
 test_that("am_map_range() returns subset of keys", {
-  doc <- am_create()
+  doc <- local_create()
   doc$a <- 1
   doc$b <- 2
   doc$c <- 3
@@ -1571,7 +1571,7 @@ test_that("am_map_range() returns subset of keys", {
 })
 
 test_that("am_map_range() with wide strings returns all", {
-  doc <- am_create()
+  doc <- local_create()
   doc$a <- 1
   doc$b <- 2
   doc$c <- 3
@@ -1582,7 +1582,7 @@ test_that("am_map_range() with wide strings returns all", {
 })
 
 test_that("am_map_range() with same begin/end returns single key", {
-  doc <- am_create()
+  doc <- local_create()
   doc$a <- 1
   doc$b <- 2
 
@@ -1597,7 +1597,7 @@ test_that("am_map_range() with same begin/end returns single key", {
 })
 
 test_that("am_map_range() errors on non-string args", {
-  doc <- am_create()
+  doc <- local_create()
   expect_error(am_map_range(doc, AM_ROOT, 1, "z"), "character string")
   expect_error(am_map_range(doc, AM_ROOT, "a", 2), "character string")
 })
@@ -1605,7 +1605,7 @@ test_that("am_map_range() errors on non-string args", {
 # am_list_range tests
 
 test_that("am_list_range() returns subset of elements", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a", "b", "c", "d", "e")
   items <- doc$items
 
@@ -1618,7 +1618,7 @@ test_that("am_list_range() returns subset of elements", {
 })
 
 test_that("am_list_range() errors on invalid begin", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a", "b")
   items <- doc$items
 
@@ -1626,7 +1626,7 @@ test_that("am_list_range() errors on invalid begin", {
 })
 
 test_that("am_list_range() errors on invalid end", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a", "b")
   items <- doc$items
 
@@ -1637,7 +1637,7 @@ test_that("am_list_range() errors on invalid end", {
 # am_items tests
 
 test_that("am_items() returns items from map", {
-  doc <- am_create()
+  doc <- local_create()
   doc$name <- "Alice"
   doc$age <- 30L
 
@@ -1651,7 +1651,7 @@ test_that("am_items() returns items from map", {
 })
 
 test_that("am_items() returns items from list", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a", "b", "c")
   items_obj <- doc$items
 
@@ -1664,7 +1664,7 @@ test_that("am_items() returns items from list", {
 })
 
 test_that("am_items() returns empty list for empty object", {
-  doc <- am_create()
+  doc <- local_create()
   items <- am_items(doc, AM_ROOT)
   expect_length(items, 0)
 })
@@ -1672,7 +1672,7 @@ test_that("am_items() returns empty list for empty object", {
 # Additional am_map_get_all tests
 
 test_that("am_map_get_all() returns empty for non-existent key", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
 
   values <- am_map_get_all(doc, AM_ROOT, "nonexistent")
@@ -1681,7 +1681,7 @@ test_that("am_map_get_all() returns empty for non-existent key", {
 })
 
 test_that("am_map_get_all() works on nested map", {
-  doc <- am_create()
+  doc <- local_create()
   doc$config <- list(host = "localhost", port = 8080L)
   config <- am_get(doc, AM_ROOT, "config")
 
@@ -1691,7 +1691,7 @@ test_that("am_map_get_all() works on nested map", {
 })
 
 test_that("am_map_get_all() returns nested objects", {
-  doc <- am_create()
+  doc <- local_create()
   doc$nested <- list(inner = list(deep = "value"))
 
   values <- am_map_get_all(doc, AM_ROOT, "nested")
@@ -1700,7 +1700,7 @@ test_that("am_map_get_all() returns nested objects", {
 })
 
 test_that("am_map_get_all() with historical heads", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "v1"
   am_commit(doc, "Version 1")
   heads_v1 <- am_get_heads(doc)
@@ -1718,11 +1718,11 @@ test_that("am_map_get_all() with historical heads", {
 })
 
 test_that("am_map_get_all() both values present after conflict", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$status <- "draft"
   am_commit(doc1)
 
-  doc2 <- am_fork(doc1)
+  doc2 <- local_fork(doc1)
   doc1$status <- "published"
   am_commit(doc1)
   doc2$status <- "archived"
@@ -1738,11 +1738,11 @@ test_that("am_map_get_all() both values present after conflict", {
 # Additional am_list_get_all tests
 
 test_that("am_list_get_all() returns multiple values with conflict", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$items <- list(100L)
   am_commit(doc1)
 
-  doc2 <- am_fork(doc1)
+  doc2 <- local_fork(doc1)
   items1 <- am_get(doc1, AM_ROOT, "items")
   items2 <- am_get(doc2, AM_ROOT, "items")
 
@@ -1758,7 +1758,7 @@ test_that("am_list_get_all() returns multiple values with conflict", {
 })
 
 test_that("am_list_get_all() with historical heads", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("first")
   am_commit(doc)
   heads_v1 <- am_get_heads(doc)
@@ -1777,13 +1777,13 @@ test_that("am_list_get_all() with historical heads", {
 # Additional am_map_range tests
 
 test_that("am_map_range() on empty map returns empty", {
-  doc <- am_create()
+  doc <- local_create()
   range <- am_map_range(doc, AM_ROOT, "a", "z")
   expect_length(range, 0)
 })
 
 test_that("am_map_range() with nested objects", {
-  doc <- am_create()
+  doc <- local_create()
   doc$config <- list(host = "localhost")
   doc$data <- list(value = 42)
   doc$meta <- list(version = "1.0")
@@ -1797,7 +1797,7 @@ test_that("am_map_range() with nested objects", {
 })
 
 test_that("am_map_range() with historical heads", {
-  doc <- am_create()
+  doc <- local_create()
   doc$a <- 1
   doc$b <- 2
   am_commit(doc)
@@ -1816,7 +1816,7 @@ test_that("am_map_range() with historical heads", {
 # Additional am_list_range tests
 
 test_that("am_list_range() full range returns all items", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a", "b", "c")
   items <- doc$items
 
@@ -1827,7 +1827,7 @@ test_that("am_list_range() full range returns all items", {
 })
 
 test_that("am_list_range() single element range", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a", "b", "c")
   items <- doc$items
 
@@ -1837,7 +1837,7 @@ test_that("am_list_range() single element range", {
 })
 
 test_that("am_list_range() with nested objects", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list(list(name = "Alice"), list(name = "Bob"))
   items <- doc$items
 
@@ -1847,7 +1847,7 @@ test_that("am_list_range() with nested objects", {
 })
 
 test_that("am_list_range() with historical heads", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a", "b")
   am_commit(doc)
   heads_v1 <- am_get_heads(doc)
@@ -1864,7 +1864,7 @@ test_that("am_list_range() with historical heads", {
 })
 
 test_that("am_list_range() on empty list returns empty", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
 
@@ -1875,7 +1875,7 @@ test_that("am_list_range() on empty list returns empty", {
 # Additional am_items tests
 
 test_that("am_items() map items have string keys", {
-  doc <- am_create()
+  doc <- local_create()
   doc$alpha <- 1
   doc$beta <- 2
 
@@ -1885,7 +1885,7 @@ test_that("am_items() map items have string keys", {
 })
 
 test_that("am_items() list items have integer keys", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a", "b", "c")
   items_obj <- doc$items
 
@@ -1895,7 +1895,7 @@ test_that("am_items() list items have integer keys", {
 })
 
 test_that("am_items() with mixed value types", {
-  doc <- am_create()
+  doc <- local_create()
   doc$str <- "text"
   doc$int <- 42L
   doc$bool <- TRUE
@@ -1909,7 +1909,7 @@ test_that("am_items() with mixed value types", {
 })
 
 test_that("am_items() with nested objects returns am_object", {
-  doc <- am_create()
+  doc <- local_create()
   doc$nested <- list(key = "value")
 
   items <- am_items(doc, AM_ROOT)
@@ -1918,7 +1918,7 @@ test_that("am_items() with nested objects returns am_object", {
 })
 
 test_that("am_items() with historical heads", {
-  doc <- am_create()
+  doc <- local_create()
   doc$a <- 1
   am_commit(doc)
   heads_v1 <- am_get_heads(doc)
@@ -1938,7 +1938,7 @@ test_that("am_items() with historical heads", {
 # am_put edge cases for type dispatch
 
 test_that("am_put() with raw bytes into map", {
-  doc <- am_create()
+  doc <- local_create()
   raw_data <- as.raw(c(0x01, 0x02, 0x03))
   am_put(doc, AM_ROOT, "data", raw_data)
   result <- am_get(doc, AM_ROOT, "data")
@@ -1947,7 +1947,7 @@ test_that("am_put() with raw bytes into map", {
 })
 
 test_that("am_put() with raw bytes into list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, as.raw(c(0xDE, 0xAD)))
@@ -1957,7 +1957,7 @@ test_that("am_put() with raw bytes into list", {
 })
 
 test_that("am_put() with POSIXct into map and list", {
-  doc <- am_create()
+  doc <- local_create()
   ts <- as.POSIXct("2025-06-15 12:00:00", tz = "UTC")
   am_put(doc, AM_ROOT, "time", ts)
   result <- am_get(doc, AM_ROOT, "time")
@@ -1972,7 +1972,7 @@ test_that("am_put() with POSIXct into map and list", {
 })
 
 test_that("am_put() with counter into list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, am_counter(5))
@@ -1982,7 +1982,7 @@ test_that("am_put() with counter into list", {
 })
 
 test_that("am_put() with am_uint64 into list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, am_uint64(42))
@@ -1992,7 +1992,7 @@ test_that("am_put() with am_uint64 into list", {
 })
 
 test_that("am_put() with am_text() into list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, am_text("hello"))
@@ -2002,7 +2002,7 @@ test_that("am_put() with am_text() into list", {
 })
 
 test_that("am_put() with boolean into list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, TRUE)
@@ -2011,7 +2011,7 @@ test_that("am_put() with boolean into list", {
 })
 
 test_that("am_put() with integer into list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, 42L)
@@ -2020,7 +2020,7 @@ test_that("am_put() with integer into list", {
 })
 
 test_that("am_put() with double into list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, 3.14)
@@ -2029,7 +2029,7 @@ test_that("am_put() with double into list", {
 })
 
 test_that("am_put() with string into list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, "hello")
@@ -2038,7 +2038,7 @@ test_that("am_put() with string into list", {
 })
 
 test_that("am_put() with NULL into list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, NULL)
@@ -2047,7 +2047,7 @@ test_that("am_put() with NULL into list", {
 })
 
 test_that("am_put() with nested list into list (unnamed = list type)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, list("a", "b"))
@@ -2057,7 +2057,7 @@ test_that("am_put() with nested list into list (unnamed = list type)", {
 })
 
 test_that("am_put() with nested named list into list (named = map type)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, list(x = 1))
@@ -2067,7 +2067,7 @@ test_that("am_put() with nested named list into list (named = map type)", {
 })
 
 test_that("am_put() with AM_OBJ_TYPE_LIST constant into list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, AM_OBJ_TYPE_LIST)
@@ -2076,7 +2076,7 @@ test_that("am_put() with AM_OBJ_TYPE_LIST constant into list", {
 })
 
 test_that("am_put() with AM_OBJ_TYPE_MAP constant into list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, AM_OBJ_TYPE_MAP)
@@ -2085,7 +2085,7 @@ test_that("am_put() with AM_OBJ_TYPE_MAP constant into list", {
 })
 
 test_that("am_put() with AM_OBJ_TYPE_TEXT constant into list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, AM_OBJ_TYPE_TEXT)
@@ -2094,7 +2094,7 @@ test_that("am_put() with AM_OBJ_TYPE_TEXT constant into list", {
 })
 
 test_that("am_put() with am_list_type into map", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "lst", am_list("x", "y"))
   val <- am_get(doc, AM_ROOT, "lst")
   expect_s3_class(val, "am_object")
@@ -2102,7 +2102,7 @@ test_that("am_put() with am_list_type into map", {
 })
 
 test_that("am_put() with am_map_type into map", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "m", am_map(a = 1, b = 2))
   val <- am_get(doc, AM_ROOT, "m")
   expect_s3_class(val, "am_object")
@@ -2112,17 +2112,17 @@ test_that("am_put() with am_map_type into map", {
 # am_get / am_delete input validation
 
 test_that("am_get() errors on unsupported key type", {
-  doc <- am_create()
+  doc <- local_create()
   expect_error(am_get(doc, AM_ROOT, TRUE), "character string.*numeric")
 })
 
 test_that("am_delete() errors on unsupported key type", {
-  doc <- am_create()
+  doc <- local_create()
   expect_error(am_delete(doc, AM_ROOT, TRUE), "character string.*numeric")
 })
 
 test_that("am_delete() from list by position", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, "a")
@@ -2132,7 +2132,7 @@ test_that("am_delete() from list by position", {
 })
 
 test_that("am_delete() errors on non-positive list position", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, "a")
@@ -2142,7 +2142,7 @@ test_that("am_delete() errors on non-positive list position", {
 # am_values includes nested objects from lists
 
 test_that("am_values() with nested objects in lists", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, "scalar")
@@ -2155,11 +2155,11 @@ test_that("am_values() with nested objects in lists", {
 })
 
 test_that("am_map_get_all() supports multiple heads", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "v1"
   am_commit(doc)
 
-  doc2 <- am_fork(doc)
+  doc2 <- local_fork(doc)
   doc$key <- "v2"
   am_commit(doc)
   doc2$key <- "v3"
@@ -2174,11 +2174,11 @@ test_that("am_map_get_all() supports multiple heads", {
 })
 
 test_that("am_list_get_all() supports multiple heads", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a")
   am_commit(doc)
 
-  doc2 <- am_fork(doc)
+  doc2 <- local_fork(doc)
   items1 <- am_get(doc, AM_ROOT, "items")
   items2 <- am_get(doc2, AM_ROOT, "items")
   am_put(doc, items1, 1, "b")
@@ -2195,11 +2195,11 @@ test_that("am_list_get_all() supports multiple heads", {
 })
 
 test_that("am_map_range() supports multiple heads", {
-  doc <- am_create()
+  doc <- local_create()
   doc$a <- 1
   am_commit(doc)
 
-  doc2 <- am_fork(doc)
+  doc2 <- local_fork(doc)
   doc$b <- 2
   am_commit(doc)
   doc2$c <- 3
@@ -2214,11 +2214,11 @@ test_that("am_map_range() supports multiple heads", {
 })
 
 test_that("am_list_range() supports multiple heads", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a", "b")
   am_commit(doc)
 
-  doc2 <- am_fork(doc)
+  doc2 <- local_fork(doc)
   items1 <- am_get(doc, AM_ROOT, "items")
   items2 <- am_get(doc2, AM_ROOT, "items")
   am_insert(doc, items1, "end", "c")
@@ -2235,11 +2235,11 @@ test_that("am_list_range() supports multiple heads", {
 })
 
 test_that("am_items() supports multiple heads", {
-  doc <- am_create()
+  doc <- local_create()
   doc$a <- 1
   am_commit(doc)
 
-  doc2 <- am_fork(doc)
+  doc2 <- local_fork(doc)
   doc$b <- 2
   am_commit(doc)
   doc2$c <- 3
@@ -2256,7 +2256,7 @@ test_that("am_items() supports multiple heads", {
 # am_list_get_all input validation
 
 test_that("am_list_get_all() errors on non-scalar pos", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a", "b")
   items <- doc$items
   expect_error(am_list_get_all(doc, items, c(1, 2)), "scalar")
@@ -2265,21 +2265,21 @@ test_that("am_list_get_all() errors on non-scalar pos", {
 # am_list_range input validation
 
 test_that("am_list_range() errors on non-numeric begin", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a")
   items <- doc$items
   expect_error(am_list_range(doc, items, "a", 2), "numeric")
 })
 
 test_that("am_list_range() errors on non-numeric end", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a")
   items <- doc$items
   expect_error(am_list_range(doc, items, 1, "b"), "numeric")
 })
 
 test_that("am_list_range() errors on non-scalar", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a", "b")
   items <- doc$items
   expect_error(am_list_range(doc, items, c(1, 2), 3), "scalar")
@@ -2288,42 +2288,42 @@ test_that("am_list_range() errors on non-scalar", {
 # am_insert error
 
 test_that("am_insert() errors on non-list objects", {
-  doc <- am_create()
+  doc <- local_create()
   expect_error(am_insert(doc, AM_ROOT, 1, "x"), "list objects")
 })
 
 # am_text_splice validation
 
 test_that("am_text_splice() errors on non-numeric pos", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_text_splice(text_obj, "a", 0, "x"), "pos must be numeric")
 })
 
 test_that("am_text_splice() errors on negative pos", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_text_splice(text_obj, -1L, 0, "x"), "non-negative")
 })
 
 test_that("am_text_splice() errors on non-numeric del_count", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_text_splice(text_obj, 0, "a", "x"), "del_count must be numeric")
 })
 
 test_that("am_text_splice() errors on negative del_count", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_text_splice(text_obj, 0, -1L, "x"), "non-negative")
 })
 
 test_that("am_text_splice() errors on non-string text", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_text_splice(text_obj, 0, 0, 123), "single character string")
@@ -2332,7 +2332,7 @@ test_that("am_text_splice() errors on non-string text", {
 # am_get with non-scalar list position
 
 test_that("am_get() errors on non-scalar list position", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, "a")
@@ -2342,7 +2342,7 @@ test_that("am_get() errors on non-scalar list position", {
 # am_map_get_all with empty heads list
 
 test_that("am_map_get_all() with empty heads list same as NULL", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   am_commit(doc)
 
@@ -2354,7 +2354,7 @@ test_that("am_map_get_all() with empty heads list same as NULL", {
 # am_list_get_all with non-scalar errors
 
 test_that("am_list_get_all() errors on non-numeric pos", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, "a")
@@ -2364,7 +2364,7 @@ test_that("am_list_get_all() errors on non-numeric pos", {
 # am_put with invalid list position type (not numeric, not "end")
 
 test_that("am_put() errors on invalid list position type", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, "a")
@@ -2374,7 +2374,7 @@ test_that("am_put() errors on invalid list position type", {
 # am_put with invalid string position (not "end")
 
 test_that("am_put() errors on non-'end' string list position", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   expect_error(am_put(doc, items, "middle", "x"), "numeric.*end")
@@ -2383,7 +2383,7 @@ test_that("am_put() errors on non-'end' string list position", {
 # am_values with map (tests the key-based iteration path)
 
 test_that("am_values() on map returns named values", {
-  doc <- am_create()
+  doc <- local_create()
   doc$a <- 1
   doc$b <- "hello"
   doc$c <- TRUE
@@ -2395,7 +2395,7 @@ test_that("am_values() on map returns named values", {
 # am_items() for list items with various types
 
 test_that("am_items() returns items from list with nested objects", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- list("a", 42L, TRUE)
   items_obj <- doc$items
   items <- am_items(doc, items_obj)
