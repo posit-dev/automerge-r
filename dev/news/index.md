@@ -2,7 +2,7 @@
 
 ## automerge (development version)
 
-- Updates vendored automerge library to 0.9.0.
+- Updates vendored automerge library to 0.10.0.
 
 ## automerge 0.4.0
 

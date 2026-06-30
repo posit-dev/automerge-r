@@ -83,16 +83,16 @@ am_merge(doc1, doc2)
 
 # One value wins (deterministic, all replicas agree)
 doc1[["name"]]
-#> [1] "Alice Johnson"
+#> [1] "Alice Smith"
 
 # To see all conflicting values (not just the winner), use am_map_get_all()
 all_values <- am_map_get_all(doc1, AM_ROOT, "name")
 all_values
 #> [[1]]
-#> [1] "Alice Smith"
+#> [1] "Alice Johnson"
 #> 
 #> [[2]]
-#> [1] "Alice Johnson"
+#> [1] "Alice Smith"
 
 am_close(doc1)
 am_close(doc2)
@@ -179,8 +179,8 @@ for (i in seq_len(am_length(doc5, items5))) {
   print(am_get(doc5, items5, i))
 }
 #> [1] "A"
-#> [1] "B1"
 #> [1] "B2"
+#> [1] "B1"
 #> [1] "C"
 
 am_close(doc5)
@@ -332,7 +332,7 @@ doc9[["title"]] <- "My Document"
 doc10[["title"]] <- "Our Document"
 am_merge(doc9, doc10)
 doc9[["title"]] # One value wins deterministically
-#> [1] "My Document"
+#> [1] "Our Document"
 
 am_close(doc9)
 am_close(doc10)
@@ -411,9 +411,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-06-30 09:04:43 UTC"
+#> [1] "2026-06-30 14:13:49 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-06-30 09:04:44 UTC"
+#> [1] "2026-06-30 14:13:49 UTC"
 
 am_close(doc15)
 am_close(doc16)
@@ -745,7 +745,7 @@ am_merge(doc26, doc27)
 
 # One will win - application should handle both states sensibly
 doc26[["status"]] # Should be prepared for either 'published' or 'archived'
-#> [1] "published"
+#> [1] "archived"
 
 # Use am_equal() to check if two documents have converged
 am_merge(doc27, doc26)

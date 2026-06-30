@@ -37,7 +37,7 @@ text_obj <- am_get(doc, AM_ROOT, "text")
 cursor <- am_cursor(text_obj, 5)
 bytes <- am_cursor_to_bytes(cursor)
 bytes
-#>  [1] 01 03 10 26 41 e0 09 5b 54 1e f4 f6 2a 8c 3c e2 6c 9c c5 07 02
+#>  [1] 01 03 10 be 2e a7 3d 76 83 02 6f 64 64 3e 11 42 70 f2 3c 07 02
 
 # Restore cursor later
 restored <- am_cursor_from_bytes(bytes, text_obj)
