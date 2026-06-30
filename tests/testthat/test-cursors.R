@@ -1,5 +1,5 @@
 test_that("am_cursor creates and retrieves cursor positions", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -13,7 +13,7 @@ test_that("am_cursor creates and retrieves cursor positions", {
 })
 
 test_that("cursors track positions across text edits", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -29,7 +29,7 @@ test_that("cursors track positions across text edits", {
 })
 
 test_that("cursors handle UTF-32 character indexing correctly", {
-  doc <- am_create()
+  doc <- local_create()
   # Text with emoji (single character in UTF-32)
   am_put(doc, AM_ROOT, "text", am_text("Hello😀World"))
   text_obj <- am_get(doc, AM_ROOT, "text")
@@ -48,7 +48,7 @@ test_that("cursors handle UTF-32 character indexing correctly", {
 })
 
 test_that("cursors work at text boundaries", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -63,7 +63,7 @@ test_that("cursors work at text boundaries", {
 })
 
 test_that("cursor validation rejects invalid inputs", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -82,7 +82,7 @@ test_that("cursor validation rejects invalid inputs", {
 })
 
 test_that("multiple cursors work independently", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -103,7 +103,7 @@ test_that("multiple cursors work independently", {
 # Cursor Serialization Tests ---------------------------------------------------
 
 test_that("am_cursor_to_bytes() returns raw vector", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -114,7 +114,7 @@ test_that("am_cursor_to_bytes() returns raw vector", {
 })
 
 test_that("cursor round-trips through bytes", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -126,7 +126,7 @@ test_that("cursor round-trips through bytes", {
 })
 
 test_that("am_cursor_to_string() returns character", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -137,7 +137,7 @@ test_that("am_cursor_to_string() returns character", {
 })
 
 test_that("cursor round-trips through string", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -149,7 +149,7 @@ test_that("cursor round-trips through string", {
 })
 
 test_that("am_cursor_equal() detects equal cursors", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -160,7 +160,7 @@ test_that("am_cursor_equal() detects equal cursors", {
 })
 
 test_that("am_cursor_equal() detects unequal cursors", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -171,7 +171,7 @@ test_that("am_cursor_equal() detects unequal cursors", {
 })
 
 test_that("am_cursor_from_bytes() errors on non-raw input", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -179,7 +179,7 @@ test_that("am_cursor_from_bytes() errors on non-raw input", {
 })
 
 test_that("am_cursor_from_string() errors on non-string input", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -189,7 +189,7 @@ test_that("am_cursor_from_string() errors on non-string input", {
 # Historical Queries (heads parameter) Tests -----------------------------------
 
 test_that("am_cursor() works with heads parameter", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello"))
   am_commit(doc, "initial")
 
@@ -204,7 +204,7 @@ test_that("am_cursor() works with heads parameter", {
 })
 
 test_that("am_cursor_position() works with heads parameter", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello"))
   am_commit(doc, "initial")
 
@@ -225,7 +225,7 @@ test_that("am_cursor_position() works with heads parameter", {
 })
 
 test_that("am_marks() works with heads parameter", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -248,7 +248,7 @@ test_that("am_marks() works with heads parameter", {
 })
 
 test_that("am_marks_at() works with heads parameter", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -273,7 +273,7 @@ test_that("am_marks_at() works with heads parameter", {
 # Empty and multi-head fallback paths ------------------------------------------
 
 test_that("am_cursor() with empty heads list falls back to current state", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello"))
   am_commit(doc, "initial")
 
@@ -284,7 +284,7 @@ test_that("am_cursor() with empty heads list falls back to current state", {
 })
 
 test_that("am_cursor_position() with empty heads list falls back to current state", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   am_commit(doc, "initial")
 
@@ -300,7 +300,7 @@ test_that("am_cursor_position() with empty heads list falls back to current stat
 })
 
 test_that("am_marks() with empty heads list falls back to current state", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -313,7 +313,7 @@ test_that("am_marks() with empty heads list falls back to current state", {
 })
 
 test_that("am_marks_at() with empty heads list falls back to current state", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -326,11 +326,11 @@ test_that("am_marks_at() with empty heads list falls back to current state", {
 })
 
 test_that("am_cursor() supports multiple heads", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello"))
   am_commit(doc, "initial")
 
-  doc2 <- am_fork(doc)
+  doc2 <- local_fork(doc)
   am_text_splice(am_get(doc, AM_ROOT, "text"), 5, 0, " world")
   am_commit(doc, "doc1 edit")
   am_text_splice(am_get(doc2, AM_ROOT, "text"), 5, 0, " there")
@@ -346,14 +346,14 @@ test_that("am_cursor() supports multiple heads", {
 })
 
 test_that("am_cursor_position() supports multiple heads", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello"))
   am_commit(doc, "initial")
 
   text_obj <- am_get(doc, AM_ROOT, "text")
   cursor <- am_cursor(text_obj, 3)
 
-  doc2 <- am_fork(doc)
+  doc2 <- local_fork(doc)
   am_text_splice(am_get(doc, AM_ROOT, "text"), 5, 0, " world")
   am_commit(doc, "doc1 edit")
   am_text_splice(am_get(doc2, AM_ROOT, "text"), 5, 0, " there")
@@ -368,13 +368,13 @@ test_that("am_cursor_position() supports multiple heads", {
 })
 
 test_that("am_marks() supports multiple heads", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
   am_mark(text_obj, 0, 5, "bold", TRUE)
   am_commit(doc, "mark bold")
 
-  doc2 <- am_fork(doc)
+  doc2 <- local_fork(doc)
   am_put(doc, AM_ROOT, "x", 1)
   am_commit(doc, "doc1 edit")
   am_put(doc2, AM_ROOT, "y", 2)
@@ -390,13 +390,13 @@ test_that("am_marks() supports multiple heads", {
 })
 
 test_that("am_marks_at() supports multiple heads", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
   am_mark(text_obj, 0, 5, "bold", TRUE)
   am_commit(doc, "mark bold")
 
-  doc2 <- am_fork(doc)
+  doc2 <- local_fork(doc)
   am_put(doc, AM_ROOT, "x", 1)
   am_commit(doc, "doc1 edit")
   am_put(doc2, AM_ROOT, "y", 2)
@@ -412,7 +412,7 @@ test_that("am_marks_at() supports multiple heads", {
 })
 
 test_that("cursors remain valid after text deletion", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -440,7 +440,7 @@ test_that("am_cursor_to_string() errors on non-cursor input", {
 })
 
 test_that("am_cursor_equal() errors on non-cursor inputs", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello"))
   text_obj <- am_get(doc, AM_ROOT, "text")
   cursor <- am_cursor(text_obj, 2)
@@ -461,7 +461,7 @@ test_that("am_cursor_from_string() errors on non-text object", {
 # Cursor Serialization Roundtrip After Edits -----------------------------------
 
 test_that("cursor serialized via bytes tracks position after text edits", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -477,7 +477,7 @@ test_that("cursor serialized via bytes tracks position after text edits", {
 })
 
 test_that("cursor serialized via string tracks position after text edits", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -495,7 +495,7 @@ test_that("cursor serialized via string tracks position after text edits", {
 # Cursor Equality with Serialized Cursors --------------------------------------
 
 test_that("am_cursor_equal() works with serialized+restored cursors", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -507,7 +507,7 @@ test_that("am_cursor_equal() works with serialized+restored cursors", {
 })
 
 test_that("am_cursor_equal() works with string-serialized cursors", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -521,7 +521,7 @@ test_that("am_cursor_equal() works with string-serialized cursors", {
 # NULL/freed cursor pointer paths ----------------------------------------------
 
 test_that("am_cursor_to_bytes() errors on NULL/freed cursor pointer", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -532,7 +532,7 @@ test_that("am_cursor_to_bytes() errors on NULL/freed cursor pointer", {
 })
 
 test_that("am_cursor_to_string() errors on NULL/freed cursor pointer", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -545,7 +545,7 @@ test_that("am_cursor_to_string() errors on NULL/freed cursor pointer", {
 # Print Methods ----------------------------------------------------------------
 
 test_that("print.am_cursor outputs expected text", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 

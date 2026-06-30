@@ -57,7 +57,7 @@ test_that("Invalid document pointers are caught", {
 })
 
 test_that("Invalid operations on documents", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Invalid actor ID types
   expect_snapshot(error = TRUE, {
@@ -75,7 +75,7 @@ test_that("Invalid operations on documents", {
 })
 
 test_that("Invalid object operations", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Try to get from invalid object pointer
   expect_snapshot(error = TRUE, {
@@ -89,7 +89,7 @@ test_that("Invalid object operations", {
 })
 
 test_that("Commit with invalid parameters", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Invalid message type
   expect_snapshot(error = TRUE, {
@@ -111,7 +111,7 @@ test_that("Commit with invalid parameters", {
 })
 
 test_that("Text operations with invalid inputs", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -131,7 +131,7 @@ test_that("Text operations with invalid inputs", {
 })
 
 test_that("Operations on invalid object types", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Create a text object
   am_put(doc, AM_ROOT, "text", am_text("content"))
@@ -145,7 +145,7 @@ test_that("Operations on invalid object types", {
 
 test_that("Large documents don't cause issues", {
   # This tests that we don't hit buffer size limits
-  doc <- am_create()
+  doc <- local_create()
 
   # Create a document with many keys
   for (i in 1:1000) {
@@ -154,7 +154,7 @@ test_that("Large documents don't cause issues", {
 
   # Should be able to save and load large documents
   bytes <- am_save(doc)
-  doc2 <- am_load(bytes)
+  doc2 <- local_load(bytes)
 
   # Verify some values
   expect_equal(am_get(doc2, AM_ROOT, "key1"), 1)
@@ -163,7 +163,7 @@ test_that("Large documents don't cause issues", {
 
 test_that("Nested errors propagate correctly", {
   # Test that errors deep in nested structures are caught
-  doc <- am_create()
+  doc <- local_create()
 
   # Create deeply nested structure
   am_put(
@@ -192,11 +192,11 @@ test_that("Nested errors propagate correctly", {
 })
 
 test_that("Fork and merge error handling", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put(doc1, AM_ROOT, "x", 1)
 
   # Fork should work
-  doc2 <- am_fork(doc1)
+  doc2 <- local_fork(doc1)
   expect_s3_class(doc2, "am_doc")
 
   # Make changes
@@ -233,7 +233,7 @@ test_that("Type constructor validation", {
 })
 
 test_that("Corrupted document state handling", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
 
   # Save valid document
@@ -252,7 +252,7 @@ test_that("Corrupted document state handling", {
 })
 
 test_that("Edge case: operations on empty document", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Getting non-existent key returns NULL
   expect_null(am_get(doc, AM_ROOT, "nonexistent"))
@@ -265,7 +265,7 @@ test_that("Edge case: operations on empty document", {
 
   # Save and load empty document
   bytes <- am_save(doc)
-  doc2 <- am_load(bytes)
+  doc2 <- local_load(bytes)
   expect_s3_class(doc2, "am_doc")
   expect_equal(am_length(doc2, AM_ROOT), 0)
 })
@@ -289,7 +289,7 @@ test_that("Multiple error conditions in sequence", {
   })
 
   # Should be able to perform valid operations after error
-  doc <- am_create()
+  doc <- local_create()
   expect_s3_class(doc, "am_doc")
 
   # Second error
@@ -315,7 +315,7 @@ test_that("Resource cleanup after errors", {
   }
 
   # Should still be able to create valid documents
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "after_errors", "works")
   expect_equal(am_get(doc, AM_ROOT, "after_errors"), "works")
 })
@@ -332,7 +332,7 @@ test_that("Invalidated sync state is detected", {
 })
 
 test_that("am_sync_decode validates message type", {
-  doc <- am_create()
+  doc <- local_create()
   sync_state <- am_sync_state()
 
   expect_snapshot(error = TRUE, {
@@ -353,7 +353,7 @@ test_that("am_sync_decode validates message type", {
 })
 
 test_that("am_sync validates doc1 parameter", {
-  doc <- am_create()
+  doc <- local_create()
 
   expect_snapshot(error = TRUE, {
     am_sync("not a doc", doc)
@@ -369,7 +369,7 @@ test_that("am_sync validates doc1 parameter", {
 })
 
 test_that("am_sync validates doc2 parameter", {
-  doc <- am_create()
+  doc <- local_create()
 
   expect_snapshot(error = TRUE, {
     am_sync(doc, "not a doc")
@@ -385,7 +385,7 @@ test_that("am_sync validates doc2 parameter", {
 })
 
 test_that("am_get_changes validates heads parameter", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "x", 1)
   am_commit(doc)
 
@@ -403,7 +403,7 @@ test_that("am_get_changes validates heads parameter", {
 })
 
 test_that("am_apply_changes validates changes parameter", {
-  doc <- am_create()
+  doc <- local_create()
 
   expect_snapshot(error = TRUE, {
     am_apply_changes(doc, "not a list")
@@ -425,7 +425,7 @@ test_that("am_apply_changes validates changes parameter", {
 # Convenience function validation errors --------------------------------------
 
 test_that("am_put_path validates with non-existent intermediate and no create", {
-  doc <- am_create()
+  doc <- local_create()
 
   expect_snapshot(error = TRUE, {
     am_put_path(doc, c("a", "b", "c"), "value", create_intermediate = FALSE)
@@ -433,7 +433,7 @@ test_that("am_put_path validates with non-existent intermediate and no create", 
 })
 
 test_that("am_put_path errors on non-object intermediate path component", {
-  doc <- am_create()
+  doc <- local_create()
   doc$scalar <- "just a string"
 
   expect_snapshot(error = TRUE, {
@@ -442,7 +442,7 @@ test_that("am_put_path errors on non-object intermediate path component", {
 })
 
 test_that("am_put_path errors when trying to create intermediate list element", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- am_list("a", "b")
 
   expect_snapshot(error = TRUE, {
@@ -451,7 +451,7 @@ test_that("am_put_path errors when trying to create intermediate list element", 
 })
 
 test_that("am_delete_path warns on non-existent intermediate path", {
-  doc <- am_create()
+  doc <- local_create()
   doc$user <- am_map(name = "Alice")
 
   expect_warning(
@@ -461,7 +461,7 @@ test_that("am_delete_path warns on non-existent intermediate path", {
 })
 
 test_that("am_delete_path warns on non-object intermediate path component", {
-  doc <- am_create()
+  doc <- local_create()
   doc$scalar <- 42
 
   expect_warning(
@@ -473,7 +473,7 @@ test_that("am_delete_path warns on non-object intermediate path component", {
 # Object operations validation errors -----------------------------------------
 
 test_that("am_put with invalid key types for maps", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Map keys must be single character strings
   expect_snapshot(error = TRUE, {
@@ -490,7 +490,7 @@ test_that("am_put with invalid key types for maps", {
 })
 
 test_that("am_put with invalid positions for lists", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- am_list(1, 2, 3)
   items <- am_get(doc, AM_ROOT, "items")
 
@@ -510,7 +510,7 @@ test_that("am_put with invalid positions for lists", {
 })
 
 test_that("am_put with invalid value types", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Non-scalar POSIXct in map
   expect_snapshot(error = TRUE, {
@@ -541,7 +541,7 @@ test_that("am_put with invalid value types", {
 })
 
 test_that("am_insert validates list-only operation", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Cannot insert into root (which is a map)
   expect_snapshot(error = TRUE, {
@@ -557,7 +557,7 @@ test_that("am_insert validates list-only operation", {
 })
 
 test_that("am_delete with invalid positions for lists", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- am_list(1, 2, 3)
   items <- am_get(doc, AM_ROOT, "items")
 
@@ -577,7 +577,7 @@ test_that("am_delete with invalid positions for lists", {
 })
 
 test_that("am_text_splice validation errors", {
-  doc <- am_create()
+  doc <- local_create()
   doc$text <- am_text("Hello")
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -612,7 +612,7 @@ test_that("am_text_splice validation errors", {
 })
 
 test_that("am_counter_increment validation errors", {
-  doc <- am_create()
+  doc <- local_create()
   doc$counter <- am_counter(10)
 
   # Delta must be numeric
@@ -643,7 +643,7 @@ test_that("am_counter_increment validation errors", {
 })
 
 test_that("am_counter_increment with list positions", {
-  doc <- am_create()
+  doc <- local_create()
   doc$counters <- am_list(am_counter(1), am_counter(2))
   counters <- am_get(doc, AM_ROOT, "counters")
 
@@ -666,7 +666,7 @@ test_that("am_counter_increment with list positions", {
 # Cursor validation errors ----------------------------------------------------
 
 test_that("am_cursor validation errors", {
-  doc <- am_create()
+  doc <- local_create()
   doc$text <- am_text("Hello")
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -687,7 +687,7 @@ test_that("am_cursor validation errors", {
 })
 
 test_that("am_cursor_position validation errors", {
-  doc <- am_create()
+  doc <- local_create()
   doc$text <- am_text("Hello")
   text_obj <- am_get(doc, AM_ROOT, "text")
   cursor <- am_cursor(text_obj, 0)
@@ -705,7 +705,7 @@ test_that("am_cursor_position validation errors", {
 # Mark validation errors ------------------------------------------------------
 
 test_that("am_mark validation errors", {
-  doc <- am_create()
+  doc <- local_create()
   doc$text <- am_text("Hello")
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -779,7 +779,7 @@ test_that("am_mark validation errors", {
 })
 
 test_that("am_marks_at validation errors", {
-  doc <- am_create()
+  doc <- local_create()
   doc$text <- am_text("Hello")
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -817,7 +817,7 @@ test_that("am_create with invalid actor_id types", {
 })
 
 test_that("am_fork with invalid heads parameter", {
-  doc <- am_create()
+  doc <- local_create()
   doc$x <- 1
   am_commit(doc)
 
@@ -841,7 +841,7 @@ test_that("am_fork with invalid heads parameter", {
 })
 
 test_that("am_get_change_by_hash validation errors", {
-  doc <- am_create()
+  doc <- local_create()
   doc$x <- 1
   am_commit(doc)
 

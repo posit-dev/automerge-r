@@ -3,7 +3,7 @@
 # Document Extraction Methods -------------------------------------------------
 
 test_that("[[ and $ extract from document root", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "name", "Alice")
   am_put(doc, AM_ROOT, "age", 30L)
   am_put(doc, AM_ROOT, "active", TRUE)
@@ -20,7 +20,7 @@ test_that("[[ and $ extract from document root", {
 })
 
 test_that("[[ and $ return NULL for missing keys", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "exists", "value")
 
   expect_null(doc[["missing"]])
@@ -28,7 +28,7 @@ test_that("[[ and $ return NULL for missing keys", {
 })
 
 test_that("[[ and $ extract nested objects", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "user", list(name = "Bob", age = 25L))
 
   user <- doc[["user"]]
@@ -45,7 +45,7 @@ test_that("[[ and $ extract nested objects", {
 # Document Replacement Methods ------------------------------------------------
 
 test_that("[[<- and $<- assign to document root", {
-  doc <- am_create()
+  doc <- local_create()
 
   # [[<- operator
   doc[["name"]] <- "Charlie"
@@ -57,7 +57,7 @@ test_that("[[<- and $<- assign to document root", {
 })
 
 test_that("[[<- and $<- update existing keys", {
-  doc <- am_create()
+  doc <- local_create()
   doc$value <- "original"
   expect_equal(doc$value, "original")
 
@@ -69,7 +69,7 @@ test_that("[[<- and $<- update existing keys", {
 })
 
 test_that("[[<- and $<- work with nested structures", {
-  doc <- am_create()
+  doc <- local_create()
   doc$config <- list(debug = TRUE, level = 3L)
 
   config <- doc$config
@@ -79,7 +79,7 @@ test_that("[[<- and $<- work with nested structures", {
 })
 
 test_that("[[<- and $<- work with all value types", {
-  doc <- am_create()
+  doc <- local_create()
 
   doc$null_val <- NULL
   doc$bool_val <- FALSE
@@ -99,7 +99,7 @@ test_that("[[<- and $<- work with all value types", {
 # Document Utility Methods ----------------------------------------------------
 
 test_that("length() returns number of root keys", {
-  doc <- am_create()
+  doc <- local_create()
   expect_equal(length(doc), 0L)
 
   doc$a <- 1
@@ -111,7 +111,7 @@ test_that("length() returns number of root keys", {
 })
 
 test_that("names() returns root keys", {
-  doc <- am_create()
+  doc <- local_create()
   expect_equal(names(doc), character(0))
 
   doc$name <- "Alice"
@@ -125,7 +125,7 @@ test_that("names() returns root keys", {
 })
 
 test_that("print() displays document info", {
-  doc <- am_create()
+  doc <- local_create()
   doc$name <- "Test"
   doc$value <- 123L
 
@@ -135,7 +135,7 @@ test_that("print() displays document info", {
 })
 
 test_that("as.list() converts document to R list", {
-  doc <- am_create()
+  doc <- local_create()
   doc$name <- "Alice"
   doc$age <- 30L
   doc$active <- TRUE
@@ -150,7 +150,7 @@ test_that("as.list() converts document to R list", {
 })
 
 test_that("as.list() recursively converts nested structures", {
-  doc <- am_create()
+  doc <- local_create()
   doc$user <- list(
     name = "Bob",
     profile = list(
@@ -168,7 +168,7 @@ test_that("as.list() recursively converts nested structures", {
 })
 
 test_that("str() displays document structure", {
-  doc <- am_create()
+  doc <- local_create()
   doc$name <- "Alice"
   doc$age <- 30L
   doc$active <- TRUE
@@ -177,14 +177,14 @@ test_that("str() displays document structure", {
 })
 
 test_that("str() displays nested structures", {
-  doc <- am_create()
+  doc <- local_create()
   doc$user <- list(name = "Bob", age = 25L)
 
   expect_snapshot(str(doc))
 })
 
 test_that("str() respects max.level parameter", {
-  doc <- am_create()
+  doc <- local_create()
   doc$level1 <- list(level2 = list(level3 = "deep"))
 
   expect_snapshot({
@@ -194,41 +194,41 @@ test_that("str() respects max.level parameter", {
 })
 
 test_that("str() shows truncation indicator at max.level", {
-  doc <- am_create()
+  doc <- local_create()
   doc$nested <- list(child = list(grandchild = 1L))
 
   expect_snapshot(str(doc, max.level = 0))
 })
 
 test_that("str() handles empty document", {
-  doc <- am_create()
+  doc <- local_create()
 
   expect_snapshot(str(doc))
 })
 
 test_that("str() handles lists with many items", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- as.list(1:10)
 
   expect_snapshot(str(doc))
 })
 
 test_that("str() truncates long strings", {
-  doc <- am_create()
+  doc <- local_create()
   doc$long <- paste(rep("x", 100), collapse = "")
 
   expect_snapshot(str(doc))
 })
 
 test_that("str() handles list with character items", {
-  doc <- am_create()
+  doc <- local_create()
   doc$tags <- am_list("alpha", "beta", "gamma")
 
   expect_snapshot(str(doc))
 })
 
 test_that("str() truncates long character items in lists", {
-  doc <- am_create()
+  doc <- local_create()
   long_string <- paste(rep("x", 50), collapse = "")
   doc$items <- am_list(long_string)
 
@@ -236,7 +236,7 @@ test_that("str() truncates long character items in lists", {
 })
 
 test_that("str() handles list with nested am_object items", {
-  doc <- am_create()
+  doc <- local_create()
   doc$users <- am_list(
     list(name = "Alice", age = 30L),
     list(name = "Bob", age = 25L)
@@ -246,14 +246,14 @@ test_that("str() handles list with nested am_object items", {
 })
 
 test_that("str() handles list with non-character, non-object items", {
-  doc <- am_create()
+  doc <- local_create()
   doc$numbers <- am_list(1L, 2L, 3L)
 
   expect_snapshot(str(doc))
 })
 
 test_that("str() respects max.level for nested objects in lists", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- am_list(
     list(nested = list(deep = "value"))
   )
@@ -265,21 +265,21 @@ test_that("str() respects max.level for nested objects in lists", {
 })
 
 test_that("str() shows ellipsis for am_list at max.level", {
-  doc <- am_create()
+  doc <- local_create()
   doc$data <- list(items = am_list("a", "b", "c"))
 
   expect_snapshot(str(doc, max.level = 1))
 })
 
 test_that("str() displays raw bytes with class name", {
-  doc <- am_create()
+  doc <- local_create()
   doc$data <- as.raw(c(0x01, 0x02, 0x03))
 
   expect_snapshot(str(doc))
 })
 
 test_that("str() handles NULL values", {
-  doc <- am_create()
+  doc <- local_create()
   doc$empty <- NULL
 
   expect_snapshot(str(doc))
@@ -288,7 +288,7 @@ test_that("str() handles NULL values", {
 # Object Extraction Methods ---------------------------------------------------
 
 test_that("[[ and $ extract from am_object (maps)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "user", list(name = "David", age = 40L))
   user <- am_get(doc, AM_ROOT, "user")
 
@@ -302,7 +302,7 @@ test_that("[[ and $ extract from am_object (maps)", {
 })
 
 test_that("[[ extracts from am_object (lists)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", am_list("a", "b", "c"))
   items <- am_get(doc, AM_ROOT, "items")
 
@@ -313,7 +313,7 @@ test_that("[[ extracts from am_object (lists)", {
 })
 
 test_that("[[ and $ return NULL for missing keys in am_object", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "obj", list(key = "value"))
   obj <- am_get(doc, AM_ROOT, "obj")
 
@@ -324,7 +324,7 @@ test_that("[[ and $ return NULL for missing keys in am_object", {
 # Object Replacement Methods --------------------------------------------------
 
 test_that("[[<- and $<- assign to am_object (maps)", {
-  doc <- am_create()
+  doc <- local_create()
   config <- am_put(doc, AM_ROOT, "config", am_map())
 
   # [[<- operator
@@ -337,7 +337,7 @@ test_that("[[<- and $<- assign to am_object (maps)", {
 })
 
 test_that("[[<- assigns to am_object (lists)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", am_list("a", "b", "c"))
   items <- am_get(doc, AM_ROOT, "items")
 
@@ -348,7 +348,7 @@ test_that("[[<- assigns to am_object (lists)", {
 })
 
 test_that("[[<- and $<- modify the underlying document", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "user", list(name = "Original"))
   user <- am_get(doc, AM_ROOT, "user")
 
@@ -365,7 +365,7 @@ test_that("[[<- and $<- modify the underlying document", {
 # Object Utility Methods ------------------------------------------------------
 
 test_that("length() works on am_object (maps)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "obj", list(a = 1, b = 2, c = 3))
   obj <- am_get(doc, AM_ROOT, "obj")
 
@@ -376,7 +376,7 @@ test_that("length() works on am_object (maps)", {
 })
 
 test_that("length() works on am_object (lists)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", am_list("x", "y", "z"))
   items <- am_get(doc, AM_ROOT, "items")
 
@@ -384,7 +384,7 @@ test_that("length() works on am_object (lists)", {
 })
 
 test_that("names() returns keys for am_object (maps)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "obj", list(alpha = 1, beta = 2, gamma = 3))
   obj <- am_get(doc, AM_ROOT, "obj")
 
@@ -395,7 +395,7 @@ test_that("names() returns keys for am_object (maps)", {
 })
 
 test_that("names() returns NULL or element IDs for am_object (lists)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", am_list("a", "b", "c"))
   items <- am_get(doc, AM_ROOT, "items")
 
@@ -406,7 +406,7 @@ test_that("names() returns NULL or element IDs for am_object (lists)", {
 })
 
 test_that("print() displays am_object info (map)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "user", list(name = "Test", age = 25L))
   user <- am_get(doc, AM_ROOT, "user")
 
@@ -414,7 +414,7 @@ test_that("print() displays am_object info (map)", {
 })
 
 test_that("print() displays am_object info (list)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", am_list("a", "b", "c"))
   items <- am_get(doc, AM_ROOT, "items")
 
@@ -422,7 +422,7 @@ test_that("print() displays am_object info (list)", {
 })
 
 test_that("print() displays am_object info (text)", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello, world!"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -430,7 +430,7 @@ test_that("print() displays am_object info (text)", {
 })
 
 test_that("print() handles very long text with truncation", {
-  doc <- am_create()
+  doc <- local_create()
   long_text <- paste(rep("a", 100), collapse = "")
   am_put(doc, AM_ROOT, "text", am_text(long_text))
   text_obj <- am_get(doc, AM_ROOT, "text")
@@ -439,7 +439,7 @@ test_that("print() handles very long text with truncation", {
 })
 
 test_that("print() displays map with many keys truncated", {
-  doc <- am_create()
+  doc <- local_create()
   map_data <- list(a = 1, b = 2, c = 3, d = 4, e = 5, f = 6, g = 7)
   am_put(doc, AM_ROOT, "map", map_data)
   map_obj <- am_get(doc, AM_ROOT, "map")
@@ -448,7 +448,7 @@ test_that("print() displays map with many keys truncated", {
 })
 
 test_that("as.list() converts am_object to R list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(
     doc,
     AM_ROOT,
@@ -473,7 +473,7 @@ test_that("as.list() converts am_object to R list", {
 # Integration Tests -----------------------------------------------------------
 
 test_that("S3 methods work seamlessly together", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Use $<- to build structure
   doc$project <- list(name = "MyApp")
@@ -493,7 +493,7 @@ test_that("S3 methods work seamlessly together", {
 })
 
 test_that("S3 methods work with deeply nested structures", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Build deep structure with operators
   doc$company <- list(
@@ -513,12 +513,12 @@ test_that("S3 methods work with deeply nested structures", {
 })
 
 test_that("S3 methods work after save/load", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$data <- list(x = 1, y = 2)
   doc1$status <- "active"
 
   bytes <- am_save(doc1)
-  doc2 <- am_load(bytes)
+  doc2 <- local_load(bytes)
 
   # S3 methods should work on loaded document
   expect_equal(doc2$status, "active")
@@ -531,7 +531,7 @@ test_that("S3 methods work after save/load", {
 })
 
 test_that("as.list() handles complex nested structures", {
-  doc <- am_create()
+  doc <- local_create()
   doc$data <- list(
     users = am_list(
       list(name = "Alice", age = 30L),
@@ -553,8 +553,8 @@ test_that("as.list() handles complex nested structures", {
 })
 
 test_that("S3 methods respect CRDT semantics", {
-  doc1 <- am_create()
-  doc2 <- am_fork(doc1)
+  doc1 <- local_create()
+  doc2 <- local_fork(doc1)
 
   # Make concurrent changes using S3 methods
   doc1$value <- "from_doc1"
@@ -571,7 +571,7 @@ test_that("S3 methods respect CRDT semantics", {
 # Edge Cases ------------------------------------------------------------------
 
 test_that("print() handles empty document", {
-  doc <- am_create()
+  doc <- local_create()
 
   expect_snapshot(print(doc), transform = function(x) {
     sub("Actor: [a-f0-9]+", "Actor: <ACTOR_ID>", x)
@@ -579,7 +579,7 @@ test_that("print() handles empty document", {
 })
 
 test_that("print() handles document with many keys", {
-  doc <- am_create()
+  doc <- local_create()
   for (i in 1:100) {
     doc[[paste0("key", i)]] <- i
   }
@@ -590,7 +590,7 @@ test_that("print() handles document with many keys", {
 })
 
 test_that("print() handles very long key names", {
-  doc <- am_create()
+  doc <- local_create()
   long_key <- paste(rep("key", 100), collapse = "_")
   doc[[long_key]] <- "value"
 
@@ -600,14 +600,14 @@ test_that("print() handles very long key names", {
 })
 
 test_that("as.list() handles empty document", {
-  doc <- am_create()
+  doc <- local_create()
   result <- as.list(doc)
   expect_type(result, "list")
   expect_length(result, 0)
 })
 
 test_that("as.list() handles empty am_object map", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "map", am_map())
   empty_map <- am_get(doc, AM_ROOT, "map")
 
@@ -617,7 +617,7 @@ test_that("as.list() handles empty am_object map", {
 })
 
 test_that("as.list() handles empty am_object list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", am_list())
   empty_list <- am_get(doc, AM_ROOT, "list")
 
@@ -627,7 +627,7 @@ test_that("as.list() handles empty am_object list", {
 })
 
 test_that("as.list() handles very deeply nested structures", {
-  doc <- am_create()
+  doc <- local_create()
   doc$level1 <- list(
     level2 = list(
       level3 = list(
@@ -643,7 +643,7 @@ test_that("as.list() handles very deeply nested structures", {
 })
 
 test_that("[[ handles out-of-bounds list index", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", am_list("a", "b"))
   items <- am_get(doc, AM_ROOT, "items")
 
@@ -653,13 +653,13 @@ test_that("[[ handles out-of-bounds list index", {
 })
 
 test_that("$ operator with non-character name", {
-  doc <- am_create()
+  doc <- local_create()
   doc$`123` <- "numeric_name"
   expect_equal(doc$`123`, "numeric_name")
 })
 
 test_that("$ operator with special characters in name", {
-  doc <- am_create()
+  doc <- local_create()
   doc$`my-key` <- "value1"
   doc$`my.key` <- "value2"
   doc$`my key` <- "value3"
@@ -670,7 +670,7 @@ test_that("$ operator with special characters in name", {
 })
 
 test_that("names() preserves key order or returns consistent order", {
-  doc <- am_create()
+  doc <- local_create()
   doc$a <- 1
   doc$b <- 2
   doc$c <- 3
@@ -682,7 +682,7 @@ test_that("names() preserves key order or returns consistent order", {
 })
 
 test_that("[[<- with NULL deletes key", {
-  doc <- am_create()
+  doc <- local_create()
   doc[["key"]] <- "value"
   expect_equal(doc[["key"]], "value")
 
@@ -691,7 +691,7 @@ test_that("[[<- with NULL deletes key", {
 })
 
 test_that("$<- with NULL deletes key", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
   expect_equal(doc$key, "value")
 
@@ -700,7 +700,7 @@ test_that("$<- with NULL deletes key", {
 })
 
 test_that("methods work with POSIXct timestamps", {
-  doc <- am_create()
+  doc <- local_create()
   timestamp <- Sys.time()
   doc$created <- timestamp
 
@@ -712,7 +712,7 @@ test_that("methods work with POSIXct timestamps", {
 })
 
 test_that("methods work with raw bytes", {
-  doc <- am_create()
+  doc <- local_create()
   raw_data <- as.raw(c(0, 127, 255))
   doc$bytes <- raw_data
 
@@ -723,7 +723,7 @@ test_that("methods work with raw bytes", {
 })
 
 test_that("print.am_counter displays counter value", {
-  doc <- am_create()
+  doc <- local_create()
   counter <- am_counter(10)
   doc$count <- counter
 
@@ -731,7 +731,7 @@ test_that("print.am_counter displays counter value", {
 })
 
 test_that("print.am_object displays generic object message", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "obj", AM_OBJ_TYPE_MAP)
   obj <- am_get(doc, AM_ROOT, "obj")
 
@@ -746,7 +746,7 @@ test_that("print.am_object displays generic object message", {
 })
 
 test_that("as.list.am_text returns text content as string", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -756,7 +756,7 @@ test_that("as.list.am_text returns text content as string", {
 })
 
 test_that("as.character.am_text converts text object to string", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "notes", am_text("Hello World"))
   text_obj <- am_get(doc, AM_ROOT, "notes")
 
@@ -767,7 +767,7 @@ test_that("as.character.am_text converts text object to string", {
 })
 
 test_that("as.character.am_text equivalent to am_text_content()", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("Test content"))
   text_obj <- am_get(doc, AM_ROOT, "content")
 
@@ -779,7 +779,7 @@ test_that("as.character.am_text equivalent to am_text_content()", {
 })
 
 test_that("as.character.am_text works with empty text", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "empty", am_text(""))
   text_obj <- am_get(doc, AM_ROOT, "empty")
 
@@ -790,7 +790,7 @@ test_that("as.character.am_text works with empty text", {
 })
 
 test_that("as.character.am_text works with multibyte characters", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "emoji", am_text("Hello 😀 World"))
   text_obj <- am_get(doc, AM_ROOT, "emoji")
 
@@ -802,7 +802,7 @@ test_that("as.character.am_text works with multibyte characters", {
 })
 
 test_that("as.character.am_text works after text modifications", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "doc", am_text("Original"))
   text_obj <- am_get(doc, AM_ROOT, "doc")
 
@@ -815,7 +815,7 @@ test_that("as.character.am_text works after text modifications", {
 })
 
 test_that("print.am_cursor displays cursor info", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello World"))
   text_obj <- am_get(doc, AM_ROOT, "text")
   cursor <- am_cursor(text_obj, 5)
@@ -830,7 +830,7 @@ test_that("print.am_syncstate displays sync state info", {
 })
 
 test_that("print.am_change displays change info", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "x", 1)
   am_commit(doc, "Add x")
 

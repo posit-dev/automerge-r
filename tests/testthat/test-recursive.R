@@ -1,7 +1,7 @@
 # Recursive Conversion and Advanced Types (Phase 3)
 
 test_that("Recursive conversion works for nested maps", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Single-call nested structure
   am_put(
@@ -24,7 +24,7 @@ test_that("Recursive conversion works for nested maps", {
 })
 
 test_that("Recursive conversion handles deep nesting", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Multi-level nested structure (3 levels deep)
   am_put(
@@ -57,7 +57,7 @@ test_that("Recursive conversion handles deep nesting", {
 })
 
 test_that("Recursive conversion handles mixed maps and lists", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Map containing lists
   am_put(
@@ -84,7 +84,7 @@ test_that("Recursive conversion handles mixed maps and lists", {
 })
 
 test_that("Explicit type constructors work", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Explicit list type (empty)
   am_put(doc, AM_ROOT, "items", am_list())
@@ -112,7 +112,7 @@ test_that("Explicit type constructors work", {
 })
 
 test_that("POSIXct timestamps work", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Store timestamp
   now <- Sys.time()
@@ -125,7 +125,7 @@ test_that("POSIXct timestamps work", {
 })
 
 test_that("am_counter type works", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Store counter
   am_put(doc, AM_ROOT, "score", am_counter(0))
@@ -142,7 +142,7 @@ test_that("am_counter type works", {
 })
 
 test_that("am_text type creates text objects", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Empty text
   am_put(doc, AM_ROOT, "doc1", am_text())
@@ -160,7 +160,7 @@ test_that("am_text type creates text objects", {
 })
 
 test_that("text objects vs strings behave differently", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Regular string (last-write-wins)
   am_put(doc, AM_ROOT, "title", "String Value")
@@ -176,7 +176,7 @@ test_that("text objects vs strings behave differently", {
 })
 
 test_that("Recursive conversion handles NULL values", {
-  doc <- am_create()
+  doc <- local_create()
 
   am_put(
     doc,
@@ -202,7 +202,7 @@ test_that("Recursive conversion handles NULL values", {
 })
 
 test_that("Recursive conversion handles all primitive types", {
-  doc <- am_create()
+  doc <- local_create()
 
   raw_data <- as.raw(c(0x01, 0x02, 0x03))
 
@@ -235,7 +235,7 @@ test_that("Recursive conversion handles all primitive types", {
 })
 
 test_that("Recursive conversion integrates with commit/save/load", {
-  doc1 <- am_create()
+  doc1 <- local_create()
 
   # Create complex nested structure
   am_put(
@@ -260,7 +260,7 @@ test_that("Recursive conversion integrates with commit/save/load", {
 
   # Save and load
   bytes <- am_save(doc1)
-  doc2 <- am_load(bytes)
+  doc2 <- local_load(bytes)
 
   # Verify structure is preserved
   project <- am_get(doc2, AM_ROOT, "project")
@@ -279,7 +279,7 @@ test_that("Recursive conversion integrates with commit/save/load", {
 })
 
 test_that("Very deep nesting (5+ levels) works", {
-  doc <- am_create()
+  doc <- local_create()
 
   # 6 levels deep
   am_put(
@@ -311,7 +311,7 @@ test_that("Very deep nesting (5+ levels) works", {
 })
 
 test_that("Empty nested structures work", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Empty map in map
   am_put(doc, AM_ROOT, "outer", list(inner = list()))
@@ -327,7 +327,7 @@ test_that("Empty nested structures work", {
 })
 
 test_that("Extremely deep nesting (150 levels) works without stack overflow", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Build a deeply nested structure programmatically (150 levels)
   # This exceeds the old MAX_RECURSION_DEPTH=100 limit

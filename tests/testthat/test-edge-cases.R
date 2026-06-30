@@ -3,7 +3,7 @@
 # Test various object type operations that might hit uncovered paths
 
 test_that("operations on empty objects of various types", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Empty map
   am_put(doc, AM_ROOT, "map", AM_OBJ_TYPE_MAP)
@@ -23,7 +23,7 @@ test_that("operations on empty objects of various types", {
 })
 
 test_that("operations on objects with many elements", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Large map
   am_put(doc, AM_ROOT, "map", AM_OBJ_TYPE_MAP)
@@ -44,7 +44,7 @@ test_that("operations on objects with many elements", {
 })
 
 test_that("text operations with various Unicode characters", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Emoji
   am_put(doc, AM_ROOT, "emoji", am_text("Hello 😀🎉"))
@@ -63,7 +63,7 @@ test_that("text operations with various Unicode characters", {
 })
 
 test_that("counter operations edge cases", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Counter with zero
   counter0 <- am_counter(0)
@@ -82,7 +82,7 @@ test_that("counter operations edge cases", {
 })
 
 test_that("nested objects of different types", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Map containing list containing map
   am_put(doc, AM_ROOT, "map1", AM_OBJ_TYPE_MAP)
@@ -100,7 +100,7 @@ test_that("nested objects of different types", {
 })
 
 test_that("delete operations on various object types", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Delete from map
   am_put(doc, AM_ROOT, "k1", "v1")
@@ -117,7 +117,7 @@ test_that("delete operations on various object types", {
 })
 
 test_that("insert at various positions in list", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "list", AM_OBJ_TYPE_LIST)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -137,7 +137,7 @@ test_that("insert at various positions in list", {
 })
 
 test_that("text splice at various positions", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello World"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -156,7 +156,7 @@ test_that("text splice at various positions", {
 })
 
 test_that("operations with special key names", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Empty string key
   am_put(doc, AM_ROOT, "", "empty_key")
@@ -175,7 +175,7 @@ test_that("operations with special key names", {
 })
 
 test_that("timestamp edge cases", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Very old timestamp
   old_time <- as.POSIXct("1970-01-01 00:00:01", tz = "UTC")
@@ -191,7 +191,7 @@ test_that("timestamp edge cases", {
 })
 
 test_that("raw bytes edge cases", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Empty raw vector
   am_put(doc, AM_ROOT, "empty", raw(0))
@@ -209,7 +209,7 @@ test_that("raw bytes edge cases", {
 })
 
 test_that("commit with various parameters", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Commit with no changes
   result1 <- am_commit(doc)
@@ -234,23 +234,23 @@ test_that("commit with various parameters", {
 
 test_that("fork and merge with various scenarios", {
   # Fork from empty document
-  doc1 <- am_create()
-  doc2 <- am_fork(doc1)
+  doc1 <- local_create()
+  doc2 <- local_fork(doc1)
   expect_s3_class(doc2, "am_doc")
 
   # Fork and immediately merge back
-  doc3 <- am_create()
+  doc3 <- local_create()
   am_put(doc3, AM_ROOT, "x", 1)
-  doc4 <- am_fork(doc3)
+  doc4 <- local_fork(doc3)
   am_merge(doc3, doc4)
   expect_equal(am_get(doc3, AM_ROOT, "x"), 1)
 
   # Multiple forks
-  doc5 <- am_create()
+  doc5 <- local_create()
   am_put(doc5, AM_ROOT, "base", "value")
-  doc6 <- am_fork(doc5)
-  doc7 <- am_fork(doc5)
-  doc8 <- am_fork(doc5)
+  doc6 <- local_fork(doc5)
+  doc7 <- local_fork(doc5)
+  doc8 <- local_fork(doc5)
 
   am_put(doc6, AM_ROOT, "f1", 1)
   am_put(doc7, AM_ROOT, "f2", 2)
@@ -267,13 +267,13 @@ test_that("fork and merge with various scenarios", {
 
 test_that("save and load with various document states", {
   # Empty document
-  doc1 <- am_create()
+  doc1 <- local_create()
   bytes1 <- am_save(doc1)
-  doc1_loaded <- am_load(bytes1)
+  doc1_loaded <- local_load(bytes1)
   expect_equal(am_length(doc1_loaded, AM_ROOT), 0)
 
   # Document with nested structures
-  doc2 <- am_create()
+  doc2 <- local_create()
   am_put(doc2, AM_ROOT, "data", AM_OBJ_TYPE_MAP)
   map <- am_get(doc2, AM_ROOT, "data")
   am_put(doc2, map, "items", AM_OBJ_TYPE_LIST)
@@ -281,7 +281,7 @@ test_that("save and load with various document states", {
   am_insert(doc2, list, 1, "item1")
 
   bytes2 <- am_save(doc2)
-  doc2_loaded <- am_load(bytes2)
+  doc2_loaded <- local_load(bytes2)
 
   map_loaded <- am_get(doc2_loaded, AM_ROOT, "data")
   list_loaded <- am_get(doc2_loaded, map_loaded, "items")
@@ -289,7 +289,7 @@ test_that("save and load with various document states", {
 })
 
 test_that("keys method returns consistent results", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Keys from empty map
   expect_equal(am_keys(doc, AM_ROOT), character(0))
@@ -308,7 +308,7 @@ test_that("keys method returns consistent results", {
 })
 
 test_that("length method on various object types", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Length of root (map)
   expect_equal(am_length(doc, AM_ROOT), 0)
@@ -332,7 +332,7 @@ test_that("length method on various object types", {
 
 test_that("actor operations", {
   # Get actor from new document
-  doc1 <- am_create()
+  doc1 <- local_create()
   actor1 <- am_get_actor(doc1)
   expect_type(actor1, "raw")
   expect_true(length(actor1) > 0)
@@ -344,7 +344,7 @@ test_that("actor operations", {
   expect_equal(actor2, new_actor)
 
   # Create with specific actor
-  doc2 <- am_create(actor_id = as.raw(100:115))
+  doc2 <- local_create(actor_id = as.raw(100:115))
   actor3 <- am_get_actor(doc2)
   expect_equal(actor3, as.raw(100:115))
 })
@@ -357,8 +357,8 @@ strip_line_numbers <- function(x) {
 }
 
 test_that("sync state operations with invalid pointers", {
-  doc1 <- am_create()
-  doc2 <- am_create()
+  doc1 <- local_create()
+  doc2 <- local_create()
   sync_state <- am_sync_state()
 
   # Generate a valid message
@@ -385,7 +385,7 @@ test_that("sync state operations with invalid pointers", {
 })
 
 test_that("sync decode with zero-length message", {
-  doc <- am_create()
+  doc <- local_create()
   sync_state <- am_sync_state()
 
   # Zero-length raw vector should trigger an error
@@ -395,7 +395,7 @@ test_that("sync decode with zero-length message", {
 })
 
 test_that("sync decode with malformed message", {
-  doc <- am_create()
+  doc <- local_create()
   sync_state <- am_sync_state()
 
   # Random bytes that aren't a valid sync message
@@ -413,12 +413,12 @@ test_that("sync decode with malformed message", {
 })
 
 test_that("am_fork with invalid heads list elements", {
-  doc <- am_create()
+  doc <- local_create()
   doc$x <- 1
   am_commit(doc)
 
   # Empty list of heads (edge case - should work)
-  doc2 <- am_fork(doc, heads = list())
+  doc2 <- local_fork(doc, heads = list())
   expect_s3_class(doc2, "am_doc")
 
   # List with non-raw elements
@@ -437,7 +437,7 @@ test_that("am_fork with invalid heads list elements", {
 })
 
 test_that("am_get_changes with empty list", {
-  doc <- am_create()
+  doc <- local_create()
   doc$x <- 1
   am_commit(doc)
 
@@ -447,7 +447,7 @@ test_that("am_get_changes with empty list", {
 })
 
 test_that("am_apply_changes with empty and invalid lists", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Empty list of changes
   result <- am_apply_changes(doc, list())
@@ -464,7 +464,7 @@ test_that("am_apply_changes with empty and invalid lists", {
 })
 
 test_that("am_apply_changes rejects raw vectors", {
-  doc <- am_create()
+  doc <- local_create()
 
   expect_snapshot(error = TRUE, transform = strip_line_numbers, {
     am_apply_changes(doc, list(raw(10)))
@@ -472,7 +472,7 @@ test_that("am_apply_changes rejects raw vectors", {
 })
 
 test_that("am_get_change_by_hash with wrong size hash", {
-  doc <- am_create()
+  doc <- local_create()
   doc$x <- 1
   am_commit(doc)
 
@@ -488,7 +488,7 @@ test_that("am_get_change_by_hash with wrong size hash", {
 })
 
 test_that("operations on text objects that aren't text", {
-  doc <- am_create()
+  doc <- local_create()
   doc$list <- am_list(1, 2, 3)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -500,7 +500,7 @@ test_that("operations on text objects that aren't text", {
 })
 
 test_that("cursor operations on non-text objects", {
-  doc <- am_create()
+  doc <- local_create()
   doc$map <- AM_OBJ_TYPE_MAP
   map_obj <- am_get(doc, AM_ROOT, "map")
 
@@ -511,7 +511,7 @@ test_that("cursor operations on non-text objects", {
 })
 
 test_that("marks on non-text objects", {
-  doc <- am_create()
+  doc <- local_create()
   doc$list <- am_list(1, 2, 3)
   list_obj <- am_get(doc, AM_ROOT, "list")
 
@@ -526,7 +526,7 @@ test_that("marks on non-text objects", {
 })
 
 test_that("am_put with very large list position", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- am_list(1, 2, 3)
   items <- am_get(doc, AM_ROOT, "items")
 
@@ -537,7 +537,7 @@ test_that("am_put with very large list position", {
 })
 
 test_that("am_delete with out-of-bounds list position", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- am_list("a", "b", "c")
   items <- am_get(doc, AM_ROOT, "items")
 
@@ -548,7 +548,7 @@ test_that("am_delete with out-of-bounds list position", {
 })
 
 test_that("text operations at boundary positions", {
-  doc <- am_create()
+  doc <- local_create()
   doc$text <- am_text("Hello")
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -562,7 +562,7 @@ test_that("text operations at boundary positions", {
 })
 
 test_that("cursor at boundary and beyond", {
-  doc <- am_create()
+  doc <- local_create()
   doc$text <- am_text("Test")
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -586,7 +586,7 @@ test_that("cursor at boundary and beyond", {
 })
 
 test_that("marks at boundary and beyond", {
-  doc <- am_create()
+  doc <- local_create()
   doc$text <- am_text("Hello")
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -606,7 +606,7 @@ test_that("marks at boundary and beyond", {
 })
 
 test_that("counter increment on non-existent keys", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Incrementing non-existent counter - should error
   expect_snapshot(error = TRUE, transform = strip_line_numbers, {
@@ -615,7 +615,7 @@ test_that("counter increment on non-existent keys", {
 })
 
 test_that("counter increment with fractional delta", {
-  doc <- am_create()
+  doc <- local_create()
   doc$counter <- am_counter(0)
 
   # Counter deltas are integers - fractional values are truncated
@@ -636,7 +636,7 @@ test_that("counter increment with fractional delta", {
 })
 
 test_that("counter in empty list", {
-  doc <- am_create()
+  doc <- local_create()
   doc$counters <- AM_OBJ_TYPE_LIST
   counters <- am_get(doc, AM_ROOT, "counters")
 
@@ -647,13 +647,13 @@ test_that("counter in empty list", {
 })
 
 test_that("operations on forked documents with specific heads", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$x <- 1
   am_commit(doc1)
 
   # Fork at specific heads
   heads <- am_get_heads(doc1)
-  doc2 <- am_fork(doc1, heads = heads)
+  doc2 <- local_fork(doc1, heads = heads)
   expect_s3_class(doc2, "am_doc")
 
   # Verify forked doc has the data
@@ -671,11 +671,11 @@ test_that("operations on forked documents with specific heads", {
 test_that("create with various actor ID types", {
   # Raw actor ID (16 bytes)
   actor_raw <- as.raw(1:16)
-  doc1 <- am_create(actor_id = actor_raw)
+  doc1 <- local_create(actor_id = actor_raw)
   expect_equal(am_get_actor(doc1), actor_raw)
 
   # NULL actor ID (random)
-  doc2 <- am_create(actor_id = NULL)
+  doc2 <- local_create(actor_id = NULL)
   actor2 <- am_get_actor(doc2)
   expect_type(actor2, "raw")
   expect_true(length(actor2) > 0)
@@ -685,7 +685,7 @@ test_that("create with various actor ID types", {
   hex_str <- paste0(as.character(actor_raw), collapse = "")
   # Actually, need proper hex format like "01020304..."
   hex_valid <- paste(sprintf("%02x", as.integer(actor_raw)), collapse = "")
-  doc3 <- am_create(actor_id = hex_valid)
+  doc3 <- local_create(actor_id = hex_valid)
   actor3 <- am_get_actor(doc3)
   expect_type(actor3, "raw")
 
@@ -696,8 +696,8 @@ test_that("create with various actor ID types", {
 })
 
 test_that("sync between empty documents", {
-  doc1 <- am_create()
-  doc2 <- am_create()
+  doc1 <- local_create()
+  doc2 <- local_create()
 
   # Sync two empty documents
   am_sync(doc1, doc2)
@@ -712,9 +712,9 @@ test_that("sync state lifecycle", {
   expect_s3_class(state1, "am_syncstate")
 
   # Use it multiple times
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$x <- 1
-  doc2 <- am_create()
+  doc2 <- local_create()
 
   msg1 <- am_sync_encode(doc1, state1)
   if (!is.null(msg1)) {
@@ -730,7 +730,7 @@ test_that("sync state lifecycle", {
 })
 
 test_that("sync with malformed state pointer", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Pass wrong type as sync state
   expect_snapshot(error = TRUE, {
@@ -743,7 +743,7 @@ test_that("sync with malformed state pointer", {
 })
 
 test_that("deeply nested structures", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Create 10 levels of nesting
   doc$level1 <- AM_OBJ_TYPE_MAP
@@ -767,7 +767,7 @@ test_that("deeply nested structures", {
 })
 
 test_that("wide structures with many siblings", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Create a map with 1000 keys
   doc$wide <- AM_OBJ_TYPE_MAP
@@ -788,7 +788,7 @@ test_that("wide structures with many siblings", {
 })
 
 test_that("mixed type structures", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Create a structure with all types
   doc$all_types <- am_map(
@@ -817,7 +817,7 @@ test_that("mixed type structures", {
 })
 
 test_that("multiple rapid commits", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Make 100 rapid commits
   for (i in 1:100) {
@@ -831,7 +831,7 @@ test_that("multiple rapid commits", {
 })
 
 test_that("commit with very long message", {
-  doc <- am_create()
+  doc <- local_create()
   doc$x <- 1
 
   # Very long commit message
@@ -841,7 +841,7 @@ test_that("commit with very long message", {
 })
 
 test_that("NA values of different types", {
-  doc <- am_create()
+  doc <- local_create()
 
   # NA integer
   doc$na_int <- NA_integer_
@@ -858,7 +858,7 @@ test_that("NA values of different types", {
 })
 
 test_that("Inf and -Inf values", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Positive infinity
   doc$pos_inf <- Inf
@@ -872,7 +872,7 @@ test_that("Inf and -Inf values", {
 })
 
 test_that("very large and very small numbers", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Very large number
   doc$large <- 1.7976931348623157e+308
@@ -888,7 +888,7 @@ test_that("very large and very small numbers", {
 })
 
 test_that("special string values", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Empty string
   doc$empty <- ""
@@ -908,7 +908,7 @@ test_that("special string values", {
 # Additional targeted tests for uncovered error paths --------------------------
 
 test_that("malformed change hashes in fork heads", {
-  doc <- am_create()
+  doc <- local_create()
   doc$x <- 1
   am_commit(doc)
 
@@ -924,12 +924,12 @@ test_that("malformed change hashes in fork heads", {
 })
 
 test_that("invalid change data structures", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$x <- 1
   am_commit(doc1)
 
   # Get valid changes
-  doc2 <- am_create()
+  doc2 <- local_create()
   changes <- am_get_changes(doc1, list())
 
   # Apply valid changes (baseline)
@@ -946,9 +946,9 @@ test_that("invalid change data structures", {
 })
 
 test_that("sync with corrupted message state", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$data <- "test"
-  doc2 <- am_create()
+  doc2 <- local_create()
   sync_state <- am_sync_state()
 
   # Generate valid message
@@ -966,7 +966,7 @@ test_that("sync with corrupted message state", {
 })
 
 test_that("operations with invalid change hashes", {
-  doc <- am_create()
+  doc <- local_create()
   doc$x <- 1
   am_commit(doc)
 
@@ -981,7 +981,7 @@ test_that("operations with invalid change hashes", {
 })
 
 test_that("memory allocation stress test", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Create many nested objects to stress memory allocation paths
   for (i in 1:50) {
@@ -998,13 +998,13 @@ test_that("memory allocation stress test", {
 
   # Save and load to exercise serialization paths
   bytes <- am_save(doc)
-  doc_loaded <- am_load(bytes)
+  doc_loaded <- local_load(bytes)
   map25_loaded <- am_get(doc_loaded, AM_ROOT, "map25")
   expect_equal(am_get(doc_loaded, map25_loaded, "key10"), "value25_10")
 })
 
 test_that("text operations with empty text objects", {
-  doc <- am_create()
+  doc <- local_create()
   doc$text <- am_text("")
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -1028,7 +1028,7 @@ test_that("text operations with empty text objects", {
 })
 
 test_that("counter operations on various object types", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Counter in map
   doc$counter_map <- AM_OBJ_TYPE_MAP
@@ -1049,7 +1049,7 @@ test_that("counter operations on various object types", {
 })
 
 test_that("boundary conditions for marks", {
-  doc <- am_create()
+  doc <- local_create()
   doc$text <- am_text("Hello World")
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -1070,11 +1070,11 @@ test_that("boundary conditions for marks", {
 })
 
 test_that("operations after merge conflicts", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   doc1$x <- 1
   am_commit(doc1)
 
-  doc2 <- am_fork(doc1)
+  doc2 <- local_fork(doc1)
 
   # Create conflict - both modify same key
   doc1$x <- "version1"
@@ -1092,12 +1092,12 @@ test_that("operations after merge conflicts", {
 
   # Can still save and load
   bytes <- am_save(doc1)
-  doc_loaded <- am_load(bytes)
+  doc_loaded <- local_load(bytes)
   expect_equal(am_get(doc_loaded, AM_ROOT, "y"), "new_value")
 })
 
 test_that("large text operations", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Create text with 10000 characters
   large_text <- paste(rep("a", 10000), collapse = "")

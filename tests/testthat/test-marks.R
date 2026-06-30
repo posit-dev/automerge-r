@@ -1,5 +1,5 @@
 test_that("am_mark creates marks on text ranges", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -16,7 +16,7 @@ test_that("am_mark creates marks on text ranges", {
 })
 
 test_that("multiple marks can exist on same text", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -35,7 +35,7 @@ test_that("multiple marks can exist on same text", {
 })
 
 test_that("mark expand mode 'none' works correctly", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -60,7 +60,7 @@ test_that("mark expand mode 'none' works correctly", {
 })
 
 test_that("mark expand mode 'before' can be set", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -73,7 +73,7 @@ test_that("mark expand mode 'before' can be set", {
 })
 
 test_that("mark expand mode 'after' can be set", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -86,7 +86,7 @@ test_that("mark expand mode 'after' can be set", {
 })
 
 test_that("mark expand mode 'both' can be set", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -99,7 +99,7 @@ test_that("mark expand mode 'both' can be set", {
 })
 
 test_that("mark values support various types", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -130,7 +130,7 @@ test_that("mark values support various types", {
 })
 
 test_that("am_marks_at returns marks at specific position", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -167,7 +167,7 @@ test_that("am_marks_at returns marks at specific position", {
 })
 
 test_that("marks work with UTF-32 character indexing", {
-  doc <- am_create()
+  doc <- local_create()
   # Text with emoji (single character in UTF-32)
   am_put(doc, AM_ROOT, "text", am_text("Hello😀World"))
   text_obj <- am_get(doc, AM_ROOT, "text")
@@ -182,7 +182,7 @@ test_that("marks work with UTF-32 character indexing", {
 })
 
 test_that("mark validation rejects invalid inputs", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -216,7 +216,7 @@ test_that("mark validation rejects invalid inputs", {
 })
 
 test_that("marks with counter and timestamp values", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -240,7 +240,7 @@ test_that("marks with counter and timestamp values", {
 })
 
 test_that("marks return empty list when no marks exist", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -252,7 +252,7 @@ test_that("marks return empty list when no marks exist", {
 })
 
 test_that("marks work across document commits", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -275,7 +275,7 @@ test_that("marks work across document commits", {
 })
 
 test_that("marks support raw bytes values", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -292,7 +292,7 @@ test_that("marks support raw bytes values", {
 })
 
 test_that("mark values reject non-scalar POSIXct", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -305,7 +305,7 @@ test_that("mark values reject non-scalar POSIXct", {
 })
 
 test_that("mark values reject non-scalar counters", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -318,7 +318,7 @@ test_that("mark values reject non-scalar counters", {
 })
 
 test_that("mark values reject unsupported types", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -336,7 +336,7 @@ test_that("mark values reject unsupported types", {
 })
 
 test_that("mark expand mode 'after' expands correctly", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -352,7 +352,7 @@ test_that("mark expand mode 'after' expands correctly", {
 })
 
 test_that("mark expand mode 'before' expands correctly", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -369,7 +369,7 @@ test_that("mark expand mode 'before' expands correctly", {
 })
 
 test_that("mark expand mode 'both' expands in both directions", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -390,7 +390,7 @@ test_that("mark expand mode 'both' expands in both directions", {
 })
 
 test_that("am_uint64 mark values round-trip correctly", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -405,7 +405,7 @@ test_that("am_uint64 mark values round-trip correctly", {
 # am_uint64 Snapshot Tests -----------------------------------------------------
 
 test_that("am_mark with invalid am_uint64 errors", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -423,7 +423,7 @@ test_that("am_mark with invalid am_uint64 errors", {
 })
 
 test_that("am_marks warns for uint64 exceeding 2^53", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -435,7 +435,7 @@ test_that("am_marks warns for uint64 exceeding 2^53", {
 })
 
 test_that("am_marks_at warns for uint64 exceeding 2^53", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello world"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -451,7 +451,7 @@ test_that("am_marks_at warns for uint64 exceeding 2^53", {
 # am_mark_clear tests
 
 test_that("am_mark_clear() removes a mark", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello World"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -463,7 +463,7 @@ test_that("am_mark_clear() removes a mark", {
 })
 
 test_that("am_mark_clear() only clears specified mark", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello World"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -479,7 +479,7 @@ test_that("am_mark_clear() only clears specified mark", {
 })
 
 test_that("am_mark() returns text_obj invisibly", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -489,7 +489,7 @@ test_that("am_mark() returns text_obj invisibly", {
 })
 
 test_that("am_mark_clear() returns text_obj invisibly", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -501,7 +501,7 @@ test_that("am_mark_clear() returns text_obj invisibly", {
 })
 
 test_that("am_mark_clear() errors on invalid range", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -509,7 +509,7 @@ test_that("am_mark_clear() errors on invalid range", {
 })
 
 test_that("am_mark_clear() partial range", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello World"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -522,7 +522,7 @@ test_that("am_mark_clear() partial range", {
 })
 
 test_that("am_mark_clear() on non-existent mark is no-op", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello World"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -536,7 +536,7 @@ test_that("am_mark_clear() on non-existent mark is no-op", {
 })
 
 test_that("am_mark_clear() persists after commit and save/load", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put(doc1, AM_ROOT, "text", am_text("Hello World"))
   text_obj <- am_get(doc1, AM_ROOT, "text")
 
@@ -548,7 +548,7 @@ test_that("am_mark_clear() persists after commit and save/load", {
   am_commit(doc1, "Clear bold")
 
   bytes <- am_save(doc1)
-  doc2 <- am_load(bytes)
+  doc2 <- local_load(bytes)
   text_obj2 <- am_get(doc2, AM_ROOT, "text")
 
   marks <- am_marks(text_obj2)
@@ -557,7 +557,7 @@ test_that("am_mark_clear() persists after commit and save/load", {
 })
 
 test_that("am_mark_clear() with expand mode", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello World"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -569,7 +569,7 @@ test_that("am_mark_clear() with expand mode", {
 })
 
 test_that("am_mark_clear() survives sync", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put(doc1, AM_ROOT, "text", am_text("Hello World"))
   text_obj1 <- am_get(doc1, AM_ROOT, "text")
 
@@ -577,7 +577,7 @@ test_that("am_mark_clear() survives sync", {
   am_mark(text_obj1, 0, 11, "italic", TRUE)
   am_commit(doc1, "Add marks")
 
-  doc2 <- am_fork(doc1)
+  doc2 <- local_fork(doc1)
   text_obj2 <- am_get(doc2, AM_ROOT, "text")
 
   # Clear bold in doc2
@@ -592,7 +592,7 @@ test_that("am_mark_clear() survives sync", {
 })
 
 test_that("am_mark_clear() clears overlapping marks correctly", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text("Hello World"))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -608,7 +608,7 @@ test_that("am_mark_clear() clears overlapping marks correctly", {
 })
 
 test_that("am_mark_clear() validates range on empty text", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "text", am_text(""))
   text_obj <- am_get(doc, AM_ROOT, "text")
 
@@ -621,49 +621,49 @@ test_that("am_mark_clear() validates range on empty text", {
 # am_mark input validation
 
 test_that("am_mark() errors on non-numeric start", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark(text_obj, "a", 5, "bold", TRUE), "start must be numeric")
 })
 
 test_that("am_mark() errors on negative start", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark(text_obj, -1L, 5, "bold", TRUE), "non-negative")
 })
 
 test_that("am_mark() errors on non-numeric end", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark(text_obj, 0, "a", "bold", TRUE), "end must be numeric")
 })
 
 test_that("am_mark() errors on negative end", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark(text_obj, 0, -1L, "bold", TRUE), "non-negative")
 })
 
 test_that("am_mark() errors on end <= start", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark(text_obj, 3, 2, "bold", TRUE), "end must be greater than start")
 })
 
 test_that("am_mark() errors on non-string name", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark(text_obj, 0, 5, 123, TRUE), "single character string")
 })
 
 test_that("am_mark() errors on invalid expand", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark(text_obj, 0, 5, "bold", TRUE, expand = "invalid"), "Invalid expand")
@@ -672,7 +672,7 @@ test_that("am_mark() errors on invalid expand", {
 # am_mark with various value types
 
 test_that("am_mark() with integer value", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   am_mark(text_obj, 0, 5, "size", 16L)
@@ -682,7 +682,7 @@ test_that("am_mark() with integer value", {
 })
 
 test_that("am_mark() with double value", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   am_mark(text_obj, 0, 5, "opacity", 0.5)
@@ -692,7 +692,7 @@ test_that("am_mark() with double value", {
 })
 
 test_that("am_mark() with string value", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   am_mark(text_obj, 0, 5, "color", "red")
@@ -702,7 +702,7 @@ test_that("am_mark() with string value", {
 })
 
 test_that("am_mark() with NULL value removes the mark", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   am_mark(text_obj, 0, 5, "bold", TRUE)
@@ -714,7 +714,7 @@ test_that("am_mark() with NULL value removes the mark", {
 })
 
 test_that("am_mark() with raw bytes value", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   am_mark(text_obj, 0, 5, "data", as.raw(c(0x01, 0x02)))
@@ -726,7 +726,7 @@ test_that("am_mark() with raw bytes value", {
 # am_mark with expand modes
 
 test_that("am_mark() with expand = 'before'", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   am_mark(text_obj, 0, 5, "bold", TRUE, expand = AM_MARK_EXPAND_BEFORE)
@@ -735,7 +735,7 @@ test_that("am_mark() with expand = 'before'", {
 })
 
 test_that("am_mark() with expand = 'after'", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   am_mark(text_obj, 0, 5, "bold", TRUE, expand = AM_MARK_EXPAND_AFTER)
@@ -744,7 +744,7 @@ test_that("am_mark() with expand = 'after'", {
 })
 
 test_that("am_mark() with expand = 'both'", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   am_mark(text_obj, 0, 5, "bold", TRUE, expand = AM_MARK_EXPAND_BOTH)
@@ -755,35 +755,35 @@ test_that("am_mark() with expand = 'both'", {
 # am_mark_clear input validation
 
 test_that("am_mark_clear() errors on non-numeric start", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark_clear(text_obj, "a", 5, "bold"), "start must be numeric")
 })
 
 test_that("am_mark_clear() errors on negative start", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark_clear(text_obj, -1L, 5, "bold"), "non-negative")
 })
 
 test_that("am_mark_clear() errors on non-numeric end", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark_clear(text_obj, 0, "a", "bold"), "end must be numeric")
 })
 
 test_that("am_mark_clear() errors on negative end", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark_clear(text_obj, 0, -1L, "bold"), "non-negative")
 })
 
 test_that("am_mark_clear() errors on non-string name", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark_clear(text_obj, 0, 5, 123), "single character string")
@@ -792,21 +792,21 @@ test_that("am_mark_clear() errors on non-string name", {
 # am_marks_at input validation
 
 test_that("am_marks_at() errors on non-numeric position", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_marks_at(text_obj, "a"), "position must be numeric")
 })
 
 test_that("am_marks_at() errors on negative position", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_marks_at(text_obj, -1L), "non-negative")
 })
 
 test_that("am_marks_at() errors on non-scalar position", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_marks_at(text_obj, c(0, 1)), "scalar")
@@ -815,7 +815,7 @@ test_that("am_marks_at() errors on non-scalar position", {
 # am_text_update for diffing
 
 test_that("am_text_update() with identical strings is no-op", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
 
@@ -824,14 +824,14 @@ test_that("am_text_update() with identical strings is no-op", {
 })
 
 test_that("am_text_update() errors on non-string arguments", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_text_update(text_obj, 123), "single string")
 })
 
 test_that("am_text_update() errors on NA strings", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_text_update(text_obj, NA_character_), "NA strings")
@@ -840,7 +840,7 @@ test_that("am_text_update() errors on NA strings", {
 # am_counter_increment in lists
 
 test_that("am_counter_increment() in list by position", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
   items <- am_get(doc, AM_ROOT, "items")
   am_insert(doc, items, 1, am_counter(0))
@@ -852,13 +852,13 @@ test_that("am_counter_increment() in list by position", {
 })
 
 test_that("am_counter_increment() errors on non-scalar delta", {
-  doc <- am_create()
+  doc <- local_create()
   doc$cnt <- am_counter(0)
   expect_error(am_counter_increment(doc, AM_ROOT, "cnt", c(1L, 2L)), "scalar")
 })
 
 test_that("am_counter_increment() errors on non-numeric delta", {
-  doc <- am_create()
+  doc <- local_create()
   doc$cnt <- am_counter(0)
   expect_error(am_counter_increment(doc, AM_ROOT, "cnt", "one"), "numeric")
 })
@@ -866,14 +866,14 @@ test_that("am_counter_increment() errors on non-numeric delta", {
 # am_mark_clear() non-scalar validation
 
 test_that("am_mark_clear() errors on non-scalar start", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark_clear(text_obj, c(0, 1), 5, "bold"), "scalar")
 })
 
 test_that("am_mark_clear() errors on non-scalar end", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark_clear(text_obj, 0, c(5, 6), "bold"), "scalar")
@@ -882,14 +882,14 @@ test_that("am_mark_clear() errors on non-scalar end", {
 # am_mark() non-scalar validation
 
 test_that("am_mark() errors on non-scalar start", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark(text_obj, c(0, 1), 5, "bold", TRUE), "scalar")
 })
 
 test_that("am_mark() errors on non-scalar end", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello")
   text_obj <- doc$t
   expect_error(am_mark(text_obj, 0, c(5, 6), "bold", TRUE), "scalar")
@@ -898,7 +898,7 @@ test_that("am_mark() errors on non-scalar end", {
 # am_marks with heads parameter
 
 test_that("am_marks() with historical heads", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello world")
   text_obj <- doc$t
   am_commit(doc)
@@ -919,7 +919,7 @@ test_that("am_marks() with historical heads", {
 # am_marks_at filtering
 
 test_that("am_marks_at() filters by position correctly", {
-  doc <- am_create()
+  doc <- local_create()
   doc$t <- am_text("hello world")
   text_obj <- doc$t
 

@@ -3,7 +3,7 @@
 # Path-based Access Tests -------------------------------------------------
 
 test_that("am_get_path navigates nested structures", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(
     doc,
     AM_ROOT,
@@ -24,7 +24,7 @@ test_that("am_get_path navigates nested structures", {
 })
 
 test_that("am_get_path handles missing paths", {
-  doc <- am_create()
+  doc <- local_create()
   doc$user <- list(name = "Alice")
 
   # Missing path returns NULL
@@ -33,7 +33,7 @@ test_that("am_get_path handles missing paths", {
 })
 
 test_that("am_get_path supports mixed string and numeric indices", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Create structure with both maps and lists
   am_put(
@@ -56,7 +56,7 @@ test_that("am_get_path supports mixed string and numeric indices", {
 })
 
 test_that("am_get_path validates inputs", {
-  doc <- am_create()
+  doc <- local_create()
 
   expect_error(am_get_path(doc, list()), "path cannot be empty")
   expect_error(am_get_path(doc, NULL), "path must be")
@@ -67,7 +67,7 @@ test_that("am_get_path validates inputs", {
 })
 
 test_that("am_put_path creates nested structures", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Create nested structure with automatic intermediate objects
   am_put_path(doc, c("user", "address", "city"), "Boston")
@@ -81,7 +81,7 @@ test_that("am_put_path creates nested structures", {
 })
 
 test_that("am_put_path can disable intermediate creation", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Should fail without create_intermediate
   expect_error(
@@ -108,7 +108,7 @@ test_that("am_put_path can disable intermediate creation", {
 })
 
 test_that("am_put_path validates inputs", {
-  doc <- am_create()
+  doc <- local_create()
 
   expect_error(am_put_path(doc, list(), "value"), "path cannot be empty")
   expect_error(am_put_path(doc, NULL, "value"), "path must be")
@@ -119,7 +119,7 @@ test_that("am_put_path validates inputs", {
 })
 
 test_that("am_put_path returns document invisibly", {
-  doc <- am_create()
+  doc <- local_create()
 
   result <- withVisible(am_put_path(doc, c("key"), "value"))
   expect_false(result$visible)
@@ -127,7 +127,7 @@ test_that("am_put_path returns document invisibly", {
 })
 
 test_that("am_delete_path removes nested keys", {
-  doc <- am_create()
+  doc <- local_create()
   am_put_path(doc, c("user", "address", "city"), "NYC")
   am_put_path(doc, c("user", "name"), "Alice")
 
@@ -141,7 +141,7 @@ test_that("am_delete_path removes nested keys", {
 })
 
 test_that("am_delete_path handles missing paths gracefully", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "user", am_map(name = "Alice"))
 
   # Should warn for missing intermediate path
@@ -152,7 +152,7 @@ test_that("am_delete_path handles missing paths gracefully", {
 })
 
 test_that("am_delete_path validates inputs", {
-  doc <- am_create()
+  doc <- local_create()
 
   expect_error(am_delete_path(doc, list()), "path cannot be empty")
   expect_error(am_delete_path(doc, NULL), "path must be")
@@ -163,7 +163,7 @@ test_that("am_delete_path validates inputs", {
 })
 
 test_that("am_delete_path returns document invisibly", {
-  doc <- am_create()
+  doc <- local_create()
   doc$key <- "value"
 
   result <- withVisible(am_delete_path(doc, c("key")))
@@ -172,7 +172,7 @@ test_that("am_delete_path returns document invisibly", {
 })
 
 test_that("path-based access works with deep nesting", {
-  doc <- am_create()
+  doc <- local_create()
 
   # Create 6-level deep structure
   am_put_path(doc, c("a", "b", "c", "d", "e", "f"), "deep_value")
@@ -259,7 +259,7 @@ test_that("as_automerge handles vectors", {
 })
 
 test_that("as_automerge can use existing document", {
-  doc <- am_create()
+  doc <- local_create()
   doc$existing <- "data"
 
   # Add to existing document
@@ -287,7 +287,7 @@ test_that("as_automerge validates inputs", {
 })
 
 test_that("from_automerge converts to R list", {
-  doc <- am_create()
+  doc <- local_create()
   doc$name <- "Alice"
   doc$age <- 30L
   doc$active <- TRUE
@@ -301,7 +301,7 @@ test_that("from_automerge converts to R list", {
 })
 
 test_that("from_automerge handles nested structures", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(
     doc,
     AM_ROOT,
@@ -368,7 +368,7 @@ test_that("convenience functions work together", {
   expect_true(am_get_path(doc, list("users", 1, "active")))
 
   # Fork and modify
-  doc2 <- am_fork(doc)
+  doc2 <- local_fork(doc)
   am_put_path(doc2, c("config", "version"), "2.0")
 
   # Merge back using am_merge
@@ -382,20 +382,20 @@ test_that("convenience functions work together", {
 })
 
 test_that("path-based functions work with save/load/merge", {
-  doc1 <- am_create()
+  doc1 <- local_create()
   am_put_path(doc1, c("user", "name"), "Alice")
   am_put_path(doc1, c("user", "location", "city"), "NYC")
   am_commit(doc1)
 
   # Save and load
   bytes <- am_save(doc1)
-  doc_loaded <- am_load(bytes)
+  doc_loaded <- local_load(bytes)
 
   expect_equal(am_get_path(doc_loaded, c("user", "name")), "Alice")
   expect_equal(am_get_path(doc_loaded, c("user", "location", "city")), "NYC")
 
   # Fork and modify different paths
-  doc2 <- am_fork(doc1)
+  doc2 <- local_fork(doc1)
   am_put_path(doc2, c("user", "location", "state"), "NY")
   am_commit(doc2)
 
@@ -482,7 +482,7 @@ test_that("as_automerge handles very large structures", {
 })
 
 test_that("from_automerge handles empty document", {
-  doc <- am_create()
+  doc <- local_create()
   result <- from_automerge(doc)
 
   expect_type(result, "list")
@@ -490,7 +490,7 @@ test_that("from_automerge handles empty document", {
 })
 
 test_that("from_automerge handles document with deleted keys", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key1", "value1")
   am_put(doc, AM_ROOT, "key2", "value2")
   am_delete(doc, AM_ROOT, "key1")
@@ -503,7 +503,7 @@ test_that("from_automerge handles document with deleted keys", {
 
 test_that("from_automerge preserves POSIXct timestamps", {
   timestamp <- Sys.time()
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "time", timestamp)
 
   result <- from_automerge(doc)
@@ -512,7 +512,7 @@ test_that("from_automerge preserves POSIXct timestamps", {
 })
 
 test_that("from_automerge converts text objects to character strings", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "content", am_text("hello world"))
 
   result <- from_automerge(doc)
@@ -520,14 +520,14 @@ test_that("from_automerge converts text objects to character strings", {
 })
 
 test_that("am_get_path with single element path", {
-  doc <- am_create()
+  doc <- local_create()
   am_put(doc, AM_ROOT, "key", "value")
 
   expect_equal(am_get_path(doc, "key"), "value")
 })
 
 test_that("am_put_path overwrites existing values", {
-  doc <- am_create()
+  doc <- local_create()
   am_put_path(doc, c("key", "nested"), "original")
   am_put_path(doc, c("key", "nested"), "updated")
 
@@ -535,7 +535,7 @@ test_that("am_put_path overwrites existing values", {
 })
 
 test_that("am_delete_path on intermediate path", {
-  doc <- am_create()
+  doc <- local_create()
   am_put_path(doc, c("a", "b", "c"), "value1")
   am_put_path(doc, c("a", "b", "d"), "value2")
   am_put_path(doc, c("a", "e"), "value3")
@@ -548,7 +548,7 @@ test_that("am_delete_path on intermediate path", {
 })
 
 test_that("am_get_path handles numeric indices in lists", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- am_list("first", "second", "third")
 
   expect_equal(am_get_path(doc, list("items", 1)), "first")
@@ -557,7 +557,7 @@ test_that("am_get_path handles numeric indices in lists", {
 })
 
 test_that("am_get_path returns NULL for out-of-bounds list index", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- am_list("first", "second")
 
   expect_null(am_get_path(doc, list("items", 0)))
@@ -565,7 +565,7 @@ test_that("am_get_path returns NULL for out-of-bounds list index", {
 })
 
 test_that("am_put_path with list index extends list", {
-  doc <- am_create()
+  doc <- local_create()
   doc$items <- am_list()
 
   am_put_path(doc, list("items", "end"), "first")
