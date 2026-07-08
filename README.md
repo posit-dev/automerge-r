@@ -5,8 +5,6 @@
 
 <!-- badges: start -->
 
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/automerge)](https://CRAN.R-project.org/package=automerge)
 [![R-CMD-check](https://github.com/posit-dev/automerge-r/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/posit-dev/automerge-r/actions/workflows/R-CMD-check.yaml)
@@ -54,12 +52,12 @@ am_commit(bob, "Bob's data")
 am_sync(alice, bob)
 alice
 #> <Automerge Document>
-#> Actor: fd21a4c3a295910bd287650d0e5d0031 
+#> Actor: a26e2fff578b912adf737c1f42b31cf6 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 bob
 #> <Automerge Document>
-#> Actor: 53e6a0fb9664332928f7310efdb55827 
+#> Actor: 5c5c438d5790f152a619bc6f76ebef80 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 ```

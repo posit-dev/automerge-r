@@ -16,7 +16,6 @@ knitr::opts_chunk$set(
 # automerge
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN status](https://www.r-pkg.org/badges/version/automerge)](https://CRAN.R-project.org/package=automerge)
 [![R-CMD-check](https://github.com/posit-dev/automerge-r/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/posit-dev/automerge-r/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/posit-dev/automerge-r/graph/badge.svg)](https://app.codecov.io/gh/posit-dev/automerge-r)
