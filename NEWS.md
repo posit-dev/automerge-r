@@ -1,4 +1,4 @@
-# automerge (development version)
+# automerge 0.5.0
 
 * Building the bundled automerge library from source no longer requires CMake.
 
