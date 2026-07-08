@@ -150,7 +150,7 @@ changes back:</p>
 <span></span>
 <span><span class="co"># Target now has source's changes</span></span>
 <span><span class="va">target</span><span class="op">[[</span><span class="st">"version"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "1.0"</span></span>
+<span><span class="co">#&gt; [1] "2.0"</span></span>
 <span></span>
 <span><span class="co"># Source is unchanged</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">source</span><span class="op">)</span></span>
@@ -216,9 +216,9 @@ API.</p>
 <span><span class="va">round</span></span>
 <span><span class="co">#&gt; [1] 3</span></span>
 <span><span class="va">peer3</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer4"</span></span>
+<span><span class="co">#&gt; [1] "peer3"</span></span>
 <span><span class="va">peer4</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "peer4"</span></span>
+<span><span class="co">#&gt; [1] "peer3"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">peer4</span><span class="op">)</span></span></code></pre></div>
@@ -445,16 +445,16 @@ document has all its dependencies with
 <span><span class="co"># Extract multiple fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique hash</span></span>
-<span><span class="co">#&gt;  [1] ce 35 19 dc 7a 95 68 53 82 ab 70 c5 3b 25 81 56 64 1b 32 21 27 37</span></span>
-<span><span class="co">#&gt; [23] 84 b9 83 68 be 8a 2e 2f ec 2c</span></span>
+<span><span class="co">#&gt;  [1] 00 45 92 4c fe be 5b 90 88 3b f1 24 14 be ef e2 5f d1 97 d7 05 47</span></span>
+<span><span class="co">#&gt; [23] 66 f4 3c e1 81 f1 6c 50 10 cd</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made this change</span></span>
-<span><span class="co">#&gt;  [1] 28 35 02 27 46 44 60 6a 07 12 8c 0b 93 3d 7d 50</span></span>
+<span><span class="co">#&gt;  [1] de e9 75 45 51 be ea 16 d4 c1 6e 02 b8 3f 88 9f</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># When</span></span>
 <span><span class="co">#&gt; [1] "1970-01-01 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent changes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] 09 59 1e 0b 4c e6 de e4 26 e2 49 dc 9d 72 a4 8a e8 e8 10 d8 b2 b2</span></span>
-<span><span class="co">#&gt; [23] 5f 0f 01 30 7e 7b 50 db a5 21</span></span>
+<span><span class="co">#&gt;  [1] 65 4f d7 53 e4 9e eb 90 49 1a 69 8e 4a 8b 50 ce cf 41 3a 64 d5 a1</span></span>
+<span><span class="co">#&gt; [23] 5b 2e 01 81 b4 73 37 82 1c d5</span></span>
 <span><span class="fu"><a href="../reference/am_change_size.html">am_change_size</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Number of operations</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span></span>
@@ -462,7 +462,7 @@ document has all its dependencies with
 <span><span class="va">changes_since_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc_main</span>, <span class="va">heads_v1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">changes_since_v1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 1</span></span>
-<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x5566f1ab1400&gt;</span></span>
+<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x5556b367f400&gt;</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_main</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -548,10 +548,10 @@ document has all its dependencies with
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">x_changes</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 1</span></span>
-<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x5566ee6dbdd0&gt;</span></span>
+<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x5556b27779d0&gt;</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">y_changes</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 1</span></span>
-<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x5566f0ba99d0&gt;</span></span>
+<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x5556af044ed0&gt;</span></span>
 <span></span>
 <span><span class="co"># Sync to merge divergent histories</span></span>
 <span><span class="va">rounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_sync.html">am_sync</a></span><span class="op">(</span><span class="va">peer_x</span>, <span class="va">peer_y</span><span class="op">)</span></span>

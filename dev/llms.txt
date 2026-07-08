@@ -74,7 +74,7 @@ install.packages("automerge")
 ```
 
 Building from source requires Rust \>= 1.85
-([rustup.rs](https://rustup.rs/); included in Rtools43+ on Windows).
+([rustup.rs](https://rustup.rs/)).
 
 ## Documentation
 
