@@ -23,24 +23,6 @@ AM_MARK_EXPAND_AFTER
 AM_MARK_EXPAND_BOTH
 ```
 
-## Format
-
-An object of class `NULL` of length 0.
-
-An object of class `am_obj_type` of length 1.
-
-An object of class `am_obj_type` of length 1.
-
-An object of class `am_obj_type` of length 1.
-
-An object of class `character` of length 1.
-
-An object of class `character` of length 1.
-
-An object of class `character` of length 1.
-
-An object of class `character` of length 1.
-
 ## Root Object
 
 - AM_ROOT:

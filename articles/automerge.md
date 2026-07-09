@@ -22,11 +22,9 @@ safely replicated across multiple devices and automatically merged.
 ## Installation
 
 ``` r
-# From R-universe
-install.packages("automerge", repos = "https://posit-dev.r-universe.dev")
 
-# From GitHub
-pak::pak("posit-dev/automerge-r")
+# From CRAN
+install.packages("automerge")
 ```
 
 ## Basic Usage
@@ -34,16 +32,18 @@ pak::pak("posit-dev/automerge-r")
 Let’s start with the most fundamental operations:
 
 ``` r
+
 library(automerge)
 ```
 
 ### Creating a Document
 
 ``` r
+
 doc <- am_create()
 print(doc)
 #> <Automerge Document>
-#> Actor: a0a265fe0125d5293523450bbdd37ea4 
+#> Actor: 239f3a6715a10346d51fbc1970259dc1 
 #> Root keys: 0
 ```
 
@@ -59,6 +59,7 @@ R-idiomatic:
 #### 1. Functional API
 
 ``` r
+
 am_put(doc, AM_ROOT, "name", "Alice")
 am_put(doc, AM_ROOT, "age", 30L)
 am_put(doc, AM_ROOT, "active", TRUE)
@@ -73,6 +74,7 @@ am_get(doc, AM_ROOT, "age")
 #### 2. S3 Operators (R-idiomatic)
 
 ``` r
+
 doc[["email"]] <- "alice@example.com"
 doc[["score"]] <- 95.5
 
@@ -89,6 +91,7 @@ names(doc)
 #### 3. Pipe-Friendly Style
 
 ``` r
+
 doc2 <- am_create() |>
   am_put(AM_ROOT, "name", "Bob") |>
   am_put(AM_ROOT, "age", 25L) |>
@@ -112,6 +115,7 @@ The simplest approach is to use R’s native list structures, which are
 automatically converted:
 
 ``` r
+
 # Create document with nested structure in one call
 doc3 <- am_create() |>
   am_put(
@@ -149,6 +153,7 @@ am_get(doc3, address, "city")
 For deep structures, path-based helpers make navigation much easier:
 
 ``` r
+
 # Much simpler - use path-based access
 am_get_path(doc3, c("company", "office", "address", "city"))
 #> [1] "Boston"
@@ -176,6 +181,7 @@ Use
 to convert entire R structures at once:
 
 ``` r
+
 # Your existing R data
 config_data <- list(
   app_name = "MyApp",
@@ -207,6 +213,7 @@ am_close(doc5)
 Lists in R use 1-based indexing (standard R convention):
 
 ``` r
+
 # Create a document with a list
 doc6 <- am_create()
 am_put(doc6, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
@@ -242,6 +249,7 @@ Regular strings use deterministic conflict resolution (one value wins).
 For collaborative text editing, use text objects:
 
 ``` r
+
 doc7 <- am_create()
 
 # Regular string (last-write-wins)
@@ -275,6 +283,7 @@ Counters are special values that can be incremented/decremented without
 conflicts:
 
 ``` r
+
 doc8 <- am_create()
 
 # Create a counter
@@ -295,13 +304,14 @@ am_close(doc8)
 POSIXct timestamps are natively supported:
 
 ``` r
+
 doc9 <- am_create()
 
 am_put(doc9, AM_ROOT, "created_at", Sys.time())
 am_put(doc9, AM_ROOT, "updated_at", Sys.time())
 
 doc9[["created_at"]]
-#> [1] "2026-02-26 11:28:31 UTC"
+#> [1] "2026-07-09 17:17:25 UTC"
 
 am_close(doc9)
 ```
@@ -311,6 +321,7 @@ am_close(doc9)
 Documents can be saved to binary format and loaded later:
 
 ``` r
+
 # Save to binary format
 bytes <- am_save(doc)
 
@@ -339,6 +350,7 @@ For long-lived documents, incremental save/load allows exchanging only
 the changes since the last save, rather than the entire document:
 
 ``` r
+
 doc_inc <- am_create()
 doc_inc[["v1"]] <- "first"
 am_commit(doc_inc, "Version 1")
@@ -370,6 +382,7 @@ am_close(doc_inc2)
 ### Committing Changes
 
 ``` r
+
 doc10 <- am_create()
 
 # Make changes
@@ -393,6 +406,7 @@ am_commit(doc10, "Add z coordinate")
 Create independent copies:
 
 ``` r
+
 doc11 <- am_fork(doc10)
 
 # Changes to fork don't affect original
@@ -417,6 +431,7 @@ am_close(doc11b)
 Merge changes from one document into another:
 
 ``` r
+
 # Create two documents
 doc12 <- am_create()
 doc12[["source"]] <- "doc12"
@@ -435,7 +450,7 @@ doc12[["value1"]]
 doc12[["value2"]]
 #> [1] 200
 doc12[["source"]] # One value wins deterministically for conflicting keys
-#> [1] "doc13"
+#> [1] "doc12"
 
 am_close(doc12)
 am_close(doc13)
@@ -446,6 +461,7 @@ am_close(doc13)
 Automerge’s key feature is automatic synchronization between documents:
 
 ``` r
+
 # Create two peers
 peer1 <- am_create()
 peer1[["edited_by"]] <- "peer1"
@@ -483,6 +499,7 @@ when, what message was attached, and what it depended on. You can
 inspect this with the change introspection functions:
 
 ``` r
+
 doc14 <- am_create()
 doc14[["title"]] <- "My Project"
 am_commit(doc14, "Initial setup", Sys.time())
@@ -495,15 +512,15 @@ history <- am_get_changes(doc14)
 history
 #> [[1]]
 #> <Automerge Change>
-#> Hash: 77 61 ed 89 ...
+#> Hash: 86 93 dd 51 ...
 #> Message: Initial setup 
-#> Time: 2026-02-26 11:28:32 
+#> Time: 2026-07-09 17:17:26 
 #> 
 #> [[2]]
 #> <Automerge Change>
-#> Hash: d0 91 ec 53 ...
+#> Hash: eb 73 40 f5 ...
 #> Message: Set version 
-#> Time: 2026-02-26 11:28:32
+#> Time: 2026-07-09 17:17:26
 
 # Inspect each change - no parsing needed
 for (i in seq_along(history)) {
@@ -522,20 +539,20 @@ for (i in seq_along(history)) {
 # Extract many fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique 32-byte hash
-#>  [1] d0 91 ec 53 d5 a9 4f d1 ea 98 2c b5 9d 76 b8 14 61 fc 7a 36 5d 21
-#> [23] 3a ff 8a 1c fe b4 27 98 32 98
+#>  [1] eb 73 40 f5 85 8c 45 7a a9 1d 64 44 34 c1 71 e1 af 31 cf 09 45 a0
+#> [23] 83 16 91 e3 3b 83 42 43 2a c5
 am_change_message(change)  # Commit message
 #> [1] "Set version"
 am_change_time(change)     # Timestamp
-#> [1] "2026-02-26 11:28:32 UTC"
+#> [1] "2026-07-09 17:17:26 UTC"
 am_change_seq(change)      # Sequence number
 #> [1] 2
 am_change_actor_id(change) # Who made the change
-#>  [1] 69 60 58 4d a5 73 08 d4 f6 1a b6 45 ac 57 59 8d
+#>  [1] 1a a9 b4 a6 67 69 c9 d3 89 78 a8 74 77 c1 21 f9
 am_change_deps(change)     # Parent change hashes
 #> [[1]]
-#>  [1] 77 61 ed 89 c2 60 8d c4 8f ac 59 2b 41 04 ce 1d 58 43 e3 67 74 ef
-#> [23] c6 e8 a5 e7 fe b2 30 76 d4 10
+#>  [1] 86 93 dd 51 f0 2e 56 18 05 c3 c5 a7 bc 17 0b 9a 5f 5f 66 c7 79 a0
+#> [23] 39 a0 72 fa 7a 2b 66 be dd db
 am_change_size(change)     # Number of operations
 #> [1] 1
 
@@ -555,6 +572,7 @@ If you know you might want to undo future changes, save the heads before
 making them:
 
 ``` r
+
 doc_tt <- am_create()
 doc_tt[["title"]] <- "My Report"
 doc_tt[["status"]] <- "draft"
@@ -588,6 +606,7 @@ When you don’t have a saved checkpoint, browse the history to find the
 change you want to revert to:
 
 ``` r
+
 doc_hist <- am_create()
 
 doc_hist[["data"]] <- list(x = 1, y = 2)
@@ -632,6 +651,7 @@ A forked document is fully independent, so you can make new changes from
 the historical state without affecting the original:
 
 ``` r
+
 doc_branch <- am_create()
 doc_branch[["text"]] <- am_text("Hello World")
 am_commit(doc_branch, "Initial text")
@@ -662,6 +682,7 @@ Cursors can be serialized and restored across R sessions, which is
 useful for saving editor state:
 
 ``` r
+
 doc15 <- am_create()
 am_put(doc15, AM_ROOT, "content", am_text("Hello World"))
 text_obj <- am_get(doc15, AM_ROOT, "content")
@@ -698,6 +719,7 @@ am_close(doc15)
 ## Getting Help
 
 ``` r
+
 # Function help
 ?am_create
 ?am_put

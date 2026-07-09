@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Quick Reference • automerge</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/Source_Code_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@
       <h1>Quick Reference</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/v0.4.0/vignettes/quick-reference.Rmd" class="external-link"><code>vignettes/quick-reference.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/vignettes/quick-reference.Rmd" class="external-link"><code>vignettes/quick-reference.Rmd</code></a></small>
       <div class="d-none name"><code>quick-reference.Rmd</code></div>
     </div>
 
@@ -83,11 +83,8 @@ documentation with <code>?function_name</code>.</p>
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># From R-universe</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"automerge"</span>, repos <span class="op">=</span> <span class="st">"https://posit-dev.r-universe.dev"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># From GitHub</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"posit-dev/automerge-r"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># From CRAN</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"automerge"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="document-lifecycle">Document Lifecycle<a class="anchor" aria-label="anchor" href="#document-lifecycle"></a>
@@ -338,7 +335,7 @@ documentation with <code>?function_name</code>.</p>
 <span><span class="va">heads</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_heads.html">am_get_heads</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Get changes (returns am_change objects)</span></span>
-<span><span class="va">changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span>, <span class="cn">NULL</span><span class="op">)</span>  <span class="co"># All changes</span></span>
+<span><span class="va">changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span>, <span class="cn">NULL</span><span class="op">)</span> <span class="co"># All changes</span></span>
 <span><span class="va">changes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span>, <span class="va">heads</span><span class="op">)</span> <span class="co"># Changes since heads (i.e. none)</span></span>
 <span></span>
 <span><span class="co"># Typical pattern: remember a checkpoint, then get new changes later</span></span>
@@ -446,8 +443,7 @@ documentation with <code>?function_name</code>.</p>
 <li>R &gt;= 4.2</li>
 <li>For building from source:
 <ul>
-<li>Rust &gt;= 1.89.0 (<a href="https://rustup.rs/" class="external-link uri">https://rustup.rs/</a>)</li>
-<li>CMake &gt;= 3.25 (included in Rtools43+ on Windows)</li>
+<li>Rust &gt;= 1.85.0 (<a href="https://rustup.rs/" class="external-link uri">https://rustup.rs/</a>)</li>
 </ul>
 </li>
 <li>Or: Install automerge-c (with UTF-32 character indexing) system-wide
@@ -458,14 +454,10 @@ to skip build</li>
 <h3 id="resources">Resources<a class="anchor" aria-label="anchor" href="#resources"></a>
 </h3>
 <ul>
-<li>Package site: <a href="https://posit-dev.github.io/automerge-r/" class="uri">https://posit-dev.github.io/automerge-r/</a>
-</li>
-<li>Automerge docs: <a href="https://automerge.org/" class="external-link uri">https://automerge.org/</a>
-</li>
-<li>Binary format: <a href="https://automerge.org/automerge-binary-format-spec/" class="external-link uri">https://automerge.org/automerge-binary-format-spec/</a>
-</li>
-<li>CRDT research: <a href="https://crdt.tech/" class="external-link uri">https://crdt.tech/</a>
-</li>
+<li><a href="https://automerge.org/" class="external-link">Automerge docs</a></li>
+<li><a href="https://automerge.org/automerge-binary-format-spec/" class="external-link">Automerge
+binary format</a></li>
+<li><a href="https://crdt.tech/" class="external-link">CRDT research</a></li>
 </ul>
 <hr>
 <p><strong>Note</strong>: This is a quick reference. See full vignettes
@@ -485,7 +477,7 @@ for detailed examples and explanations.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
   </div></footer>

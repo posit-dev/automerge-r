@@ -1,5 +1,5 @@
-pandoc: 3.1.11
-pkgdown: 2.2.0
+pandoc: 3.8.3
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   automerge: automerge.html
@@ -7,7 +7,7 @@ articles:
   cross-platform: cross-platform.html
   quick-reference: quick-reference.html
   sync-protocol: sync-protocol.html
-last_built: 2026-02-26T11:28Z
+last_built: 2026-07-09T17:17Z
 urls:
   reference: https://posit-dev.github.io/automerge-r/reference
   article: https://posit-dev.github.io/automerge-r/articles

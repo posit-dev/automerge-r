@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Synchronization Protocol • automerge</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/Source_Code_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@
       <h1>Synchronization Protocol</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/v0.4.0/vignettes/sync-protocol.Rmd" class="external-link"><code>vignettes/sync-protocol.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/vignettes/sync-protocol.Rmd" class="external-link"><code>vignettes/sync-protocol.Rmd</code></a></small>
       <div class="d-none name"><code>sync-protocol.Rmd</code></div>
     </div>
 
@@ -444,16 +444,16 @@ document has all its dependencies with
 <span><span class="co"># Extract multiple fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique hash</span></span>
-<span><span class="co">#&gt;  [1] 59 5d 84 e8 28 0d a4 e3 e1 1a b7 54 cf 99 bb 64 70 d8 0d dd 74 6e</span></span>
-<span><span class="co">#&gt; [23] 4f 8c 46 6c 52 5b 25 3e 63 69</span></span>
+<span><span class="co">#&gt;  [1] ce ef a3 bc 40 a4 9a a6 f2 15 d5 59 14 89 69 8e 19 48 2b 57 0e c7</span></span>
+<span><span class="co">#&gt; [23] 26 c9 25 40 b5 af 02 0a dd 6a</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made this change</span></span>
-<span><span class="co">#&gt;  [1] 64 bc 35 de c3 d7 30 b1 de 77 1b 77 22 50 73 95</span></span>
+<span><span class="co">#&gt;  [1] 22 79 6e 36 7a 9c 3e 39 81 fd 66 34 84 1b 36 5c</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># When</span></span>
 <span><span class="co">#&gt; [1] "1970-01-01 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent changes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] 07 c6 93 b8 1d b8 e6 54 e7 13 4c 25 96 d2 29 a1 b3 9c b3 e8 e4 17</span></span>
-<span><span class="co">#&gt; [23] 33 6f 8d dd c5 60 af b0 83 b9</span></span>
+<span><span class="co">#&gt;  [1] b8 cb 1a 4a 31 ca 6c 0f 28 3a 99 6c cb 23 ae 9a 04 fe 6c b2 fb cc</span></span>
+<span><span class="co">#&gt; [23] ff 94 e6 32 ed c0 d8 0a 6f 08</span></span>
 <span><span class="fu"><a href="../reference/am_change_size.html">am_change_size</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Number of operations</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span></span>
@@ -461,7 +461,7 @@ document has all its dependencies with
 <span><span class="va">changes_since_v1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc_main</span>, <span class="va">heads_v1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">changes_since_v1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 1</span></span>
-<span><span class="co">#&gt;  $ :Class 'am_change' &lt;externalptr&gt;</span></span>
+<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x555fd68c3210&gt;</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc_main</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -547,10 +547,10 @@ document has all its dependencies with
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">x_changes</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 1</span></span>
-<span><span class="co">#&gt;  $ :Class 'am_change' &lt;externalptr&gt;</span></span>
+<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x555fd5c2e5c0&gt;</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">y_changes</span><span class="op">)</span></span>
 <span><span class="co">#&gt; List of 1</span></span>
-<span><span class="co">#&gt;  $ :Class 'am_change' &lt;externalptr&gt;</span></span>
+<span><span class="co">#&gt;  $ :Class 'am_change' &lt;pointer: 0x555fd32e4ad0&gt;</span></span>
 <span></span>
 <span><span class="co"># Sync to merge divergent histories</span></span>
 <span><span class="va">rounds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_sync.html">am_sync</a></span><span class="op">(</span><span class="va">peer_x</span>, <span class="va">peer_y</span><span class="op">)</span></span>
@@ -600,7 +600,7 @@ document has all its dependencies with
 <span></span>
 <span><span class="co"># Status: Deterministic conflict resolution (one value wins)</span></span>
 <span><span class="va">editor1</span><span class="op">[[</span><span class="st">"status"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "published"</span></span>
+<span><span class="co">#&gt; [1] "review"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">base</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">editor1</span><span class="op">)</span></span>
@@ -883,7 +883,7 @@ Software</a></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
   </div></footer>

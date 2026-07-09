@@ -1,5 +1,14 @@
 # Changelog
 
+## automerge 0.5.0
+
+CRAN release: 2026-07-08
+
+- Building the bundled automerge library from source no longer requires
+  CMake.
+
+- Updates vendored automerge library to 0.10.0.
+
 ## automerge 0.4.0
 
 CRAN release: 2026-02-26

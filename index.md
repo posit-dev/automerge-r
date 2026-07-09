@@ -23,6 +23,7 @@ simpler.
 ## Quick Example
 
 ``` r
+
 library(automerge)
 
 # Two researchers working independently
@@ -40,12 +41,12 @@ am_commit(bob, "Bob's data")
 am_sync(alice, bob)
 alice
 #> <Automerge Document>
-#> Actor: 430ffacff3ae9ece2c50d476120588d1 
+#> Actor: a26e2fff578b912adf737c1f42b31cf6 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 bob
 #> <Automerge Document>
-#> Actor: abb94fd55ba7c10623aa19f30ae871b1 
+#> Actor: 5c5c438d5790f152a619bc6f76ebef80 
 #> Root keys: 3 
 #> Keys: experiment, humidity, temperature
 ```
@@ -68,12 +69,12 @@ bob
 ## Installation
 
 ``` r
+
 install.packages("automerge")
 ```
 
 Building from source requires Rust \>= 1.85
-([rustup.rs](https://rustup.rs/)) and CMake \>= 3.25 (included in
-Rtools43+ on Windows).
+([rustup.rs](https://rustup.rs/)).
 
 ## Documentation
 
@@ -107,10 +108,8 @@ Rtools43+ on Windows).
 
 ## Related Projects
 
-- [autosync](https://shikokuchuo.net/autosync/) - automerge-repo
-  compatible R sync server
-- [autoedit](https://shikokuchuo.net/autoedit/) - Collaborative code
-  editor widget for R and Shiny
+- [autosync](https://posit-dev.github.io/autosync/) - automerge-repo
+  compatible R sync server and client
 
 ## License
 

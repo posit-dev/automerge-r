@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Getting Started with automerge • automerge</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/Source_Code_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">automerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@
       <h1>Getting Started with automerge</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/v0.4.0/vignettes/automerge.Rmd" class="external-link"><code>vignettes/automerge.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/vignettes/automerge.Rmd" class="external-link"><code>vignettes/automerge.Rmd</code></a></small>
       <div class="d-none name"><code>automerge.Rmd</code></div>
     </div>
 
@@ -108,11 +108,8 @@ applications like shared notebooks or data pipelines</li>
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># From R-universe</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"automerge"</span>, repos <span class="op">=</span> <span class="st">"https://posit-dev.r-universe.dev"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># From GitHub</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"posit-dev/automerge-r"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># From CRAN</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"automerge"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="basic-usage">Basic Usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
@@ -127,7 +124,7 @@ applications like shared notebooks or data pipelines</li>
 <code class="sourceCode R"><span><span class="va">doc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_create.html">am_create</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;Automerge Document&gt;</span></span>
-<span><span class="co">#&gt; Actor: a0a265fe0125d5293523450bbdd37ea4 </span></span>
+<span><span class="co">#&gt; Actor: 239f3a6715a10346d51fbc1970259dc1 </span></span>
 <span><span class="co">#&gt; Root keys: 0</span></span></code></pre></div>
 <p>Note: When you’re done working with a document, you can explicitly
 free its resources with <code>am_close(doc)</code> if you don’t want to
@@ -381,7 +378,7 @@ without conflicts:</p>
 <span><span class="fu"><a href="../reference/am_put.html">am_put</a></span><span class="op">(</span><span class="va">doc9</span>, <span class="va">AM_ROOT</span>, <span class="st">"updated_at"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">doc9</span><span class="op">[[</span><span class="st">"created_at"</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "2026-02-26 11:28:31 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-07-09 17:17:25 UTC"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc9</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -514,7 +511,7 @@ document:</p>
 <span><span class="va">doc12</span><span class="op">[[</span><span class="st">"value2"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] 200</span></span>
 <span><span class="va">doc12</span><span class="op">[[</span><span class="st">"source"</span><span class="op">]</span><span class="op">]</span> <span class="co"># One value wins deterministically for conflicting keys</span></span>
-<span><span class="co">#&gt; [1] "doc13"</span></span>
+<span><span class="co">#&gt; [1] "doc12"</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc12</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/am_close.html">am_close</a></span><span class="op">(</span><span class="va">doc13</span><span class="op">)</span></span></code></pre></div>
@@ -574,15 +571,15 @@ inspect this with the change introspection functions:</p>
 <span><span class="va">history</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
 <span><span class="co">#&gt; &lt;Automerge Change&gt;</span></span>
-<span><span class="co">#&gt; Hash: 77 61 ed 89 ...</span></span>
+<span><span class="co">#&gt; Hash: 86 93 dd 51 ...</span></span>
 <span><span class="co">#&gt; Message: Initial setup </span></span>
-<span><span class="co">#&gt; Time: 2026-02-26 11:28:32 </span></span>
+<span><span class="co">#&gt; Time: 2026-07-09 17:17:26 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; [[2]]</span></span>
 <span><span class="co">#&gt; &lt;Automerge Change&gt;</span></span>
-<span><span class="co">#&gt; Hash: d0 91 ec 53 ...</span></span>
+<span><span class="co">#&gt; Hash: eb 73 40 f5 ...</span></span>
 <span><span class="co">#&gt; Message: Set version </span></span>
-<span><span class="co">#&gt; Time: 2026-02-26 11:28:32</span></span>
+<span><span class="co">#&gt; Time: 2026-07-09 17:17:26</span></span>
 <span></span>
 <span><span class="co"># Inspect each change - no parsing needed</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">history</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -601,20 +598,20 @@ inspect this with the change introspection functions:</p>
 <span><span class="co"># Extract many fields from the same change</span></span>
 <span><span class="va">change</span> <span class="op">&lt;-</span> <span class="va">history</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="fu"><a href="../reference/am_change_hash.html">am_change_hash</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Unique 32-byte hash</span></span>
-<span><span class="co">#&gt;  [1] d0 91 ec 53 d5 a9 4f d1 ea 98 2c b5 9d 76 b8 14 61 fc 7a 36 5d 21</span></span>
-<span><span class="co">#&gt; [23] 3a ff 8a 1c fe b4 27 98 32 98</span></span>
+<span><span class="co">#&gt;  [1] eb 73 40 f5 85 8c 45 7a a9 1d 64 44 34 c1 71 e1 af 31 cf 09 45 a0</span></span>
+<span><span class="co">#&gt; [23] 83 16 91 e3 3b 83 42 43 2a c5</span></span>
 <span><span class="fu"><a href="../reference/am_change_message.html">am_change_message</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>  <span class="co"># Commit message</span></span>
 <span><span class="co">#&gt; [1] "Set version"</span></span>
 <span><span class="fu"><a href="../reference/am_change_time.html">am_change_time</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Timestamp</span></span>
-<span><span class="co">#&gt; [1] "2026-02-26 11:28:32 UTC"</span></span>
+<span><span class="co">#&gt; [1] "2026-07-09 17:17:26 UTC"</span></span>
 <span><span class="fu"><a href="../reference/am_change_seq.html">am_change_seq</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>      <span class="co"># Sequence number</span></span>
 <span><span class="co">#&gt; [1] 2</span></span>
 <span><span class="fu"><a href="../reference/am_change_actor_id.html">am_change_actor_id</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span> <span class="co"># Who made the change</span></span>
-<span><span class="co">#&gt;  [1] 69 60 58 4d a5 73 08 d4 f6 1a b6 45 ac 57 59 8d</span></span>
+<span><span class="co">#&gt;  [1] 1a a9 b4 a6 67 69 c9 d3 89 78 a8 74 77 c1 21 f9</span></span>
 <span><span class="fu"><a href="../reference/am_change_deps.html">am_change_deps</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Parent change hashes</span></span>
 <span><span class="co">#&gt; [[1]]</span></span>
-<span><span class="co">#&gt;  [1] 77 61 ed 89 c2 60 8d c4 8f ac 59 2b 41 04 ce 1d 58 43 e3 67 74 ef</span></span>
-<span><span class="co">#&gt; [23] c6 e8 a5 e7 fe b2 30 76 d4 10</span></span>
+<span><span class="co">#&gt;  [1] 86 93 dd 51 f0 2e 56 18 05 c3 c5 a7 bc 17 0b 9a 5f 5f 66 c7 79 a0</span></span>
+<span><span class="co">#&gt; [23] 39 a0 72 fa 7a 2b 66 be dd db</span></span>
 <span><span class="fu"><a href="../reference/am_change_size.html">am_change_size</a></span><span class="op">(</span><span class="va">change</span><span class="op">)</span>     <span class="co"># Number of operations</span></span>
 <span><span class="co">#&gt; [1] 1</span></span>
 <span></span>
@@ -799,7 +796,7 @@ one-page guide to all functions</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
   </div></footer>

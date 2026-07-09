@@ -1,6 +1,7 @@
 # Understanding CRDTs in Automerge
 
 ``` r
+
 library(automerge)
 ```
 
@@ -65,6 +66,7 @@ resolution algorithm (based on Lamport timestamps and actor IDs) to
 ensure all replicas converge to the same value.
 
 ``` r
+
 doc1 <- am_create()
 doc1[["name"]] <- "Alice"
 doc1[["score"]] <- 100
@@ -113,6 +115,7 @@ conflict resolution (one value wins), but different keys can be edited
 concurrently without conflict.
 
 ``` r
+
 doc3 <- am_create()
 doc3[["user"]] <- list(name = "Alice", age = 30L, city = "Boston")
 am_commit(doc3)
@@ -152,6 +155,7 @@ Lists use a sophisticated CRDT algorithm that preserves insertion order
 and handles concurrent insertions elegantly.
 
 ``` r
+
 doc5 <- am_create()
 am_put(doc5, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
 items5 <- am_get(doc5, AM_ROOT, "items")
@@ -175,8 +179,8 @@ for (i in seq_len(am_length(doc5, items5))) {
   print(am_get(doc5, items5, i))
 }
 #> [1] "A"
-#> [1] "B2"
 #> [1] "B1"
+#> [1] "B2"
 #> [1] "C"
 
 am_close(doc5)
@@ -204,6 +208,7 @@ to inspect all conflicting values and present them to users or apply
 application-specific resolution logic.
 
 ``` r
+
 # Map conflict: two peers edit the same key concurrently
 doc_c1 <- am_create()
 doc_c1[["status"]] <- "draft"
@@ -220,16 +225,16 @@ am_merge(doc_c1, doc_c2)
 
 # am_get returns the winner
 am_get(doc_c1, AM_ROOT, "status")
-#> [1] "archived"
+#> [1] "published"
 
 # am_map_get_all returns all conflicting values
 all_statuses <- am_map_get_all(doc_c1, AM_ROOT, "status")
 all_statuses
 #> [[1]]
-#> [1] "published"
+#> [1] "archived"
 #> 
 #> [[2]]
-#> [1] "archived"
+#> [1] "published"
 ```
 
 The same approach works for lists — when two peers concurrently update
@@ -238,6 +243,7 @@ the same index,
 reveals both values:
 
 ``` r
+
 # List conflict: two peers update the same index
 doc_l1 <- am_create()
 am_put(doc_l1, AM_ROOT, "scores", AM_OBJ_TYPE_LIST)
@@ -257,15 +263,15 @@ am_merge(doc_l1, doc_l2)
 
 # Winner
 am_get(doc_l1, scores, 1)
-#> [1] 300
+#> [1] 200
 
 # All conflicting values
 am_list_get_all(doc_l1, scores, 1)
 #> [[1]]
-#> [1] 200
+#> [1] 300
 #> 
 #> [[2]]
-#> [1] 300
+#> [1] 200
 
 am_close(doc_c1)
 am_close(doc_c2)
@@ -279,6 +285,7 @@ Text objects are optimized for character-level collaborative editing.
 They handle concurrent insertions, deletions, and edits gracefully.
 
 ``` r
+
 doc7 <- am_create()
 am_put(doc7, AM_ROOT, "document", am_text("The quick fox jumps"))
 am_commit(doc7)
@@ -315,6 +322,7 @@ conflict resolution (one value wins). Only text objects
 (`AM_OBJ_TYPE_TEXT`) provide character-level CRDT merging.
 
 ``` r
+
 # String (deterministic conflict resolution)
 doc9 <- am_create()
 doc9[["title"]] <- "Document"
@@ -342,7 +350,7 @@ am_text_splice(text12, 5, 0, " Everyone")
 am_merge(doc11, doc12)
 
 am_text_content(text11)
-#> [1] "Hello Everyone World"
+#> [1] "Hello World Everyone"
 
 am_close(doc11)
 am_close(doc12)
@@ -353,6 +361,7 @@ am_close(doc12)
 Counters are a classic CRDT that adds up increments from all replicas.
 
 ``` r
+
 doc13 <- am_create()
 am_put(doc13, AM_ROOT, "likes", am_counter(0))
 am_commit(doc13)
@@ -387,6 +396,7 @@ Timestamps record when a value was set. They use deterministic conflict
 resolution semantics (one value wins).
 
 ``` r
+
 doc15 <- am_create()
 doc15[["created_at"]] <- Sys.time()
 am_commit(doc15)
@@ -401,9 +411,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-02-26 11:28:35 UTC"
+#> [1] "2026-07-09 17:17:29 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-02-26 11:28:35 UTC"
+#> [1] "2026-07-09 17:17:29 UTC"
 
 am_close(doc15)
 am_close(doc16)
@@ -419,6 +429,7 @@ Cursors maintain stable positions in text even as the document is
 edited.
 
 ``` r
+
 doc17 <- am_create()
 am_put(doc17, AM_ROOT, "text", am_text("Hello World"))
 text17 <- am_get(doc17, AM_ROOT, "text")
@@ -439,6 +450,7 @@ Cursors can be serialized for persistence across sessions, and compared
 for equality:
 
 ``` r
+
 # Serialize to bytes or string
 cursor_bytes <- am_cursor_to_bytes(cursor)
 cursor_str <- am_cursor_to_string(cursor)
@@ -463,6 +475,7 @@ Marks attach metadata to text ranges, useful for formatting and
 annotations.
 
 ``` r
+
 doc18 <- am_create()
 am_put(doc18, AM_ROOT, "text", am_text("Hello World"))
 text18 <- am_get(doc18, AM_ROOT, "text")
@@ -505,6 +518,7 @@ To remove a mark from a text range, use
 [`am_mark_clear()`](https://posit-dev.github.io/automerge-r/reference/am_mark_clear.md):
 
 ``` r
+
 doc18b <- am_create()
 am_put(doc18b, AM_ROOT, "text", am_text("Hello World"))
 text18b <- am_get(doc18b, AM_ROOT, "text")
@@ -540,6 +554,7 @@ include text inserted before start - `"after"`: Expands to include text
 inserted after end - `"both"`: Expands at both boundaries
 
 ``` r
+
 doc19 <- am_create()
 am_put(doc19, AM_ROOT, "text", am_text("Hello"))
 text19 <- am_get(doc19, AM_ROOT, "text")
@@ -571,6 +586,7 @@ CRDTs preserve operation history to enable merging. This means document
 size grows with the number of operations, not just current content size.
 
 ``` r
+
 doc20 <- am_create()
 
 # Make many edits
@@ -603,6 +619,7 @@ updates it concurrently, the update takes precedence. The updated value
 is retained in the merged document.
 
 ``` r
+
 # Map: Deletion vs concurrent update - update wins
 doc21 <- am_create()
 doc21[["temp"]] <- "value"
@@ -628,6 +645,7 @@ am_close(doc22)
 key/element is removed from the merged document.
 
 ``` r
+
 # List: Delete and insert at same position - both operations apply
 doc23 <- am_create()
 am_put(doc23, AM_ROOT, "items", AM_OBJ_TYPE_LIST)
@@ -671,6 +689,7 @@ am_close(doc24)
 Structure your data so concurrent operations naturally merge well:
 
 ``` r
+
 # Good: Independent counters per user
 doc_good <- am_create()
 doc_good[["votes"]] <- list(
@@ -691,6 +710,7 @@ am_close(doc_bad)
 Group related changes in commits:
 
 ``` r
+
 doc25 <- am_create()
 
 # Good: Atomic transaction
@@ -711,6 +731,7 @@ am_close(doc25)
 Understand that some conflicts are inevitable:
 
 ``` r
+
 doc26 <- am_create()
 doc26[["status"]] <- "draft"
 am_commit(doc26)
@@ -724,7 +745,7 @@ am_merge(doc26, doc27)
 
 # One will win - application should handle both states sensibly
 doc26[["status"]] # Should be prepared for either 'published' or 'archived'
-#> [1] "archived"
+#> [1] "published"
 
 # Use am_equal() to check if two documents have converged
 am_merge(doc27, doc26)

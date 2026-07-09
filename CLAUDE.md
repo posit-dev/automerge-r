@@ -35,6 +35,7 @@ R CMD check automerge_*.tar.gz
 ## Development Workflow
 
 ``` r
+
 # Load package for development
 devtools::load_all()
 
