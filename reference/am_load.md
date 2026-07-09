@@ -30,7 +30,7 @@ bytes <- am_save(doc1)
 doc2 <- am_load(bytes)
 doc2
 #> <Automerge Document>
-#> Actor: d52807f1d06887fcce056446c082dc3b 
+#> Actor: d3798cbf7da6b4675e07664551becd70 
 #> Root keys: 0 
 
 # Save to and load from file

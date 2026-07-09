@@ -15,7 +15,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/posit-dev/automerge-r/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/posit-dev/automerge-r/blob/v0.5.0/DESCRIPTION)
 
 Gao C (2026). *automerge: R Bindings for 'Automerge' 'CRDT' Library*. R
 package version 0.5.0, <https://github.com/posit-dev/automerge-r>.

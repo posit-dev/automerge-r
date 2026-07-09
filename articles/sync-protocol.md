@@ -81,7 +81,7 @@ am_merge(target, source)
 
 # Target now has source's changes
 target[["version"]]
-#> [1] "2.0"
+#> [1] "1.0"
 
 # Source is unchanged
 names(source)
@@ -147,9 +147,9 @@ repeat {
 round
 #> [1] 3
 peer3[["source"]]
-#> [1] "peer3"
+#> [1] "peer4"
 peer4[["source"]]
-#> [1] "peer3"
+#> [1] "peer4"
 
 am_close(peer3)
 am_close(peer4)
@@ -382,16 +382,16 @@ for (i in seq_along(history)) {
 # Extract multiple fields from the same change
 change <- history[[2]]
 am_change_hash(change)     # Unique hash
-#>  [1] ce ef a3 bc 40 a4 9a a6 f2 15 d5 59 14 89 69 8e 19 48 2b 57 0e c7
-#> [23] 26 c9 25 40 b5 af 02 0a dd 6a
+#>  [1] 69 43 f8 77 eb 0b ba 97 4f b6 70 35 4b 63 dc 6e ce f2 ee d7 60 e8
+#> [23] b8 2a 5c 2b e9 17 35 82 59 17
 am_change_actor_id(change) # Who made this change
-#>  [1] 22 79 6e 36 7a 9c 3e 39 81 fd 66 34 84 1b 36 5c
+#>  [1] 32 df b8 5c b6 a1 a4 94 f1 4c 38 0d a5 95 4e cd
 am_change_time(change)     # When
 #> [1] "1970-01-01 UTC"
 am_change_deps(change)     # Parent changes
 #> [[1]]
-#>  [1] b8 cb 1a 4a 31 ca 6c 0f 28 3a 99 6c cb 23 ae 9a 04 fe 6c b2 fb cc
-#> [23] ff 94 e6 32 ed c0 d8 0a 6f 08
+#>  [1] b3 92 ea 83 2d 6c 28 08 5e e2 1c 2b 29 04 0c 08 bc 88 34 b5 d3 03
+#> [23] 12 91 72 f9 b8 f3 52 61 ab 79
 am_change_size(change)     # Number of operations
 #> [1] 2
 
@@ -399,7 +399,7 @@ am_change_size(change)     # Number of operations
 changes_since_v1 <- am_get_changes(doc_main, heads_v1)
 str(changes_since_v1)
 #> List of 1
-#>  $ :Class 'am_change' <pointer: 0x555fd68c3210>
+#>  $ :Class 'am_change' <pointer: 0x55db828f4210>
 
 am_close(doc_main)
 ```
@@ -488,10 +488,10 @@ y_changes <- am_get_changes(peer_y, common_heads)
 
 str(x_changes)
 #> List of 1
-#>  $ :Class 'am_change' <pointer: 0x555fd5c2e5c0>
+#>  $ :Class 'am_change' <pointer: 0x55db81c5f5c0>
 str(y_changes)
 #> List of 1
-#>  $ :Class 'am_change' <pointer: 0x555fd32e4ad0>
+#>  $ :Class 'am_change' <pointer: 0x55db7f315ad0>
 
 # Sync to merge divergent histories
 rounds <- am_sync(peer_x, peer_y)
@@ -542,7 +542,7 @@ editor1[["counter"]]
 
 # Status: Deterministic conflict resolution (one value wins)
 editor1[["status"]]
-#> [1] "review"
+#> [1] "published"
 
 am_close(base)
 am_close(editor1)

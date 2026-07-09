@@ -43,7 +43,7 @@ cursor positions across R sessions."><script src="https://cdn.jsdelivr.net/gh/po
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Serialize a cursor to bytes</h1>
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/R/cursors.R" class="external-link"><code>R/cursors.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/v0.5.0/R/cursors.R" class="external-link"><code>R/cursors.R</code></a></small>
       <div class="d-none name"><code>am_cursor_to_bytes.Rd</code></div>
     </div>
 
@@ -84,7 +84,7 @@ cursor positions across R sessions.</p>
 <span class="r-in"><span><span class="va">cursor</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_cursor.html">am_cursor</a></span><span class="op">(</span><span class="va">text_obj</span>, <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">bytes</span> <span class="op">&lt;-</span> <span class="fu">am_cursor_to_bytes</span><span class="op">(</span><span class="va">cursor</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">bytes</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 01 03 10 bd fb 6f f8 6c 46 80 f3 d0 ff d8 06 4e 88 ba ba 07 02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 01 03 10 e3 75 69 08 e5 b5 b9 be b4 31 1e c2 59 9b 82 a4 07 02</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Restore cursor later</span></span></span>
 <span class="r-in"><span><span class="va">restored</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_cursor_from_bytes.html">am_cursor_from_bytes</a></span><span class="op">(</span><span class="va">bytes</span>, <span class="va">text_obj</span><span class="op">)</span></span></span>

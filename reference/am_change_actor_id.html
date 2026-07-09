@@ -39,7 +39,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Get the actor ID of a change</h1>
-      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/main/R/sync.R" class="external-link"><code>R/sync.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/posit-dev/automerge-r/blob/v0.5.0/R/sync.R" class="external-link"><code>R/sync.R</code></a></small>
       <div class="d-none name"><code>am_change_actor_id.Rd</code></div>
     </div>
 
@@ -75,7 +75,7 @@
 <span class="r-in"><span><span class="va">history</span> <span class="op">&lt;-</span> <span class="fu"><a href="am_get_changes.html">am_get_changes</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">actor</span> <span class="op">&lt;-</span> <span class="fu">am_change_actor_id</span><span class="op">(</span><span class="va">history</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">actor</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 79 5e 1f d9 19 be 89 78 85 5d 7a fd fd a6 39 26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] c0 11 38 63 aa 37 df f5 e2 c8 18 58 1a 86 d6 a8</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Should match the document's actor</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">actor</span>, <span class="fu"><a href="am_get_actor.html">am_get_actor</a></span><span class="op">(</span><span class="va">doc</span><span class="op">)</span><span class="op">)</span>  <span class="co"># TRUE</span></span></span>
