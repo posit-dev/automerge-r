@@ -2,4 +2,4 @@
 
 0 errors | 0 warnings | 0 notes
 
-The previous version had some residual "conditional jump depends on uninitialised value" Valgrind warnings. Apologies for this - I thought I had fixed them all, but unfortunately I am unable to reproduce these myself. Again, these are false positives as Valgrind does not know about the extra safeguards that Rust has - there is zero memory lost. In case there continue to be issues, I request a dispensation, otherwise I shall be forced to take this off CRAN. Thanks.
+The "conditional jump depends on uninitialised value" Valgrind warnings reported for the previous version have now been reproduced (in the CRAN configuration: Fedora 40, Valgrind 3.24) and traced to the bundled Rust 'automerge' crate (in `PatchLog::migrate_actors`), not to the package's own C code. They are resolved by upgrading the bundled crate to 0.10.0, and this version runs cleanly under Valgrind (and additionally under gcc ASAN/UBSAN).
