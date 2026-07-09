@@ -332,7 +332,7 @@ doc9[["title"]] <- "My Document"
 doc10[["title"]] <- "Our Document"
 am_merge(doc9, doc10)
 doc9[["title"]] # One value wins deterministically
-#> [1] "Our Document"
+#> [1] "My Document"
 
 am_close(doc9)
 am_close(doc10)
@@ -350,7 +350,7 @@ am_text_splice(text12, 5, 0, " Everyone")
 am_merge(doc11, doc12)
 
 am_text_content(text11)
-#> [1] "Hello World Everyone"
+#> [1] "Hello Everyone World"
 
 am_close(doc11)
 am_close(doc12)
@@ -411,9 +411,9 @@ doc16[["updated_at"]] <- Sys.time()
 am_merge(doc15, doc16)
 
 doc15[["created_at"]]
-#> [1] "2026-07-08 21:22:10 UTC"
+#> [1] "2026-07-09 17:27:45 UTC"
 doc15[["updated_at"]]
-#> [1] "2026-07-08 21:22:11 UTC"
+#> [1] "2026-07-09 17:27:45 UTC"
 
 am_close(doc15)
 am_close(doc16)
