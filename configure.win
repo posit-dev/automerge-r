@@ -178,7 +178,11 @@ EOF
         "$HEADER" > "${HEADER}.tmp" && mv "${HEADER}.tmp" "$HEADER"
 
     # Stage the static library where Makevars expects it
-    cp am-build/target/release/libautomerge_core.a am-install/lib/libautomerge.a \
+    CORE_LIB="am-build/target/release/libautomerge_core.a"
+    if [ -n "${CARGO_BUILD_TARGET}" ] && [ -f "am-build/target/${CARGO_BUILD_TARGET}/release/libautomerge_core.a" ]; then
+        CORE_LIB="am-build/target/${CARGO_BUILD_TARGET}/release/libautomerge_core.a"
+    fi
+    cp "$CORE_LIB" am-install/lib/libautomerge.a \
         || { echo "ERROR: failed to stage static library"; exit 1; }
 
     rm -rf am-build
