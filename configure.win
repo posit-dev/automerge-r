@@ -110,10 +110,16 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
         exit 1
     fi
 
-    # Ensure GNU toolchain is used (required for Rtools compatibility)
-    if ! $RUSTC_CMD --version --verbose 2>/dev/null | grep -q "host:.*windows-gnu"; then
-        echo "Note: Configuring Rust to use GNU toolchain for Rtools compatibility"
-    fi
+    # Infer the Rust target from the C toolchain
+    case `${CC} -dumpmachine 2>/dev/null` in
+        aarch64*)
+            CARGO_TARGET="aarch64-pc-windows-gnullvm"
+            ;;
+        *)
+            CARGO_TARGET="x86_64-pc-windows-gnu"
+            ;;
+    esac
+    echo "Using Rust target: ${CARGO_TARGET}"
 
     echo "Building automerge-c from bundled source..."
     echo "using Rust package manager: '$($CARGO_CMD --version)'"
@@ -153,13 +159,10 @@ EOF
         xz -dc src/automerge/rust/vendor.tar.xz | tar -xf - -C src/automerge/rust
     fi
 
-    # Force GNU target to match MinGW toolchain from Rtools
-    export RUSTUP_TOOLCHAIN="stable-x86_64-pc-windows-gnu"
-
     echo "Building (this may take several minutes)..."
     # Default features select UTF-32 indexing; -j2 respects CRAN's core limit.
     # build.rs runs cbindgen to emit ${CBINDGEN_TARGET_DIR}/automerge.h.
-    "$CARGO_CMD" build --release -j2 \
+    "$CARGO_CMD" build --release -j2 --target "${CARGO_TARGET}" \
         --manifest-path src/automerge/rust/automerge-c/Cargo.toml \
         || { echo "ERROR: cargo build failed"; exit 1; }
 
@@ -178,7 +181,7 @@ EOF
         "$HEADER" > "${HEADER}.tmp" && mv "${HEADER}.tmp" "$HEADER"
 
     # Stage the static library where Makevars expects it
-    cp am-build/target/release/libautomerge_core.a am-install/lib/libautomerge.a \
+    cp "am-build/target/${CARGO_TARGET}/release/libautomerge_core.a" am-install/lib/libautomerge.a \
         || { echo "ERROR: failed to stage static library"; exit 1; }
 
     rm -rf am-build
