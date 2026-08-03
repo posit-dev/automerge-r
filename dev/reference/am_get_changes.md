@@ -48,7 +48,7 @@ all_changes <- am_get_changes(doc)
 all_changes
 #> [[1]]
 #> <Automerge Change>
-#> Hash: be 61 d0 3e ...
+#> Hash: 46 89 c8 5b ...
 #> 
 
 am_close(doc)
