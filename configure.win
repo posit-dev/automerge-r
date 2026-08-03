@@ -51,6 +51,17 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
     # Minimum Rust version required (MSRV)
     RUST_MSRV="1.85"
 
+    # Infer the Rust target from the C toolchain
+    case `${CC} -dumpmachine 2>/dev/null` in
+        aarch64*)
+            CARGO_TARGET="aarch64-pc-windows-gnullvm"
+            ;;
+        *)
+            CARGO_TARGET="x86_64-pc-windows-gnu"
+            ;;
+    esac
+    echo "Using Rust target: ${CARGO_TARGET}"
+
     # Check for Rust toolchain (cargo and rustc)
     # CRAN policy: check both system PATH and ~/.cargo/bin
     CARGO_CMD=""
@@ -82,7 +93,7 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
         echo ""
         echo "Install Rust from https://rustup.rs/:"
         echo "  1. Download and run rustup-init.exe"
-        echo "  2. Select: x86_64-pc-windows-gnu toolchain"
+        echo "  2. After installation run: rustup target add ${CARGO_TARGET}"
         echo ""
         echo "Or via winget:  winget install Rustlang.Rustup"
         echo "Or via scoop:   scoop install rustup"
@@ -110,16 +121,16 @@ if [ ${AUTOMERGE_FOUND} -eq 0 ]; then
         exit 1
     fi
 
-    # Infer the Rust target from the C toolchain
-    case `${CC} -dumpmachine 2>/dev/null` in
-        aarch64*)
-            CARGO_TARGET="aarch64-pc-windows-gnullvm"
-            ;;
-        *)
-            CARGO_TARGET="x86_64-pc-windows-gnu"
-            ;;
-    esac
-    echo "Using Rust target: ${CARGO_TARGET}"
+    # Fail before the lengthy build if the target stdlib is absent
+    TARGET_LIBDIR=$($RUSTC_CMD --print target-libdir --target "${CARGO_TARGET}" 2>/dev/null)
+    if [ ! -d "$TARGET_LIBDIR" ]; then
+        echo "-------------------- RUST TARGET NOT INSTALLED --------------------"
+        echo "The Rust standard library for ${CARGO_TARGET} is not installed."
+        echo ""
+        echo "Install it with: rustup target add ${CARGO_TARGET}"
+        echo "--------------------------------------------------------------------"
+        exit 1
+    fi
 
     echo "Building automerge-c from bundled source..."
     echo "using Rust package manager: '$($CARGO_CMD --version)'"
