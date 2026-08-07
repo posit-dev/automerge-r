@@ -4,6 +4,7 @@
 .Ruserdata
 .cache
 .claude
+.posit
 .DS_Store
 *.gz
 automerge.Rcheck/

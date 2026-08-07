@@ -1,47 +1,29 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for AI coding agents working **on** the automerge package. automerge provides R bindings to the Automerge Conflict-free Replicated Data Type (CRDT) library via its C FFI, enabling automatic merging of concurrent changes across distributed systems without conflicts. Zero R package dependencies (only base R).
 
-## Project Overview
+Claude Code users: add `.claude/CLAUDE.md` containing `@../AGENTS.md` to import this file (`.claude/` is gitignored).
 
-This is an R package (`automerge`) that provides bindings to the Automerge Conflict-free Replicated Data Type (CRDT) library via its C FFI. The package enables automatic merging of concurrent changes across distributed systems without conflicts.
+## Architecture
 
-**Key Architecture:**
-- R package with C bindings to Rust-based automerge-c library
+- R package with C bindings to the Rust-based automerge-c library
 - R layer provides idiomatic S3 methods (`$`, `[[`, `length`, `names`, `as.list`)
-- C layer wraps automerge-c API with memory-safe external pointer management
-- Zero R package dependencies (only base R)
+- C layer wraps the automerge-c API with memory-safe external pointer management
 
-## Build Commands
-
-```bash
-# Install package (triggers configure + build)
-R CMD INSTALL .
-
-# Build package tarball
-R CMD build .
-
-# Check package
-R CMD check automerge_*.tar.gz
-
-# Clean build artifacts
-./cleanup
-```
-
-## Development Workflow
+## Commands
 
 ```r
-# Load package for development
-devtools::load_all()
+devtools::load_all()                                    # load package for development
+devtools::test()                                        # run all tests
+testthat::test_file("tests/testthat/test-document.R")   # run a single test file
+devtools::document()                                    # roxygen2 -> man/, NAMESPACE
+```
 
-# Run all tests
-devtools::test()
-
-# Run a single test file
-testthat::test_file("tests/testthat/test-document.R")
-
-# Build documentation
-devtools::document()
+```bash
+R CMD INSTALL .          # install package (triggers configure + build)
+R CMD build .
+R CMD check automerge_*.tar.gz
+./cleanup                # clean build artifacts
 ```
 
 ## Build System
@@ -57,9 +39,10 @@ The package uses a two-phase build approach:
    - Uses CMake with `-DUTF32_INDEXING=ON`
    - Requires Rust >= 1.85.0 and CMake >= 3.25
 
-## Code Structure
+## Codebase Shape
 
 ### R Layer (`R/`)
+
 - `document.R`: Document lifecycle (create, save, load, fork, merge, commit, rollback, clone)
 - `objects.R`: Object operations (put, get, delete, insert) and type constructors
 - `methods.R`: S3 methods for `am_doc`, `am_object`, and subtypes
@@ -71,6 +54,7 @@ The package uses a two-phase build approach:
 All R functions are thin `.Call()` wrappers (e.g., `am_put <- function(doc, obj, key, value) invisible(.Call(C_am_put, doc, obj, key, value))`). All logic lives in C.
 
 ### C Layer (`src/`)
+
 - `automerge.h`: Data structures, function declarations, CHECK_RESULT macro
 - `document.c`: Document lifecycle operations
 - `objects.c`: Map/list/text operations and R↔Automerge type conversion
@@ -80,6 +64,10 @@ All R functions are thin `.Call()` wrappers (e.g., `am_put <- function(doc, obj,
 - `memory.c`: External pointer wrappers and finalizers
 - `errors.c`: Error handling with file/line context
 - `init.c`: R package registration (83 C functions)
+
+## Formatter
+
+Air, configured in `air.toml` (default settings).
 
 ## Code Style
 
@@ -115,3 +103,9 @@ Text positions use Unicode code points, not bytes. The emoji "😀" counts as 1 
 - `CHECK_RESULT(result, expected_type)` macro validates AMresult* status and value type
 - Automatically frees AMresult* on error before calling `Rf_error()` — caller must not use the result after CHECK_RESULT
 - Includes file/line context for debugging (`__FILE__`, `__LINE__`)
+
+## Packaging Notes
+
+- roxygen2 with markdown; `NAMESPACE` is generated — never hand-edit.
+- Version is `major.minor.patch.dev` (current dev tag `.9000`).
+- `AGENTS.md`, `.claude/`, and `.posit/` are in `.Rbuildignore` and don't ship to CRAN.

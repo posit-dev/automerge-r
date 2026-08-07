@@ -5,7 +5,8 @@
 ^\.cache$
 ^\.github$
 ^\.claude$
-^CLAUDE.md$
+^\.posit$
+^AGENTS.md$
 ^am-build$
 ^am-install$
 ^README\.Rmd$

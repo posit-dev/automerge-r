@@ -35,7 +35,7 @@ VignetteBuilder:
 Config/build/compilation-database: true
 Config/Needs/website: tidyverse/tidytemplate
 Config/roxygen2/markdown: TRUE
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0
 Config/testthat/edition: 3
 Encoding: UTF-8
 SystemRequirements: 'automerge-c', or Cargo (Rust's package manager) and
